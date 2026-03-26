@@ -1,0 +1,5 @@
+{
+    "editor.inlayHints.enabled": "on",
+    "javascript.inlayHints.functionLikeReturnTypes.enabled": false,
+    "editor.inlineSuggest.enabled": false
+}

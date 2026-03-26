@@ -1,0 +1,52 @@
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/theme/app_theme.dart';
+
+class HomeEmptyState extends HookConsumerWidget {
+  const HomeEmptyState({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 90),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 45,
+              height: 45,
+              decoration: BoxDecoration(
+                color: vrc(context).tertiaryColor,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(
+                Icons.article_outlined,
+                color: vrc(context).iconSecondary,
+                size: 26,
+              ),
+            ),
+            const SizedBox(height: 15),
+            Text(
+              "아직 계약이 없습니다",
+              style: TextStyle(
+                color: vrc(context).textPrimary,
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 1),
+            Text(
+              "첫 번째 안전 계약을 작성해보세요",
+              style: TextStyle(
+                color: vrc(context).textSecondary,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

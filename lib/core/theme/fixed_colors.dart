@@ -1,0 +1,124 @@
+import 'package:flutter/material.dart';
+
+@immutable
+class FixedColors extends ThemeExtension<FixedColors> {
+  const FixedColors({
+    required this.brandColor,
+    required this.statusSignRequest,
+    required this.statusSignSuccess,
+    required this.statusError,
+    required this.statusDraft,
+    required this.textBrand,
+    required this.subtitleGreen,
+    required this.subtitleBlue,
+    required this.subtitleError,
+    required this.subtitleWarning,
+    required this.subtitleKakao,
+    required this.textGreen,
+    required this.textDanger,
+    required this.textInfo,
+    required this.iconBrand,
+    required this.iconDanger,
+    required this.iconInfo,
+    required this.borderOP,
+    required this.borderKakao,
+  });
+  final Color? brandColor;
+  final Color? statusSignRequest;
+  final Color? statusSignSuccess;
+  final Color? statusError;
+  final Color? statusDraft;
+  final Color? textBrand;
+  final Color? subtitleGreen;
+  final Color? subtitleBlue;
+  final Color? subtitleError;
+  final Color? subtitleWarning;
+  final Color? subtitleKakao;
+  final Color? textGreen;
+  final Color? textDanger;
+  final Color? textInfo;
+  final Color? iconBrand;
+  final Color? iconDanger;
+  final Color? iconInfo;
+  final Color? borderOP;
+  final Color? borderKakao;
+
+  static const FixedColors constant = FixedColors(
+    brandColor: Color(0xFF40C572),
+    statusSignRequest: Color(0xFF2563EB),
+    statusSignSuccess: Color(0xFF2B7FFF),
+    statusError: Color(0xFFEF4444),
+    statusDraft: Color(0xFFFC8B13),
+    textBrand: Color(0xFFFFFFFF),
+    subtitleGreen: Color(0x1F40C572),
+    subtitleBlue: Color(0x1F2B7FFF),
+    subtitleError: Color(0x1FEF4444),
+    subtitleWarning: Color(0x1FFF8904),
+    subtitleKakao: Color(0x1FFACC15),
+    textGreen: Color(0xFF40C572),
+    textDanger: Color(0xFFEF4444),
+    textInfo: Color(0xFF2B7FFF),
+    iconBrand: Color(0xFF40C572),
+    iconDanger: Color(0xFFEF4444),
+    iconInfo: Color(0xFF2B7FFF),
+    borderOP: Color(0x406F7270),
+    borderKakao: Color(0xFFFACC15),
+  );
+
+  @override
+  FixedColors copyWith({Color? brandColor}) => FixedColors(
+    brandColor: brandColor ?? this.brandColor,
+    statusSignRequest: statusSignRequest ?? this.statusSignRequest,
+    statusSignSuccess: statusSignSuccess ?? this.statusSignSuccess,
+    statusError: statusError ?? this.statusError,
+    statusDraft: statusDraft ?? this.statusDraft,
+    textBrand: textBrand ?? this.textBrand,
+    subtitleGreen: subtitleGreen ?? this.subtitleGreen,
+    subtitleBlue: subtitleBlue ?? this.subtitleBlue,
+    subtitleError: subtitleError ?? this.subtitleError,
+    subtitleWarning: subtitleWarning ?? this.subtitleWarning,
+    subtitleKakao: subtitleKakao ?? this.subtitleKakao,
+    textGreen: textGreen ?? this.textGreen,
+    textDanger: textDanger ?? this.textDanger,
+    textInfo: textInfo ?? this.textInfo,
+    iconBrand: iconBrand ?? this.iconBrand,
+    iconDanger: iconDanger ?? this.iconDanger,
+    iconInfo: iconInfo ?? this.iconInfo,
+    borderOP: borderOP ?? this.borderOP,
+    borderKakao: borderKakao ?? this.borderKakao,
+  );
+
+  @override
+  FixedColors lerp(ThemeExtension<FixedColors>? other, double t) {
+    if (other is! FixedColors) return this;
+    return FixedColors(
+      brandColor: Color.lerp(brandColor, other.brandColor, t),
+      statusSignRequest: Color.lerp(
+        statusSignRequest,
+        other.statusSignRequest,
+        t,
+      ),
+      statusSignSuccess: Color.lerp(
+        statusSignSuccess,
+        other.statusSignSuccess,
+        t,
+      ),
+      statusError: Color.lerp(statusError, other.statusError, t),
+      statusDraft: Color.lerp(statusDraft, other.statusDraft, t),
+      textBrand: Color.lerp(textBrand, other.textBrand, t),
+      subtitleGreen: Color.lerp(subtitleGreen, other.subtitleGreen, t),
+      subtitleBlue: Color.lerp(subtitleBlue, other.subtitleBlue, t),
+      subtitleError: Color.lerp(subtitleError, other.subtitleError, t),
+      subtitleWarning: Color.lerp(subtitleWarning, other.subtitleWarning, t),
+      subtitleKakao: Color.lerp(subtitleKakao, other.subtitleKakao, t),
+      textGreen: Color.lerp(textGreen, other.textGreen, t),
+      textDanger: Color.lerp(textDanger, other.textDanger, t),
+      textInfo: Color.lerp(textInfo, other.textInfo, t),
+      iconBrand: Color.lerp(iconBrand, other.iconBrand, t),
+      iconDanger: Color.lerp(iconDanger, other.iconDanger, t),
+      iconInfo: Color.lerp(iconInfo, other.iconInfo, t),
+      borderOP: Color.lerp(borderOP, other.borderOP, t),
+      borderKakao: Color.lerp(borderKakao, other.borderKakao, t),
+    );
+  }
+}
