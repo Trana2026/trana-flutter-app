@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TrustReportCard extends StatelessWidget {
+class TrustReportCard extends StatelessWidget { 
   const TrustReportCard({super.key});
 
   @override
