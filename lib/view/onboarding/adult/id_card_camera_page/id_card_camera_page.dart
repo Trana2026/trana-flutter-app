@@ -53,7 +53,7 @@ class IdCardCameraPage extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontWeight: FontWeight.w800,
+            fontFamily: "PretendardBold"
           ),
         ),
         backgroundColor: vrc(context).background,
@@ -82,7 +82,7 @@ class IdCardCameraPage extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textPrimary,
                   fontSize: 20,
-                  fontWeight: FontWeight.w800,
+                  fontFamily: "PretendardBold"
                 ),
               ),
             ),
@@ -94,7 +94,7 @@ class IdCardCameraPage extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textSecondary,
                   fontSize: 15,
-                  fontWeight: FontWeight.w500,
+                  fontFamily: "PretendardMedium"
                 ),
               ),
             ),
@@ -147,7 +147,7 @@ class IdCardCameraPage extends HookConsumerWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 15,
-                      vertical: 7,
+                      vertical: 10,
                     ),
                     decoration: BoxDecoration(
                       color: vrc(context).secondaryColor,
@@ -158,7 +158,7 @@ class IdCardCameraPage extends HookConsumerWidget {
                       style: TextStyle(
                         color: vrc(context).textSecondary,
                         fontSize: 13,
-                        fontWeight: FontWeight.w500,
+                        fontFamily: "PretendardMedium"
                       ),
                     ),
                   ),

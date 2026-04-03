@@ -47,11 +47,17 @@ class IntroPage extends HookConsumerWidget {
                   children: [
                     TextSpan(
                       text: "안전한 중고 거래\n",
-                      style: TextStyle(color: vrc(context).textPrimary),
+                      style: TextStyle(
+                        color: vrc(context).textPrimary,
+                        fontFamily: "PretendardBold"
+                      ),
                     ),
-                    const TextSpan(
+                    TextSpan(
                       text: "전자 계약 서비스",
-                      style: TextStyle(color: Color(0xFFA0A7B2)),
+                      style: TextStyle(
+                        color: vrc(context).textPrimary,
+                        fontFamily: "PretendardBold"
+                      ),
                     ),
                   ],
                 ),
@@ -64,7 +70,7 @@ class IntroPage extends HookConsumerWidget {
                   style: TextStyle(
                     color: vrc(context).textPrimary,
                     fontSize: 15,
-                    fontWeight: FontWeight.w500,
+                    fontFamily: "PretendardMedium",
                     height: 1.15,
                   ),
                 ),
@@ -92,13 +98,13 @@ class IntroPage extends HookConsumerWidget {
                 foregroundColor: fxc(context).textBrand!,
               ),
               const SizedBox(height: 12),
-              const Center(
+              Center(
                 child: Text(
                   "시작하면 서비스 이용약관에 동의하게 됩니다.",
                   style: TextStyle(
-                    color: Color(0xFFB9B9C1),
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
+                    color: vrc(context).textSecondary,
+                    fontSize: 12,
+                    fontFamily: "PretendardBold"
                   ),
                 ),
               ),

@@ -31,7 +31,8 @@ class ContractCtaButton extends HookConsumerWidget {
           style: TextStyle(
             color: fg,
             fontSize: 17,
-            fontWeight: FontWeight.w800,
+            fontFamily: "PretendardSemiBold",
+            letterSpacing: -0.2
           ),
         ),
       ),

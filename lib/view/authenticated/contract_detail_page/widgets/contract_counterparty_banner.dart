@@ -49,8 +49,9 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
                   topLabel,
                   style: TextStyle(
                     color: vrc(context).textTertiary,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
+                    fontFamily: "PretendardBold",
+                    letterSpacing: -0.2
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -58,8 +59,9 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
                   bottomLabel,
                   style: TextStyle(
                     color: vrc(context).textPrimary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
+                    fontSize: 17,
+                    fontFamily: "PretendardBold",
+                    letterSpacing: -0.2
                   ),
                 ),
               ],

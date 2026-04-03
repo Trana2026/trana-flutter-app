@@ -20,7 +20,7 @@ class ContractPhotoSection extends HookConsumerWidget {
             style: TextStyle(
               color: vrc(context).textTertiary,
               fontSize: 15,
-              fontWeight: FontWeight.w500,
+              fontFamily: "PretendardMedium"
             ),
           ),
         ),

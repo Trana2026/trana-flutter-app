@@ -36,17 +36,19 @@ class ContractDetailHeader extends HookConsumerWidget {
                       "현재 상태",
                       style: TextStyle(
                         color: fxc(context).textBrand,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        fontFamily: "PretendardBold",
+                        letterSpacing: -0.2
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Text(
                       statusLabel,
                       style: TextStyle(
                         color: fxc(context).textBrand,
                         fontSize: 22,
-                        fontWeight: FontWeight.w900,
+                        fontFamily: "PretendardExtraBold",
+                        letterSpacing: -0.2
                       ),
                     ),
                   ],

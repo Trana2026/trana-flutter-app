@@ -25,13 +25,20 @@ class MyPageMenuItem extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
           child: Row(
             children: [
-              Icon(
-                icon,
-                color: vrc(context).iconPrimary,
-                size: 22,
+              Container(
+                padding: EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  color: vrc(context).secondaryColor,
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: Icon(
+                  icon,
+                  color: vrc(context).iconPrimary,
+                  size: 22,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -39,8 +46,9 @@ class MyPageMenuItem extends StatelessWidget {
                   title,
                   style: TextStyle(
                     color: vrc(context).textPrimary,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    fontFamily: "PretendardSemiBold",
+                    letterSpacing: -0.2
                   ),
                 ),
               ),
@@ -48,18 +56,25 @@ class MyPageMenuItem extends StatelessWidget {
                 Text(
                   trailing!,
                   style: TextStyle(
-                    color: vrc(context).textPrimary, 
+                    color: vrc(context).textSecondary,
                     fontSize: 14, 
-                    fontWeight: FontWeight.w600
+                    fontFamily: "PretendardRegular"
                   ),
                 ),
               if (statusText != null)
-                Text(
-                  statusText!,
-                  style: TextStyle(
-                    color: statusText == "완료" ? fxc(context).brandColor : vrc(context).textSecondary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                  decoration: BoxDecoration(
+                    color: fxc(context).subtitleGreen,
+                    borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: Text(
+                    statusText!,
+                    style: TextStyle(
+                      color: statusText == "완료" ? fxc(context).brandColor : vrc(context).textSecondary,
+                      fontSize: 14,
+                      fontFamily: "PretendardMedium"
+                    ),
                   ),
                 ),
               

@@ -43,7 +43,9 @@ class ContractWarrantySelector extends HookConsumerWidget {
                     color: isSelected
                         ? fxc(context).textBrand
                         : vrc(context).textDisable,
-                    fontWeight: FontWeight.w800,
+                    fontFamily: isSelected
+                        ? "PretendardBold"
+                        : "PretendardMedium",
                     fontSize: 15,
                   ),
                 ),

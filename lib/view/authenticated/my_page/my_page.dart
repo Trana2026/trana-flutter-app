@@ -12,7 +12,7 @@ class MyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: vrc(context).background,
+      backgroundColor: vrc(context).secondaryColor,
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
@@ -57,6 +57,7 @@ class MyPage extends StatelessWidget {
                   icon: Icons.security_outlined,
                   title: "법정대리인 인증",
                   statusText: "인증하기",
+                  showChevron: false,
                 ),
               ],
             ),

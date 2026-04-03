@@ -14,11 +14,10 @@ class HomeEmptyState extends HookConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 45,
-              height: 45,
+              padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: vrc(context).tertiaryColor,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(13),
               ),
               child: Icon(
                 Icons.article_outlined,
@@ -32,7 +31,8 @@ class HomeEmptyState extends HookConsumerWidget {
               style: TextStyle(
                 color: vrc(context).textPrimary,
                 fontSize: 18,
-                fontWeight: FontWeight.w800,
+                fontFamily: "PretendardBold",
+                letterSpacing: -0.2
               ),
             ),
             const SizedBox(height: 1),
@@ -41,7 +41,8 @@ class HomeEmptyState extends HookConsumerWidget {
               style: TextStyle(
                 color: vrc(context).textSecondary,
                 fontSize: 14,
-                fontWeight: FontWeight.w600,
+                fontFamily: "PretendardRegular",
+                letterSpacing: -0.2
               ),
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trana/core/theme/app_theme.dart';
 
 class SectionTitle extends StatelessWidget {
   final String title;
@@ -10,10 +11,11 @@ class SectionTitle extends StatelessWidget {
       padding: const EdgeInsets.only(left: 4, bottom: 7),
       child: Text(
         title,
-        style: const TextStyle(
-          color: Colors.white60,
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
+        style: TextStyle(
+          color: vrc(context).textPrimary,
+          fontSize: 16,
+          fontFamily: "PretendardSemiBold",
+          letterSpacing: -0.2
         ),
       ),
     );

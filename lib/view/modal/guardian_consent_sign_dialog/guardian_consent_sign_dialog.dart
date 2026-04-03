@@ -29,9 +29,9 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
                 color: fxc(context).subtitleBlue,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.shield_outlined,
-                color: Color(0xFF2F8BFF),
+                color: fxc(context).iconInfo,
                 size: 22,
               ),
             ),
@@ -41,7 +41,7 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
               style: TextStyle(
                 color: vrc(context).textPrimary,
                 fontSize: 18,
-                fontWeight: FontWeight.w800,
+                fontFamily: "PretendardBold"
               ),
             ),
             const SizedBox(height: 12),
@@ -53,9 +53,9 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
               isSelected: selectedIndex.value == 0,
               activeColor: fxc(context).brandColor!,
               activeBgColor: fxc(context).subtitleGreen!,
-              activeTextColor: const Color(0xFF59D384),
+              activeTextColor: fxc(context).textBrand!,
               iconBgColor: fxc(context).subtitleGreen!,
-              iconColor: const Color(0xFF59D384),
+              iconColor: fxc(context).iconBrand!,
               onTap: () => selectedIndex.value = 0,
             ),
             const SizedBox(height: 7),
@@ -65,11 +65,11 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
               subtitle: "효력이 제한되며 상대방에게 표시됩니다",
               icon: Icons.warning_amber_rounded,
               isSelected: selectedIndex.value == 1,
-              activeColor: const Color(0xFFFF6467),
+              activeColor: fxc(context).iconDanger!,
               activeBgColor: fxc(context).subtitleError!,
-              activeTextColor: const Color(0xFFEF4444),
+              activeTextColor: fxc(context).textDanger!,
               iconBgColor: fxc(context).subtitleError!,
-              iconColor: const Color(0xFFFF6467),
+              iconColor: fxc(context).iconDanger!,
               isWarning: true,
               onTap: () => selectedIndex.value = 1,
             ),
@@ -94,7 +94,7 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textTertiary,
                   fontSize: 13,
-                  fontWeight: FontWeight.normal,
+                  fontFamily: "PretendardRegular"
                 ),
               ),
             ),

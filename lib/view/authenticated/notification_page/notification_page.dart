@@ -51,7 +51,7 @@ class NotificationPage extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontWeight: FontWeight.w800,
+            fontFamily: "PretendardBold"
           ),
         ),
       ),
@@ -66,13 +66,13 @@ class NotificationPage extends HookConsumerWidget {
                     size: 28,
                     color: fxc(context).brandColor,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 10),
                   Text(
                     "새로운 알림이 없어요",
                     style: TextStyle(
                       color: vrc(context).textPrimary,
                       fontSize: 14,
-                      fontWeight: FontWeight.w800,
+                      fontFamily: "PretendardSemiBold"
                     ),
                   ),
                   const Spacer(flex: 3),

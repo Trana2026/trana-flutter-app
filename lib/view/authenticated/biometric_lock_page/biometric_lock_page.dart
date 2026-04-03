@@ -37,7 +37,7 @@ class BiometricLockPage extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textPrimary,
                   fontSize: 20,
-                  fontWeight: FontWeight.w800,
+                  fontFamily: "PretendardBold"
                 ),
               ),
               const SizedBox(height: 6),
@@ -47,7 +47,7 @@ class BiometricLockPage extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textSecondary,
                   fontSize: 14,
-                  fontWeight: FontWeight.normal,
+                  fontFamily: "PretendardMedium"
                 ),
               ),
               const SizedBox(height: 35),
@@ -71,7 +71,7 @@ class BiometricLockPage extends HookConsumerWidget {
                     style: TextStyle(
                       color: vrc(context).textPrimary,
                       fontSize: 18,
-                      fontWeight: FontWeight.w600,
+                      fontFamily: "PretendardSemiBold"
                     ),
                   ),
                 ),

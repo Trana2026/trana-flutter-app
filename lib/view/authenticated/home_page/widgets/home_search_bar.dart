@@ -17,7 +17,7 @@ class HomeSearchBar extends HookConsumerWidget {
         style: TextStyle(
           color: vrc(context).textPrimary,
           fontSize: 15,
-          fontWeight: FontWeight.w600,
+          fontFamily: "PretendardMedium"
         ),
         cursorColor: fxc(context).brandColor,
         decoration: InputDecoration(
@@ -25,7 +25,7 @@ class HomeSearchBar extends HookConsumerWidget {
           hintStyle: TextStyle(
             color: vrc(context).textDisable,
             fontSize: 15,
-            fontWeight: FontWeight.w600,
+            fontFamily: "PretendardMedium"
           ),
           prefixIcon: Padding(
             padding: const EdgeInsets.only(left: 12),

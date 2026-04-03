@@ -37,7 +37,7 @@ class SellerCreateContractPage extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontWeight: FontWeight.w800,
+            fontFamily: "PretendardBold"
           ),
         ),
         bottom: PreferredSize(
@@ -51,20 +51,6 @@ class SellerCreateContractPage extends HookConsumerWidget {
               color: fxc(context).brandColor,
             ),
           ),
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
-        child: PrimaryButton(
-          text: "생성하기",
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ContractPreviewPage(),
-            ),
-          ),
-          backgroundColor: fxc(context).brandColor!,
-          foregroundColor: fxc(context).textBrand!,
         ),
       ),
       body: GestureDetector(
@@ -83,7 +69,7 @@ class SellerCreateContractPage extends HookConsumerWidget {
                   style: TextStyle(
                     color: vrc(context).textPrimary,
                     fontSize: 20,
-                    fontWeight: FontWeight.w800,
+                    fontFamily: "PretendardBold"
                   ),
                 ),
                 const SizedBox(height: 5),
@@ -92,7 +78,7 @@ class SellerCreateContractPage extends HookConsumerWidget {
                   style: TextStyle(
                     color: vrc(context).textSecondary,
                     fontSize: 15,
-                    fontWeight: FontWeight.w500,
+                    fontFamily: "PretendardMedium",
                     height: 1.15,
                   ),
                 ),
@@ -125,7 +111,7 @@ class SellerCreateContractPage extends HookConsumerWidget {
                         style: TextStyle(
                           color: vrc(context).textTertiary,
                           fontSize: 15,
-                          fontWeight: FontWeight.w500,
+                          fontFamily: "PretendardMedium"
                         ),
                       ),
                     ),
@@ -152,12 +138,12 @@ class SellerCreateContractPage extends HookConsumerWidget {
                     color: fxc(context).subtitleBlue,
                     borderRadius: BorderRadius.circular(18),
                   ),
-                  child: const Row(
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.info_outline_rounded,
-                        color: Color(0xFF51A2FF),
+                        color: fxc(context).iconInfo,
                         size: 22,
                       ),
                       SizedBox(width: 10),
@@ -165,10 +151,11 @@ class SellerCreateContractPage extends HookConsumerWidget {
                         child: Text(
                           "보증 기간을 제공하면 구매자의 신뢰도가 40% 증가합니다. 명확한 조건은 분쟁을 예방합니다.",
                           style: TextStyle(
-                            color: Color(0xFF2B7FFF),
+                            color: fxc(context).textInfo,
                             fontSize: 13,
-                            fontWeight: FontWeight.w600,
+                            fontFamily: "PretendardMedium",
                             height: 1.35,
+                            letterSpacing: -0.2
                           ),
                         ),
                       ),
@@ -178,6 +165,20 @@ class SellerCreateContractPage extends HookConsumerWidget {
               ],
             ),
           ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
+        child: PrimaryButton(
+          text: "생성하기",
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ContractPreviewPage(),
+            ),
+          ),
+          backgroundColor: fxc(context).brandColor!,
+          foregroundColor: fxc(context).textBrand!,
         ),
       ),
     );

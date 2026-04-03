@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart'; 
-import 'package:hooks_riverpod/hooks_riverpod.dart'; 
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
 
-class ConsentCheckbox extends HookConsumerWidget { 
-  final String requiredText;
+class ConsentCheckbox extends HookConsumerWidget {
+  final String? requiredText;
   final String descriptionText;
   final Color? requiredColor;
   final ValueChanged<bool>? onChanged;
 
   const ConsentCheckbox({
     super.key,
-    required this.requiredText,
+    this.requiredText,
     required this.descriptionText,
     this.requiredColor,
     required this.onChanged,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) { 
+  Widget build(BuildContext context, WidgetRef ref) {
     final isSelected = useState(false);
 
     return GestureDetector(
@@ -61,14 +61,15 @@ class ConsentCheckbox extends HookConsumerWidget {
                   style: TextStyle(
                     color: vrc(context).textSecondary,
                     fontSize: 13,
-                    fontWeight: FontWeight.w500,
+                    fontFamily: "PretendardMedium",
                     height: 1.2,
                   ),
                   children: [
                     TextSpan(
                       text: requiredText,
                       style: TextStyle(
-                        color: requiredColor ?? const Color(0xFF51A2FF),
+                        color: requiredColor ?? fxc(context).textInfo,
+                        fontFamily: "PretendardBold"
                       ),
                     ),
                     TextSpan(

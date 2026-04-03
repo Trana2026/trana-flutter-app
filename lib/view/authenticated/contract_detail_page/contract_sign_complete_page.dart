@@ -46,13 +46,10 @@ class ContractSignCompletePage extends HookConsumerWidget {
                   children: [
                     ContractCounterpartyBanner(
                       iconBgColor: fxc(context).statusSignRequest!,
-                      iconWidget: const Text(
-                        "?",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                        ),
+                      iconWidget: Icon(
+                        Icons.question_mark,
+                        color: fxc(context).textBrand,
+                        size: 22,
                       ),
                       topLabel: "거래 상대방",
                       bottomLabel: "서명 완료!",
@@ -71,7 +68,8 @@ class ContractSignCompletePage extends HookConsumerWidget {
                           style: TextStyle(
                             color: vrc(context).textPrimary,
                             fontSize: 14,
-                            fontWeight: FontWeight.w900,
+                            fontFamily: "PretendardBold",
+                            letterSpacing: -0.2
                           ),
                         ),
                       ],
@@ -84,8 +82,9 @@ class ContractSignCompletePage extends HookConsumerWidget {
                         "계약서 전문 보기",
                         style: TextStyle(
                           color: vrc(context).textTertiary,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 13,
+                          fontFamily: "PretendardRegular",
+                          letterSpacing: -0.2,
                         ),
                       ),
                     ),

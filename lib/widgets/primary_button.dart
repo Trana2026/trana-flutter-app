@@ -34,7 +34,7 @@ class PrimaryButton extends HookConsumerWidget {
           text,
           style: const TextStyle(
             fontSize: 17,
-            fontWeight: FontWeight.w700,
+            fontFamily: "PretendardSemiBold"
           ),
         ),
       ),

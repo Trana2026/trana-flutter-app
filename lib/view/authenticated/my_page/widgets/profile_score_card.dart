@@ -9,31 +9,45 @@ class ProfileScoreCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: vrc(context).secondaryColor,
+        color: vrc(context).background,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 "트라나",
                 style: TextStyle(
                   color: vrc(context).textPrimary,
                   fontSize: 22,
-                  fontWeight: FontWeight.w800,
+                  fontFamily: "PretendardBold",
+                  letterSpacing: -0.2
                 ),
               ),
-              const SizedBox(width: 8),
-              Icon(Icons.verified, color: fxc(context).brandColor, size: 18),
-              const SizedBox(width: 4),
-              Text(
-                "신원 인증 완료",
-                style: TextStyle(
-                  color: fxc(context).brandColor,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
+              SizedBox(height: 3),
+              Padding(
+                padding: const EdgeInsets.only(left: 0.5),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.shield_rounded,
+                      color: fxc(context).brandColor,
+                      size: 18,
+                    ),
+                    const SizedBox(width: 2),
+                    Text(
+                      "신원 인증 완료",
+                      style: TextStyle(
+                        color: fxc(context).brandColor,
+                        fontSize: 13,
+                        fontFamily: "PretendardMedium",
+                        letterSpacing: -0.2
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -45,9 +59,10 @@ class ProfileScoreCard extends StatelessWidget {
               Text(
                 "신뢰 점수",
                 style: TextStyle(
-                  color: vrc(context).textSecondary,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                  color: vrc(context).textPrimary,
+                  fontSize: 16,
+                  fontFamily: "PretendardMedium",
+                  letterSpacing: -0.2
                 ),
               ),
               RichText(
@@ -57,15 +72,16 @@ class ProfileScoreCard extends StatelessWidget {
                       text: "85",
                       style: TextStyle(
                         color: vrc(context).textPrimary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
+                        fontSize: 20,
+                        fontFamily: "PretendardSemiBold"
                       ),
                     ),
                     TextSpan(
                       text: " / 100",
                       style: TextStyle(
-                        color: vrc(context).textSecondary,
-                        fontSize: 14,
+                        color: vrc(context).textPrimary,
+                        fontFamily: "PretendardMedium",
+                        fontSize: 16,
                       ),
                     ),
                   ],
@@ -78,8 +94,10 @@ class ProfileScoreCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: 0.85,
-              backgroundColor: vrc(context).tertiaryColor,
-              valueColor: AlwaysStoppedAnimation<Color>(fxc(context).brandColor!),
+              backgroundColor: vrc(context).secondaryColor,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                fxc(context).brandColor!,
+              ),
               minHeight: 8,
             ),
           ),

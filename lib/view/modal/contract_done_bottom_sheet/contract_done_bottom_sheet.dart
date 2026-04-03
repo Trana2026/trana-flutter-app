@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart'; 
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/view/authenticated/contract_detail_page/contract_sign_complete_page.dart';
 import 'package:trana/view/authenticated/home_page/home_page.dart';
@@ -38,7 +38,7 @@ class ContractDoneBottomSheet extends HookConsumerWidget {
             style: TextStyle(
               color: vrc(context).textPrimary,
               fontSize: 19,
-              fontWeight: FontWeight.w800,
+              fontFamily: "PretendardBold",
             ),
           ),
           const SizedBox(height: 13),
@@ -48,7 +48,7 @@ class ContractDoneBottomSheet extends HookConsumerWidget {
             style: TextStyle(
               color: vrc(context).textSecondary,
               fontSize: 14,
-              fontWeight: FontWeight.w500,
+              fontFamily: "PretendardMedium"
             ),
           ),
           const SizedBox(height: 40),
@@ -65,7 +65,7 @@ class ContractDoneBottomSheet extends HookConsumerWidget {
                       (route) => false,
                     );
                   },
-                  backgroundColor: vrc(context).secondaryColor!, 
+                  backgroundColor: vrc(context).secondaryColor!,
                   foregroundColor: vrc(context).textPrimary!,
                 ),
               ),
@@ -83,7 +83,7 @@ class ContractDoneBottomSheet extends HookConsumerWidget {
                       (route) => false,
                     );
                   },
-                  backgroundColor: fxc(context).brandColor!, 
+                  backgroundColor: fxc(context).brandColor!,
                   foregroundColor: fxc(context).textBrand!,
                 ),
               ),

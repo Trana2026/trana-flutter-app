@@ -47,7 +47,7 @@ class NotificationItem extends HookConsumerWidget {
                       style: TextStyle(
                         color: vrc(context).textPrimary,
                         fontSize: 14,
-                        fontWeight: FontWeight.w700,
+                        fontFamily: "PretendardBold"
                       ),
                     ),
                     Text(
@@ -55,7 +55,7 @@ class NotificationItem extends HookConsumerWidget {
                       style: TextStyle(
                         color: vrc(context).textSecondary,
                         fontSize: 12,
-                        fontWeight: FontWeight.w500,
+                        fontFamily: "PretendardRegular"
                       ),
                     ),
                   ],
@@ -66,7 +66,7 @@ class NotificationItem extends HookConsumerWidget {
                   style: TextStyle(
                     color: vrc(context).textSecondary,
                     fontSize: 13,
-                    fontWeight: FontWeight.w500,
+                    fontFamily: "PretendardRegular",
                     height: 1.4,
                   ),
                 ),

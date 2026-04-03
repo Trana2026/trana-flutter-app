@@ -17,8 +17,8 @@ class IntroBenefitBox extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
+      padding: EdgeInsets.all(0),
       width: double.infinity,
-      height: 78,
       decoration: BoxDecoration(
         color: vrc(context).secondaryColor,
         borderRadius: BorderRadius.circular(15),
@@ -47,16 +47,16 @@ class IntroBenefitBox extends HookConsumerWidget {
                     title,
                     style: TextStyle(
                       color: vrc(context).textPrimary,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
+                      fontSize: 17,
+                      fontFamily: "PretendardBold"
                     ),
                   ),
                   Text(
                     description,
                     style: TextStyle(
                       color: vrc(context).textSecondary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      fontFamily: "PretendardRegular"
                     ),
                   ),
                 ],

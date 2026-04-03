@@ -32,7 +32,7 @@ class IdCardConfirmPage extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontWeight: FontWeight.w800,
+            fontFamily: "PretendardBold"
           ),
         ),
         backgroundColor: vrc(context).background,
@@ -65,7 +65,7 @@ class IdCardConfirmPage extends HookConsumerWidget {
                     style: TextStyle(
                       color: vrc(context).textPrimary,
                       fontSize: 20,
-                      fontWeight: FontWeight.w800,
+                      fontFamily: "PretendardBold"
                     ),
                   ),
                 ),
@@ -77,7 +77,7 @@ class IdCardConfirmPage extends HookConsumerWidget {
                     style: TextStyle(
                       color: vrc(context).textSecondary,
                       fontSize: 15,
-                      fontWeight: FontWeight.w500,
+                      fontFamily: "PretendardMedium"
                     ),
                   ),
                 ),
@@ -112,7 +112,7 @@ class IdCardConfirmPage extends HookConsumerWidget {
                           style: TextStyle(
                             color: fxc(context).brandColor,
                             fontSize: 13,
-                            fontWeight: FontWeight.w500,
+                            fontFamily: "PretendardMedium"
                           ),
                         ),
                       ],

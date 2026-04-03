@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/view/authenticated/contract_detail_page/contract_report_received_page.dart';
+import 'package:trana/view/authenticated/contract_detail_page/widgets/contract_report_bottom_sheet.dart';
 import 'package:trana/view/onboarding/common/splash_page/splash_page.dart';
 
 void main() {
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,
-      home: SplashPage(),
+      home: ContractReportReceivedPage()
     );
   }
 }

@@ -41,7 +41,7 @@ class HomeActionChip extends HookConsumerWidget {
               style: TextStyle(
                 color: textColor,
                 fontSize: 14,
-                fontWeight: FontWeight.w600,
+                fontFamily: "PretendardMedium"
               ),
             ),
           ],

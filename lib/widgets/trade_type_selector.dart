@@ -36,7 +36,7 @@ class TradeTypeSelector extends HookConsumerWidget {
                     "직거래",
                     style: TextStyle(
                       fontSize: 17,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: "PretendardSemiBold",
                       color: selectedIndex.value == 0
                           ? fxc(context).textBrand
                           : vrc(context).textDisable,
@@ -60,7 +60,7 @@ class TradeTypeSelector extends HookConsumerWidget {
                     "택배 거래",
                     style: TextStyle(
                       fontSize: 17,
-                      fontWeight: FontWeight.bold,
+                      fontFamily: "PretendardSemiBold",
                       color: selectedIndex.value == 1
                           ? fxc(context).textBrand
                           : vrc(context).textDisable,

@@ -25,8 +25,9 @@ class ContractKv extends HookConsumerWidget {
           label,
           style: TextStyle(
             color: vrc(context).textTertiary,
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
+            fontSize: 12,
+            fontFamily: "PretendardMedium",
+            letterSpacing: -0.2
           ),
         ),
         const SizedBox(height: 6),
@@ -34,8 +35,9 @@ class ContractKv extends HookConsumerWidget {
           value,
           style: TextStyle(
             color: vrc(context).textPrimary,
-            fontSize: 15,
-            fontWeight: FontWeight.w800,
+            fontSize: 17,
+            fontFamily: "PretendardBold",
+            letterSpacing: -0.2
           ),
         ),
       ],

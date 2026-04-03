@@ -37,7 +37,7 @@ class SocialLoginPage extends HookConsumerWidget {
                 TextSpan(
                   style: const TextStyle(
                     fontSize: 35,
-                    fontWeight: FontWeight.w800,
+                    fontFamily: "PretendardBold",
                     height: 1.15,
                   ),
                   children: [
@@ -45,9 +45,9 @@ class SocialLoginPage extends HookConsumerWidget {
                       text: "안전한 중고 거래 \n",
                       style: TextStyle(color: vrc(context).textPrimary),
                     ),
-                    const TextSpan(
+                    TextSpan(
                       text: "전자 계약 서비스",
-                      style: TextStyle(color: Color(0xFFA0A7B2)),
+                      style: TextStyle(color: vrc(context).textPrimary),
                     ),
                   ],
                 ),
@@ -60,7 +60,7 @@ class SocialLoginPage extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textPrimary,
                   fontSize: 15,
-                  fontWeight: FontWeight.w500,
+                  fontFamily: "PretendardMedium",
                   height: 1.15,
                 ),
               ),

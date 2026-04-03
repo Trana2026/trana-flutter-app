@@ -24,20 +24,20 @@ class ContractModifyPage extends HookConsumerWidget {
         backgroundColor: vrc(context).background,
         elevation: 0,
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: vrc(context).textPrimary,
-            size: 20,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
+        // leading: IconButton(
+        //   icon: Icon(
+        //     Icons.arrow_back_ios,
+        //     color: vrc(context).textPrimary,
+        //     size: 20,
+        //   ),
+        //   onPressed: () => Navigator.pop(context),
+        // ),
         title: Text(
           "계약서 미리보기",
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontWeight: FontWeight.w800,
+            fontFamily: "PretendardBold",
           ),
         ),
         bottom: PreferredSize(
@@ -60,13 +60,13 @@ class ContractModifyPage extends HookConsumerWidget {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFE5E7EB)),
+                  border: Border.all(color: fxc(context).borderOP!),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: SfPdfViewer.asset(
-                    'assets/pdf/contract_sample.pdf',
+                    'assets/pdf/1234.pdf',
                     controller: pdfViewerController,
                   ),
                 ),

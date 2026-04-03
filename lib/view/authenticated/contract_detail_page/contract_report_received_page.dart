@@ -67,12 +67,13 @@ class ContractReportReceivedPage extends HookConsumerWidget {
                           style: TextStyle(
                             color: vrc(context).textPrimary,
                             fontSize: 14,
-                            fontWeight: FontWeight.w900,
+                            fontFamily: "PretendardBold",
+                            letterSpacing: -0.2
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 12),
                     const ContractPreviewCard(),
                     const SizedBox(height: 12),
                     Center(
@@ -80,8 +81,9 @@ class ContractReportReceivedPage extends HookConsumerWidget {
                         "계약서 전문 보기",
                         style: TextStyle(
                           color: vrc(context).textTertiary,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 13,
+                          fontFamily: "PretendardRegular",
+                          letterSpacing: -0.2
                         ),
                       ),
                     ),

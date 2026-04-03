@@ -27,7 +27,7 @@ class GuardianLinkSendPage extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontWeight: FontWeight.w800,
+            fontFamily: "PretendardBold"
           ),
         ),
         backgroundColor: vrc(context).background,
@@ -56,7 +56,7 @@ class GuardianLinkSendPage extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textPrimary,
                   fontSize: 20,
-                  fontWeight: FontWeight.w800,
+                  fontFamily: "PretendardBold"
                 ),
               ),
             ),
@@ -68,7 +68,7 @@ class GuardianLinkSendPage extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textSecondary,
                   fontSize: 15,
-                  fontWeight: FontWeight.w500,
+                  fontFamily: "PretendardMedium",
                   height: 1.3,
                 ),
               ),
@@ -90,7 +90,7 @@ class GuardianLinkSendPage extends HookConsumerWidget {
                       style: TextStyle(
                         color: vrc(context).textPrimary,
                         fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                        fontFamily: "PretendardRegular"
                       ),
                     ),
                   ),
@@ -99,6 +99,7 @@ class GuardianLinkSendPage extends HookConsumerWidget {
                 Expanded(
                   flex: 2,
                   child: InkWell(
+                    borderRadius: BorderRadius.circular(20),
                     onTap: () {
                       Clipboard.setData(
                         const ClipboardData(text: "trana.app/verify/123456789"),
@@ -150,9 +151,10 @@ class GuardianLinkSendPage extends HookConsumerWidget {
                       "링크 전달 후, 보호자가 인증을 완료할 때까지 기다려주세요",
                       style: TextStyle(
                         color: vrc(context).textSecondary,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        height: 1.35,
+                        fontSize: 12.5,
+                        fontFamily: "PretendardRegular",
+                        letterSpacing: -0.2
+                        // height: 1.35,
                       ),
                     ),
                   ),

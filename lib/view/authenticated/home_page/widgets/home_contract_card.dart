@@ -42,9 +42,10 @@ class HomeContractCard extends HookConsumerWidget {
                 Text(
                   roleLabel,
                   style: TextStyle(
-                    color: vrc(context).textSecondary,
+                    color: vrc(context).textTertiary,
                     fontSize: 12,
-                    fontWeight: FontWeight.w700,
+                    fontFamily: "PretendardMedium",
+                    letterSpacing: -0.2
                   ),
                 ),
                 Container(
@@ -53,7 +54,7 @@ class HomeContractCard extends HookConsumerWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: statusColor.withValues(alpha: 0.15),
+                    color: statusColor,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -61,7 +62,8 @@ class HomeContractCard extends HookConsumerWidget {
                     style: TextStyle(
                       color: statusColor,
                       fontSize: 12,
-                      fontWeight: FontWeight.w700,
+                      fontFamily: "PretendardMedium",
+                      letterSpacing: -0.2
                     ),
                   ),
                 ),
@@ -74,7 +76,8 @@ class HomeContractCard extends HookConsumerWidget {
               style: TextStyle(
                 color: vrc(context).textPrimary,
                 fontSize: 17,
-                fontWeight: FontWeight.w700,
+                fontFamily: "PretendardBold",
+                letterSpacing: -0.2
               ),
             ),
             const SizedBox(height: 12),
@@ -91,9 +94,10 @@ class HomeContractCard extends HookConsumerWidget {
                     Text(
                       "가격",
                       style: TextStyle(
-                        color: vrc(context).textSecondary,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
+                        color: vrc(context).textTertiary,
+                        fontSize: 12,
+                        fontFamily: "PretendardMedium",
+                        letterSpacing: -0.2
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -102,7 +106,8 @@ class HomeContractCard extends HookConsumerWidget {
                       style: TextStyle(
                         color: vrc(context).textPrimary,
                         fontSize: 15,
-                        fontWeight: FontWeight.w700,
+                        fontFamily: "PretendardBold",
+                        letterSpacing: -0.2
                       ),
                     ),
                   ],
@@ -113,18 +118,20 @@ class HomeContractCard extends HookConsumerWidget {
                     Text(
                       "날짜",
                       style: TextStyle(
-                        color: vrc(context).textSecondary,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
+                        color: vrc(context).textTertiary,
+                        fontSize: 12,
+                        fontFamily: "PretendardMedium",
+                        letterSpacing: -0.2
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       date,
                       style: TextStyle(
-                        color: vrc(context).textSecondary,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
+                        color: vrc(context).textTertiary,
+                        fontSize: 12,
+                        fontFamily: "PretendardRegular",
+                        letterSpacing: -0.2
                       ),
                     ),
                   ],

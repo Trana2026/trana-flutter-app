@@ -61,9 +61,7 @@ class HomeBottomNav extends HookConsumerWidget {
                               ? vrc(context).textPrimary
                               : vrc(context).textDisable,
                           fontSize: 11,
-                          fontWeight: isActive
-                              ? FontWeight.w600
-                              : FontWeight.w400,
+                          fontFamily: "PretendardMedium"
                         ),
                       ),
                     ],

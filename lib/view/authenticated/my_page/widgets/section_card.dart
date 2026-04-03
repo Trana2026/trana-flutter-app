@@ -11,7 +11,7 @@ class SectionCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(5),
       decoration: BoxDecoration(
-        color: vrc(context).secondaryColor,
+        color: vrc(context).background,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/view/authenticated/contract_template_page/contract_template_page.dart';
 import 'package:trana/view/authenticated/home_page/widgets/home_action_chip.dart';
 import 'package:trana/view/authenticated/home_page/widgets/home_contract_card.dart';
 import 'package:trana/view/authenticated/home_page/widgets/home_empty_state.dart';
@@ -37,7 +38,7 @@ class HomeMainView extends HookConsumerWidget {
                               style: TextStyle(
                                 color: vrc(context).textPrimary,
                                 fontSize: 20,
-                                fontWeight: FontWeight.w800,
+                                fontFamily: "PretendardBold"
                               ),
                             ),
                           ),
@@ -47,7 +48,7 @@ class HomeMainView extends HookConsumerWidget {
                             style: TextStyle(
                               color: vrc(context).textSecondary,
                               fontSize: 15,
-                              fontWeight: FontWeight.w500,
+                              fontFamily: "PretendardMedium"
                             ),
                           ),
                         ],
@@ -85,7 +86,14 @@ class HomeMainView extends HookConsumerWidget {
                       HomeActionChip(
                         icon: Icons.add,
                         title: "템플릿 폴더 생성",
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ContractTemplatePage(),
+                            ),
+                          );
+                        },
                         color: fxc(context).brandColor!,
                         iconColor: fxc(context).textBrand!,
                         textColor: fxc(context).textBrand!,
@@ -127,7 +135,7 @@ class HomeMainView extends HookConsumerWidget {
                       style: TextStyle(
                         color: vrc(context).textSecondary,
                         fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                        fontFamily: "PretendardMedium"
                       ),
                     ),
                     const SizedBox(height: 22),

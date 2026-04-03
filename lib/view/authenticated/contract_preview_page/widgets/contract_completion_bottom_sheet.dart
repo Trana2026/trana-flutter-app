@@ -39,7 +39,7 @@ class ContractCompletionBottomSheet extends HookConsumerWidget {
             style: TextStyle(
               color: vrc(context).textPrimary,
               fontSize: 19,
-              fontWeight: FontWeight.w800,
+              fontFamily: "PretendardBold"
             ),
           ),
           const SizedBox(height: 40),

@@ -34,7 +34,7 @@ class BuyerCreateContractPage extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontWeight: FontWeight.w800,
+            fontFamily: "PretendardBold",
           ),
         ),
         bottom: PreferredSize(
@@ -48,20 +48,6 @@ class BuyerCreateContractPage extends HookConsumerWidget {
               color: fxc(context).brandColor,
             ),
           ),
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
-        child: PrimaryButton(
-          text: "생성하기",
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ContractPreviewPage(),
-            ),
-          ),
-          backgroundColor: fxc(context).brandColor!,
-          foregroundColor: fxc(context).textBrand!,
         ),
       ),
       body: GestureDetector(
@@ -78,7 +64,7 @@ class BuyerCreateContractPage extends HookConsumerWidget {
                   style: TextStyle(
                     color: vrc(context).textPrimary,
                     fontSize: 20,
-                    fontWeight: FontWeight.w800,
+                    fontFamily: "PretendardBold"
                   ),
                 ),
                 const SizedBox(height: 5),
@@ -87,7 +73,7 @@ class BuyerCreateContractPage extends HookConsumerWidget {
                   style: TextStyle(
                     color: vrc(context).textSecondary,
                     fontSize: 15,
-                    fontWeight: FontWeight.w500,
+                    fontFamily: "PretendardMedium",
                     height: 1.15,
                   ),
                 ),
@@ -112,6 +98,20 @@ class BuyerCreateContractPage extends HookConsumerWidget {
               ],
             ),
           ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
+        child: PrimaryButton(
+          text: "생성하기",
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ContractPreviewPage(),
+            ),
+          ),
+          backgroundColor: fxc(context).brandColor!,
+          foregroundColor: fxc(context).textBrand!,
         ),
       ),
     );

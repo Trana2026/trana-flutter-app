@@ -35,7 +35,7 @@ class ContractField extends HookConsumerWidget {
         hintStyle: TextStyle(
           color: vrc(context).textDisable,
           fontSize: 15,
-          fontWeight: FontWeight.w600,
+          fontFamily: "PretendardMedium"
         ),
         filled: true,
         fillColor: vrc(context).secondaryColor,

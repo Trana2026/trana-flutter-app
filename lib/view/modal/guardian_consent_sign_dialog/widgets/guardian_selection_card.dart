@@ -70,7 +70,7 @@ class GuardianSelectionCard extends HookConsumerWidget {
                     style: TextStyle(
                       color: vrc(context).textPrimary,
                       fontSize: 16,
-                      fontWeight: FontWeight.w800,
+                      fontFamily: "PretendardBold"
                     ),
                   ),
                   Text(
@@ -80,7 +80,7 @@ class GuardianSelectionCard extends HookConsumerWidget {
                           ? activeTextColor
                           : vrc(context).textTertiary,
                       fontSize: 13,
-                      fontWeight: FontWeight.w500,
+                      fontFamily: "PretendardMedium"
                     ),
                   ),
                 ],

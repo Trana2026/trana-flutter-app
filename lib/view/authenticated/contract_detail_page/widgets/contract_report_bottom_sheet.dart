@@ -54,7 +54,7 @@ class ContractReportBottomSheet extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textPrimary,
                   fontSize: 18,
-                  fontWeight: FontWeight.w800,
+                  fontFamily: "PretendardBold"
                 ),
               ),
             ],

@@ -11,7 +11,7 @@ class ContractSummaryCard extends HookConsumerWidget {
     return Container(
       height: 172,
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
       decoration: BoxDecoration(
         color: vrc(context).secondaryColor,
         borderRadius: BorderRadius.circular(24),

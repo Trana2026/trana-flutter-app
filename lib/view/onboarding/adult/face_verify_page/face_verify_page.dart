@@ -51,7 +51,7 @@ class FaceVerifyPage extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontWeight: FontWeight.w800,
+            fontFamily: "PretendardBold"
           ),
         ),
         backgroundColor: vrc(context).background,
@@ -80,7 +80,7 @@ class FaceVerifyPage extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textPrimary,
                   fontSize: 20,
-                  fontWeight: FontWeight.w800,
+                  fontFamily: "PretendardBold"
                 ),
               ),
             ),
@@ -92,7 +92,7 @@ class FaceVerifyPage extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textSecondary,
                   fontSize: 15,
-                  fontWeight: FontWeight.w500,
+                  fontFamily: "PretendardMedium"
                 ),
               ),
             ),
@@ -138,7 +138,7 @@ class FaceVerifyPage extends HookConsumerWidget {
                       style: TextStyle(
                         color: vrc(context).textSecondary,
                         fontSize: 17,
-                        fontWeight: FontWeight.w800,
+                        fontFamily: "PretendardSemiBold"
                       ),
                     ),
                   ),

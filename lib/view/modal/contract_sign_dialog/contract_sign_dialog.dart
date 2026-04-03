@@ -31,7 +31,7 @@ class ContractSignDialog extends HookConsumerWidget {
               style: TextStyle(
                 color: vrc(context).textPrimary,
                 fontSize: 18,
-                fontWeight: FontWeight.w800,
+                fontFamily: "PretendardBold"
               ),
             ),
             const SizedBox(height: 12),
@@ -47,7 +47,7 @@ class ContractSignDialog extends HookConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Row(
+                    Row(
                       children: [
                         Padding(
                           padding: EdgeInsets.only(bottom: 2.5),
@@ -60,20 +60,22 @@ class ContractSignDialog extends HookConsumerWidget {
                         Text(
                           "꼭 확인하세요",
                           style: TextStyle(
-                            color: Color(0xFFEF4444),
+                            color: fxc(context).iconDanger,
                             fontSize: 15,
-                            fontWeight: FontWeight.w700,
+                            fontFamily: "PretendardBold",
+                            letterSpacing: -0.2
                           ),
                         ),
                       ],
                     ),
                     RichText(
-                      text: const TextSpan(
+                      text: TextSpan(
                         style: TextStyle(
-                          color: Color(0xFFEF4444),
+                          color: fxc(context).textDanger,
                           fontSize: 13,
-                          fontWeight: FontWeight.w500,
+                          fontFamily: "PretendardMedium",
                           height: 1.2,
+                          letterSpacing: -0.2
                         ),
                         children: [
                           TextSpan(text: "전자서명 완료 시 본 계약은 법적 효력이 발생할 수 있으며,"),
@@ -90,10 +92,10 @@ class ContractSignDialog extends HookConsumerWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: DottedBorder(
-                options: const RectDottedBorderOptions(
+                options: RectDottedBorderOptions(
                   dashPattern: [6, 4],
                   strokeWidth: 13,
-                  color: Color(0xFFD1D5DB),
+                  color: vrc(context).borderSecondary!,
                 ),
                 child: Container(
                   width: double.infinity,
@@ -130,7 +132,7 @@ class ContractSignDialog extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textTertiary,
                   fontSize: 13,
-                  fontWeight: FontWeight.normal,
+                  fontFamily: "PretendardRegular"
                 ),
               ),
             ),

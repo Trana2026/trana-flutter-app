@@ -29,9 +29,9 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
                 color: fxc(context).subtitleBlue,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.info_outline_rounded,
-                color: Color(0xFF2F8BFF),
+                color: fxc(context).iconInfo,
                 size: 22,
               ),
             ),
@@ -42,7 +42,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
               style: TextStyle(
                 color: vrc(context).textPrimary,
                 fontSize: 18,
-                fontWeight: FontWeight.w800,
+                fontFamily: "PretendardBold"
               ),
             ),
             const SizedBox(height: 1),
@@ -51,7 +51,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
               style: TextStyle(
                 color: vrc(context).textSecondary,
                 fontSize: 13,
-                fontWeight: FontWeight.normal,
+                fontFamily: "PretendardMedium"
               ),
             ),
             const SizedBox(height: 12),
@@ -72,7 +72,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
                       style: TextStyle(
                         color: vrc(context).textPrimary,
                         fontSize: 15,
-                        fontWeight: FontWeight.w700,
+                        fontFamily: "PretendardBold"
                       ),
                     ),
                     RichText(
@@ -80,7 +80,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
                         style: TextStyle(
                           color: vrc(context).textSecondary,
                           fontSize: 13,
-                          fontWeight: FontWeight.w500,
+                          fontFamily: "PretendardMedium",
                           height: 1.2,
                         ),
                         children: [
@@ -123,7 +123,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textTertiary,
                   fontSize: 13,
-                  fontWeight: FontWeight.normal,
+                  fontFamily: "PretendardRegular"
                 ),
               ),
             ),

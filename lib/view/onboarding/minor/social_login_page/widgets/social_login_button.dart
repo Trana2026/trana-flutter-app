@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart'; 
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class SocialLoginButton extends HookConsumerWidget { 
+class SocialLoginButton extends HookConsumerWidget {
   final VoidCallback onTap;
   final Color backgroundColor;
   final Color foregroundColor;
@@ -16,7 +16,7 @@ class SocialLoginButton extends HookConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) { 
+  Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
       width: double.infinity,
       height: 54,
@@ -32,7 +32,10 @@ class SocialLoginButton extends HookConsumerWidget {
         ),
         child: Text(
           title,
-          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+          style: const TextStyle(
+            fontSize: 17,
+            fontFamily: "PretendardSemiBold",
+          ),
         ),
       ),
     );

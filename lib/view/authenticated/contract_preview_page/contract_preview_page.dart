@@ -31,7 +31,7 @@ class ContractPreviewPage extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontWeight: FontWeight.w800,
+            fontFamily: "PretendardBold"
           ),
         ),
         bottom: PreferredSize(
@@ -54,7 +54,7 @@ class ContractPreviewPage extends HookConsumerWidget {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFE5E7EB)),
+                  border: Border.all(color: fxc(context).borderOP!),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: ClipRRect(

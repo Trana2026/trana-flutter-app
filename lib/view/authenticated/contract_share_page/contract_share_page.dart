@@ -27,7 +27,7 @@ class ContractSharePage extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontWeight: FontWeight.w800,
+            fontFamily: "PretendardBold"
           ),
         ),
       ),
@@ -47,7 +47,7 @@ class ContractSharePage extends HookConsumerWidget {
                     style: TextStyle(
                       color: vrc(context).textPrimary,
                       fontSize: 20,
-                      fontWeight: FontWeight.w800,
+                      fontFamily: "PretendardBold"
                     ),
                   ),
                 ),
@@ -57,7 +57,7 @@ class ContractSharePage extends HookConsumerWidget {
                   child: Text(
                     "초안을 확인하고 카카오톡으로 공유하세요",
                     style: TextStyle(
-                      color: vrc(context).textSecondary,
+                      fontFamily: "PretendardMedium",
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
                       height: 1.15,
@@ -75,14 +75,14 @@ class ContractSharePage extends HookConsumerWidget {
                     borderRadius: BorderRadius.circular(18),
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
                 Center(
                   child: Text(
                     "계약서 전문 보기",
                     style: TextStyle(
                       color: vrc(context).textTertiary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                      fontFamily: "PretendardRegular"
                     ),
                   ),
                 ),
@@ -94,9 +94,9 @@ class ContractSharePage extends HookConsumerWidget {
                   child: Text(
                     "전송 채널",
                     style: TextStyle(
-                      color: vrc(context).textSecondary,
+                      color: vrc(context).textTertiary,
                       fontSize: 15,
-                      fontWeight: FontWeight.w500,
+                      fontFamily: "PretendardMedium"
                     ),
                   ),
                 ),
@@ -119,7 +119,7 @@ class ContractSharePage extends HookConsumerWidget {
                         style: TextStyle(
                           color: vrc(context).textPrimary,
                           fontSize: 15,
-                          fontWeight: FontWeight.w600,
+                          fontFamily: "PretendardMedium"
                         ),
                       ),
                     ],

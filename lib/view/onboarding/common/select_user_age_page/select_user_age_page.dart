@@ -24,7 +24,7 @@ class SelectUserAgePage extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontWeight: FontWeight.w800,
+            fontFamily: "PretendardBold"
           ),
         ),
         backgroundColor: vrc(context).background,
@@ -41,7 +41,7 @@ class SelectUserAgePage extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textPrimary,
                   fontSize: 20,
-                  fontWeight: FontWeight.w800,
+                  fontFamily: "PretendardBold"
                 ),
               ),
             ),
@@ -50,7 +50,7 @@ class SelectUserAgePage extends HookConsumerWidget {
               TextSpan(
                 style: const TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                  fontFamily: "PretendardMedium",
                   height: 1.4,
                 ),
                 children: [

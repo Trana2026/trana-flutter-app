@@ -72,16 +72,18 @@ class SelectRoleCard extends HookConsumerWidget {
                 title,
                 style: TextStyle(
                   color: vrc(context).textPrimary,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
+                  fontSize: 20,
+                  fontFamily: "PretendardBold",
+                  letterSpacing: -0.2
                 ),
               ),
               Text(
                 description,
                 style: TextStyle(
                   color: vrc(context).textSecondary,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  fontFamily: "PretendardMedium",
+                  letterSpacing: -0.2
                 ),
               ),
             ],
