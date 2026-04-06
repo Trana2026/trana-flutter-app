@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/view/authenticated/my_page/sub_pages/account_withdrawal_page.dart';
+import 'package:trana/view/authenticated/my_page/sub_pages/customer_service_page.dart';
+import 'package:trana/view/authenticated/my_page/sub_pages/device_management_page.dart';
+import 'package:trana/view/authenticated/my_page/sub_pages/dispute_history_contract_page.dart';
+import 'package:trana/view/authenticated/my_page/sub_pages/inquiry_history_page.dart';
+import 'package:trana/view/authenticated/my_page/sub_pages/logout_page.dart';
+import 'package:trana/view/authenticated/my_page/sub_pages/pending_contract_page.dart';
+import 'package:trana/view/authenticated/my_page/sub_pages/policy_list_page.dart';
+import 'package:trana/view/authenticated/my_page/sub_pages/profile_edit_page.dart';
+import 'package:trana/view/authenticated/my_page/sub_pages/total_contract_page.dart';
 import 'package:trana/view/authenticated/my_page/widgets/my_page_menu_item.dart';
 import 'package:trana/view/authenticated/my_page/widgets/profile_score_card.dart';
 import 'package:trana/view/authenticated/my_page/widgets/section_title.dart';
 import 'package:trana/view/authenticated/my_page/widgets/trust_report_card.dart';
-import 'package:trana/view/authenticated/my_page/widgets/section_card.dart'; // 추가 필요
+import 'package:trana/view/authenticated/my_page/widgets/section_card.dart';
+import 'package:trana/view/authenticated/notification_page/notification_page.dart'; // 추가 필요
 
 class MyPage extends StatelessWidget {
   const MyPage({super.key});
@@ -15,8 +26,8 @@ class MyPage extends StatelessWidget {
       backgroundColor: vrc(context).secondaryColor,
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
-          children: const [
+          padding: EdgeInsets.fromLTRB(20, 20, 20, 100),
+          children: [
             ProfileScoreCard(),
             SizedBox(height: 16),
             TrustReportCard(),
@@ -29,16 +40,34 @@ class MyPage extends StatelessWidget {
                   icon: Icons.description_outlined,
                   title: "총 계약 내역",
                   trailing: "3건",
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TotalContractPage(),
+                    ),
+                  ),
                 ),
                 MyPageMenuItem(
                   icon: Icons.error_outline,
                   title: "미체결 계약",
                   trailing: "1건",
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PendingContractPage(),
+                    ),
+                  ),
                 ),
                 MyPageMenuItem(
                   icon: Icons.report_problem_outlined,
                   title: "신고 / 분쟁 내역",
                   trailing: "1건",
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DisputeHistoryContractPage(),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -71,6 +100,12 @@ class MyPage extends StatelessWidget {
                   icon: Icons.phone_android,
                   title: "로그인 기기 관리",
                   trailing: "2대",
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DeviceManagementPage(),
+                    ),
+                  ),
                 ),
                 MyPageMenuItem(
                   icon: Icons.access_time,
@@ -86,10 +121,42 @@ class MyPage extends StatelessWidget {
             SectionTitle(title: "고객 지원"),
             SectionCard(
               children: [
-                MyPageMenuItem(icon: Icons.notifications_none, title: "공지사항"),
-                MyPageMenuItem(icon: Icons.help_outline, title: "고객 센터"),
-                MyPageMenuItem(icon: Icons.contact_support_outlined, title: "문의 내역 관리"),
-                MyPageMenuItem(icon: Icons.article_outlined, title: "약관 및 정책"),
+                MyPageMenuItem(
+                  icon: Icons.notifications_none,
+                  title: "공지사항",
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NotificationPage()),
+                  ),
+                ),
+                MyPageMenuItem(
+                  icon: Icons.help_outline,
+                  title: "고객 센터",
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CustomerServicePage(),
+                    ),
+                  ),
+                ),
+                MyPageMenuItem(
+                  icon: Icons.contact_support_outlined,
+                  title: "문의 내역 관리",
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => InquiryHistoryPage(),
+                    ),
+                  ),
+                ),
+                MyPageMenuItem(
+                  icon: Icons.article_outlined,
+                  title: "약관 및 정책",
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PolicyListPage()),
+                  ),
+                ),
               ],
             ),
             SizedBox(height: 15),
@@ -103,10 +170,33 @@ class MyPage extends StatelessWidget {
                   title: "푸시 알림 설정",
                   isSwitch: true,
                 ),
-                MyPageMenuItem(icon: Icons.person_outline, title: "개인정보 관리"),
+                MyPageMenuItem(
+                  icon: Icons.person_outline,
+                  title: "개인정보 관리",
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfileEditPage()),
+                  ),
+                ),
                 MyPageMenuItem(icon: Icons.language, title: "언어 설정"),
-                MyPageMenuItem(icon: Icons.logout, title: "로그아웃"),
-                MyPageMenuItem(icon: Icons.delete_outline, title: "탈퇴하기"),
+                MyPageMenuItem(
+                  icon: Icons.logout,
+                  title: "로그아웃",
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LogoutPage()),
+                  ),
+                ),
+                MyPageMenuItem(
+                  icon: Icons.delete_outline,
+                  title: "탈퇴하기",
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AccountWithdrawalPage(),
+                    ),
+                  ),
+                ),
               ],
             ),
           ],

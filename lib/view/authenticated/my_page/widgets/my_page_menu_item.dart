@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart'; // 🍎 iOS 스타일 위젯을 위해 
 import 'package:trana/core/theme/app_theme.dart';
 
 class MyPageMenuItem extends StatelessWidget {
+  final VoidCallback? onTap;
   final IconData icon;
   final String title;
   final String? trailing;
@@ -12,6 +13,7 @@ class MyPageMenuItem extends StatelessWidget {
 
   const MyPageMenuItem({
     super.key,
+    this.onTap,
     required this.icon,
     required this.title,
     this.trailing,
@@ -24,83 +26,86 @@ class MyPageMenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-          child: Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(7),
-                decoration: BoxDecoration(
-                  color: vrc(context).secondaryColor,
-                  borderRadius: BorderRadius.circular(10)
-                ),
-                child: Icon(
-                  icon,
-                  color: vrc(context).iconPrimary,
-                  size: 22,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: vrc(context).textPrimary,
-                    fontSize: 16,
-                    fontFamily: "PretendardSemiBold",
-                    letterSpacing: -0.2
-                  ),
-                ),
-              ),
-              if (trailing != null)
-                Text(
-                  trailing!,
-                  style: TextStyle(
-                    color: vrc(context).textSecondary,
-                    fontSize: 14, 
-                    fontFamily: "PretendardRegular"
-                  ),
-                ),
-              if (statusText != null)
+        InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+            child: Row(
+              children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                  padding: EdgeInsets.all(7),
                   decoration: BoxDecoration(
-                    color: fxc(context).subtitleGreen,
+                    color: vrc(context).secondaryColor,
                     borderRadius: BorderRadius.circular(10)
                   ),
+                  child: Icon(
+                    icon,
+                    color: vrc(context).iconPrimary,
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
                   child: Text(
-                    statusText!,
+                    title,
                     style: TextStyle(
-                      color: statusText == "완료" ? fxc(context).brandColor : vrc(context).textSecondary,
-                      fontSize: 14,
-                      fontFamily: "PretendardMedium"
+                      color: vrc(context).textPrimary,
+                      fontSize: 16,
+                      fontFamily: "PretendardSemiBold",
+                      letterSpacing: -0.2
                     ),
                   ),
                 ),
-              
-              // 🔥 기존 Switch를 CupertinoSwitch로 변경
-              if (isSwitch)
-                SizedBox(
-                  height: 30, // 메뉴 행 높이에 맞게 조절
-                  child: Transform.scale(
-                    scale: 0.9,
-                    alignment: Alignment.centerRight,
-                    child: CupertinoSwitch(
-                      value: true, // 나중에 상태 관리(State) 연결 필요
-                      onChanged: (v) {},
-                      activeTrackColor: fxc(context).brandColor, // 켜졌을 때 트라나 브랜드 컬러
-                      inactiveTrackColor: Colors.white10, // 꺼졌을 때 배경색
+                if (trailing != null)
+                  Text(
+                    trailing!,
+                    style: TextStyle(
+                      color: vrc(context).textSecondary,
+                      fontSize: 14, 
+                      fontFamily: "PretendardRegular"
                     ),
                   ),
-                ),
-
-              if (showChevron && !isSwitch)
-                Icon(
-                  Icons.chevron_right, 
-                  color: vrc(context).textSecondary, 
-                  size: 18
-                ),
-            ],
+                if (statusText != null)
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                    decoration: BoxDecoration(
+                      color: fxc(context).subtitleGreen,
+                      borderRadius: BorderRadius.circular(10)
+                    ),
+                    child: Text(
+                      statusText!,
+                      style: TextStyle(
+                        color: statusText == "완료" ? fxc(context).brandColor : vrc(context).textSecondary,
+                        fontSize: 14,
+                        fontFamily: "PretendardMedium"
+                      ),
+                    ),
+                  ),
+                
+                // 🔥 기존 Switch를 CupertinoSwitch로 변경
+                if (isSwitch)
+                  SizedBox(
+                    height: 30, // 메뉴 행 높이에 맞게 조절
+                    child: Transform.scale(
+                      scale: 0.9,
+                      alignment: Alignment.centerRight,
+                      child: CupertinoSwitch(
+                        value: true, // 나중에 상태 관리(State) 연결 필요
+                        onChanged: (v) {},
+                        activeTrackColor: fxc(context).brandColor, // 켜졌을 때 트라나 브랜드 컬러
+                        inactiveTrackColor: Colors.white10, // 꺼졌을 때 배경색
+                      ),
+                    ),
+                  ),
+          
+                if (showChevron && !isSwitch)
+                  Icon(
+                    Icons.chevron_right, 
+                    color: vrc(context).textSecondary, 
+                    size: 18
+                  ),
+              ],
+            ),
           ),
         ),
       ],
