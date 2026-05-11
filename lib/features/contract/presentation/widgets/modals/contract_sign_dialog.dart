@@ -8,8 +8,17 @@ import 'package:trana/features/contract/presentation/screens/share/contract_shar
 import 'package:trana/core/widgets/consent_check_box.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 
-class ContractSignDialog extends HookConsumerWidget { 
-  const ContractSignDialog({super.key});
+class ContractSignDialog extends HookConsumerWidget {
+  final String? contractId;
+  final VoidCallback? onCompleted;
+  final BuildContext? parentContext;
+
+  const ContractSignDialog({
+    super.key,
+    this.contractId,
+    this.onCompleted,
+    this.parentContext,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) { 
@@ -154,10 +163,13 @@ class ContractSignDialog extends HookConsumerWidget {
                     text: "완료",
                     onTap: isSelected.value
                         ? () {
-                            Navigator.pushAndRemoveUntil(
-                              context,
+                            onCompleted?.call();
+                            final nav = parentContext != null
+                                ? Navigator.of(parentContext!)
+                                : Navigator.of(context);
+                            nav.pushAndRemoveUntil(
                               MaterialPageRoute(
-                                builder: (context) => const ContractSharePage(),
+                                builder: (_) => ContractSharePage(contractId: contractId),
                               ),
                               (route) => route.isFirst,
                             );

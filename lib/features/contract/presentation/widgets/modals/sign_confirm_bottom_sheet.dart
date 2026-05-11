@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/contract_sign_dialog.dart';
 import 'package:trana/core/widgets/consent_check_box.dart';
@@ -8,7 +10,15 @@ import 'package:trana/core/widgets/primary_button.dart';
 
 class SignConfirmBottomSheet extends HookConsumerWidget {
   final BuildContext parentContext;
-  const SignConfirmBottomSheet({super.key, required this.parentContext});
+  final String? contractId;
+  final VoidCallback? onProceed;
+
+  const SignConfirmBottomSheet({
+    super.key,
+    required this.parentContext,
+    this.contractId,
+    this.onProceed,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -88,16 +98,26 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
             text: "사인하기",
             onTap: allChecked
                 ? () async {
+                    bool dialogCompleted = false;
+                    final router = GoRouter.of(context);
+                    onProceed?.call();
                     Navigator.pop(context);
                     await Future.delayed(const Duration(milliseconds: 200));
-                    if (context.mounted) {
-                      showDialog(
-                        barrierColor: const Color(
-                          0xFF000000,
-                        ).withValues(alpha: 0.85),
-                        context: parentContext,
-                        builder: (context) => const ContractSignDialog(),
+                    if (!parentContext.mounted) return;
+                    await showDialog<void>(
+                      barrierColor: const Color(0xFF000000).withValues(alpha: 0.85),
+                      context: parentContext,
+                      builder: (ctx) => ContractSignDialog(
+                        contractId: contractId,
+                        onCompleted: onProceed != null ? () => dialogCompleted = true : null,
+                        parentContext: onProceed != null ? parentContext : null,
+                      ),
+                    );
+                    if (onProceed != null && !dialogCompleted && parentContext.mounted) {
+                      Navigator.of(parentContext).popUntil(
+                        (route) => route is! MaterialPageRoute && route is! ModalBottomSheetRoute,
                       );
+                      router.go(AppRoutes.home);
                     }
                   }
                 : null,

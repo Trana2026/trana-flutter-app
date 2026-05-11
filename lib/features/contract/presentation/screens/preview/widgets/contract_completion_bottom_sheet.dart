@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart'; 
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/sign_confirm_bottom_sheet.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 
-class ContractCompletionBottomSheet extends HookConsumerWidget { 
+class ContractCompletionBottomSheet extends HookConsumerWidget {
   final BuildContext parentContext;
-  const ContractCompletionBottomSheet({super.key, required this.parentContext});
+  final String? contractId;
+
+  const ContractCompletionBottomSheet({super.key, required this.parentContext, this.contractId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) { 
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 30, 20, 30),
       decoration: BoxDecoration(
@@ -50,11 +53,10 @@ class ContractCompletionBottomSheet extends HookConsumerWidget {
                 child: PrimaryButton(
                   text: "홈으로 돌아가기",
                   onTap: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomePage()),
-                      (route) => false,
+                    Navigator.of(context).popUntil(
+                      (route) => route is! MaterialPageRoute && route is! ModalBottomSheetRoute,
                     );
+                    context.go(AppRoutes.home);
                   },
                   backgroundColor: vrc(context).secondaryColor!,
                   foregroundColor: vrc(context).textPrimary!,
@@ -64,17 +66,28 @@ class ContractCompletionBottomSheet extends HookConsumerWidget {
               Expanded(
                 child: PrimaryButton(
                   text: "요청하기",
-                  onTap: () {
+                  onTap: () async {
+                    bool signFlowProceeded = false;
+                    final router = GoRouter.of(context);
                     Navigator.pop(context);
-                    showModalBottomSheet(
+                    if (!parentContext.mounted) return;
+                    await showModalBottomSheet<void>(
                       context: parentContext,
                       barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
                       backgroundColor: Colors.transparent,
                       isScrollControlled: true,
-                      builder: (bottomSheetContext) => SignConfirmBottomSheet(
+                      builder: (_) => SignConfirmBottomSheet(
                         parentContext: parentContext,
+                        contractId: contractId,
+                        onProceed: () => signFlowProceeded = true,
                       ),
                     );
+                    if (!signFlowProceeded && parentContext.mounted) {
+                      Navigator.of(parentContext).popUntil(
+                        (route) => route is! MaterialPageRoute && route is! ModalBottomSheetRoute,
+                      );
+                      router.go(AppRoutes.home);
+                    }
                   },
                   backgroundColor: fxc(context).brandColor!,
                   foregroundColor: fxc(context).textBrand!,

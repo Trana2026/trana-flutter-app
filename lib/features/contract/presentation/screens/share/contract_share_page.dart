@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/contract/presentation/screens/detail/contract_draft_page.dart';
-import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
+import 'package:trana/features/contract/domain/entities/contract_status.dart';
+import 'package:trana/features/contract/presentation/viewmodels/contract_list_view_model.dart';
 import 'package:trana/core/widgets/contract_form_field.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 
 class ContractSharePage extends HookConsumerWidget {
-  const ContractSharePage({super.key});
+  final String? contractId;
+
+  const ContractSharePage({super.key, this.contractId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -153,13 +157,7 @@ class ContractSharePage extends HookConsumerWidget {
               flex: 3,
               child: PrimaryButton(
                 text: "취소",
-                onTap: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomePage()),
-                    (route) => false,
-                  );
-                },
+                onTap: () => context.go(AppRoutes.home),
                 backgroundColor: vrc(context).secondaryColor!,
                 foregroundColor: vrc(context).textPrimary!,
               ),
@@ -184,13 +182,13 @@ class ContractSharePage extends HookConsumerWidget {
                   );
                   await Future.delayed(const Duration(seconds: 1));
                   if (context.mounted) {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ContractDraftPage(),
-                      ),
-                      (route) => false,
-                    );
+                    if (contractId != null) {
+                      ref.read(contractListProvider.notifier).updateStatus(
+                        contractId!,
+                        ContractStatus.signRequest,
+                      );
+                    }
+                    context.go(AppRoutes.contractSignRequest, extra: contractId);
                   }
                 },
                 backgroundColor: fxc(context).brandColor!,

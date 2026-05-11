@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/features/contract/domain/entities/user_role.dart';
 import 'package:trana/features/contract/presentation/screens/preview/contract_preview_page.dart';
 import 'package:trana/features/contract/presentation/screens/create/widgets/contract_photo_section.dart';
 import 'package:trana/features/contract/presentation/screens/create/widgets/contract_warranty_selector.dart';
@@ -10,7 +11,9 @@ import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/core/widgets/trade_type_selector.dart';
 
 class SellerCreateContractPage extends HookConsumerWidget {
-  const SellerCreateContractPage({super.key});
+  final UserRole userRole;
+
+  const SellerCreateContractPage({super.key, required this.userRole});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -174,7 +177,11 @@ class SellerCreateContractPage extends HookConsumerWidget {
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const ContractPreviewPage(),
+              builder: (context) => ContractPreviewPage(
+                userRole: userRole,
+                itemName: itemNameController.text,
+                price: priceController.text,
+              ),
             ),
           ),
           backgroundColor: fxc(context).brandColor!,

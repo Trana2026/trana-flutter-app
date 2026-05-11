@@ -4,9 +4,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/contract_form_field.dart';
 import 'package:trana/core/widgets/primary_button.dart';
+import 'package:trana/features/contract/domain/entities/contract_status.dart';
+import 'package:trana/features/contract/presentation/viewmodels/contract_list_view_model.dart';
 
 class ContractReportBottomSheet extends HookConsumerWidget {
-  const ContractReportBottomSheet({super.key});
+  final String? contractId;
+
+  const ContractReportBottomSheet({super.key, this.contractId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -77,7 +81,15 @@ class ContractReportBottomSheet extends HookConsumerWidget {
 
           PrimaryButton(
             text: "다음",
-            onTap: () {},
+            onTap: () {
+              if (contractId != null) {
+                ref.read(contractListProvider.notifier).updateStatus(
+                  contractId!,
+                  ContractStatus.reported,
+                );
+              }
+              Navigator.pop(context);
+            },
             backgroundColor: fxc(context).subtitleError!,
             foregroundColor: fxc(context).textDanger!,
           ),

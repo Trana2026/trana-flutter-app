@@ -4,7 +4,16 @@ import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/features/contract/presentation/screens/detail/widgets/contract_kv.dart';
 
 class ContractSummaryCard extends HookConsumerWidget {
-  const ContractSummaryCard({super.key});
+  final String itemName;
+  final String price;
+  final String roleLabel;
+
+  const ContractSummaryCard({
+    super.key,
+    required this.itemName,
+    required this.price,
+    required this.roleLabel,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,17 +30,17 @@ class ContractSummaryCard extends HookConsumerWidget {
         children: [
           Row(
             children: [
-              const Expanded(
+              Expanded(
                 child: ContractKv(
                   label: "물품명",
-                  value: "MacBook Air M2",
+                  value: itemName,
                   alignEnd: false,
                 ),
               ),
-              const Expanded(
+              Expanded(
                 child: ContractKv(
                   label: "거래 금액",
-                  value: "1,200,000원",
+                  value: "$price원",
                   alignEnd: true,
                 ),
               ),
@@ -47,8 +56,8 @@ class ContractSummaryCard extends HookConsumerWidget {
                   alignEnd: false,
                 ),
               ),
-              const Expanded(
-                child: ContractKv(label: "내 역할", value: "판매자", alignEnd: false),
+              Expanded(
+                child: ContractKv(label: "내 역할", value: roleLabel, alignEnd: false),
               ),
             ],
           ),
