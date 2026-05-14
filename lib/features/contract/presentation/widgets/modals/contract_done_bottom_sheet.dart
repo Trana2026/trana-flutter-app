@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/contract/presentation/screens/detail/contract_sign_complete_page.dart';
+import 'package:trana/features/contract/domain/entities/contract_status.dart';
+import 'package:trana/features/contract/presentation/screens/detail/contract_detail_page.dart';
 import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 
@@ -78,7 +79,7 @@ class ContractDoneBottomSheet extends HookConsumerWidget {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ContractSignCompletePage(),
+                        builder: (context) => const ContractDetailPage(status: ContractStatus.signComplete),
                       ),
                       (route) => false,
                     );

@@ -3,7 +3,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
 
 class ContractPreviewCard extends HookConsumerWidget {
-  const ContractPreviewCard({super.key});
+  final String itemName;
+  final String price;
+
+  const ContractPreviewCard({
+    super.key,
+    required this.itemName,
+    required this.price,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,14 +30,13 @@ class ContractPreviewCard extends HookConsumerWidget {
           _clause(
             context,
             title: "제 1조 [목적]",
-            content:
-                "본 계약은 판매자와 구매자 간의 '아이폰 14 프로' 거래에 관한 제반 사항을 규정함을 목적으로 한다.",
+            content: "본 계약은 판매자와 구매자 간의 '$itemName' 거래에 관한 제반 사항을 규정함을 목적으로 한다.",
           ),
           const SizedBox(height: 14),
           _clause(
             context,
             title: "제 2조 [대금 지급]",
-            content: "총 거래 금액 380,000원을 물품 인도와 동시에 지급한다.",
+            content: "총 거래 금액 $price원을 물품 인도와 동시에 지급한다.",
           ),
           const SizedBox(height: 14),
           _clause(

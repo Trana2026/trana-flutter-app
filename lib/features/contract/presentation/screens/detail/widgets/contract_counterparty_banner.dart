@@ -8,6 +8,7 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
   final String topLabel;
   final String bottomLabel;
   final bool showChevron;
+  final VoidCallback? onTap;
 
   const ContractCounterpartyBanner({
     super.key,
@@ -16,11 +17,14 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
     required this.topLabel,
     required this.bottomLabel,
     this.showChevron = true,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
       width: double.infinity,
       height: 77,
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
@@ -74,6 +78,7 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
               size: 26,
             ),
         ],
+      ),
       ),
     );
   }

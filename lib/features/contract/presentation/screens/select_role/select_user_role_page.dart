@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart'; 
 import 'package:hooks_riverpod/hooks_riverpod.dart'; 
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/features/contract/domain/entities/user_role.dart';
 import 'package:trana/features/contract/presentation/screens/create/buyer/buyer_create_contract_page.dart';
 import 'package:trana/features/contract/presentation/screens/create/seller/seller_create_contract_page.dart';
 import 'package:trana/core/widgets/select_role_card.dart';
@@ -105,7 +106,7 @@ class SelectUserRolePage extends HookConsumerWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const SellerCreateContractPage(),
+                      builder: (context) => const SellerCreateContractPage(userRole: UserRole.seller),
                     ),
                   );
                 }
@@ -113,7 +114,7 @@ class SelectUserRolePage extends HookConsumerWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const BuyerCreateContractPage(),
+                      builder: (context) => const BuyerCreateContractPage(userRole: UserRole.buyer),
                     ),
                   );
                 }

@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/features/contract/presentation/screens/template/contract_template_page.dart';
+import 'package:trana/features/contract/domain/entities/contract_status.dart';
+import 'package:trana/features/contract/presentation/extensions/contract_status_ui.dart';
+import 'package:trana/features/contract/domain/entities/user_role.dart';
+import 'package:trana/features/contract/presentation/viewmodels/contract_list_view_model.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_action_chip.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_contract_card.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_empty_state.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_search_bar.dart';
 import 'package:trana/features/notification/presentation/screens/notification/notification_page.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 class HomeMainView extends HookConsumerWidget {
   const HomeMainView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hasContracts = useState<bool>(false);
+    final contracts = ref.watch(contractListProvider);
 
     return SafeArea(
       bottom: false,
@@ -140,39 +145,40 @@ class HomeMainView extends HookConsumerWidget {
                     ),
                     const SizedBox(height: 22),
 
-                    if (!hasContracts.value)
+                    if (contracts.isEmpty)
                       const HomeEmptyState()
-                    else ...[
-                      HomeContractCard(
-                        roleLabel: "판매",
-                        statusLabel: "서명 요청",
-                        statusColor: fxc(context).statusSignRequest!,
-                        itemName: "Sony Headphones",
-                        price: "1,200,000원",
-                        date: "2025-01-10",
-                        onTap: () {},
-                      ),
-                      const SizedBox(height: 10),
-                      HomeContractCard(
-                        roleLabel: "판매",
-                        statusLabel: "서명 완료",
-                        statusColor: fxc(context).statusSignSuccess!,
-                        itemName: "MacBook Air M2",
-                        price: "1,200,000원",
-                        date: "2025-01-10",
-                        onTap: () {},
-                      ),
-                      const SizedBox(height: 10),
-                      HomeContractCard(
-                        roleLabel: "판매",
-                        statusLabel: "거래 완료",
-                        statusColor: fxc(context).brandColor!,
-                        itemName: "Vintage Camera",
-                        price: "1,200,000원",
-                        date: "2025-01-10",
-                        onTap: () {},
-                      ),
-                    ],
+                    else
+                      ...contracts.asMap().entries.map((entry) {
+                        final i = entry.key;
+                        final c = entry.value;
+                        final d = c.createdAt;
+                        final dateStr =
+                            '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+                        return Column(
+                          children: [
+                            HomeContractCard(
+                              roleLabel: c.userRole.label,
+                              statusLabel: c.status.statusLabel(),
+                              statusColor: c.status.appBarColor(context),
+                              statusTextColor: fxc(context).textBrand!,
+                              itemName: c.itemName,
+                              price: '${c.price}원',
+                              date: dateStr,
+                              onTap: () => context.push(
+                                switch (c.status) {
+                                  ContractStatus.draft => AppRoutes.contractDraft,
+                                  ContractStatus.signRequest => AppRoutes.contractSignRequest,
+                                  ContractStatus.signComplete => AppRoutes.contractSignComplete,
+                                  ContractStatus.tradeDone => AppRoutes.contractTradeDone,
+                                  ContractStatus.reported => AppRoutes.contractReportReceived,
+                                },
+                                extra: c.id,
+                              ),
+                            ),
+                            if (i < contracts.length - 1) const SizedBox(height: 10),
+                          ],
+                        );
+                      }),
                   ],
                 ),
               ),

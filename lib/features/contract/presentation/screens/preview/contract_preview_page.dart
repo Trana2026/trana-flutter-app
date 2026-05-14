@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart'; 
-import 'package:hooks_riverpod/hooks_riverpod.dart'; 
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/features/contract/domain/entities/contract_entity.dart';
+import 'package:trana/features/contract/domain/entities/contract_status.dart';
+import 'package:trana/features/contract/domain/entities/user_role.dart';
 import 'package:trana/features/contract/presentation/screens/modify/contract_modify_page.dart';
 import 'package:trana/features/contract/presentation/screens/preview/widgets/contract_completion_bottom_sheet.dart';
+import 'package:trana/features/contract/presentation/viewmodels/contract_list_view_model.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 
-class ContractPreviewPage extends HookConsumerWidget { 
-  const ContractPreviewPage({super.key});
+class ContractPreviewPage extends HookConsumerWidget {
+  final UserRole? userRole;
+  final String? itemName;
+  final String? price;
+
+  const ContractPreviewPage({super.key, this.userRole, this.itemName, this.price});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) { 
@@ -89,6 +97,20 @@ class ContractPreviewPage extends HookConsumerWidget {
                   child: PrimaryButton(
                     text: "생성하기",
                     onTap: () {
+                      String? contractId;
+                      if (userRole != null && itemName != null && price != null) {
+                        contractId = DateTime.now().millisecondsSinceEpoch.toString();
+                        ref.read(contractListProvider.notifier).add(
+                          ContractEntity(
+                            id: contractId,
+                            itemName: itemName!,
+                            price: price!,
+                            status: ContractStatus.draft,
+                            userRole: userRole!,
+                            createdAt: DateTime.now(),
+                          ),
+                        );
+                      }
                       showModalBottomSheet(
                         context: context,
                         barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
@@ -97,6 +119,7 @@ class ContractPreviewPage extends HookConsumerWidget {
                         builder: (bottomSheetContext) =>
                             ContractCompletionBottomSheet(
                               parentContext: context,
+                              contractId: contractId,
                             ),
                       );
                     },

@@ -1,0 +1,1 @@
+enum ContractStatus { draft, signRequest, signComplete, tradeDone, reported }

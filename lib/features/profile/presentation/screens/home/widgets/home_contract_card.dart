@@ -9,6 +9,7 @@ class HomeContractCard extends HookConsumerWidget {
   final String itemName;
   final String price;
   final String date;
+  final Color statusTextColor;
   final VoidCallback? onTap;
 
   const HomeContractCard({
@@ -16,6 +17,7 @@ class HomeContractCard extends HookConsumerWidget {
     required this.roleLabel,
     required this.statusLabel,
     required this.statusColor,
+    required this.statusTextColor,
     required this.itemName,
     required this.price,
     required this.date,
@@ -60,7 +62,7 @@ class HomeContractCard extends HookConsumerWidget {
                   child: Text(
                     statusLabel,
                     style: TextStyle(
-                      color: statusColor,
+                      color: statusTextColor,
                       fontSize: 12,
                       fontFamily: "PretendardMedium",
                       letterSpacing: -0.2

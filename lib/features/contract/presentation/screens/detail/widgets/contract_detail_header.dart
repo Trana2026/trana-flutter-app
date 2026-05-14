@@ -7,12 +7,18 @@ class ContractDetailHeader extends HookConsumerWidget {
   final Color statusColor;
   final String statusLabel;
   final IconData statusIcon;
+  final String itemName;
+  final String price;
+  final String roleLabel;
 
   const ContractDetailHeader({
     super.key,
     required this.statusColor,
     required this.statusLabel,
     required this.statusIcon,
+    required this.itemName,
+    required this.price,
+    required this.roleLabel,
   });
 
   @override
@@ -74,7 +80,11 @@ class ContractDetailHeader extends HookConsumerWidget {
           left: 18,
           right: 18,
           top: 85,
-          child: const ContractSummaryCard(), // const 추가 가능 여부 확인
+          child: ContractSummaryCard(
+            itemName: itemName,
+            price: price,
+            roleLabel: roleLabel,
+          ),
         ),
       ],
     );
