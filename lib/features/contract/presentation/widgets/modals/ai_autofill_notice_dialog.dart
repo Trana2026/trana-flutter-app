@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart'; 
-import 'package:hooks_riverpod/hooks_riverpod.dart'; 
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/contract/presentation/screens/select_role/select_user_role_page.dart';
 import 'package:trana/core/widgets/consent_check_box.dart';
+import 'package:trana/core/widgets/custom_snackbar.dart';
 import 'package:trana/core/widgets/primary_button.dart';
+import 'package:trana/features/contract/presentation/viewmodels/ai_auto_fill_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 
-class AiAutofillNoticeDialog extends HookConsumerWidget { 
+class AiAutofillNoticeDialog extends HookConsumerWidget {
   const AiAutofillNoticeDialog({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) { 
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(createContractViewModelProvider);
+    final aiState = ref.watch(aiAutoFillViewModelProvider);
+    final aiVM = ref.read(aiAutoFillViewModelProvider.notifier);
     final isSelected = useState(false);
 
     return Dialog(
@@ -20,7 +25,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(17, 20, 17, 20),
         child: Column(
-          mainAxisSize: MainAxisSize.min, 
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               width: 44,
@@ -42,7 +47,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
               style: TextStyle(
                 color: vrc(context).textPrimary,
                 fontSize: 18,
-                fontFamily: "PretendardBold"
+                fontFamily: "PretendardBold",
               ),
             ),
             const SizedBox(height: 1),
@@ -51,7 +56,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
               style: TextStyle(
                 color: vrc(context).textSecondary,
                 fontSize: 13,
-                fontFamily: "PretendardMedium"
+                fontFamily: "PretendardMedium",
               ),
             ),
             const SizedBox(height: 12),
@@ -72,7 +77,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
                       style: TextStyle(
                         color: vrc(context).textPrimary,
                         fontSize: 15,
-                        fontFamily: "PretendardBold"
+                        fontFamily: "PretendardBold",
                       ),
                     ),
                     RichText(
@@ -123,7 +128,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textTertiary,
                   fontSize: 13,
-                  fontFamily: "PretendardRegular"
+                  fontFamily: "PretendardRegular",
                 ),
               ),
             ),
@@ -131,18 +136,23 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
             const SizedBox(height: 15),
 
             PrimaryButton(
-              text: "확인",
-              onTap: isSelected.value
-                  ? () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SelectUserRolePage(),
-                        ),
-                      );
-                    }
-                  : null,
+              text: aiState.isLoading ? "분석 중..." : "확인",
+              onTap: () async {
+                if (!isSelected.value || aiState.isLoading) {
+                  return;
+                }
+
+                await aiVM.analyzeImages(state.selectedImages);
+
+                if (!context.mounted) return;
+                final errorMessage = ref
+                    .read(createContractViewModelProvider)
+                    .errorMessage;
+                if (errorMessage != null) {
+                  showErrorSnackBar(context, errorMessage);
+                }
+                Navigator.pop(context);
+              },
               backgroundColor: isSelected.value
                   ? fxc(context).brandColor!
                   : vrc(context).disableColor!,

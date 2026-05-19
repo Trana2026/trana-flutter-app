@@ -10,6 +10,8 @@ class ContractFormField extends HookConsumerWidget {
   final TextInputType? keyboardType;
   final int maxLines;
   final Widget? trailing;
+  final void Function(String)? onChanged;
+  final FormFieldValidator<String>? validator;
 
   const ContractFormField({
     super.key,
@@ -19,6 +21,8 @@ class ContractFormField extends HookConsumerWidget {
     this.keyboardType,
     this.maxLines = 1,
     this.trailing,
+    this.onChanged,
+    this.validator,
   });
 
   @override
@@ -35,7 +39,7 @@ class ContractFormField extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textTertiary,
                   fontSize: 15,
-                  fontFamily: "PretendardMedium"
+                  fontFamily: "PretendardMedium",
                 ),
               ),
             ),
@@ -44,6 +48,8 @@ class ContractFormField extends HookConsumerWidget {
         ),
         const SizedBox(height: 6),
         ContractField(
+          onChanged: onChanged,
+          validator: validator,
           hintText: hintText,
           controller: controller,
           keyboardType: keyboardType,

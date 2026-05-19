@@ -2,13 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart'; // 추가
 import 'package:hooks_riverpod/hooks_riverpod.dart'; // 추가
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 
 class TradeTypeSelector extends HookConsumerWidget {
   const TradeTypeSelector({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final vm = ref.read(createContractViewModelProvider.notifier);
     final selectedIndex = useState(1);
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        vm.updateMethod(selectedIndex.value);
+      });
+      return null;
+    }, [selectedIndex.value]);
 
     return Center(
       child: Container(

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/features/contract/presentation/screens/select_role/select_user_role_page.dart';
+import 'package:trana/features/contract/presentation/widgets/modals/guardian_identity_verify_dialog.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_bottom_nav.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_main_view.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/my_page.dart';
-import 'package:trana/features/contract/presentation/widgets/modals/ai_autofill_notice_dialog.dart';
-import 'package:trana/features/contract/presentation/widgets/modals/guardian_identity_verify_dialog.dart';
 
 class HomePage extends HookConsumerWidget {
   final bool showGuardianDialog;
@@ -31,11 +31,7 @@ class HomePage extends HookConsumerWidget {
       return null;
     }, []);
 
-    final pages = [
-      const HomeMainView(),
-      const HomeMainView(),
-      const MyPage(),
-    ];
+    final pages = [const HomeMainView(), const HomeMainView(), const MyPage()];
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -45,10 +41,7 @@ class HomePage extends HookConsumerWidget {
       body: Stack(
         children: [
           /// 🔥 기존 IndexedStack 유지
-          IndexedStack(
-            index: currentIndex.value,
-            children: pages,
-          ),
+          IndexedStack(index: currentIndex.value, children: pages),
 
           /// 🔥 바텀 네비 Positioned로 복구
           Positioned(
@@ -60,16 +53,12 @@ class HomePage extends HookConsumerWidget {
               onIndexChanged: (index) => currentIndex.value = index,
               customOnTaps: {
                 1: () {
-                  currentIndex.value = 1;
-                  showDialog(
-                    context: context,
-                    barrierColor: Colors.black
-                        .withValues(alpha: 0.75),
-                    builder: (context) =>
-                        const AiAutofillNoticeDialog(),
-                  ).then((context) {
-                    currentIndex.value = 0;
-                  });
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SelectUserRolePage(),
+                    ),
+                  );
                 },
               },
             ),

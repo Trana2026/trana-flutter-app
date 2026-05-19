@@ -1,27 +1,25 @@
 import 'package:go_router/go_router.dart';
-import 'package:trana/features/auth/presentation/screens/splash/splash_page.dart';
-import 'package:trana/features/auth/presentation/screens/intro/intro_page.dart';
-import 'package:trana/features/auth/presentation/screens/select_age/select_user_age_page.dart';
-import 'package:trana/features/auth/presentation/screens/terms/terms_agreement_page.dart';
-import 'package:trana/features/auth/presentation/screens/id_card_camera/id_card_camera_page.dart';
-import 'package:trana/features/auth/presentation/screens/id_card_confirm/id_card_confirm_page.dart';
 import 'package:trana/features/auth/presentation/screens/face_verify/face_verify_page.dart';
-import 'package:trana/features/auth/presentation/screens/social_login/social_login_page.dart';
 import 'package:trana/features/auth/presentation/screens/guardian_link/guardian_link_send_page.dart';
 import 'package:trana/features/auth/presentation/screens/guardian_waiting/guardian_verify_waiting_page.dart';
-import 'package:trana/features/contract/domain/entities/user_role.dart';
-import 'package:trana/features/contract/presentation/screens/select_role/select_user_role_page.dart';
-import 'package:trana/features/contract/presentation/screens/template/contract_template_page.dart';
-import 'package:trana/features/contract/presentation/screens/create/buyer/buyer_create_contract_page.dart';
-import 'package:trana/features/contract/presentation/screens/create/seller/seller_create_contract_page.dart';
-import 'package:trana/features/contract/presentation/screens/preview/contract_preview_page.dart';
-import 'package:trana/features/contract/presentation/screens/modify/contract_modify_page.dart';
-import 'package:trana/features/contract/presentation/screens/share/contract_share_page.dart';
+import 'package:trana/features/auth/presentation/screens/id_card_camera/id_card_camera_page.dart';
+import 'package:trana/features/auth/presentation/screens/id_card_confirm/id_card_confirm_page.dart';
+import 'package:trana/features/auth/presentation/screens/intro/intro_page.dart';
+import 'package:trana/features/auth/presentation/screens/select_age/select_user_age_page.dart';
+import 'package:trana/features/auth/presentation/screens/social_login/social_login_page.dart';
+import 'package:trana/features/auth/presentation/screens/splash/splash_page.dart';
+import 'package:trana/features/auth/presentation/screens/terms/terms_agreement_page.dart';
 import 'package:trana/features/contract/domain/entities/contract_status.dart';
-import 'package:trana/features/contract/presentation/screens/detail/contract_detail_page.dart';
 import 'package:trana/features/contract/presentation/screens/biometric_lock/biometric_lock_page.dart';
-import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
+import 'package:trana/features/contract/presentation/screens/create/create_contract_page.dart';
+import 'package:trana/features/contract/presentation/screens/detail/contract_detail_page.dart';
+import 'package:trana/features/contract/presentation/screens/modify/contract_modify_page.dart';
+import 'package:trana/features/contract/presentation/screens/preview/contract_preview_page.dart';
+import 'package:trana/features/contract/presentation/screens/select_role/select_user_role_page.dart';
+import 'package:trana/features/contract/presentation/screens/share/contract_share_page.dart';
+import 'package:trana/features/contract/presentation/screens/template/contract_template_page.dart';
 import 'package:trana/features/notification/presentation/screens/notification/notification_page.dart';
+import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
 
 abstract class AppRoutes {
   // Auth
@@ -49,8 +47,7 @@ abstract class AppRoutes {
   // Contract
   static const selectRole = '/select-role';
   static const contractTemplate = '/contract-template';
-  static const buyerCreate = '/contract/buyer/create';
-  static const sellerCreate = '/contract/seller/create';
+  static const contractCreate = '/contract/create';
   static const contractPreview = '/contract/preview';
   static const contractModify = '/contract/modify';
   static const contractShare = '/contract/share';
@@ -133,12 +130,8 @@ final appRouter = GoRouter(
       builder: (context, state) => const ContractTemplatePage(),
     ),
     GoRoute(
-      path: AppRoutes.buyerCreate,
-      builder: (context, state) => const BuyerCreateContractPage(userRole: UserRole.buyer),
-    ),
-    GoRoute(
-      path: AppRoutes.sellerCreate,
-      builder: (context, state) => const SellerCreateContractPage(userRole: UserRole.seller),
+      path: AppRoutes.contractCreate,
+      builder: (context, state) => const CreateContractPage(),
     ),
     GoRoute(
       path: AppRoutes.contractPreview,
@@ -154,23 +147,38 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.contractDraft,
-      builder: (context, state) => ContractDetailPage(status: ContractStatus.draft, contractId: state.extra as String?),
+      builder: (context, state) => ContractDetailPage(
+        status: ContractStatus.draft,
+        contractId: state.extra as String?,
+      ),
     ),
     GoRoute(
       path: AppRoutes.contractSignRequest,
-      builder: (context, state) => ContractDetailPage(status: ContractStatus.signRequest, contractId: state.extra as String?),
+      builder: (context, state) => ContractDetailPage(
+        status: ContractStatus.signRequest,
+        contractId: state.extra as String?,
+      ),
     ),
     GoRoute(
       path: AppRoutes.contractSignComplete,
-      builder: (context, state) => ContractDetailPage(status: ContractStatus.signComplete, contractId: state.extra as String?),
+      builder: (context, state) => ContractDetailPage(
+        status: ContractStatus.signComplete,
+        contractId: state.extra as String?,
+      ),
     ),
     GoRoute(
       path: AppRoutes.contractTradeDone,
-      builder: (context, state) => ContractDetailPage(status: ContractStatus.tradeDone, contractId: state.extra as String?),
+      builder: (context, state) => ContractDetailPage(
+        status: ContractStatus.tradeDone,
+        contractId: state.extra as String?,
+      ),
     ),
     GoRoute(
       path: AppRoutes.contractReportReceived,
-      builder: (context, state) => ContractDetailPage(status: ContractStatus.reported, contractId: state.extra as String?),
+      builder: (context, state) => ContractDetailPage(
+        status: ContractStatus.reported,
+        contractId: state.extra as String?,
+      ),
     ),
     GoRoute(
       path: AppRoutes.biometricLock,
