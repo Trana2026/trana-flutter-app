@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/contract/domain/entities/contract_status.dart';
+import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/presentation/screens/detail/contract_detail_page.dart';
 import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
-import 'package:trana/core/widgets/primary_button.dart';
 
 class ContractDoneBottomSheet extends HookConsumerWidget {
   const ContractDoneBottomSheet({super.key});
@@ -49,44 +48,41 @@ class ContractDoneBottomSheet extends HookConsumerWidget {
             style: TextStyle(
               color: vrc(context).textSecondary,
               fontSize: 14,
-              fontFamily: "PretendardMedium"
+              fontFamily: "PretendardMedium",
             ),
           ),
           const SizedBox(height: 40),
 
-          Row(
+          Column(
             children: [
-              Expanded(
-                child: PrimaryButton(
-                  text: "홈으로 돌아가기",
-                  onTap: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomePage()),
-                      (route) => false,
-                    );
-                  },
-                  backgroundColor: vrc(context).secondaryColor!,
-                  foregroundColor: vrc(context).textPrimary!,
-                ),
+              PrimaryButton(
+                text: "계약서 확인하기",
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ContractDetailPage(),
+                    ),
+                    (route) => false,
+                  );
+                },
+                backgroundColor: fxc(context).brandColor!,
+                foregroundColor: fxc(context).textBrand!,
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: PrimaryButton(
-                  text: "확인하기",
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ContractDetailPage(status: ContractStatus.signComplete),
-                      ),
-                      (route) => false,
-                    );
-                  },
-                  backgroundColor: fxc(context).brandColor!,
-                  foregroundColor: fxc(context).textBrand!,
-                ),
+              const SizedBox(height: 8),
+
+              PrimaryButton(
+                text: "홈으로 돌아가기",
+                onTap: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                    (route) => false,
+                  );
+                },
+                backgroundColor: vrc(context).secondaryColor!,
+                foregroundColor: vrc(context).textPrimary!,
               ),
             ],
           ),

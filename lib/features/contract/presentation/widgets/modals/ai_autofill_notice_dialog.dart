@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/consent_check_box.dart';
-import 'package:trana/core/widgets/custom_snackbar.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/presentation/viewmodels/ai_auto_fill_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
@@ -13,7 +13,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(createContractViewModelProvider);
+    final createState = ref.watch(createContractViewModelProvider);
     final aiState = ref.watch(aiAutoFillViewModelProvider);
     final aiVM = ref.read(aiAutoFillViewModelProvider.notifier);
     final isSelected = useState(false);
@@ -138,18 +138,15 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
             PrimaryButton(
               text: aiState.isLoading ? "분석 중..." : "확인",
               onTap: () async {
-                if (!isSelected.value || aiState.isLoading) {
-                  return;
-                }
+                if (!isSelected.value || aiState.isLoading) return;
 
-                await aiVM.analyzeImages(state.selectedImages);
+                await aiVM.analyzeImages(createState.selectedImages);
 
                 if (!context.mounted) return;
-                final errorMessage = ref
-                    .read(createContractViewModelProvider)
-                    .errorMessage;
-                if (errorMessage != null) {
-                  showErrorSnackBar(context, errorMessage);
+
+                if (aiState.error != null) {
+                  showErrorToast(context, aiState.error!);
+                  aiVM.clearError();
                 }
                 Navigator.pop(context);
               },

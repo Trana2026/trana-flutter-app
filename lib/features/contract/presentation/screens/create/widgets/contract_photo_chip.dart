@@ -17,12 +17,12 @@ class ContractPhotoChip extends HookConsumerWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 70,
-        height: 70,
+        width: 68,
+        height: 68,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: vrc(context).secondaryColor,
-          borderRadius: BorderRadius.circular(18),
+          color: vrc(context).tertiaryColor,
+          borderRadius: BorderRadius.circular(16),
         ),
         child: child,
       ),

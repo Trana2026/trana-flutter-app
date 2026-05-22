@@ -13,13 +13,13 @@ part 'ai_auto_fill_view_model.g.dart';
 @freezed
 abstract class AiAutoFillState with _$AiAutoFillState {
   const factory AiAutoFillState({
-    @Default('') String name,
-    @Default(0) int amount,
-    @Default('') String condition,
-    @Default('') String details,
+    @Default('') String name, // 상품명 (AI 분석 결과)
+    @Default(0) int amount, // 가격 (AI 분석 결과)
+    @Default('') String condition, // 상품 상태 (AI 분석 결과)
+    @Default('') String details, // 상품 상세 정보 (AI 분석 결과)
     @Default(false) bool isLoading,
     @Default(false) bool completed,
-    String? errorMessage,
+    String? error,
   }) = _AiAutoFillState;
 }
 
@@ -35,7 +35,7 @@ class AiAutoFillViewModel extends _$AiAutoFillViewModel {
   /// 이미지 분석
   Future<void> analyzeImages(List<AssetEntity> images) async {
     if (images.isEmpty) return;
-    state = state.copyWith(isLoading: true, errorMessage: null);
+    state = state.copyWith(isLoading: true, error: null);
 
     try {
       final xFiles = await Future.wait(
@@ -60,11 +60,13 @@ class AiAutoFillViewModel extends _$AiAutoFillViewModel {
         ),
         Failure(:final failure) => state.copyWith(
           isLoading: false,
-          errorMessage: failure.message,
+          error: failure.message,
         ),
       };
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
+
+  void clearError() => state = state.copyWith(error: null);
 }

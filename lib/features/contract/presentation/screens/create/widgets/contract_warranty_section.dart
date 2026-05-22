@@ -10,19 +10,19 @@ class ContractWarrantySection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final vm = ref.read(createContractViewModelProvider.notifier);
+    final createState = ref.watch(createContractViewModelProvider);
+    final createVM = ref.read(createContractViewModelProvider.notifier);
     final isWarranted = useState<bool>(false);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        vm.updateWarranted(isWarranted.value);
+        createVM.updateWarranted(isWarranted.value);
       });
       return null;
     }, [isWarranted.value]);
 
     // 판매자 선택 시에만 보증 기간 선택 영역 노출
-    final role = ref.watch(createContractViewModelProvider).role;
-    if (role != Role.seller) return SizedBox();
+    if (createState.role != Role.seller) return SizedBox();
 
     return Column(
       children: [
@@ -42,8 +42,8 @@ class ContractWarrantySection extends HookConsumerWidget {
             const SizedBox(width: 6),
             Icon(
               Icons.info_outline_rounded,
-              size: 16,
-              color: vrc(context).iconSecondary,
+              size: 14,
+              color: vrc(context).iconDisable,
             ),
           ],
         ),
@@ -54,10 +54,15 @@ class ContractWarrantySection extends HookConsumerWidget {
           onTap: () => isWarranted.value = !isWarranted.value,
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
-              color: Color(0xFF00C950).withOpacity(0.12),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isWarranted.value
+                    ? fxc(context).brandColor!
+                    : Colors.transparent,
+              ),
+              color: fxc(context).opacitySuccess,
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -65,11 +70,11 @@ class ContractWarrantySection extends HookConsumerWidget {
                 Icon(
                   isWarranted.value
                       ? Icons.check_circle
-                      : Icons.check_circle_outline,
-                  color: Color(0xFF40C572),
-                  size: 22,
+                      : Icons.radio_button_unchecked,
+                  color: fxc(context).brandColor,
+                  size: 24,
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,22 +82,22 @@ class ContractWarrantySection extends HookConsumerWidget {
                       Text(
                         "보증 기간 3일",
                         style: TextStyle(
-                          color: Color(0xFF40C572),
+                          color: fxc(context).brandColor,
                           fontSize: 14,
                           fontFamily: "PretendardBold",
                           fontWeight: FontWeight.bold,
-                          height: 1.35,
-                          letterSpacing: -0.2,
+                          height: 1.5,
+                          letterSpacing: -0.16,
                         ),
                       ),
                       Text(
                         "보증 기간을 제공하면 구매자의 신뢰도가 40% 증가합니다. 명확한 조건은 분쟁을 예방합니다.",
                         style: TextStyle(
-                          color: Color(0xFF40C572),
-                          fontSize: 13,
+                          color: fxc(context).brandColor,
+                          fontSize: 12,
                           fontFamily: "PretendardMedium",
-                          height: 1.35,
-                          letterSpacing: -0.2,
+                          height: 1.5,
+                          letterSpacing: -0.16,
                         ),
                       ),
                     ],

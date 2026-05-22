@@ -7,12 +7,12 @@ import 'package:trana/core/error/result.dart';
 import 'package:trana/features/contract/domain/entities/contract_parties_entity.dart';
 import 'package:trana/features/contract/domain/entities/contracts_entity.dart';
 import 'package:trana/features/contract/domain/entities/pdf_entity.dart';
-import 'package:trana/features/contract/domain/entities/product_photos_entity.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/domain/enums/party_type.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/domain/enums/transaction_method.dart';
-import 'package:trana/features/contract/domain/utils/contract_text_builder.dart';
+import 'package:trana/features/profile/presentation/providers/current_user_provider.dart';
+import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 part 'create_contract_view_model.freezed.dart';
@@ -32,8 +32,9 @@ abstract class CreateContractState with _$CreateContractState {
     @Default('') String details, // 입력된 상품 상세 설명
     @Default(false) bool warranted, // 선택된 보증 제공 여부
     Uint8List? pdfBytes, // 생성된 Pdf 바이트
+    int? contractId, // 생성된 계약서 초안 id
     @Default(false) bool isLoading,
-    String? errorMessage,
+    String? error,
   }) = _CreateContractState;
 }
 
@@ -97,8 +98,6 @@ class CreateContractViewModel extends _$CreateContractViewModel {
     final entries = PdfEntity(
       productName: state.name,
       amount: state.amount,
-      conditionSummary: state.condition,
-      conditionDetails: state.details,
       transactionMethod: state.method,
     );
     final result = await ref.read(pdfRepositoryProvider).generatePdf(entries);
@@ -106,7 +105,7 @@ class CreateContractViewModel extends _$CreateContractViewModel {
       Success(:final data) => state.copyWith(isLoading: false, pdfBytes: data),
       Failure(:final failure) => state.copyWith(
         isLoading: false,
-        errorMessage: failure.message,
+        error: failure.message,
       ),
     };
   }
@@ -114,30 +113,33 @@ class CreateContractViewModel extends _$CreateContractViewModel {
   /// 계약서 초안 생성
   Future<void> createDraft() async {
     final now = DateTime.now();
-    final userId = 1; // TODO : 현재 사용자 id 가져오기
-    final entries = PdfEntity(
-      productName: state.name,
-      amount: state.amount,
-      conditionSummary: state.condition,
-      conditionDetails: state.details,
-      transactionMethod: state.method,
-    );
-    final disclosureText = buildDisclosureText(entries);
+    final userId = ref.read(currentUserProvider);
 
-    // 1. 계약 생성
+    // 1. PDF S3 업로드
+    final saveResult = await ref
+        .read(pdfRepositoryProvider)
+        .savePdf(state.pdfBytes!);
+    final String pdfS3Key;
+    switch (saveResult) {
+      case Failure(:final failure):
+        state = state.copyWith(error: failure.message);
+        return;
+      case Success(:final data):
+        pdfS3Key = data;
+    }
+
+    // 2. 계약 생성
     final contract = ContractsEntity(
       senderUserId: userId,
       transactionMethod: state.method,
       productName: state.name,
       amount: state.amount,
       conditionSummary: state.condition,
-      conditionDetail: state.details,
-      pdfBytes: state.pdfBytes!,
+      conditionDetails: state.details,
+      pdfS3Key: pdfS3Key,
       status: ContractStatus.draft,
       warranted: state.warranted,
-      disclosureText: disclosureText,
       createdAt: now,
-      updatedAt: now,
     );
     final contractResult = await ref
         .read(contractsRepositoryProvider)
@@ -145,13 +147,14 @@ class CreateContractViewModel extends _$CreateContractViewModel {
     final int contractId;
     switch (contractResult) {
       case Failure(:final failure):
-        state = state.copyWith(errorMessage: failure.message);
+        state = state.copyWith(error: failure.message);
         return;
       case Success(:final data):
         contractId = data;
+        state = state.copyWith(contractId: contractId);
     }
 
-    // 2. 계약 당사자 생성 (요청자)
+    // 3. 계약 당사자 생성 (요청자)
     final party = ContractPartiesEntity(
       contractId: contractId,
       userId: userId,
@@ -164,36 +167,34 @@ class CreateContractViewModel extends _$CreateContractViewModel {
         .read(contractPartiesRepositoryProvider)
         .createContractParty(party);
     if (partyResult case Failure(:final failure)) {
-      state = state.copyWith(errorMessage: failure.message);
+      state = state.copyWith(error: failure.message);
       return;
     }
 
-    // 3. 거래 사진 저장
+    // 4. 거래 사진 업로드
     if (state.selectedImages.isNotEmpty) {
-      final productPhotos = await Future.wait(
+      final bytesList = await Future.wait(
         state.selectedImages.map((asset) async {
           final file = await asset.file;
-          final bytes = await file?.readAsBytes();
-          if (bytes == null) return null;
-          return ProductPhotosEntity(
-            contractID: contractId,
-            photoBytes: bytes,
-            createdAt: now,
-          );
+          return file?.readAsBytes();
         }),
       );
-      final validPhotos = productPhotos
-          .whereType<ProductPhotosEntity>()
-          .toList();
-      if (validPhotos.isNotEmpty) {
+      final validBytes = bytesList.whereType<Uint8List>().toList();
+      if (validBytes.isNotEmpty) {
         final photosResult = await ref
             .read(productPhotosRepositoryProvider)
-            .createProductPhotos(validPhotos);
+            .createProductPhotos(contractId, validBytes);
         if (photosResult case Failure(:final failure)) {
-          state = state.copyWith(errorMessage: failure.message);
+          state = state.copyWith(error: failure.message);
           return;
         }
       }
     }
+
+    // 목록 갱신
+    final homeVM = ref.read(homeContractViewModelProvider.notifier);
+    await homeVM.readContractSummaries();
   }
+
+  void clearError() => state = state.copyWith(error: null);
 }

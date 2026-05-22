@@ -14,7 +14,11 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AiAutoFillState {
 
- String get name; int get amount; String get condition; String get details; bool get isLoading; bool get completed; String? get errorMessage;
+ String get name;// 상품명 (AI 분석 결과)
+ int get amount;// 가격 (AI 분석 결과)
+ String get condition;// 상품 상태 (AI 분석 결과)
+ String get details;// 상품 상세 정보 (AI 분석 결과)
+ bool get isLoading; bool get completed; String? get error;
 /// Create a copy of AiAutoFillState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +29,16 @@ $AiAutoFillStateCopyWith<AiAutoFillState> get copyWith => _$AiAutoFillStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AiAutoFillState&&(identical(other.name, name) || other.name == name)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.condition, condition) || other.condition == condition)&&(identical(other.details, details) || other.details == details)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AiAutoFillState&&(identical(other.name, name) || other.name == name)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.condition, condition) || other.condition == condition)&&(identical(other.details, details) || other.details == details)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,amount,condition,details,isLoading,completed,errorMessage);
+int get hashCode => Object.hash(runtimeType,name,amount,condition,details,isLoading,completed,error);
 
 @override
 String toString() {
-  return 'AiAutoFillState(name: $name, amount: $amount, condition: $condition, details: $details, isLoading: $isLoading, completed: $completed, errorMessage: $errorMessage)';
+  return 'AiAutoFillState(name: $name, amount: $amount, condition: $condition, details: $details, isLoading: $isLoading, completed: $completed, error: $error)';
 }
 
 
@@ -45,7 +49,7 @@ abstract mixin class $AiAutoFillStateCopyWith<$Res>  {
   factory $AiAutoFillStateCopyWith(AiAutoFillState value, $Res Function(AiAutoFillState) _then) = _$AiAutoFillStateCopyWithImpl;
 @useResult
 $Res call({
- String name, int amount, String condition, String details, bool isLoading, bool completed, String? errorMessage
+ String name, int amount, String condition, String details, bool isLoading, bool completed, String? error
 });
 
 
@@ -62,7 +66,7 @@ class _$AiAutoFillStateCopyWithImpl<$Res>
 
 /// Create a copy of AiAutoFillState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? amount = null,Object? condition = null,Object? details = null,Object? isLoading = null,Object? completed = null,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? amount = null,Object? condition = null,Object? details = null,Object? isLoading = null,Object? completed = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
@@ -70,7 +74,7 @@ as int,condition: null == condition ? _self.condition : condition // ignore: cas
 as String,details: null == details ? _self.details : details // ignore: cast_nullable_to_non_nullable
 as String,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,completed: null == completed ? _self.completed : completed // ignore: cast_nullable_to_non_nullable
-as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -156,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  int amount,  String condition,  String details,  bool isLoading,  bool completed,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  int amount,  String condition,  String details,  bool isLoading,  bool completed,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AiAutoFillState() when $default != null:
-return $default(_that.name,_that.amount,_that.condition,_that.details,_that.isLoading,_that.completed,_that.errorMessage);case _:
+return $default(_that.name,_that.amount,_that.condition,_that.details,_that.isLoading,_that.completed,_that.error);case _:
   return orElse();
 
 }
@@ -177,10 +181,10 @@ return $default(_that.name,_that.amount,_that.condition,_that.details,_that.isLo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  int amount,  String condition,  String details,  bool isLoading,  bool completed,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  int amount,  String condition,  String details,  bool isLoading,  bool completed,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _AiAutoFillState():
-return $default(_that.name,_that.amount,_that.condition,_that.details,_that.isLoading,_that.completed,_that.errorMessage);case _:
+return $default(_that.name,_that.amount,_that.condition,_that.details,_that.isLoading,_that.completed,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +201,10 @@ return $default(_that.name,_that.amount,_that.condition,_that.details,_that.isLo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  int amount,  String condition,  String details,  bool isLoading,  bool completed,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  int amount,  String condition,  String details,  bool isLoading,  bool completed,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _AiAutoFillState() when $default != null:
-return $default(_that.name,_that.amount,_that.condition,_that.details,_that.isLoading,_that.completed,_that.errorMessage);case _:
+return $default(_that.name,_that.amount,_that.condition,_that.details,_that.isLoading,_that.completed,_that.error);case _:
   return null;
 
 }
@@ -212,16 +216,20 @@ return $default(_that.name,_that.amount,_that.condition,_that.details,_that.isLo
 
 
 class _AiAutoFillState implements AiAutoFillState {
-  const _AiAutoFillState({this.name = '', this.amount = 0, this.condition = '', this.details = '', this.isLoading = false, this.completed = false, this.errorMessage});
+  const _AiAutoFillState({this.name = '', this.amount = 0, this.condition = '', this.details = '', this.isLoading = false, this.completed = false, this.error});
   
 
 @override@JsonKey() final  String name;
+// 상품명 (AI 분석 결과)
 @override@JsonKey() final  int amount;
+// 가격 (AI 분석 결과)
 @override@JsonKey() final  String condition;
+// 상품 상태 (AI 분석 결과)
 @override@JsonKey() final  String details;
+// 상품 상세 정보 (AI 분석 결과)
 @override@JsonKey() final  bool isLoading;
 @override@JsonKey() final  bool completed;
-@override final  String? errorMessage;
+@override final  String? error;
 
 /// Create a copy of AiAutoFillState
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +241,16 @@ _$AiAutoFillStateCopyWith<_AiAutoFillState> get copyWith => __$AiAutoFillStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AiAutoFillState&&(identical(other.name, name) || other.name == name)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.condition, condition) || other.condition == condition)&&(identical(other.details, details) || other.details == details)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AiAutoFillState&&(identical(other.name, name) || other.name == name)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.condition, condition) || other.condition == condition)&&(identical(other.details, details) || other.details == details)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,amount,condition,details,isLoading,completed,errorMessage);
+int get hashCode => Object.hash(runtimeType,name,amount,condition,details,isLoading,completed,error);
 
 @override
 String toString() {
-  return 'AiAutoFillState(name: $name, amount: $amount, condition: $condition, details: $details, isLoading: $isLoading, completed: $completed, errorMessage: $errorMessage)';
+  return 'AiAutoFillState(name: $name, amount: $amount, condition: $condition, details: $details, isLoading: $isLoading, completed: $completed, error: $error)';
 }
 
 
@@ -253,7 +261,7 @@ abstract mixin class _$AiAutoFillStateCopyWith<$Res> implements $AiAutoFillState
   factory _$AiAutoFillStateCopyWith(_AiAutoFillState value, $Res Function(_AiAutoFillState) _then) = __$AiAutoFillStateCopyWithImpl;
 @override @useResult
 $Res call({
- String name, int amount, String condition, String details, bool isLoading, bool completed, String? errorMessage
+ String name, int amount, String condition, String details, bool isLoading, bool completed, String? error
 });
 
 
@@ -270,7 +278,7 @@ class __$AiAutoFillStateCopyWithImpl<$Res>
 
 /// Create a copy of AiAutoFillState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? amount = null,Object? condition = null,Object? details = null,Object? isLoading = null,Object? completed = null,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? amount = null,Object? condition = null,Object? details = null,Object? isLoading = null,Object? completed = null,Object? error = freezed,}) {
   return _then(_AiAutoFillState(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
@@ -278,7 +286,7 @@ as int,condition: null == condition ? _self.condition : condition // ignore: cas
 as String,details: null == details ? _self.details : details // ignore: cast_nullable_to_non_nullable
 as String,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,completed: null == completed ? _self.completed : completed // ignore: cast_nullable_to_non_nullable
-as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

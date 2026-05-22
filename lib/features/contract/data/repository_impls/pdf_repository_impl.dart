@@ -1,5 +1,8 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:trana/core/error/dio_error_mapper.dart';
 import 'package:trana/core/error/failure.dart';
 import 'package:trana/core/error/result.dart';
 import 'package:trana/features/contract/domain/entities/pdf_entity.dart';
@@ -7,6 +10,8 @@ import 'package:trana/features/contract/domain/repositories/pdf_repository.dart'
 import 'package:trana/features/contract/domain/utils/contract_text_builder.dart';
 
 class PdfRepositoryImpl implements PdfRepository {
+  PdfRepositoryImpl();
+
   static const double _leftPadding = 20;
   static const double _topPadding = 24;
   static const double _rightPadding = 20;
@@ -14,7 +19,7 @@ class PdfRepositoryImpl implements PdfRepository {
   static const double _sectionSpacing = 24;
 
   @override
-  Future<Result<Uint8List>> generatePdf(PdfEntity draft) async {
+  Future<Result<Uint8List>> generatePdf(PdfEntity entries) async {
     try {
       // ==================== Fonts ====================
 
@@ -59,7 +64,11 @@ class PdfRepositoryImpl implements PdfRepository {
 
       // ==================== 조항 ====================
 
-      for (final section in buildContractSections(draft)) {
+      for (final section in buildContractContents(
+        productName: entries.productName,
+        amount: entries.amount,
+        transactionMethod: entries.transactionMethod,
+      )) {
         cursor = await _drawSection(
           document: document,
           cursor: cursor,
@@ -107,20 +116,25 @@ class PdfRepositoryImpl implements PdfRepository {
 
       final bytes = await document.save();
       document.dispose();
-      final pdfBytes = Uint8List.fromList(bytes);
-      return Success(pdfBytes);
+      return Success(Uint8List.fromList(bytes));
     } catch (e) {
-      return Failure(CacheFailure('PDF 생성 실패: $e'));
+      debugPrint('[PdfRepo] generatePdf unexpected: $e');
+      return const Failure(CacheFailure());
     }
   }
 
   @override
   Future<Result<String>> savePdf(Uint8List pdfBytes) async {
     try {
-      // TODO : 백엔드에 PDF 바이트 전달 > PDF S3 경로 반환
-      return Success('pdf_s3_key');
+      throw UnimplementedError();
+    } on DioException catch (e) {
+      debugPrint(
+        '[PdfRepo] savePdf: ${e.type} ${e.response?.statusCode} ${e.message}',
+      );
+      return Failure(e.toFailure());
     } catch (e) {
-      return Failure(CacheFailure('PDF 저장 실패: $e'));
+      debugPrint('[PdfRepo] savePdf unexpected: $e');
+      return const Failure(UnknownFailure());
     }
   }
 

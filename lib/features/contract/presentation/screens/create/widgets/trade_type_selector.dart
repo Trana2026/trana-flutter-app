@@ -9,12 +9,12 @@ class TradeTypeSelector extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final vm = ref.read(createContractViewModelProvider.notifier);
+    final createVM = ref.read(createContractViewModelProvider.notifier);
     final selectedIndex = useState(1);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        vm.updateMethod(selectedIndex.value);
+        createVM.updateMethod(selectedIndex.value);
       });
       return null;
     }, [selectedIndex.value]);

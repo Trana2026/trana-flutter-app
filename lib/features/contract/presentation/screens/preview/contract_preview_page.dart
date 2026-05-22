@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/presentation/screens/modify/contract_modify_page.dart';
 import 'package:trana/features/contract/presentation/screens/preview/widgets/contract_completion_bottom_sheet.dart';
@@ -13,8 +14,15 @@ class ContractPreviewPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(createContractViewModelProvider);
-    final vm = ref.read(createContractViewModelProvider.notifier);
+    final createState = ref.watch(createContractViewModelProvider);
+    final createVM = ref.read(createContractViewModelProvider.notifier);
+
+    ref.listen(createContractViewModelProvider, (prev, next) {
+      if (next.error != null && next.error != prev?.error) {
+        showErrorToast(context, next.error!);
+        createVM.clearError();
+      }
+    });
 
     const int currentStep = 3;
     const int totalStep = 3;
@@ -61,14 +69,14 @@ class ContractPreviewPage extends HookConsumerWidget {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: state.isLoading
+                  child: createState.isLoading
                       ? Center(
                           child: CircularProgressIndicator(
                             color: fxc(context).brandColor,
                             strokeWidth: 3,
                           ),
                         )
-                      : state.pdfBytes == null
+                      : createState.pdfBytes == null
                       ? Center(
                           child: Text(
                             'PDF를 불러올 수 없습니다.',
@@ -83,7 +91,7 @@ class ContractPreviewPage extends HookConsumerWidget {
                             backgroundColor: vrc(context).secondaryColor,
                             progressBarColor: fxc(context).brandColor!,
                           ),
-                          child: SfPdfViewer.memory(state.pdfBytes!),
+                          child: SfPdfViewer.memory(createState.pdfBytes!),
                         ),
                 ),
               ),
@@ -111,7 +119,7 @@ class ContractPreviewPage extends HookConsumerWidget {
                   child: PrimaryButton(
                     text: "생성하기",
                     onTap: () async {
-                      await vm.createDraft();
+                      await createVM.createDraft();
 
                       if (!context.mounted) return;
                       showModalBottomSheet(
@@ -124,7 +132,6 @@ class ContractPreviewPage extends HookConsumerWidget {
                         builder: (bottomSheetContext) =>
                             ContractCompletionBottomSheet(
                               parentContext: context,
-                              contractId: 'contractId',
                             ),
                       );
                     },

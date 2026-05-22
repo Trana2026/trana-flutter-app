@@ -17,7 +17,7 @@ mixin _$ContractPartiesEntity {
  int? get id; int get contractId;// 계약 ID
  int get userId;// 사용자 ID
  Role get role;// 역할
- PartyType get partyType;// 계약 당사자 유형 (요청자/수신자)
+ PartyType get partyType;// 계약 당사자 유형
  bool get validated;// 해당 거래 내 인증 여부 (false: 미성년자 미인증 시)
  DateTime? get signedAt;// 서명 일시
  DateTime get createdAt;
@@ -230,7 +230,7 @@ class _ContractPartiesEntity implements ContractPartiesEntity {
 @override final  Role role;
 // 역할
 @override final  PartyType partyType;
-// 계약 당사자 유형 (요청자/수신자)
+// 계약 당사자 유형
 @override final  bool validated;
 // 해당 거래 내 인증 여부 (false: 미성년자 미인증 시)
 @override final  DateTime? signedAt;

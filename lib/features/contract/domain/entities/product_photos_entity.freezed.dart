@@ -15,7 +15,8 @@ T _$identity<T>(T value) => value;
 mixin _$ProductPhotosEntity {
 
  int? get id; int get contractID;// 계약 ID
- Uint8List get photoBytes;// 사진 bytes
+ String get s3Key;// 사진 S3 경로
+ int get displayOrder;// 표시 순서
  DateTime get createdAt;
 /// Create a copy of ProductPhotosEntity
 /// with the given fields replaced by the non-null parameter values.
@@ -27,16 +28,16 @@ $ProductPhotosEntityCopyWith<ProductPhotosEntity> get copyWith => _$ProductPhoto
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductPhotosEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.contractID, contractID) || other.contractID == contractID)&&const DeepCollectionEquality().equals(other.photoBytes, photoBytes)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductPhotosEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.contractID, contractID) || other.contractID == contractID)&&(identical(other.s3Key, s3Key) || other.s3Key == s3Key)&&(identical(other.displayOrder, displayOrder) || other.displayOrder == displayOrder)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,contractID,const DeepCollectionEquality().hash(photoBytes),createdAt);
+int get hashCode => Object.hash(runtimeType,id,contractID,s3Key,displayOrder,createdAt);
 
 @override
 String toString() {
-  return 'ProductPhotosEntity(id: $id, contractID: $contractID, photoBytes: $photoBytes, createdAt: $createdAt)';
+  return 'ProductPhotosEntity(id: $id, contractID: $contractID, s3Key: $s3Key, displayOrder: $displayOrder, createdAt: $createdAt)';
 }
 
 
@@ -47,7 +48,7 @@ abstract mixin class $ProductPhotosEntityCopyWith<$Res>  {
   factory $ProductPhotosEntityCopyWith(ProductPhotosEntity value, $Res Function(ProductPhotosEntity) _then) = _$ProductPhotosEntityCopyWithImpl;
 @useResult
 $Res call({
- int? id, int contractID, Uint8List photoBytes, DateTime createdAt
+ int? id, int contractID, String s3Key, int displayOrder, DateTime createdAt
 });
 
 
@@ -64,12 +65,13 @@ class _$ProductPhotosEntityCopyWithImpl<$Res>
 
 /// Create a copy of ProductPhotosEntity
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? contractID = null,Object? photoBytes = null,Object? createdAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? contractID = null,Object? s3Key = null,Object? displayOrder = null,Object? createdAt = null,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,contractID: null == contractID ? _self.contractID : contractID // ignore: cast_nullable_to_non_nullable
-as int,photoBytes: null == photoBytes ? _self.photoBytes : photoBytes // ignore: cast_nullable_to_non_nullable
-as Uint8List,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as int,s3Key: null == s3Key ? _self.s3Key : s3Key // ignore: cast_nullable_to_non_nullable
+as String,displayOrder: null == displayOrder ? _self.displayOrder : displayOrder // ignore: cast_nullable_to_non_nullable
+as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
 }
@@ -155,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  int contractID,  Uint8List photoBytes,  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  int contractID,  String s3Key,  int displayOrder,  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProductPhotosEntity() when $default != null:
-return $default(_that.id,_that.contractID,_that.photoBytes,_that.createdAt);case _:
+return $default(_that.id,_that.contractID,_that.s3Key,_that.displayOrder,_that.createdAt);case _:
   return orElse();
 
 }
@@ -176,10 +178,10 @@ return $default(_that.id,_that.contractID,_that.photoBytes,_that.createdAt);case
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  int contractID,  Uint8List photoBytes,  DateTime createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  int contractID,  String s3Key,  int displayOrder,  DateTime createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _ProductPhotosEntity():
-return $default(_that.id,_that.contractID,_that.photoBytes,_that.createdAt);case _:
+return $default(_that.id,_that.contractID,_that.s3Key,_that.displayOrder,_that.createdAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +198,10 @@ return $default(_that.id,_that.contractID,_that.photoBytes,_that.createdAt);case
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  int contractID,  Uint8List photoBytes,  DateTime createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  int contractID,  String s3Key,  int displayOrder,  DateTime createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _ProductPhotosEntity() when $default != null:
-return $default(_that.id,_that.contractID,_that.photoBytes,_that.createdAt);case _:
+return $default(_that.id,_that.contractID,_that.s3Key,_that.displayOrder,_that.createdAt);case _:
   return null;
 
 }
@@ -211,14 +213,16 @@ return $default(_that.id,_that.contractID,_that.photoBytes,_that.createdAt);case
 
 
 class _ProductPhotosEntity implements ProductPhotosEntity {
-  const _ProductPhotosEntity({this.id, required this.contractID, required this.photoBytes, required this.createdAt});
+  const _ProductPhotosEntity({this.id, required this.contractID, required this.s3Key, required this.displayOrder, required this.createdAt});
   
 
 @override final  int? id;
 @override final  int contractID;
 // 계약 ID
-@override final  Uint8List photoBytes;
-// 사진 bytes
+@override final  String s3Key;
+// 사진 S3 경로
+@override final  int displayOrder;
+// 표시 순서
 @override final  DateTime createdAt;
 
 /// Create a copy of ProductPhotosEntity
@@ -231,16 +235,16 @@ _$ProductPhotosEntityCopyWith<_ProductPhotosEntity> get copyWith => __$ProductPh
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductPhotosEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.contractID, contractID) || other.contractID == contractID)&&const DeepCollectionEquality().equals(other.photoBytes, photoBytes)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductPhotosEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.contractID, contractID) || other.contractID == contractID)&&(identical(other.s3Key, s3Key) || other.s3Key == s3Key)&&(identical(other.displayOrder, displayOrder) || other.displayOrder == displayOrder)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,contractID,const DeepCollectionEquality().hash(photoBytes),createdAt);
+int get hashCode => Object.hash(runtimeType,id,contractID,s3Key,displayOrder,createdAt);
 
 @override
 String toString() {
-  return 'ProductPhotosEntity(id: $id, contractID: $contractID, photoBytes: $photoBytes, createdAt: $createdAt)';
+  return 'ProductPhotosEntity(id: $id, contractID: $contractID, s3Key: $s3Key, displayOrder: $displayOrder, createdAt: $createdAt)';
 }
 
 
@@ -251,7 +255,7 @@ abstract mixin class _$ProductPhotosEntityCopyWith<$Res> implements $ProductPhot
   factory _$ProductPhotosEntityCopyWith(_ProductPhotosEntity value, $Res Function(_ProductPhotosEntity) _then) = __$ProductPhotosEntityCopyWithImpl;
 @override @useResult
 $Res call({
- int? id, int contractID, Uint8List photoBytes, DateTime createdAt
+ int? id, int contractID, String s3Key, int displayOrder, DateTime createdAt
 });
 
 
@@ -268,12 +272,13 @@ class __$ProductPhotosEntityCopyWithImpl<$Res>
 
 /// Create a copy of ProductPhotosEntity
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? contractID = null,Object? photoBytes = null,Object? createdAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? contractID = null,Object? s3Key = null,Object? displayOrder = null,Object? createdAt = null,}) {
   return _then(_ProductPhotosEntity(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,contractID: null == contractID ? _self.contractID : contractID // ignore: cast_nullable_to_non_nullable
-as int,photoBytes: null == photoBytes ? _self.photoBytes : photoBytes // ignore: cast_nullable_to_non_nullable
-as Uint8List,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as int,s3Key: null == s3Key ? _self.s3Key : s3Key // ignore: cast_nullable_to_non_nullable
+as String,displayOrder: null == displayOrder ? _self.displayOrder : displayOrder // ignore: cast_nullable_to_non_nullable
+as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
 }

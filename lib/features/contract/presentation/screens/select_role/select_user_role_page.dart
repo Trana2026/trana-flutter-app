@@ -5,6 +5,7 @@ import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/core/widgets/select_role_card.dart';
 import 'package:trana/features/contract/presentation/screens/create/create_contract_page.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 
 class SelectUserRolePage extends HookConsumerWidget {
@@ -12,12 +13,19 @@ class SelectUserRolePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final vm = ref.read(createContractViewModelProvider.notifier);
+    final createVM = ref.read(createContractViewModelProvider.notifier);
     final selectedIndex = useState<int?>(null);
+
+    ref.listen(createContractViewModelProvider, (prev, next) {
+      if (next.error != null && next.error != prev?.error) {
+        showErrorToast(context, next.error!);
+        createVM.clearError();
+      }
+    });
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        vm.updateRole(selectedIndex.value);
+        createVM.updateRole(selectedIndex.value);
       });
       return null;
     }, [selectedIndex.value]);

@@ -5,9 +5,6 @@ abstract interface class ContractPartiesRepository {
   /// 계약 당사자 생성
   Future<Result<void>> createContractParty(ContractPartiesEntity party);
 
-  /// 계약 당사자 조회 (요청자)
-  Future<Result<ContractPartiesEntity>> readSender(int contractId);
-
   /// 계약 당사자 목록 조회
   Future<Result<List<ContractPartiesEntity>>> readContractParties(
     int contractId,

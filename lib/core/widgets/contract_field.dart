@@ -8,8 +8,8 @@ class ContractField extends HookConsumerWidget {
   final TextEditingController? controller;
   final int maxLines;
   final TextInputType? keyboardType;
+  final bool hasError;
   final void Function(String)? onChanged;
-  final FormFieldValidator<String>? validator;
 
   const ContractField({
     super.key,
@@ -17,15 +17,18 @@ class ContractField extends HookConsumerWidget {
     this.controller,
     this.maxLines = 1,
     this.keyboardType,
+    this.hasError = false,
     this.onChanged,
-    this.validator,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return TextFormField(
+    final errorBorderSide = BorderSide(
+      color: fxc(context).statusError!,
+      width: 1,
+    );
+    return TextField(
       onChanged: onChanged ?? (v) {},
-      validator: validator,
       controller: controller,
       maxLines: maxLines,
       keyboardType: keyboardType,
@@ -48,19 +51,21 @@ class ContractField extends HookConsumerWidget {
         isCollapsed: true,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
-          vertical: 16,
+          vertical: 14,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide.none,
         ),
-        errorBorder: OutlineInputBorder(
+        enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Colors.red, width: 1),
+          borderSide: hasError ? errorBorderSide : BorderSide.none,
         ),
-        focusedErrorBorder: OutlineInputBorder(
+        focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Colors.red, width: 1.5),
+          borderSide: hasError
+              ? BorderSide(color: fxc(context).iconDanger!)
+              : BorderSide(color: fxc(context).brandColor!),
         ),
       ),
     );

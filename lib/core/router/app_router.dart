@@ -9,12 +9,12 @@ import 'package:trana/features/auth/presentation/screens/select_age/select_user_
 import 'package:trana/features/auth/presentation/screens/social_login/social_login_page.dart';
 import 'package:trana/features/auth/presentation/screens/splash/splash_page.dart';
 import 'package:trana/features/auth/presentation/screens/terms/terms_agreement_page.dart';
-import 'package:trana/features/contract/domain/entities/contract_status.dart';
 import 'package:trana/features/contract/presentation/screens/biometric_lock/biometric_lock_page.dart';
 import 'package:trana/features/contract/presentation/screens/create/create_contract_page.dart';
 import 'package:trana/features/contract/presentation/screens/detail/contract_detail_page.dart';
 import 'package:trana/features/contract/presentation/screens/modify/contract_modify_page.dart';
 import 'package:trana/features/contract/presentation/screens/preview/contract_preview_page.dart';
+import 'package:trana/features/contract/presentation/screens/request/contract_request_page.dart';
 import 'package:trana/features/contract/presentation/screens/select_role/select_user_role_page.dart';
 import 'package:trana/features/contract/presentation/screens/share/contract_share_page.dart';
 import 'package:trana/features/contract/presentation/screens/template/contract_template_page.dart';
@@ -51,12 +51,9 @@ abstract class AppRoutes {
   static const contractPreview = '/contract/preview';
   static const contractModify = '/contract/modify';
   static const contractShare = '/contract/share';
-  static const contractDraft = '/contract/detail/draft';
-  static const contractSignRequest = '/contract/detail/sign-request';
-  static const contractSignComplete = '/contract/detail/sign-complete';
-  static const contractTradeDone = '/contract/detail/trade-done';
-  static const contractReportReceived = '/contract/detail/report-received';
+  static const contractDetail = '/contract/detail';
   static const biometricLock = '/biometric-lock';
+  static const contractRequest = '/contract/request';
 }
 
 final appRouter = GoRouter(
@@ -146,43 +143,16 @@ final appRouter = GoRouter(
       builder: (context, state) => const ContractSharePage(),
     ),
     GoRoute(
-      path: AppRoutes.contractDraft,
-      builder: (context, state) => ContractDetailPage(
-        status: ContractStatus.draft,
-        contractId: state.extra as String?,
-      ),
-    ),
-    GoRoute(
-      path: AppRoutes.contractSignRequest,
-      builder: (context, state) => ContractDetailPage(
-        status: ContractStatus.signRequest,
-        contractId: state.extra as String?,
-      ),
-    ),
-    GoRoute(
-      path: AppRoutes.contractSignComplete,
-      builder: (context, state) => ContractDetailPage(
-        status: ContractStatus.signComplete,
-        contractId: state.extra as String?,
-      ),
-    ),
-    GoRoute(
-      path: AppRoutes.contractTradeDone,
-      builder: (context, state) => ContractDetailPage(
-        status: ContractStatus.tradeDone,
-        contractId: state.extra as String?,
-      ),
-    ),
-    GoRoute(
-      path: AppRoutes.contractReportReceived,
-      builder: (context, state) => ContractDetailPage(
-        status: ContractStatus.reported,
-        contractId: state.extra as String?,
-      ),
+      path: AppRoutes.contractDetail,
+      builder: (context, state) => ContractDetailPage(),
     ),
     GoRoute(
       path: AppRoutes.biometricLock,
       builder: (context, state) => const BiometricLockPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.contractRequest,
+      builder: (context, state) => const ContractRequestPage(),
     ),
   ],
 );

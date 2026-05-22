@@ -22,6 +22,8 @@ class FixedColors extends ThemeExtension<FixedColors> {
     required this.iconInfo,
     required this.borderOP,
     required this.borderKakao,
+    required this.opacitySuccess,
+    required this.opacityBg,
   });
   final Color? brandColor;
   final Color? statusSignRequest;
@@ -42,6 +44,8 @@ class FixedColors extends ThemeExtension<FixedColors> {
   final Color? iconInfo;
   final Color? borderOP;
   final Color? borderKakao;
+  final Color? opacitySuccess;
+  final Color? opacityBg;
 
   static const FixedColors constant = FixedColors(
     brandColor: Color(0xFF40C572),
@@ -63,6 +67,8 @@ class FixedColors extends ThemeExtension<FixedColors> {
     iconInfo: Color(0xFF2B7FFF),
     borderOP: Color(0x406F7270),
     borderKakao: Color(0xFFFACC15),
+    opacitySuccess: Color(0x1F00C950),
+    opacityBg: Color(0x8041444F),
   );
 
   @override
@@ -86,6 +92,8 @@ class FixedColors extends ThemeExtension<FixedColors> {
     iconInfo: iconInfo ?? this.iconInfo,
     borderOP: borderOP ?? this.borderOP,
     borderKakao: borderKakao ?? this.borderKakao,
+    opacitySuccess: opacitySuccess ?? this.opacitySuccess,
+    opacityBg: opacityBg ?? this.opacityBg,
   );
 
   @override
@@ -119,6 +127,8 @@ class FixedColors extends ThemeExtension<FixedColors> {
       iconInfo: Color.lerp(iconInfo, other.iconInfo, t),
       borderOP: Color.lerp(borderOP, other.borderOP, t),
       borderKakao: Color.lerp(borderKakao, other.borderKakao, t),
+      opacitySuccess: Color.lerp(opacitySuccess, other.opacitySuccess, t),
+      opacityBg: Color.lerp(opacityBg, other.opacityBg, t),
     );
   }
 }

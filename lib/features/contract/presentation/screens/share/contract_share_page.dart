@@ -4,20 +4,38 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/contract/domain/entities/contract_status.dart';
-import 'package:trana/features/contract/presentation/viewmodels/contract_list_view_model.dart';
 import 'package:trana/core/widgets/contract_form_field.dart';
 import 'package:trana/core/widgets/primary_button.dart';
+import 'package:trana/features/contract/presentation/screens/share/widgets/contract_draft_preview_card.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
+import 'package:trana/features/contract/presentation/viewmodels/contract_detail_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/contract_request_view_model.dart';
 
 class ContractSharePage extends HookConsumerWidget {
-  final String? contractId;
-
-  const ContractSharePage({super.key, this.contractId});
+  const ContractSharePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final detailState = ref.watch(contractDetailViewModelProvider);
+    final detailVM = ref.read(contractDetailViewModelProvider.notifier);
+    final requestVM = ref.read(contractRequestViewModelProvider.notifier);
+
     final nameController = useTextEditingController();
     final phoneController = useTextEditingController();
+
+    ref.listen(contractDetailViewModelProvider, (prev, next) {
+      if (next.error != null && next.error != prev?.error) {
+        showErrorToast(context, next.error!);
+        detailVM.clearError();
+      }
+    });
+
+    ref.listen(contractRequestViewModelProvider, (prev, next) {
+      if (next.error != null && next.error != prev?.error) {
+        showErrorToast(context, next.error!);
+        requestVM.clearError();
+      }
+    });
 
     return Scaffold(
       backgroundColor: vrc(context).background,
@@ -31,7 +49,7 @@ class ContractSharePage extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontFamily: "PretendardBold"
+            fontFamily: "PretendardBold",
           ),
         ),
       ),
@@ -51,7 +69,7 @@ class ContractSharePage extends HookConsumerWidget {
                     style: TextStyle(
                       color: vrc(context).textPrimary,
                       fontSize: 20,
-                      fontFamily: "PretendardBold"
+                      fontFamily: "PretendardBold",
                     ),
                   ),
                 ),
@@ -70,23 +88,16 @@ class ContractSharePage extends HookConsumerWidget {
                 ),
                 const SizedBox(height: 18),
 
-                Container(
-                  width: double.infinity,
-                  height: 180,
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: fxc(context).subtitleBlue,
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                ),
+                ContractDraftPreviewCard(),
                 const SizedBox(height: 8),
+
                 Center(
                   child: Text(
                     "계약서 전문 보기",
                     style: TextStyle(
                       color: vrc(context).textTertiary,
                       fontSize: 14,
-                      fontFamily: "PretendardRegular"
+                      fontFamily: "PretendardRegular",
                     ),
                   ),
                 ),
@@ -100,7 +111,7 @@ class ContractSharePage extends HookConsumerWidget {
                     style: TextStyle(
                       color: vrc(context).textTertiary,
                       fontSize: 15,
-                      fontFamily: "PretendardMedium"
+                      fontFamily: "PretendardMedium",
                     ),
                   ),
                 ),
@@ -123,7 +134,7 @@ class ContractSharePage extends HookConsumerWidget {
                         style: TextStyle(
                           color: vrc(context).textPrimary,
                           fontSize: 15,
-                          fontFamily: "PretendardMedium"
+                          fontFamily: "PretendardMedium",
                         ),
                       ),
                     ],
@@ -180,16 +191,14 @@ class ContractSharePage extends HookConsumerWidget {
                       ),
                     ),
                   );
-                  await Future.delayed(const Duration(seconds: 1));
-                  if (context.mounted) {
-                    if (contractId != null) {
-                      ref.read(contractListProvider.notifier).updateStatus(
-                        contractId!,
-                        ContractStatus.signRequest,
-                      );
-                    }
-                    context.go(AppRoutes.contractSignRequest, extra: contractId);
-                  }
+                  final contractId = detailState.selectedContract?.id;
+                  if (contractId == null) return;
+
+                  await requestVM.sendRequest(contractId);
+                  await detailVM.requestSign();
+
+                  if (!context.mounted) return;
+                  context.go(AppRoutes.contractDetail);
                 },
                 backgroundColor: fxc(context).brandColor!,
                 foregroundColor: fxc(context).textBrand!,
