@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart'; 
-import 'package:hooks_riverpod/hooks_riverpod.dart'; 
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/features/auth/presentation/screens/intro/intro_page.dart';
+import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
 
 class SplashPage extends HookConsumerWidget {
   const SplashPage({super.key});
@@ -13,15 +14,13 @@ class SplashPage extends HookConsumerWidget {
         if (context.mounted) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-              builder: (_) => const IntroPage(),
-            ),
+            MaterialPageRoute(builder: (_) => const HomePage()),
           );
         }
       });
 
       return null;
-    }, const []); 
+    }, const []);
 
     return Scaffold(
       backgroundColor: const Color(0xFF111827),
@@ -30,10 +29,7 @@ class SplashPage extends HookConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Image.asset(
-                "assets/images/logo.webp",
-                width: 140,
-              ),
+              Image.asset("assets/images/logo.webp", width: 140),
               const SizedBox(height: 12),
               const Text(
                 "Trana",

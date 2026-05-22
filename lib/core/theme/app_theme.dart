@@ -5,11 +5,13 @@ import 'package:trana/core/theme/variable_colors.dart';
 
 class AppTheme {
   static ThemeData light = ThemeData(
+    appBarTheme: AppBarTheme(scrolledUnderElevation: 0),
     brightness: Brightness.light,
     extensions: const [VariableColors.light, FixedColors.constant],
   );
 
   static ThemeData dark = ThemeData(
+    appBarTheme: AppBarTheme(scrolledUnderElevation: 0),
     brightness: Brightness.dark,
     extensions: const [VariableColors.dark, FixedColors.constant],
   );

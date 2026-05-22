@@ -1,29 +1,30 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart'; 
-import 'package:hooks_riverpod/hooks_riverpod.dart'; 
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/contract/presentation/screens/share/contract_share_page.dart';
 import 'package:trana/core/widgets/consent_check_box.dart';
 import 'package:trana/core/widgets/primary_button.dart';
+import 'package:trana/features/contract/presentation/screens/share/contract_share_page.dart';
+import 'package:trana/features/contract/presentation/viewmodels/contract_detail_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/contract_request_view_model.dart';
+import 'package:trana/features/contract/presentation/widgets/modals/contract_done_bottom_sheet.dart';
+import 'package:trana/features/profile/presentation/providers/current_user_provider.dart';
 
 class ContractSignDialog extends HookConsumerWidget {
-  final String? contractId;
   final VoidCallback? onCompleted;
   final BuildContext? parentContext;
 
-  const ContractSignDialog({
-    super.key,
-    this.contractId,
-    this.onCompleted,
-    this.parentContext,
-  });
+  const ContractSignDialog({super.key, this.onCompleted, this.parentContext});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) { 
+  Widget build(BuildContext context, WidgetRef ref) {
+    final requestState = ref.watch(contractRequestViewModelProvider);
+    final requestVM = ref.read(contractRequestViewModelProvider.notifier);
+    final detailVM = ref.read(contractDetailViewModelProvider.notifier);
     final isSelected = useState(false);
-    
+
     final signatureKey = useMemoized(() => GlobalKey<SfSignaturePadState>());
 
     return Dialog(
@@ -40,7 +41,7 @@ class ContractSignDialog extends HookConsumerWidget {
               style: TextStyle(
                 color: vrc(context).textPrimary,
                 fontSize: 18,
-                fontFamily: "PretendardBold"
+                fontFamily: "PretendardBold",
               ),
             ),
             const SizedBox(height: 12),
@@ -72,7 +73,7 @@ class ContractSignDialog extends HookConsumerWidget {
                             color: fxc(context).iconDanger,
                             fontSize: 15,
                             fontFamily: "PretendardBold",
-                            letterSpacing: -0.2
+                            letterSpacing: -0.2,
                           ),
                         ),
                       ],
@@ -84,7 +85,7 @@ class ContractSignDialog extends HookConsumerWidget {
                           fontSize: 13,
                           fontFamily: "PretendardMedium",
                           height: 1.2,
-                          letterSpacing: -0.2
+                          letterSpacing: -0.2,
                         ),
                         children: [
                           TextSpan(text: "전자서명 완료 시 본 계약은 법적 효력이 발생할 수 있으며,"),
@@ -141,7 +142,7 @@ class ContractSignDialog extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textTertiary,
                   fontSize: 13,
-                  fontFamily: "PretendardRegular"
+                  fontFamily: "PretendardRegular",
                 ),
               ),
             ),
@@ -161,20 +162,43 @@ class ContractSignDialog extends HookConsumerWidget {
                 Expanded(
                   child: PrimaryButton(
                     text: "완료",
-                    onTap: isSelected.value
-                        ? () {
-                            onCompleted?.call();
-                            final nav = parentContext != null
-                                ? Navigator.of(parentContext!)
-                                : Navigator.of(context);
-                            nav.pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                builder: (_) => ContractSharePage(contractId: contractId),
-                              ),
-                              (route) => route.isFirst,
-                            );
-                          }
-                        : null,
+                    onTap: () async {
+                      if (!isSelected.value) return;
+                      onCompleted?.call();
+
+                      // 수신자 Flow (테스트용)
+                      final currentUserId = ref.watch(currentUserProvider);
+                      if (currentUserId == 2) {
+                        final contractId = requestState.receivedContract?.id;
+                        if (contractId == null) return;
+
+                        await requestVM.deleteRequest(contractId);
+                        await detailVM.readSelectedContract(contractId);
+                        await detailVM.sign();
+
+                        if (!context.mounted) return;
+                        Navigator.of(context).pop();
+                        if (parentContext != null && parentContext!.mounted) {
+                          showModalBottomSheet(
+                            context: parentContext!,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (_) => const ContractDoneBottomSheet(),
+                          );
+                        }
+                        // 요청자 Flow
+                      } else {
+                        final nav = parentContext != null
+                            ? Navigator.of(parentContext!)
+                            : Navigator.of(context);
+                        nav.pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (_) => ContractSharePage(),
+                          ),
+                          (route) => route.isFirst,
+                        );
+                      }
+                    },
                     backgroundColor: isSelected.value
                         ? fxc(context).brandColor!
                         : vrc(context).disableColor!,

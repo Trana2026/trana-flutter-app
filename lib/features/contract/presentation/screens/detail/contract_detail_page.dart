@@ -3,41 +3,51 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/contract/domain/entities/contract_status.dart';
+import 'package:trana/core/utils/string_extensions.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
+import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/extensions/contract_status_ui.dart';
 import 'package:trana/features/contract/presentation/screens/detail/widgets/contract_counterparty_banner.dart';
 import 'package:trana/features/contract/presentation/screens/detail/widgets/contract_cta_button.dart';
 import 'package:trana/features/contract/presentation/screens/detail/widgets/contract_detail_header.dart';
 import 'package:trana/features/contract/presentation/screens/detail/widgets/contract_preview_card.dart';
-import 'package:trana/features/contract/domain/entities/contract_entity.dart';
-import 'package:trana/features/contract/domain/entities/user_role.dart';
 import 'package:trana/features/contract/presentation/screens/detail/widgets/contract_report_bottom_sheet.dart';
-import 'package:trana/features/contract/presentation/viewmodels/contract_list_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/contract_detail_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/sign_confirm_bottom_sheet.dart';
 
 class ContractDetailPage extends HookConsumerWidget {
-  final ContractStatus status;
-  final String? contractId;
-
-  const ContractDetailPage({super.key, required this.status, this.contractId});
+  const ContractDetailPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final contracts = ref.watch(contractListProvider);
+    final detailState = ref.watch(contractDetailViewModelProvider);
+    final detailVM = ref.read(contractDetailViewModelProvider.notifier);
 
-    ContractEntity? contract;
-    for (final c in contracts) {
-      if (c.id == contractId) {
-        contract = c;
-        break;
+    ref.listen(contractDetailViewModelProvider, (prev, next) {
+      if (next.error != null && next.error != prev?.error) {
+        showErrorToast(context, next.error!);
+        detailVM.clearError();
       }
+    });
+
+    if (detailState.isLoading || detailState.selectedContract == null) {
+      return Scaffold(
+        backgroundColor: vrc(context).background,
+        body: Center(
+          child: CircularProgressIndicator(
+            color: fxc(context).brandColor,
+            strokeWidth: 3,
+          ),
+        ),
+      );
     }
 
-    final effectiveStatus = contract?.status ?? status;
+    final contract = detailState.selectedContract!;
+    final effectiveStatus = contract.status;
     final effectiveStatusColor = effectiveStatus.appBarColor(context);
-    final itemName = contract?.itemName ?? '-';
-    final price = contract?.price ?? '-';
-    final roleLabel = contract?.userRole.label ?? '-';
+    final itemName = contract.productName;
+    final price = contract.amount.toString().toPriceFormat;
+    final roleLabel = detailState.myParty?.role.label ?? '-';
 
     return Scaffold(
       backgroundColor: vrc(context).background,
@@ -46,7 +56,7 @@ class ContractDetailPage extends HookConsumerWidget {
         child: AppBar(
           backgroundColor: effectiveStatusColor,
           leading: InkWell(
-            onTap: () => context.canPop() ? context.pop() : context.go(AppRoutes.home),
+            onTap: () => context.go(AppRoutes.home),
             child: const SizedBox(
               width: 45,
               height: 45,
@@ -84,15 +94,7 @@ class ContractDetailPage extends HookConsumerWidget {
                       topLabel: effectiveStatus.bannerTopLabel(),
                       bottomLabel: effectiveStatus.bannerBottomLabel(),
                       showChevron: effectiveStatus.bannerShowChevron(),
-                      // TODO(임시): 수신자 서명 완료 시뮬레이션 - 실제 구현 시 수신자가 서명하면
-                      // 서버에서 상태가 signComplete로 업데이트되므로 이 onTap 제거 후
-                      // contractListProvider를 실시간(polling/websocket)으로 갱신하는 방식으로 교체
-                      onTap: effectiveStatus == ContractStatus.signRequest && contractId != null
-                          ? () => ref.read(contractListProvider.notifier).updateStatus(
-                                contractId!,
-                                ContractStatus.signComplete,
-                              )
-                          : null,
+                      onTap: () {},
                     ),
                     const SizedBox(height: 16),
                     Row(
@@ -115,7 +117,7 @@ class ContractDetailPage extends HookConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    ContractPreviewCard(itemName: itemName, price: price),
+                    ContractPreviewCard(),
                     const SizedBox(height: 12),
                     Center(
                       child: Text(
@@ -140,139 +142,134 @@ class ContractDetailPage extends HookConsumerWidget {
     );
   }
 
-  Widget _buildCtaButtons(BuildContext context, WidgetRef ref, ContractStatus effectiveStatus) {
+  Widget _buildCtaButtons(
+    BuildContext context,
+    WidgetRef ref,
+    ContractStatus effectiveStatus,
+  ) {
+    final detailVM = ref.read(contractDetailViewModelProvider.notifier);
+
     void showReport() => showModalBottomSheet(
-          context: context,
-          barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
-          backgroundColor: Colors.transparent,
-          isScrollControlled: true,
-          builder: (_) => ContractReportBottomSheet(
-            contractId: contractId,
-          ),
-        );
+      context: context,
+      barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => ContractReportBottomSheet(),
+    );
 
     void showSignFlow() => showModalBottomSheet(
-          context: context,
-          barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
-          backgroundColor: Colors.transparent,
-          isScrollControlled: true,
-          builder: (_) => SignConfirmBottomSheet(
-            parentContext: context,
-            contractId: contractId,
-          ),
-        );
+      context: context,
+      barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => SignConfirmBottomSheet(parentContext: context),
+    );
 
     return switch (effectiveStatus) {
       ContractStatus.draft => Row(
-          children: [
-            Expanded(
-              flex: 3,
-              child: ContractCtaButton(
-                text: "삭제하기",
-                bg: vrc(context).secondaryColor!,
-                fg: vrc(context).textPrimary!,
-                onTap: () {
-                  if (contractId != null) {
-                    ref.read(contractListProvider.notifier).remove(contractId!);
-                  }
-                  context.go(AppRoutes.home);
-                },
-              ),
+        children: [
+          Expanded(
+            flex: 3,
+            child: ContractCtaButton(
+              text: "삭제하기",
+              bg: vrc(context).secondaryColor!,
+              fg: vrc(context).textPrimary!,
+              onTap: () async {
+                // await detailVM.deleteContract();
+
+                if (!context.mounted) return;
+                showNormalToast(context, '삭제 완료', null);
+                context.go(AppRoutes.home);
+              },
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              flex: 7,
-              child: ContractCtaButton(
-                text: "서명 요청하기",
-                bg: fxc(context).statusDraft!,
-                fg: fxc(context).textBrand!,
-                onTap: showSignFlow,
-              ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            flex: 7,
+            child: ContractCtaButton(
+              text: "서명 요청하기",
+              bg: fxc(context).statusDraft!,
+              fg: fxc(context).textBrand!,
+              onTap: showSignFlow,
             ),
-          ],
-        ),
-      ContractStatus.signRequest => Row(
-          children: [
-            Expanded(
-              flex: 3,
-              child: ContractCtaButton(
-                text: "문제 신고",
-                bg: vrc(context).secondaryColor!,
-                fg: vrc(context).textPrimary!,
-                onTap: showReport,
-              ),
+          ),
+        ],
+      ),
+      ContractStatus.signRequested => Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: ContractCtaButton(
+              text: "문제 신고",
+              bg: vrc(context).secondaryColor!,
+              fg: vrc(context).textPrimary!,
+              onTap: showReport,
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              flex: 7,
-              child: ContractCtaButton(
-                text: "거래 완료 확정",
-                bg: vrc(context).disableColor!,
-                fg: vrc(context).textDisable!,
-                onTap: () {},
-              ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            flex: 7,
+            child: ContractCtaButton(
+              text: "거래 완료 확정",
+              bg: vrc(context).disableColor!,
+              fg: vrc(context).textDisable!,
+              onTap: () {},
             ),
-          ],
-        ),
-      ContractStatus.signComplete => Row(
-          children: [
-            Expanded(
-              flex: 3,
-              child: ContractCtaButton(
-                text: "문제 신고",
-                bg: vrc(context).secondaryColor!,
-                fg: vrc(context).textPrimary!,
-                onTap: showReport,
-              ),
+          ),
+        ],
+      ),
+      ContractStatus.signed => Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: ContractCtaButton(
+              text: "문제 신고",
+              bg: vrc(context).secondaryColor!,
+              fg: vrc(context).textPrimary!,
+              onTap: showReport,
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              flex: 7,
-              child: ContractCtaButton(
-                text: "거래 완료 확정",
-                bg: fxc(context).statusSignRequest!, //수정
-                fg: fxc(context).textBrand!,
-                onTap: () {
-                  if (contractId != null) {
-                    ref.read(contractListProvider.notifier).updateStatus(
-                      contractId!,
-                      ContractStatus.tradeDone,
-                    );
-                  }
-                },
-              ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            flex: 7,
+            child: ContractCtaButton(
+              text: "거래 완료 확정",
+              bg: fxc(context).statusSignRequest!, //수정
+              fg: fxc(context).textBrand!,
+              onTap: () async => await detailVM.complete(),
             ),
-          ],
-        ),
-      ContractStatus.tradeDone => Row(
-          children: [
-            Expanded(
-              flex: 3,
-              child: ContractCtaButton(
-                text: "문제 신고",
-                bg: vrc(context).secondaryColor!,
-                fg: vrc(context).textPrimary!,
-                onTap: showReport,
-              ),
+          ),
+        ],
+      ),
+      ContractStatus.completed => Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: ContractCtaButton(
+              text: "문제 신고",
+              bg: vrc(context).secondaryColor!,
+              fg: vrc(context).textPrimary!,
+              onTap: showReport,
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              flex: 7,
-              child: ContractCtaButton(
-                text: "거래 계약서 다운로드",
-                bg: fxc(context).brandColor!,
-                fg: fxc(context).textBrand!,
-                onTap: () {},
-              ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            flex: 7,
+            child: ContractCtaButton(
+              text: "거래 계약서 다운로드",
+              bg: fxc(context).brandColor!,
+              fg: fxc(context).textBrand!,
+              onTap: () {},
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
       ContractStatus.reported => ContractCtaButton(
-          text: "신고 취소하기",
-          bg: vrc(context).secondaryColor!,
-          fg: vrc(context).textPrimary!,
-          onTap: () {},
-        ),
+        text: "신고 취소하기",
+        bg: vrc(context).secondaryColor!,
+        fg: vrc(context).textPrimary!,
+        onTap: () {},
+      ),
     };
   }
 }

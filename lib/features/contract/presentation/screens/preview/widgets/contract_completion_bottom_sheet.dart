@@ -3,17 +3,21 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/contract/presentation/widgets/modals/sign_confirm_bottom_sheet.dart';
 import 'package:trana/core/widgets/primary_button.dart';
+import 'package:trana/features/contract/presentation/viewmodels/contract_detail_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/widgets/modals/sign_confirm_bottom_sheet.dart';
 
 class ContractCompletionBottomSheet extends HookConsumerWidget {
   final BuildContext parentContext;
-  final String? contractId;
 
-  const ContractCompletionBottomSheet({super.key, required this.parentContext, this.contractId});
+  const ContractCompletionBottomSheet({super.key, required this.parentContext});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final createState = ref.watch(createContractViewModelProvider);
+    final detailVM = ref.read(contractDetailViewModelProvider.notifier);
+
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 30, 20, 30),
       decoration: BoxDecoration(
@@ -42,7 +46,7 @@ class ContractCompletionBottomSheet extends HookConsumerWidget {
             style: TextStyle(
               color: vrc(context).textPrimary,
               fontSize: 19,
-              fontFamily: "PretendardBold"
+              fontFamily: "PretendardBold",
             ),
           ),
           const SizedBox(height: 40),
@@ -54,7 +58,9 @@ class ContractCompletionBottomSheet extends HookConsumerWidget {
                   text: "홈으로 돌아가기",
                   onTap: () {
                     Navigator.of(context).popUntil(
-                      (route) => route is! MaterialPageRoute && route is! ModalBottomSheetRoute,
+                      (route) =>
+                          route is! MaterialPageRoute &&
+                          route is! ModalBottomSheetRoute,
                     );
                     context.go(AppRoutes.home);
                   },
@@ -67,24 +73,33 @@ class ContractCompletionBottomSheet extends HookConsumerWidget {
                 child: PrimaryButton(
                   text: "요청하기",
                   onTap: () async {
+                    final contractId = createState.contractId;
+                    if (contractId == null) return;
+
+                    await detailVM.readSelectedContract(contractId);
+
+                    if (!context.mounted) return;
                     bool signFlowProceeded = false;
                     final router = GoRouter.of(context);
                     Navigator.pop(context);
                     if (!parentContext.mounted) return;
                     await showModalBottomSheet<void>(
                       context: parentContext,
-                      barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
+                      barrierColor: const Color(
+                        0xFF000000,
+                      ).withValues(alpha: 0.75),
                       backgroundColor: Colors.transparent,
                       isScrollControlled: true,
                       builder: (_) => SignConfirmBottomSheet(
                         parentContext: parentContext,
-                        contractId: contractId,
                         onProceed: () => signFlowProceeded = true,
                       ),
                     );
                     if (!signFlowProceeded && parentContext.mounted) {
                       Navigator.of(parentContext).popUntil(
-                        (route) => route is! MaterialPageRoute && route is! ModalBottomSheetRoute,
+                        (route) =>
+                            route is! MaterialPageRoute &&
+                            route is! ModalBottomSheetRoute,
                       );
                       router.go(AppRoutes.home);
                     }

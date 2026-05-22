@@ -10,13 +10,11 @@ import 'package:trana/core/widgets/primary_button.dart';
 
 class SignConfirmBottomSheet extends HookConsumerWidget {
   final BuildContext parentContext;
-  final String? contractId;
   final VoidCallback? onProceed;
 
   const SignConfirmBottomSheet({
     super.key,
     required this.parentContext,
-    this.contractId,
     this.onProceed,
   });
 
@@ -105,17 +103,24 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
                     await Future.delayed(const Duration(milliseconds: 200));
                     if (!parentContext.mounted) return;
                     await showDialog<void>(
-                      barrierColor: const Color(0xFF000000).withValues(alpha: 0.85),
+                      barrierColor: const Color(
+                        0xFF000000,
+                      ).withValues(alpha: 0.85),
                       context: parentContext,
                       builder: (ctx) => ContractSignDialog(
-                        contractId: contractId,
-                        onCompleted: onProceed != null ? () => dialogCompleted = true : null,
-                        parentContext: onProceed != null ? parentContext : null,
+                        onCompleted: onProceed != null
+                            ? () => dialogCompleted = true
+                            : null,
+                        parentContext: parentContext,
                       ),
                     );
-                    if (onProceed != null && !dialogCompleted && parentContext.mounted) {
+                    if (onProceed != null &&
+                        !dialogCompleted &&
+                        parentContext.mounted) {
                       Navigator.of(parentContext).popUntil(
-                        (route) => route is! MaterialPageRoute && route is! ModalBottomSheetRoute,
+                        (route) =>
+                            route is! MaterialPageRoute &&
+                            route is! ModalBottomSheetRoute,
                       );
                       router.go(AppRoutes.home);
                     }

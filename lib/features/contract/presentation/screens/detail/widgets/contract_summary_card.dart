@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart'; 
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/features/contract/presentation/screens/detail/widgets/contract_kv.dart';
 
@@ -18,7 +18,7 @@ class ContractSummaryCard extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      height: 172,
+      constraints: const BoxConstraints(minHeight: 172),
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
       decoration: BoxDecoration(
@@ -57,7 +57,11 @@ class ContractSummaryCard extends HookConsumerWidget {
                 ),
               ),
               Expanded(
-                child: ContractKv(label: "내 역할", value: roleLabel, alignEnd: false),
+                child: ContractKv(
+                  label: "내 역할",
+                  value: '$roleLabel자',
+                  alignEnd: false,
+                ),
               ),
             ],
           ),

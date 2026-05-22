@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/contract/domain/entities/contract_entity.dart';
-import 'package:trana/features/contract/domain/entities/contract_status.dart';
-import 'package:trana/features/contract/domain/entities/user_role.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
+import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/presentation/screens/modify/contract_modify_page.dart';
 import 'package:trana/features/contract/presentation/screens/preview/widgets/contract_completion_bottom_sheet.dart';
-import 'package:trana/features/contract/presentation/viewmodels/contract_list_view_model.dart';
-import 'package:trana/core/widgets/primary_button.dart';
+import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 
 class ContractPreviewPage extends HookConsumerWidget {
-  final UserRole? userRole;
-  final String? itemName;
-  final String? price;
-
-  const ContractPreviewPage({super.key, this.userRole, this.itemName, this.price});
+  const ContractPreviewPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) { 
-    final pdfViewerController = useMemoized(() => PdfViewerController());
+  Widget build(BuildContext context, WidgetRef ref) {
+    final createState = ref.watch(createContractViewModelProvider);
+    final createVM = ref.read(createContractViewModelProvider.notifier);
+
+    ref.listen(createContractViewModelProvider, (prev, next) {
+      if (next.error != null && next.error != prev?.error) {
+        showErrorToast(context, next.error!);
+        createVM.clearError();
+      }
+    });
 
     const int currentStep = 3;
     const int totalStep = 3;
@@ -39,7 +41,7 @@ class ContractPreviewPage extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontFamily: "PretendardBold"
+            fontFamily: "PretendardBold",
           ),
         ),
         bottom: PreferredSize(
@@ -67,10 +69,30 @@ class ContractPreviewPage extends HookConsumerWidget {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: SfPdfViewer.asset(
-                    'assets/pdf/contract_sample.pdf',
-                    controller: pdfViewerController,
-                  ),
+                  child: createState.isLoading
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: fxc(context).brandColor,
+                            strokeWidth: 3,
+                          ),
+                        )
+                      : createState.pdfBytes == null
+                      ? Center(
+                          child: Text(
+                            'PDF를 불러올 수 없습니다.',
+                            style: TextStyle(
+                              color: vrc(context).textSecondary,
+                              fontFamily: 'PretendardMedium',
+                            ),
+                          ),
+                        )
+                      : SfPdfViewerTheme(
+                          data: SfPdfViewerThemeData(
+                            backgroundColor: vrc(context).secondaryColor,
+                            progressBarColor: fxc(context).brandColor!,
+                          ),
+                          child: SfPdfViewer.memory(createState.pdfBytes!),
+                        ),
                 ),
               ),
             ),
@@ -96,30 +118,20 @@ class ContractPreviewPage extends HookConsumerWidget {
                 Expanded(
                   child: PrimaryButton(
                     text: "생성하기",
-                    onTap: () {
-                      String? contractId;
-                      if (userRole != null && itemName != null && price != null) {
-                        contractId = DateTime.now().millisecondsSinceEpoch.toString();
-                        ref.read(contractListProvider.notifier).add(
-                          ContractEntity(
-                            id: contractId,
-                            itemName: itemName!,
-                            price: price!,
-                            status: ContractStatus.draft,
-                            userRole: userRole!,
-                            createdAt: DateTime.now(),
-                          ),
-                        );
-                      }
+                    onTap: () async {
+                      await createVM.createDraft();
+
+                      if (!context.mounted) return;
                       showModalBottomSheet(
                         context: context,
-                        barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
+                        barrierColor: const Color(
+                          0xFF000000,
+                        ).withValues(alpha: 0.75),
                         backgroundColor: Colors.transparent,
                         isScrollControlled: true,
                         builder: (bottomSheetContext) =>
                             ContractCompletionBottomSheet(
                               parentContext: context,
-                              contractId: contractId,
                             ),
                       );
                     },

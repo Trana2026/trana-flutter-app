@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/features/contract/presentation/screens/select_role/select_user_role_page.dart';
+import 'package:trana/features/contract/presentation/viewmodels/contract_request_view_model.dart';
+import 'package:trana/features/contract/presentation/widgets/modals/guardian_identity_verify_dialog.dart';
+import 'package:trana/features/profile/presentation/providers/current_user_provider.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_bottom_nav.dart';
+import 'package:trana/features/profile/presentation/screens/home/widgets/home_contract_request_banner.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_main_view.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/my_page.dart';
-import 'package:trana/features/contract/presentation/widgets/modals/ai_autofill_notice_dialog.dart';
-import 'package:trana/features/contract/presentation/widgets/modals/guardian_identity_verify_dialog.dart';
 
 class HomePage extends HookConsumerWidget {
   final bool showGuardianDialog;
@@ -14,7 +17,12 @@ class HomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final requestState = ref.watch(contractRequestViewModelProvider);
+    final currentUserId = ref.watch(currentUserProvider);
     final currentIndex = useState<int>(0);
+
+    final hasPendingInvite =
+        currentUserId == 2 && requestState.requests.isNotEmpty;
 
     useEffect(() {
       if (showGuardianDialog) {
@@ -31,11 +39,7 @@ class HomePage extends HookConsumerWidget {
       return null;
     }, []);
 
-    final pages = [
-      const HomeMainView(),
-      const HomeMainView(),
-      const MyPage(),
-    ];
+    final pages = [const HomeMainView(), const HomeMainView(), const MyPage()];
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -45,10 +49,28 @@ class HomePage extends HookConsumerWidget {
       body: Stack(
         children: [
           /// 🔥 기존 IndexedStack 유지
-          IndexedStack(
-            index: currentIndex.value,
-            children: pages,
-          ),
+          IndexedStack(index: currentIndex.value, children: pages),
+
+          if (hasPendingInvite)
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeOut,
+              left: 20,
+              right: 20,
+              bottom: hasPendingInvite ? 110 : -120,
+              child: IgnorePointer(
+                ignoring: !hasPendingInvite,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  opacity: hasPendingInvite ? 1 : 0,
+                  child: HomeContractRequestBanner(
+                    request: requestState.requests.reduce(
+                      (a, b) => a.createdAt.isBefore(b.createdAt) ? a : b,
+                    ),
+                  ),
+                ),
+              ),
+            ),
 
           /// 🔥 바텀 네비 Positioned로 복구
           Positioned(
@@ -60,16 +82,12 @@ class HomePage extends HookConsumerWidget {
               onIndexChanged: (index) => currentIndex.value = index,
               customOnTaps: {
                 1: () {
-                  currentIndex.value = 1;
-                  showDialog(
-                    context: context,
-                    barrierColor: Colors.black
-                        .withValues(alpha: 0.75),
-                    builder: (context) =>
-                        const AiAutofillNoticeDialog(),
-                  ).then((context) {
-                    currentIndex.value = 0;
-                  });
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SelectUserRolePage(),
+                    ),
+                  );
                 },
               },
             ),
