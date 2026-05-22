@@ -16,17 +16,9 @@ class FakeAiAutoFillRepositoryImpl implements AiAutoFillRepository {
 
   final ImageFilterService _filterService;
 
-  static const _apiHost = 'api.openai.com';
-  static const _model = 'gpt-4o-mini';
-  static const _prompt =
-      '너는 C2C 안전 거래 플랫폼 Trana의 계약서 자동 완성(Auto-fill) 전문가야.\n'
-      '제공된 중고 거래 게시글 스크린샷에서 계약에 필요한 핵심 정보를 정확하게 추출하여 JSON 형식으로 응답해야 해.\n'
-      '{\n'
-      '  "product_name": 상품명. 게시글의 제목을 참고해서 서술어(판매합니다, 팔아요 등)를 제외한 상품명 키워드만 추출해. 게시글의 제목이 없다면 텍스트에서 상품명에 가까운 키워드만 추출해.\n'
-      '  "amount": 가격. 원 이나 콤마(,)를 제외한 숫자만 추출해 (정수형).\n'
-      '  "condition_summary": 상품 상태. 플랫폼에서 지정한 상태 키워드(예: 사용감 적음, 미개봉 등)를 추출해.\n'
-      '  "condition_details": 상품 상세 설명. 상세 설명 글에서 언급된 하자(찍힘, 스크래치 등)나 사용 기간, 작동 여부 등을 핵심만 요약해.\n'
-      '}\n';
+  static const _apiHost = '';
+  static const _model = '';
+  static const _prompt = '';
 
   @override
   Future<Result<AiAutoFillEntity>> analyzeImages(List<XFile> images) async {
