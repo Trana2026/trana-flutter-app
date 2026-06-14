@@ -4,15 +4,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/contract_form_field.dart';
 import 'package:trana/core/widgets/primary_button.dart';
-import 'package:trana/features/contract/presentation/viewmodels/contract_detail_view_model.dart';
 
 class ContractReportBottomSheet extends HookConsumerWidget {
   const ContractReportBottomSheet({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailVM = ref.read(contractDetailViewModelProvider.notifier);
-
     final reasonController = useTextEditingController();
     final detailController = useTextEditingController();
 
@@ -57,7 +54,9 @@ class ContractReportBottomSheet extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textPrimary,
                   fontSize: 18,
-                  fontFamily: "PretendardBold",
+                  fontWeight: FontWeight.w700,
+                  height: 1.5,
+                  letterSpacing: -0.18,
                 ),
               ),
             ],
@@ -81,9 +80,14 @@ class ContractReportBottomSheet extends HookConsumerWidget {
           PrimaryButton(
             text: "다음",
             onTap: () async {
-              await detailVM.reportt();
+              // final success = await detailVM.report();
+              // if (!context.mounted) return;
+              // if (!success) {
+              //   showErrorToast(context, ref.read(detailContractViewModelProvider).error!);
+              //   detailVM.clearError();
+              //   return;
+              // }
 
-              if (!context.mounted) return;
               Navigator.pop(context);
             },
             backgroundColor: fxc(context).subtitleError!,

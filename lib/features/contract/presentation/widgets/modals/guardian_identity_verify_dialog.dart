@@ -38,7 +38,9 @@ class GuardianIdentityVerifyDialog extends HookConsumerWidget {
               style: TextStyle(
                 color: vrc(context).textPrimary,
                 fontSize: 18,
-                fontFamily: "PretendardBold"
+                fontWeight: FontWeight.w700,
+                height: 1.5,
+                letterSpacing: -0.18,
               ),
             ),
             const SizedBox(height: 12),
@@ -59,7 +61,9 @@ class GuardianIdentityVerifyDialog extends HookConsumerWidget {
                       style: TextStyle(
                         color: vrc(context).textPrimary,
                         fontSize: 15,
-                        fontFamily: "PretendardBold"
+                        fontWeight: FontWeight.w700,
+                        height: 1.5,
+                        letterSpacing: -0.15,
                       ),
                     ),
                     const SizedBox(height: 4), 
@@ -68,8 +72,9 @@ class GuardianIdentityVerifyDialog extends HookConsumerWidget {
                         style: TextStyle(
                           color: vrc(context).textSecondary,
                           fontSize: 13,
-                          fontFamily: "PretendardMedium",
+                          fontWeight: FontWeight.w500,
                           height: 1.2,
+                          letterSpacing: -0.13,
                         ),
                         children: [
                           const TextSpan(text: "사용자께서는 미성년자이기 때문에,"),
@@ -105,7 +110,9 @@ class GuardianIdentityVerifyDialog extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textTertiary,
                   fontSize: 13,
-                  fontFamily: "PretendardRegular"
+                  fontWeight: FontWeight.w400,
+                  height: 1.5,
+                  letterSpacing: -0.13,
                 ),
               ),
             ),

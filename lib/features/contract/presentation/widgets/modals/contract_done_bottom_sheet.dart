@@ -38,7 +38,9 @@ class ContractDoneBottomSheet extends HookConsumerWidget {
             style: TextStyle(
               color: vrc(context).textPrimary,
               fontSize: 19,
-              fontFamily: "PretendardBold",
+              fontWeight: FontWeight.w700,
+              height: 1.5,
+              letterSpacing: -0.19,
             ),
           ),
           const SizedBox(height: 13),
@@ -48,7 +50,9 @@ class ContractDoneBottomSheet extends HookConsumerWidget {
             style: TextStyle(
               color: vrc(context).textSecondary,
               fontSize: 14,
-              fontFamily: "PretendardMedium",
+              fontWeight: FontWeight.w500,
+              height: 1.5,
+              letterSpacing: -0.14,
             ),
           ),
           const SizedBox(height: 40),

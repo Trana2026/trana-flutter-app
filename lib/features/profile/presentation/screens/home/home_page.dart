@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/contract/presentation/screens/select_role/select_user_role_page.dart';
-import 'package:trana/features/contract/presentation/viewmodels/contract_request_view_model.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
+import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_identity_verify_dialog.dart';
-import 'package:trana/features/profile/presentation/providers/current_user_provider.dart';
+import 'package:trana/features/profile/presentation/providers/test_user_provider.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_bottom_nav.dart';
-import 'package:trana/features/profile/presentation/screens/home/widgets/home_contract_request_banner.dart';
+import 'package:trana/features/profile/presentation/screens/home/widgets/home_sign_request_banner.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_main_view.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/my_page.dart';
+import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
 
 class HomePage extends HookConsumerWidget {
   final bool showGuardianDialog;
@@ -17,12 +18,14 @@ class HomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final requestState = ref.watch(contractRequestViewModelProvider);
-    final currentUserId = ref.watch(currentUserProvider);
+    final homeVM = ref.read(homeContractViewModelProvider.notifier);
     final currentIndex = useState<int>(0);
 
-    final hasPendingInvite =
-        currentUserId == 2 && requestState.requests.isNotEmpty;
+    final homeState = ref.watch(homeContractViewModelProvider);
+    final hasSharedContract = homeState.myContracts.any(
+      (c) => c.status == ContractStatus.shared,
+      // && c.userType == UserType.receiver, // TODO : 백엔드 구현되면 반영
+    );
 
     useEffect(() {
       if (showGuardianDialog) {
@@ -36,43 +39,45 @@ class HomePage extends HookConsumerWidget {
           }
         });
       }
+
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        // TODO : 테스트용 유저 변경 (로그인)
+        final userVM = ref.read(testUserProvider.notifier);
+        await userVM.login();
+
+        final success = await homeVM.readMyContracts();
+        if (!context.mounted) return;
+        if (!success) {
+          showErrorToast(
+            context,
+            ref.read(homeContractViewModelProvider).error!,
+          );
+          homeVM.clearError();
+          return;
+        }
+      });
       return null;
     }, []);
 
-    final pages = [const HomeMainView(), const HomeMainView(), const MyPage()];
+    final pages = [const HomeMainView(), const MyPage(), const HomeMainView()];
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: vrc(context).background,
-
-      /// 🔥 body를 Stack으로 감싸기 (이거만 핵심 변경)
+      backgroundColor: vrc(context).secondaryColor,
       body: Stack(
         children: [
-          /// 🔥 기존 IndexedStack 유지
           IndexedStack(index: currentIndex.value, children: pages),
 
-          if (hasPendingInvite)
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeOut,
-              left: 20,
-              right: 20,
-              bottom: hasPendingInvite ? 110 : -120,
-              child: IgnorePointer(
-                ignoring: !hasPendingInvite,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  opacity: hasPendingInvite ? 1 : 0,
-                  child: HomeContractRequestBanner(
-                    request: requestState.requests.reduce(
-                      (a, b) => a.createdAt.isBefore(b.createdAt) ? a : b,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-          /// 🔥 바텀 네비 Positioned로 복구
+          // 서명 요청 수신 배너
+          // if (hasSharedContract)
+          //   const AnimatedPositioned(
+          //     duration: Duration(milliseconds: 250),
+          //     curve: Curves.easeOut,
+          //     left: 20,
+          //     right: 20,
+          //     bottom: 110,
+          //     child: HomeSignRequestBanner(),
+          //   ),
           Positioned(
             bottom: 0,
             left: 0,
@@ -80,16 +85,6 @@ class HomePage extends HookConsumerWidget {
             child: HomeBottomNav(
               currentIndex: currentIndex.value,
               onIndexChanged: (index) => currentIndex.value = index,
-              customOnTaps: {
-                1: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SelectUserRolePage(),
-                    ),
-                  );
-                },
-              },
             ),
           ),
         ],

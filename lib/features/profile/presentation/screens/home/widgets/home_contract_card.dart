@@ -1,147 +1,177 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/router/app_router.dart';
+import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/features/contract/domain/utils/string_extensions.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
+import 'package:trana/features/contract/domain/entities/contract_entity.dart';
+import 'package:trana/features/contract/presentation/extensions/contract_status_ui.dart';
+import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 
 class HomeContractCard extends HookConsumerWidget {
-  final String roleLabel;
-  final String statusLabel;
-  final Color statusColor;
-  final String itemName;
-  final String price;
-  final String date;
-  final Color statusTextColor;
-  final VoidCallback? onTap;
+  const HomeContractCard({super.key, required this.contract});
 
-  const HomeContractCard({
-    super.key,
-    required this.roleLabel,
-    required this.statusLabel,
-    required this.statusColor,
-    required this.statusTextColor,
-    required this.itemName,
-    required this.price,
-    required this.date,
-    this.onTap,
-  });
+  final ContractEntity contract;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final detailVM = ref.read(detailContractViewModelProvider.notifier);
+    final c = contract;
+
     return GestureDetector(
-      onTap: onTap,
+      onTap: () async {
+        final success = await detailVM.loadContract(c);
+        if (!context.mounted) return;
+        if (!success) {
+          showErrorToast(
+            context,
+            ref.read(detailContractViewModelProvider).error!,
+          );
+          detailVM.clearError();
+          return;
+        }
+
+        context.push(AppRoutes.contractDetail);
+      },
       child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        padding: const EdgeInsets.all(14),
+        margin: const EdgeInsets.only(bottom: 20),
         decoration: BoxDecoration(
-          color: vrc(context).background,
+          color: vrc(context).secondaryColor,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Stack(
               children: [
-                Text(
-                  roleLabel,
-                  style: TextStyle(
-                    color: vrc(context).textTertiary,
-                    fontSize: 12,
-                    fontFamily: "PretendardMedium",
-                    letterSpacing: -0.2
-                  ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: c.firstAttachmentUrl != null
+                      ? Image.network(
+                          c.firstAttachmentUrl!,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, _, _) => placeholder(context),
+                        )
+                      : placeholder(context),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusColor,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    statusLabel,
-                    style: TextStyle(
-                      color: statusTextColor,
-                      fontSize: 12,
-                      fontFamily: "PretendardMedium",
-                      letterSpacing: -0.2
+                if (c.attachmentCount > 0)
+                  Positioned(
+                    bottom: 6,
+                    right: 6,
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: fxc(context).imageCountBg,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        '${c.attachmentCount}',
+                        style: context.txt(
+                          color: fxc(context).textBrand,
+                          fontSize: 10,
+                        ),
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
-            const SizedBox(height: 6),
-
-            Text(
-              itemName,
-              style: TextStyle(
-                color: vrc(context).textPrimary,
-                fontSize: 17,
-                fontFamily: "PretendardBold",
-                letterSpacing: -0.2
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            Divider(color: vrc(context).tertiaryColor, height: 1),
-            const SizedBox(height: 12),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
+            const SizedBox(width: 8),
+            Expanded(
+              child: SizedBox(
+                height: 100,
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "가격",
-                      style: TextStyle(
-                        color: vrc(context).textTertiary,
-                        fontSize: 12,
-                        fontFamily: "PretendardMedium",
-                        letterSpacing: -0.2
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      price,
-                      style: TextStyle(
+                      c.title ?? '-',
+                      style: context.txt(
                         color: vrc(context).textPrimary,
-                        fontSize: 15,
-                        fontFamily: "PretendardBold",
-                        letterSpacing: -0.2
+                        fontWeight: FontWeight.bold,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      c.price != null
+                          ? '${(c.price).toString().toPriceFormat}원'
+                          : '-',
+                      style: context.txt(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: vrc(context).background,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                CooliconsIcon.user01,
+                                size: 16,
+                                color: vrc(context).textSecondary,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                c.myRole != null ? '${c.myRole?.label}자' : '',
+                                style: context.txt(fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: c.status.bgColor(context),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            c.status.statusLabel(),
+                            style: context.txt(
+                              color: c.status.statusColor(context),
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      "날짜",
-                      style: TextStyle(
-                        color: vrc(context).textTertiary,
-                        fontSize: 12,
-                        fontFamily: "PretendardMedium",
-                        letterSpacing: -0.2
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      date,
-                      style: TextStyle(
-                        color: vrc(context).textTertiary,
-                        fontSize: 12,
-                        fontFamily: "PretendardRegular",
-                        letterSpacing: -0.2
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget placeholder(BuildContext context) {
+    return Container(
+      width: 100,
+      height: 100,
+      color: vrc(context).tertiaryColor,
+      child: Icon(
+        CooliconsIcon.image02,
+        color: vrc(context).textDisable,
+        size: 32,
       ),
     );
   }

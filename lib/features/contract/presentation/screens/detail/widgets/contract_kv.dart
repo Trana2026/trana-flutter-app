@@ -26,7 +26,8 @@ class ContractKv extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textTertiary,
             fontSize: 12,
-            fontFamily: "PretendardMedium",
+            fontWeight: FontWeight.w500,
+            height: 1.5,
             letterSpacing: -0.2,
           ),
         ),
@@ -36,7 +37,8 @@ class ContractKv extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontFamily: "PretendardBold",
+            fontWeight: FontWeight.w700,
+            height: 1.5,
             letterSpacing: -0.2,
           ),
           maxLines: 3,
