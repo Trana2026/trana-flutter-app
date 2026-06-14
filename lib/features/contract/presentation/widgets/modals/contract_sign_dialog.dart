@@ -6,6 +6,7 @@ import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/consent_check_box.dart';
 import 'package:trana/core/widgets/primary_button.dart';
+import 'package:trana/features/contract/presentation/widgets/modals/contract_done_bottom_sheet.dart';
 
 class ContractSignDialog extends HookConsumerWidget {
   final VoidCallback? onCompleted;
@@ -163,41 +164,15 @@ class ContractSignDialog extends HookConsumerWidget {
                       if (!isSelected.value) return;
                       onCompleted?.call();
 
-                      //   // 수신자 Flow (테스트용)
-                      //   final currentUserId = ref.watch(currentUserMeProvider);
-                      //   if (currentUserId == 2) {
-                      //     final success = await requestVM.sign();
-                      //     if (!context.mounted) return;
-                      //     if (!success) {
-                      //       showErrorToast(
-                      //         context,
-                      //         ref.read(requestContractViewModelProvider).error!,
-                      //       );
-                      //       requestVM.clearError();
-                      //       return;
-                      //     }
-
-                      //     Navigator.of(context).pop();
-                      //     if (parentContext != null && parentContext!.mounted) {
-                      //       showModalBottomSheet(
-                      //         context: parentContext!,
-                      //         isScrollControlled: true,
-                      //         backgroundColor: Colors.transparent,
-                      //         builder: (_) => const ContractDoneBottomSheet(),
-                      //       );
-                      //     }
-                      //     // 요청자 Flow
-                      //   } else {
-                      //     final nav = parentContext != null
-                      //         ? Navigator.of(parentContext!)
-                      //         : Navigator.of(context);
-                      //     nav.pushAndRemoveUntil(
-                      //       MaterialPageRoute(
-                      //         builder: (_) => ContractSharePage(publicCode: ''),
-                      //       ),
-                      //       (route) => route.isFirst,
-                      //     );
-                      //   }
+                      Navigator.of(context).pop();
+                      if (parentContext != null && parentContext!.mounted) {
+                        showModalBottomSheet(
+                          context: parentContext!,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => const ContractDoneBottomSheet(),
+                        );
+                      }
                     },
                     backgroundColor: isSelected.value
                         ? fxc(context).brandColor!

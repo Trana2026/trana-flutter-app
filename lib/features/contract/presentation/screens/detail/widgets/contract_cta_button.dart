@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
+import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_dialog.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
@@ -241,12 +242,10 @@ class _ContractCtaButton extends HookConsumerWidget {
         ),
         child: Text(
           text,
-          style: TextStyle(
+          style: context.txt(
             color: disabled ? vrc(context).textPrimary : fxc(context).textBrand,
-            fontSize: 17,
+            fontSize: 16,
             fontWeight: FontWeight.w600,
-            height: 1.5,
-            letterSpacing: -0.2,
           ),
         ),
       ),

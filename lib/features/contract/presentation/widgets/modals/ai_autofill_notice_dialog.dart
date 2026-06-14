@@ -80,9 +80,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
             ConsentCheckbox(
               requiredText: "[필수]",
               descriptionText: " AI 자동기입 기능의 한계를 확인하고\n이해했으며, 동의합니다.",
-              onChanged: (value) {
-                isSelected.value = value;
-              },
+              onChanged: (value) => isSelected.value = value,
             ),
             const SizedBox(height: 12),
             InkWell(
@@ -116,7 +114,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
                   showErrorToast(
                     context,
                     ref.read(aiAutoFillViewModelProvider).error ??
-                        '오류가 발생했습니다.',
+                        '이미지 분석에 실패했습니다.',
                   );
                   aiVM.clearError();
                   return;

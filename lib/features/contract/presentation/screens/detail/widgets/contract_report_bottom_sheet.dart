@@ -79,17 +79,7 @@ class ContractReportBottomSheet extends HookConsumerWidget {
 
           PrimaryButton(
             text: "다음",
-            onTap: () async {
-              // final success = await detailVM.report();
-              // if (!context.mounted) return;
-              // if (!success) {
-              //   showErrorToast(context, ref.read(detailContractViewModelProvider).error!);
-              //   detailVM.clearError();
-              //   return;
-              // }
-
-              Navigator.pop(context);
-            },
+            onTap: () {},
             backgroundColor: fxc(context).subtitleError!,
             foregroundColor: fxc(context).textDanger!,
           ),
