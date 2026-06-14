@@ -1,69 +1,126 @@
 import 'package:flutter/material.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 
 extension ContractStatusMeta on ContractStatus {
-  Color appBarColor(BuildContext context) => switch (this) {
-    ContractStatus.draft => fxc(context).statusDraft!,
-    ContractStatus.signRequested => fxc(context).statusSignRequest!,
-    ContractStatus.signed => fxc(context).statusSignSuccess!,
+  Color statusColor(BuildContext context) => switch (this) {
+    ContractStatus.inProgress ||
+    ContractStatus.draft ||
+    ContractStatus.ready => vrc(context).iconSecondary!,
+
+    ContractStatus.shared => fxc(context).statusSignRequest!,
+    ContractStatus.revisionRequested => fxc(context).statusModifyRequest!,
+    ContractStatus.receiverSigned => fxc(context).statusSignRequest!,
+    ContractStatus.cancelRequested => fxc(context).statusError!,
+    ContractStatus.cancelled => fxc(context).statusError!,
+
+    ContractStatus.signed => fxc(context).statusSignRequest!,
     ContractStatus.completed => fxc(context).brandColor!,
-    ContractStatus.reported => fxc(context).statusError!,
+  };
+
+  Color bgColor(BuildContext context) => switch (this) {
+    ContractStatus.inProgress ||
+    ContractStatus.draft ||
+    ContractStatus.ready => fxc(context).borderOP!,
+
+    ContractStatus.shared => fxc(context).subtitleBlue!,
+    ContractStatus.revisionRequested => fxc(context).subtitleWarning!,
+    ContractStatus.receiverSigned => fxc(context).subtitleBlue!,
+    ContractStatus.cancelRequested => fxc(context).opacityError!,
+    ContractStatus.cancelled => fxc(context).opacityError!,
+
+    ContractStatus.signed => fxc(context).subtitleBlue!,
+    ContractStatus.completed => fxc(context).opacitySuccess!,
   };
 
   String statusLabel() => switch (this) {
-    ContractStatus.draft => "계약서 초안",
-    ContractStatus.signRequested => "서명 요청됨",
+    ContractStatus.inProgress ||
+    ContractStatus.draft ||
+    ContractStatus.ready => "계약서 초안",
+
+    ContractStatus.shared => "서명 요청",
+    ContractStatus.revisionRequested => "수정 요청",
+    ContractStatus.receiverSigned => "최종 서명 요청",
+    ContractStatus.cancelRequested => "취소 요청",
+    ContractStatus.cancelled => "",
+
     ContractStatus.signed => "서명 완료",
     ContractStatus.completed => "거래 완료",
-    ContractStatus.reported => "신고 접수",
   };
 
   IconData statusIcon() => switch (this) {
-    ContractStatus.draft => Icons.warning_amber_rounded,
-    ContractStatus.signRequested => Icons.edit_outlined,
-    ContractStatus.signed => Icons.check_circle_outline,
-    ContractStatus.completed => Icons.check_circle_outline,
-    ContractStatus.reported => Icons.warning_amber_rounded,
-  };
+    ContractStatus.inProgress ||
+    ContractStatus.draft ||
+    ContractStatus.ready => CooliconsIcon.fileDocument,
 
-  Color bannerIconBgColor(BuildContext context) => switch (this) {
-    ContractStatus.draft => vrc(context).tertiaryColor!,
-    ContractStatus.signRequested => fxc(context).statusSignRequest!,
-    ContractStatus.signed => fxc(context).statusSignRequest!,
-    ContractStatus.completed => fxc(context).brandColor!,
-    ContractStatus.reported => fxc(context).statusError!,
+    ContractStatus.shared => CooliconsIcon.editPencilLine02,
+    ContractStatus.revisionRequested => CooliconsIcon.circleHelp,
+    ContractStatus.receiverSigned => CooliconsIcon.editPencilLine01,
+    ContractStatus.cancelRequested => CooliconsIcon.warning,
+    ContractStatus.cancelled => CooliconsIcon.warning,
+
+    ContractStatus.signed => CooliconsIcon.editPencilLine01,
+    ContractStatus.completed => CooliconsIcon.circleCheck,
   };
 
   IconData bannerIcon() => switch (this) {
-    ContractStatus.draft => Icons.edit_outlined,
-    ContractStatus.signRequested => Icons.question_mark,
-    ContractStatus.signed => Icons.question_mark,
-    ContractStatus.completed => Icons.check,
-    ContractStatus.reported => Icons.warning_amber_rounded,
+    ContractStatus.inProgress ||
+    ContractStatus.draft ||
+    ContractStatus.ready => CooliconsIcon.editPencilLine01,
+
+    ContractStatus.shared => CooliconsIcon.help,
+    ContractStatus.revisionRequested => CooliconsIcon.circleHelp,
+    ContractStatus.receiverSigned => CooliconsIcon.editPencilLine01,
+    ContractStatus.cancelRequested => CooliconsIcon.warning,
+    ContractStatus.cancelled => CooliconsIcon.warning,
+
+    ContractStatus.signed => CooliconsIcon.editPencilLine01,
+    ContractStatus.completed => CooliconsIcon.circleCheck,
   };
 
   String bannerTopLabel() => switch (this) {
-    ContractStatus.draft => "진행 상황",
-    ContractStatus.signRequested => "거래 상대방",
+    ContractStatus.inProgress => "",
+    ContractStatus.draft => "",
+    ContractStatus.ready => "",
+
+    ContractStatus.shared => "거래 상대방",
+    ContractStatus.revisionRequested => "",
+    ContractStatus.receiverSigned => "거래 상대방",
+    ContractStatus.cancelRequested => "진행 상황",
+    ContractStatus.cancelled => "",
+
     ContractStatus.signed => "거래 상대방",
-    ContractStatus.completed => "거래 완료!",
-    ContractStatus.reported => "진행 상황",
+    ContractStatus.completed => "거래 완료",
   };
 
   String bannerBottomLabel() => switch (this) {
-    ContractStatus.draft => "계약서 수정하기",
-    ContractStatus.signRequested => "현재 서명 대기 중...",
-    ContractStatus.signed => "서명 완료!",
+    ContractStatus.inProgress ||
+    ContractStatus.draft ||
+    ContractStatus.ready => "계약서 수정하기",
+
+    ContractStatus.shared => "현재 서명 대기 중..",
+    ContractStatus.revisionRequested => "계약서 수정하기",
+    ContractStatus.receiverSigned => "현재 서명 대기 중..",
+    ContractStatus.cancelRequested => "계약 취소 진행 중",
+    ContractStatus.cancelled => "",
+
+    ContractStatus.signed => "서명 완료",
     ContractStatus.completed => "무사히 거래가 완료되었어요!",
-    ContractStatus.reported => "신고 접수 중",
   };
 
   bool bannerShowChevron() => switch (this) {
-    ContractStatus.draft => true,
-    ContractStatus.signRequested => true,
-    ContractStatus.signed => true,
+    ContractStatus.inProgress ||
+    ContractStatus.draft ||
+    ContractStatus.ready => true,
+
+    ContractStatus.shared => false,
+    ContractStatus.revisionRequested => true,
+    ContractStatus.receiverSigned => false,
+    ContractStatus.cancelRequested => true,
+    ContractStatus.cancelled => true,
+
+    ContractStatus.signed => false,
     ContractStatus.completed => false,
-    ContractStatus.reported => true,
   };
 }

@@ -6,11 +6,7 @@ import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/consent_check_box.dart';
 import 'package:trana/core/widgets/primary_button.dart';
-import 'package:trana/features/contract/presentation/screens/share/contract_share_page.dart';
-import 'package:trana/features/contract/presentation/viewmodels/contract_detail_view_model.dart';
-import 'package:trana/features/contract/presentation/viewmodels/contract_request_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/contract_done_bottom_sheet.dart';
-import 'package:trana/features/profile/presentation/providers/current_user_provider.dart';
 
 class ContractSignDialog extends HookConsumerWidget {
   final VoidCallback? onCompleted;
@@ -20,9 +16,6 @@ class ContractSignDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final requestState = ref.watch(contractRequestViewModelProvider);
-    final requestVM = ref.read(contractRequestViewModelProvider.notifier);
-    final detailVM = ref.read(contractDetailViewModelProvider.notifier);
     final isSelected = useState(false);
 
     final signatureKey = useMemoized(() => GlobalKey<SfSignaturePadState>());
@@ -41,7 +34,9 @@ class ContractSignDialog extends HookConsumerWidget {
               style: TextStyle(
                 color: vrc(context).textPrimary,
                 fontSize: 18,
-                fontFamily: "PretendardBold",
+                fontWeight: FontWeight.w700,
+                height: 1.5,
+                letterSpacing: -0.18,
               ),
             ),
             const SizedBox(height: 12),
@@ -72,7 +67,8 @@ class ContractSignDialog extends HookConsumerWidget {
                           style: TextStyle(
                             color: fxc(context).iconDanger,
                             fontSize: 15,
-                            fontFamily: "PretendardBold",
+                            fontWeight: FontWeight.w700,
+                            height: 1.5,
                             letterSpacing: -0.2,
                           ),
                         ),
@@ -83,7 +79,7 @@ class ContractSignDialog extends HookConsumerWidget {
                         style: TextStyle(
                           color: fxc(context).textDanger,
                           fontSize: 13,
-                          fontFamily: "PretendardMedium",
+                          fontWeight: FontWeight.w500,
                           height: 1.2,
                           letterSpacing: -0.2,
                         ),
@@ -142,7 +138,9 @@ class ContractSignDialog extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textTertiary,
                   fontSize: 13,
-                  fontFamily: "PretendardRegular",
+                  fontWeight: FontWeight.w400,
+                  height: 1.5,
+                  letterSpacing: -0.13,
                 ),
               ),
             ),
@@ -166,36 +164,13 @@ class ContractSignDialog extends HookConsumerWidget {
                       if (!isSelected.value) return;
                       onCompleted?.call();
 
-                      // 수신자 Flow (테스트용)
-                      final currentUserId = ref.watch(currentUserProvider);
-                      if (currentUserId == 2) {
-                        final contractId = requestState.receivedContract?.id;
-                        if (contractId == null) return;
-
-                        await requestVM.deleteRequest(contractId);
-                        await detailVM.readSelectedContract(contractId);
-                        await detailVM.sign();
-
-                        if (!context.mounted) return;
-                        Navigator.of(context).pop();
-                        if (parentContext != null && parentContext!.mounted) {
-                          showModalBottomSheet(
-                            context: parentContext!,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            builder: (_) => const ContractDoneBottomSheet(),
-                          );
-                        }
-                        // 요청자 Flow
-                      } else {
-                        final nav = parentContext != null
-                            ? Navigator.of(parentContext!)
-                            : Navigator.of(context);
-                        nav.pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (_) => ContractSharePage(),
-                          ),
-                          (route) => route.isFirst,
+                      Navigator.of(context).pop();
+                      if (parentContext != null && parentContext!.mounted) {
+                        showModalBottomSheet(
+                          context: parentContext!,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => const ContractDoneBottomSheet(),
                         );
                       }
                     },

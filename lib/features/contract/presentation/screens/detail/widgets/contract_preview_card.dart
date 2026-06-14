@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/features/contract/domain/utils/contract_text_builder.dart';
-import 'package:trana/features/contract/presentation/viewmodels/contract_detail_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 
 class ContractPreviewCard extends HookConsumerWidget {
   const ContractPreviewCard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(contractDetailViewModelProvider);
+    final detailState = ref.watch(detailContractViewModelProvider);
 
-    final contract = detailState.selectedContract!;
     final contents = buildContractContents(
-      productName: contract.productName,
-      amount: contract.amount,
-      transactionMethod: contract.transactionMethod,
+      productName: detailState.title!,
+      amount: detailState.price!,
+      transactionMethod: detailState.deliveryType!,
+      platform: detailState.tradingPlatform!,
+      conditionSummary: detailState.conditionSummary!,
+      conditionDetails: detailState.conditionDetails!,
+      isWarranted: true, // TODO : 백엔드 구현되면 반영
+      // detailState.isWarranted
     );
 
     return Container(
@@ -25,11 +30,10 @@ class ContractPreviewCard extends HookConsumerWidget {
       decoration: BoxDecoration(
         color: vrc(context).secondaryColor,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: vrc(context).borderSecondary!),
       ),
       child: ListView.separated(
         itemCount: contents.length,
-        separatorBuilder: (_, _) => const SizedBox(height: 14),
+        separatorBuilder: (_, _) => const SizedBox(height: 16),
         itemBuilder: (_, i) =>
             _clause(context, title: contents[i].title, body: contents[i].body),
       ),
@@ -46,21 +50,15 @@ class ContractPreviewCard extends HookConsumerWidget {
       children: [
         Text(
           title,
-          style: TextStyle(
+          style: context.txt(
             color: vrc(context).textPrimary,
-            fontSize: 13,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         Text(
           body,
-          style: TextStyle(
-            color: vrc(context).textTertiary,
-            fontSize: 11.5,
-            fontWeight: FontWeight.w600,
-            height: 1.35,
-          ),
+          style: context.txt(color: vrc(context).textTertiary, fontSize: 12),
         ),
       ],
     );

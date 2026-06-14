@@ -6,6 +6,7 @@ class FixedColors extends ThemeExtension<FixedColors> {
     required this.brandColor,
     required this.statusSignRequest,
     required this.statusSignSuccess,
+    required this.statusModifyRequest,
     required this.statusError,
     required this.statusDraft,
     required this.textBrand,
@@ -24,10 +25,13 @@ class FixedColors extends ThemeExtension<FixedColors> {
     required this.borderKakao,
     required this.opacitySuccess,
     required this.opacityBg,
+    required this.opacityError,
+    required this.imageCountBg,
   });
   final Color? brandColor;
   final Color? statusSignRequest;
   final Color? statusSignSuccess;
+  final Color? statusModifyRequest;
   final Color? statusError;
   final Color? statusDraft;
   final Color? textBrand;
@@ -46,13 +50,16 @@ class FixedColors extends ThemeExtension<FixedColors> {
   final Color? borderKakao;
   final Color? opacitySuccess;
   final Color? opacityBg;
+  final Color? opacityError;
+  final Color? imageCountBg;
 
   static const FixedColors constant = FixedColors(
     brandColor: Color(0xFF40C572),
     statusSignRequest: Color(0xFF2563EB),
     statusSignSuccess: Color(0xFF2B7FFF),
+    statusModifyRequest: Color(0xFFFF8904),
+    statusDraft: Color(0xFF565957),
     statusError: Color(0xFFEF4444),
-    statusDraft: Color(0xFFFC8B13),
     textBrand: Color(0xFFFFFFFF),
     subtitleGreen: Color(0x1F40C572),
     subtitleBlue: Color(0x1F2B7FFF),
@@ -69,6 +76,8 @@ class FixedColors extends ThemeExtension<FixedColors> {
     borderKakao: Color(0xFFFACC15),
     opacitySuccess: Color(0x1F00C950),
     opacityBg: Color(0x8041444F),
+    opacityError: Color(0x1FFB2C36),
+    imageCountBg: Color(0x66424242),
   );
 
   @override
@@ -76,6 +85,7 @@ class FixedColors extends ThemeExtension<FixedColors> {
     brandColor: brandColor ?? this.brandColor,
     statusSignRequest: statusSignRequest ?? this.statusSignRequest,
     statusSignSuccess: statusSignSuccess ?? this.statusSignSuccess,
+    statusModifyRequest: statusModifyRequest ?? this.statusModifyRequest,
     statusError: statusError ?? this.statusError,
     statusDraft: statusDraft ?? this.statusDraft,
     textBrand: textBrand ?? this.textBrand,
@@ -94,6 +104,8 @@ class FixedColors extends ThemeExtension<FixedColors> {
     borderKakao: borderKakao ?? this.borderKakao,
     opacitySuccess: opacitySuccess ?? this.opacitySuccess,
     opacityBg: opacityBg ?? this.opacityBg,
+    opacityError: opacityError ?? this.opacityError,
+    imageCountBg: imageCountBg ?? this.imageCountBg,
   );
 
   @override
@@ -109,6 +121,11 @@ class FixedColors extends ThemeExtension<FixedColors> {
       statusSignSuccess: Color.lerp(
         statusSignSuccess,
         other.statusSignSuccess,
+        t,
+      ),
+      statusModifyRequest: Color.lerp(
+        statusModifyRequest,
+        other.statusModifyRequest,
         t,
       ),
       statusError: Color.lerp(statusError, other.statusError, t),
@@ -129,6 +146,8 @@ class FixedColors extends ThemeExtension<FixedColors> {
       borderKakao: Color.lerp(borderKakao, other.borderKakao, t),
       opacitySuccess: Color.lerp(opacitySuccess, other.opacitySuccess, t),
       opacityBg: Color.lerp(opacityBg, other.opacityBg, t),
+      opacityError: Color.lerp(opacityError, other.opacityError, t),
+      imageCountBg: Color.lerp(imageCountBg, other.imageCountBg, t),
     );
   }
 }

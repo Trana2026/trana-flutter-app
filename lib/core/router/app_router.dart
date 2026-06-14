@@ -14,7 +14,8 @@ import 'package:trana/features/contract/presentation/screens/create/create_contr
 import 'package:trana/features/contract/presentation/screens/detail/contract_detail_page.dart';
 import 'package:trana/features/contract/presentation/screens/modify/contract_modify_page.dart';
 import 'package:trana/features/contract/presentation/screens/preview/contract_preview_page.dart';
-import 'package:trana/features/contract/presentation/screens/request/contract_request_page.dart';
+import 'package:trana/features/contract/presentation/screens/request/contract_request_detail_page.dart';
+import 'package:trana/features/contract/presentation/screens/request/modification_request_page.dart';
 import 'package:trana/features/contract/presentation/screens/select_role/select_user_role_page.dart';
 import 'package:trana/features/contract/presentation/screens/share/contract_share_page.dart';
 import 'package:trana/features/contract/presentation/screens/template/contract_template_page.dart';
@@ -54,6 +55,9 @@ abstract class AppRoutes {
   static const contractDetail = '/contract/detail';
   static const biometricLock = '/biometric-lock';
   static const contractRequest = '/contract/request';
+  static const modificationRequest = '/modification/request';
+  static const modifySelectRole = '/modify/select-role';
+  static const modifyContractCreate = '/modify/contract/create';
 }
 
 final appRouter = GoRouter(
@@ -140,7 +144,10 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.contractShare,
-      builder: (context, state) => const ContractSharePage(),
+      builder: (context, state) {
+        final publicCode = state.extra as String;
+        return ContractSharePage(publicCode: publicCode);
+      },
     ),
     GoRoute(
       path: AppRoutes.contractDetail,
@@ -152,7 +159,19 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.contractRequest,
-      builder: (context, state) => const ContractRequestPage(),
+      builder: (context, state) => const ContractRequestDetailPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.modificationRequest,
+      builder: (context, state) => const ModificationRequestPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.modifySelectRole,
+      builder: (context, state) => const SelectUserRolePage(isModify: true),
+    ),
+    GoRoute(
+      path: AppRoutes.modifyContractCreate,
+      builder: (context, state) => const CreateContractPage(isModify: true),
     ),
   ],
 );

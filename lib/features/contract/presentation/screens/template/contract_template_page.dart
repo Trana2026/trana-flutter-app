@@ -19,7 +19,9 @@ class ContractTemplatePage extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontFamily: "PretendardBold",
+            fontWeight: FontWeight.w700,
+            height: 1.5,
+            letterSpacing: -0.17,
           ),
         ),
       ),

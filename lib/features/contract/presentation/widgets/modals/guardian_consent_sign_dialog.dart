@@ -1,8 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart'; 
-import 'package:hooks_riverpod/hooks_riverpod.dart'; 
+import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/router/app_router.dart';
+import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/delete_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_selection_card.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 
 class GuardianConsentSignDialog extends HookConsumerWidget {
@@ -10,21 +21,47 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final createState = ref.watch(createContractViewModelProvider);
+    final createVM = ref.read(createContractViewModelProvider.notifier);
+    final deleteVM = ref.read(deleteContractViewModelProvider.notifier);
     final selectedIndex = useState<int?>(null);
+    // 0: 선택, 1: 인증 진행 중, 2: 인증 완료
+    final phase = useState(0);
     final bool isAnySelected = selectedIndex.value != null;
+
+    useEffect(() {
+      if (phase.value != 1) return null;
+      final timer = Timer.periodic(const Duration(seconds: 3), (t) async {
+        final approved = await createVM.checkConsentApproved();
+        if (approved) {
+          t.cancel();
+          phase.value = 2;
+        }
+      });
+      return timer.cancel;
+    }, [phase.value]);
+
+    useEffect(() {
+      if (phase.value != 2) return null;
+      final timer = Timer(const Duration(seconds: 3), () {
+        Navigator.pop(context);
+        context.push(AppRoutes.selectRole);
+      });
+      return timer.cancel;
+    }, [phase.value]);
 
     return Dialog(
       backgroundColor: vrc(context).background,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(17, 20, 17, 17),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      child: Container(
+        width: 340,
+        padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 44,
-              height: 44,
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
                 color: fxc(context).subtitleBlue,
                 shape: BoxShape.circle,
@@ -32,69 +69,222 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
               child: Icon(
                 Icons.shield_outlined,
                 color: fxc(context).iconInfo,
-                size: 22,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              "계약 방식을 선택해 주세요",
-              style: TextStyle(
-                color: vrc(context).textPrimary,
-                fontSize: 18,
-                fontFamily: "PretendardBold"
+                size: 24,
               ),
             ),
             const SizedBox(height: 12),
 
-            GuardianSelectionCard(
-              title: "법정대리인에게 동의 요청",
-              subtitle: "완전한 법적 효력이 발생합니다(권장)",
-              icon: Icons.check_circle_outline,
-              isSelected: selectedIndex.value == 0,
-              activeColor: fxc(context).brandColor!,
-              activeBgColor: fxc(context).subtitleGreen!,
-              activeTextColor: fxc(context).textBrand!,
-              iconBgColor: fxc(context).subtitleGreen!,
-              iconColor: fxc(context).iconBrand!,
-              onTap: () => selectedIndex.value = 0,
-            ),
-            const SizedBox(height: 7),
+            if (phase.value == 0) ...[
+              Text(
+                "계약 방식을 선택해 주세요",
+                style: context.txt(
+                  color: vrc(context).textPrimary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 12),
+              GuardianSelectionCard(
+                title: "법정대리인에게 동의 요청",
+                subtitle: "완전한 법적 효력이 발생합니다(권장)",
+                icon: CooliconsIcon.circleCheck,
+                isSelected: selectedIndex.value == 0,
+                activeColor: fxc(context).brandColor!,
+                activeBgColor: fxc(context).subtitleGreen!,
+                onTap: () async {
+                  selectedIndex.value = 0;
 
-            GuardianSelectionCard(
-              title: "동의 없이 진행",
-              subtitle: "효력이 제한되며 상대방에게 표시됩니다",
-              icon: Icons.warning_amber_rounded,
-              isSelected: selectedIndex.value == 1,
-              activeColor: fxc(context).iconDanger!,
-              activeBgColor: fxc(context).subtitleError!,
-              activeTextColor: fxc(context).textDanger!,
-              iconBgColor: fxc(context).subtitleError!,
-              iconColor: fxc(context).iconDanger!,
-              isWarning: true,
-              onTap: () => selectedIndex.value = 1,
-            ),
+                  final success = await createVM.createLink();
+                  if (!context.mounted) return;
+                  if (!success) {
+                    showErrorToast(
+                      context,
+                      ref.read(createContractViewModelProvider).error!,
+                    );
+                    createVM.clearError();
+                    return;
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
 
-            const SizedBox(height: 15),
+              if (selectedIndex.value == 0) ...[
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 8,
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          color: vrc(context).secondaryColor,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Text(
+                          createState.verifyUrl ?? '',
+                          style: context.txt(
+                            color: vrc(context).textPrimary,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      onTap: () {
+                        Clipboard.setData(
+                          ClipboardData(text: createState.verifyUrl ?? ''),
+                        );
+                        showNormalToast(context, "링크가 복사되었습니다", null);
+                      },
+                      child: Container(
+                        height: 52,
+                        width: 52,
+                        decoration: BoxDecoration(
+                          color: vrc(context).secondaryColor,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Center(
+                          child: SvgPicture.asset(
+                            'assets/icons/copy.svg',
+                            height: 24,
+                            width: 24,
+                            fit: BoxFit.contain,
+                            colorFilter: ColorFilter.mode(
+                              fxc(context).brandColor!,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
 
-            PrimaryButton(
-              text: "확인",
-              onTap: isAnySelected ? () => Navigator.pop(context, true) : null,
-              backgroundColor: isAnySelected
-                  ? fxc(context).brandColor!
-                  : vrc(context).disableColor!,
-              foregroundColor: isAnySelected
-                  ? fxc(context).textBrand!
-                  : vrc(context).textDisable!,
-            ),
-            const SizedBox(height: 10),
+              GuardianSelectionCard(
+                title: "동의 없이 진행",
+                subtitle: "효력이 제한되며 상대방에게 표시됩니다",
+                icon: Icons.warning_amber_rounded,
+                isSelected: selectedIndex.value == 1,
+                iconDisabled: selectedIndex.value != 1,
+                activeColor: fxc(context).iconDanger!,
+                activeBgColor: fxc(context).subtitleError!,
+                onTap: () => selectedIndex.value = 1,
+              ),
+              const SizedBox(height: 12),
+              PrimaryButton(
+                text: "확인",
+                onTap: () {
+                  if (!isAnySelected) return;
+                  if (selectedIndex.value == 0) {
+                    phase.value = 1;
+                  } else {
+                    Navigator.pop(context);
+                    context.push(AppRoutes.selectRole);
+                  }
+                },
+                backgroundColor: isAnySelected
+                    ? fxc(context).brandColor!
+                    : vrc(context).disableColor!,
+                foregroundColor: isAnySelected
+                    ? fxc(context).textBrand!
+                    : vrc(context).textDisable!,
+              ),
+            ] else if (phase.value == 1) ...[
+              Text(
+                "인증이 진행 중입니다",
+                style: context.txt(
+                  color: vrc(context).textPrimary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                "보호자분께서 본인 인증을 진행하고 있어요.\n완료되면 알림을 보내드릴게요.",
+                textAlign: TextAlign.center,
+                style: context.txt(),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 120,
+                width: 300,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: fxc(context).brandColor,
+                    strokeWidth: 3,
+                  ),
+                ),
+              ),
+            ] else ...[
+              Text(
+                "인증 완료!",
+                style: context.txt(
+                  color: vrc(context).textPrimary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                "이제 법정대리인의 동의 하에\n안전하게 계약을 생성할 수 있어요.",
+                textAlign: TextAlign.center,
+                style: context.txt(),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 120,
+                width: 300,
+                child: Center(
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: fxc(context).subtitleGreen,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      CooliconsIcon.check,
+                      color: fxc(context).iconBrand,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+
+            const SizedBox(height: 12),
             InkWell(
-              onTap: () => Navigator.pop(context),
+              onTap: () async {
+                final success = await deleteVM.deleteDraft(
+                  createState.publicCode!,
+                );
+                if (!context.mounted) return;
+                if (!success) {
+                  showErrorToast(
+                    context,
+                    ref.read(deleteContractViewModelProvider).error!,
+                  );
+                  deleteVM.clearError();
+                  return;
+                }
+
+                context.pop();
+              },
               child: Text(
                 "취소하고 돌아가기",
-                style: TextStyle(
+                style: context.txt(
                   color: vrc(context).textTertiary,
-                  fontSize: 13,
-                  fontFamily: "PretendardRegular"
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ),

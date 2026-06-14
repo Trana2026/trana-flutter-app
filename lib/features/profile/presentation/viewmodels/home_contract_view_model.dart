@@ -2,28 +2,19 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
-import 'package:trana/features/contract/domain/entities/contracts_entity.dart';
-import 'package:trana/features/contract/domain/enums/role.dart';
-import 'package:trana/features/profile/presentation/providers/current_user_provider.dart';
+import 'package:trana/features/contract/domain/entities/contract_entity.dart';
+import 'package:trana/features/contract/domain/enums/contract_status.dart';
 
 part 'home_contract_view_model.freezed.dart';
 part 'home_contract_view_model.g.dart';
-
-// ==================== Model ====================
-
-class ContractSummary {
-  const ContractSummary({required this.contract, required this.myRole});
-
-  final ContractsEntity contract;
-  final Role myRole;
-}
 
 // ==================== State ====================
 
 @freezed
 abstract class HomeContractState with _$HomeContractState {
   const factory HomeContractState({
-    @Default([]) List<ContractSummary> recentContracts, // 최근 계약 정보 + 사용자의 역할 목록
+    @Default([]) List<ContractEntity> myContracts, // 사용자의 계약 목록
+    ContractStatus? selectedStatus, // 상태 필터 선택값
     @Default(false) bool isLoading,
     String? error,
   }) = _HomeContractState;
@@ -33,43 +24,67 @@ abstract class HomeContractState with _$HomeContractState {
 
 @Riverpod(keepAlive: true)
 class HomeContractViewModel extends _$HomeContractViewModel {
+  static const _draftGroup = [
+    ContractStatus.inProgress,
+    ContractStatus.draft,
+    ContractStatus.ready,
+  ];
+
   @override
   HomeContractState build() => const HomeContractState();
 
-  /// 최근 계약 정보 + 사용자의 역할 목록 불러오기
-  Future<void> readContractSummaries() async {
-    state = state.copyWith(isLoading: true, error: null);
-    final userId = ref.read(currentUserProvider);
+  /// 현재 사용자의 계약 목록 불러오기 (성공 여부 반환)
+  Future<bool> readMyContracts() async {
+    state = state.copyWith(isLoading: true);
 
-    final contractsResult = await ref
-        .read(contractsRepositoryProvider)
-        .readRecentContracts(userId, 30);
+    final selected = state.selectedStatus;
+    final isDraftGroup = selected != null && _draftGroup.contains(selected);
 
-    final List<ContractsEntity> contracts;
-    switch (contractsResult) {
-      case Failure(:final failure):
-        state = state.copyWith(isLoading: false, error: failure.message);
-        return;
-      case Success(:final data):
-        contracts = data;
+    if (isDraftGroup) {
+      final results = await Future.wait(
+        _draftGroup.map(
+          (s) =>
+              ref.read(contractRepositoryProvider).readMyContracts(status: s),
+        ),
+      );
+
+      final contracts = <ContractEntity>[];
+      String? error;
+      for (final result in results) {
+        switch (result) {
+          case Success(:final data):
+            contracts.addAll(data);
+          case Failure(:final failure):
+            error = failure.message;
+        }
+      }
+
+      state = state.copyWith(
+        isLoading: false,
+        myContracts: contracts,
+        error: error,
+      );
+      return error == null;
+    } else {
+      final result = await ref
+          .read(contractRepositoryProvider)
+          .readMyContracts(status: selected);
+
+      switch (result) {
+        case Failure(:final failure):
+          state = state.copyWith(isLoading: false, error: failure.message);
+          return false;
+        case Success(:final data):
+          state = state.copyWith(isLoading: false, myContracts: data);
+          return true;
+      }
     }
+  }
 
-    final summaries = await Future.wait(
-      contracts.map((contract) async {
-        final partiesResult = await ref
-            .read(contractPartiesRepositoryProvider)
-            .readContractParties(contract.id!);
-        final myRole = switch (partiesResult) {
-          Success(:final data) =>
-            data.where((p) => p.userId == userId).firstOrNull?.role ??
-                Role.seller,
-          Failure() => Role.seller,
-        };
-        return ContractSummary(contract: contract, myRole: myRole);
-      }),
-    );
-
-    state = state.copyWith(isLoading: false, recentContracts: summaries);
+  /// 상태별 필터 적용
+  Future<void> applyStatus(ContractStatus? status) async {
+    state = state.copyWith(selectedStatus: status);
+    await readMyContracts();
   }
 
   void clearError() => state = state.copyWith(error: null);

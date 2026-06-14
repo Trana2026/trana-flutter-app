@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/contract_field.dart';
 
@@ -10,7 +11,6 @@ class ContractFormField extends HookConsumerWidget {
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final int maxLines;
-  final Widget? trailing;
   final void Function(String)? onChanged;
 
   const ContractFormField({
@@ -21,7 +21,6 @@ class ContractFormField extends HookConsumerWidget {
     this.controller,
     this.keyboardType,
     this.maxLines = 1,
-    this.trailing,
     this.onChanged,
   });
 
@@ -32,21 +31,16 @@ class ContractFormField extends HookConsumerWidget {
       children: [
         Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 1.5),
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: vrc(context).textTertiary,
-                  fontSize: 15,
-                  fontFamily: "PretendardMedium",
-                ),
+            Text(
+              label,
+              style: context.txt(
+                color: vrc(context).textTertiary,
+                fontSize: 12,
               ),
             ),
-            if (trailing != null) ...[const SizedBox(width: 6), trailing!],
           ],
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 4),
         ContractField(
           onChanged: onChanged,
           hintText: hintText,
@@ -60,13 +54,7 @@ class ContractFormField extends HookConsumerWidget {
             padding: const EdgeInsets.only(top: 4),
             child: Text(
               errorText!,
-              style: TextStyle(
-                color: fxc(context).textDanger,
-                fontSize: 12,
-                fontFamily: "PretendardMedium",
-                height: 1.5,
-                letterSpacing: 0.16,
-              ),
+              style: context.txt(color: fxc(context).textDanger, fontSize: 12),
             ),
           ),
       ],

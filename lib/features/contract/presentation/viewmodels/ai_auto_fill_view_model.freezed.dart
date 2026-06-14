@@ -14,6 +14,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AiAutoFillState {
 
+ DateTime? get autoFillConsentedAt;// AI 자동기입 고지 동의 일자
+ int? get extractionId;// 진행 중인 extraction id
+ String get platform;// 플랫폼 (AI 분석 결과)
  String get name;// 상품명 (AI 분석 결과)
  int get amount;// 가격 (AI 분석 결과)
  String get condition;// 상품 상태 (AI 분석 결과)
@@ -29,16 +32,16 @@ $AiAutoFillStateCopyWith<AiAutoFillState> get copyWith => _$AiAutoFillStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AiAutoFillState&&(identical(other.name, name) || other.name == name)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.condition, condition) || other.condition == condition)&&(identical(other.details, details) || other.details == details)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AiAutoFillState&&(identical(other.autoFillConsentedAt, autoFillConsentedAt) || other.autoFillConsentedAt == autoFillConsentedAt)&&(identical(other.extractionId, extractionId) || other.extractionId == extractionId)&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.name, name) || other.name == name)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.condition, condition) || other.condition == condition)&&(identical(other.details, details) || other.details == details)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,amount,condition,details,isLoading,completed,error);
+int get hashCode => Object.hash(runtimeType,autoFillConsentedAt,extractionId,platform,name,amount,condition,details,isLoading,completed,error);
 
 @override
 String toString() {
-  return 'AiAutoFillState(name: $name, amount: $amount, condition: $condition, details: $details, isLoading: $isLoading, completed: $completed, error: $error)';
+  return 'AiAutoFillState(autoFillConsentedAt: $autoFillConsentedAt, extractionId: $extractionId, platform: $platform, name: $name, amount: $amount, condition: $condition, details: $details, isLoading: $isLoading, completed: $completed, error: $error)';
 }
 
 
@@ -49,7 +52,7 @@ abstract mixin class $AiAutoFillStateCopyWith<$Res>  {
   factory $AiAutoFillStateCopyWith(AiAutoFillState value, $Res Function(AiAutoFillState) _then) = _$AiAutoFillStateCopyWithImpl;
 @useResult
 $Res call({
- String name, int amount, String condition, String details, bool isLoading, bool completed, String? error
+ DateTime? autoFillConsentedAt, int? extractionId, String platform, String name, int amount, String condition, String details, bool isLoading, bool completed, String? error
 });
 
 
@@ -66,9 +69,12 @@ class _$AiAutoFillStateCopyWithImpl<$Res>
 
 /// Create a copy of AiAutoFillState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? amount = null,Object? condition = null,Object? details = null,Object? isLoading = null,Object? completed = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? autoFillConsentedAt = freezed,Object? extractionId = freezed,Object? platform = null,Object? name = null,Object? amount = null,Object? condition = null,Object? details = null,Object? isLoading = null,Object? completed = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
-name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+autoFillConsentedAt: freezed == autoFillConsentedAt ? _self.autoFillConsentedAt : autoFillConsentedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,extractionId: freezed == extractionId ? _self.extractionId : extractionId // ignore: cast_nullable_to_non_nullable
+as int?,platform: null == platform ? _self.platform : platform // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as int,condition: null == condition ? _self.condition : condition // ignore: cast_nullable_to_non_nullable
 as String,details: null == details ? _self.details : details // ignore: cast_nullable_to_non_nullable
@@ -160,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  int amount,  String condition,  String details,  bool isLoading,  bool completed,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DateTime? autoFillConsentedAt,  int? extractionId,  String platform,  String name,  int amount,  String condition,  String details,  bool isLoading,  bool completed,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AiAutoFillState() when $default != null:
-return $default(_that.name,_that.amount,_that.condition,_that.details,_that.isLoading,_that.completed,_that.error);case _:
+return $default(_that.autoFillConsentedAt,_that.extractionId,_that.platform,_that.name,_that.amount,_that.condition,_that.details,_that.isLoading,_that.completed,_that.error);case _:
   return orElse();
 
 }
@@ -181,10 +187,10 @@ return $default(_that.name,_that.amount,_that.condition,_that.details,_that.isLo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  int amount,  String condition,  String details,  bool isLoading,  bool completed,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DateTime? autoFillConsentedAt,  int? extractionId,  String platform,  String name,  int amount,  String condition,  String details,  bool isLoading,  bool completed,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _AiAutoFillState():
-return $default(_that.name,_that.amount,_that.condition,_that.details,_that.isLoading,_that.completed,_that.error);case _:
+return $default(_that.autoFillConsentedAt,_that.extractionId,_that.platform,_that.name,_that.amount,_that.condition,_that.details,_that.isLoading,_that.completed,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +207,10 @@ return $default(_that.name,_that.amount,_that.condition,_that.details,_that.isLo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  int amount,  String condition,  String details,  bool isLoading,  bool completed,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DateTime? autoFillConsentedAt,  int? extractionId,  String platform,  String name,  int amount,  String condition,  String details,  bool isLoading,  bool completed,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _AiAutoFillState() when $default != null:
-return $default(_that.name,_that.amount,_that.condition,_that.details,_that.isLoading,_that.completed,_that.error);case _:
+return $default(_that.autoFillConsentedAt,_that.extractionId,_that.platform,_that.name,_that.amount,_that.condition,_that.details,_that.isLoading,_that.completed,_that.error);case _:
   return null;
 
 }
@@ -216,9 +222,15 @@ return $default(_that.name,_that.amount,_that.condition,_that.details,_that.isLo
 
 
 class _AiAutoFillState implements AiAutoFillState {
-  const _AiAutoFillState({this.name = '', this.amount = 0, this.condition = '', this.details = '', this.isLoading = false, this.completed = false, this.error});
+  const _AiAutoFillState({this.autoFillConsentedAt, this.extractionId, this.platform = '', this.name = '', this.amount = 0, this.condition = '', this.details = '', this.isLoading = false, this.completed = false, this.error});
   
 
+@override final  DateTime? autoFillConsentedAt;
+// AI 자동기입 고지 동의 일자
+@override final  int? extractionId;
+// 진행 중인 extraction id
+@override@JsonKey() final  String platform;
+// 플랫폼 (AI 분석 결과)
 @override@JsonKey() final  String name;
 // 상품명 (AI 분석 결과)
 @override@JsonKey() final  int amount;
@@ -241,16 +253,16 @@ _$AiAutoFillStateCopyWith<_AiAutoFillState> get copyWith => __$AiAutoFillStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AiAutoFillState&&(identical(other.name, name) || other.name == name)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.condition, condition) || other.condition == condition)&&(identical(other.details, details) || other.details == details)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AiAutoFillState&&(identical(other.autoFillConsentedAt, autoFillConsentedAt) || other.autoFillConsentedAt == autoFillConsentedAt)&&(identical(other.extractionId, extractionId) || other.extractionId == extractionId)&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.name, name) || other.name == name)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.condition, condition) || other.condition == condition)&&(identical(other.details, details) || other.details == details)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.completed, completed) || other.completed == completed)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,amount,condition,details,isLoading,completed,error);
+int get hashCode => Object.hash(runtimeType,autoFillConsentedAt,extractionId,platform,name,amount,condition,details,isLoading,completed,error);
 
 @override
 String toString() {
-  return 'AiAutoFillState(name: $name, amount: $amount, condition: $condition, details: $details, isLoading: $isLoading, completed: $completed, error: $error)';
+  return 'AiAutoFillState(autoFillConsentedAt: $autoFillConsentedAt, extractionId: $extractionId, platform: $platform, name: $name, amount: $amount, condition: $condition, details: $details, isLoading: $isLoading, completed: $completed, error: $error)';
 }
 
 
@@ -261,7 +273,7 @@ abstract mixin class _$AiAutoFillStateCopyWith<$Res> implements $AiAutoFillState
   factory _$AiAutoFillStateCopyWith(_AiAutoFillState value, $Res Function(_AiAutoFillState) _then) = __$AiAutoFillStateCopyWithImpl;
 @override @useResult
 $Res call({
- String name, int amount, String condition, String details, bool isLoading, bool completed, String? error
+ DateTime? autoFillConsentedAt, int? extractionId, String platform, String name, int amount, String condition, String details, bool isLoading, bool completed, String? error
 });
 
 
@@ -278,9 +290,12 @@ class __$AiAutoFillStateCopyWithImpl<$Res>
 
 /// Create a copy of AiAutoFillState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? amount = null,Object? condition = null,Object? details = null,Object? isLoading = null,Object? completed = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? autoFillConsentedAt = freezed,Object? extractionId = freezed,Object? platform = null,Object? name = null,Object? amount = null,Object? condition = null,Object? details = null,Object? isLoading = null,Object? completed = null,Object? error = freezed,}) {
   return _then(_AiAutoFillState(
-name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+autoFillConsentedAt: freezed == autoFillConsentedAt ? _self.autoFillConsentedAt : autoFillConsentedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,extractionId: freezed == extractionId ? _self.extractionId : extractionId // ignore: cast_nullable_to_non_nullable
+as int?,platform: null == platform ? _self.platform : platform // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as int,condition: null == condition ? _self.condition : condition // ignore: cast_nullable_to_non_nullable
 as String,details: null == details ? _self.details : details // ignore: cast_nullable_to_non_nullable
