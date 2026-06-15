@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1091281354673",
+    "project_id": "trana-c4d6b",
+    "storage_bucket": "trana-c4d6b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1091281354673:android:14af936e16ade90fdbc790",
+        "android_client_info": {
+          "package_name": "com.example.trana"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNsMbbTqtMrzIe8pzkYBZRcamHEmznkPs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
