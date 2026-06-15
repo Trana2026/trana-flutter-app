@@ -27,13 +27,15 @@ abstract class CreateContractState with _$CreateContractState {
     @Default(DeliveryType.shipping) DeliveryType deliveryType, // 선택된 거래 방식
     String? publicCode, // 생성된 Draft 의 publicCode
     @Default([]) List<AssetEntity> selectedImages, // 등록한 거래 사진 목록
+    @Default([])
+    List<String> existingAttachmentUrls, // 기존에 등록된 거래 사진 url (수정 모드)
     @Default([]) List<int> attachmentIds, // 업로드된 첨부파일 id 목록
     @Default('') String tradingPlatform, // 입력된 거래 플랫폼
     @Default('') String title, // 입력된 거래 물품명
     @Default(0) int price, // 입력된 거래 금액
     @Default('') String conditionSummary, // 입력된 상품 상태
     @Default('') String conditionDetails, // 입력된 상품 상세 설명
-    @Default(false) bool warranted, // 선택된 보증 제공 여부
+    @Default(0) int warrantyPeriodDays, // 선택된 보증 제공 여부 (0: 미제공, 3: 제공)
     Uint8List? pdfBytes, // 생성된 Pdf 바이트
     @Default(false) bool isLoading,
     String? error,
@@ -47,6 +49,38 @@ class CreateContractViewModel extends _$CreateContractViewModel {
   @override
   CreateContractState build() {
     return const CreateContractState();
+  }
+
+  /// 기존 데이터를 상태에 로드 (수정 모드)
+  void loadFromDraft({
+    required String publicCode,
+    required ConsentType? consentType,
+    required DeliveryType? deliveryType,
+    required Role? role,
+    required List<int> attachmentIds,
+    required List<String> existingAttachmentUrls,
+    required String tradingPlatform,
+    required String title,
+    required int price,
+    required String conditionSummary,
+    required String conditionDetails,
+    required int warrantyPeriodDays,
+  }) {
+    state = state.copyWith(
+      publicCode: publicCode,
+      consentType: consentType,
+      deliveryType: deliveryType ?? state.deliveryType,
+      role: role,
+      attachmentIds: attachmentIds,
+      existingAttachmentUrls: existingAttachmentUrls,
+      selectedImages: [],
+      tradingPlatform: tradingPlatform,
+      title: title,
+      price: price,
+      conditionSummary: conditionSummary,
+      conditionDetails: conditionDetails,
+      warrantyPeriodDays: warrantyPeriodDays,
+    );
   }
 
   /// Draft 생성 (성공 여부 반환)
@@ -83,7 +117,7 @@ class CreateContractViewModel extends _$CreateContractViewModel {
       ),
     };
 
-    _refreshHome();
+    // _refreshHome();
 
     return result is Success;
   }
@@ -199,7 +233,8 @@ class CreateContractViewModel extends _$CreateContractViewModel {
   }
 
   /// 보증 제공 여부 선택
-  void updateWarranted(bool v) => state = state.copyWith(warranted: v);
+  void updateWarrantyPeriod(int v) =>
+      state = state.copyWith(warrantyPeriodDays: v);
 
   /// Draft 항목 업데이트 (성공 여부 반환)
   Future<bool> updateDraftEntries() async {
@@ -215,6 +250,9 @@ class CreateContractViewModel extends _$CreateContractViewModel {
         .updateDraft(
           publicCode: state.publicCode!,
           deliveryType: state.deliveryType,
+          tradingPlatform: state.tradingPlatform.isNotEmpty
+              ? state.tradingPlatform
+              : null,
           title: state.title.isNotEmpty ? state.title : null,
           price: state.price != 0 ? state.price : null,
           conditionSummary: state.conditionSummary.isNotEmpty
@@ -223,7 +261,7 @@ class CreateContractViewModel extends _$CreateContractViewModel {
           conditionDetails: state.conditionDetails.isNotEmpty
               ? state.conditionDetails
               : null,
-          // warranted: state.warranted, // TODO : 백엔드 구현되면 반영
+          warrantyPeriodDays: state.warrantyPeriodDays,
         );
 
     state = switch (result) {

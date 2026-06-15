@@ -10,9 +10,9 @@ import 'package:trana/features/contract/domain/enums/consent_type.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/extensions/contract_status_ui.dart';
 import 'package:trana/features/contract/presentation/screens/detail/widgets/contract_report_bottom_sheet.dart';
+import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/delete_contract_view_model.dart';
-import 'package:trana/features/contract/presentation/viewmodels/modify_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_consent_sign_dialog.dart';
 
 class ContractCtaButtons extends HookConsumerWidget {
@@ -145,32 +145,33 @@ class ContractCtaButtons extends HookConsumerWidget {
 
   Widget writeButton(BuildContext context, WidgetRef ref) {
     final detailState = ref.read(detailContractViewModelProvider);
-    final modifyVM = ref.read(modifyContractViewModelProvider.notifier);
+    final createVM = ref.read(createContractViewModelProvider.notifier);
 
     return _ContractCtaButton(
       disabled: false,
       text: "이어서 작성하기",
       onTap: () {
-        modifyVM.loadFromDraft(
+        createVM.loadFromDraft(
           publicCode: detailState.publicCode,
           consentType: detailState.consentType,
           deliveryType: detailState.deliveryType,
           role: detailState.myRole,
           attachmentIds: detailState.attachmentIds,
           existingAttachmentUrls: detailState.attachmentImageUrls,
+          tradingPlatform: detailState.tradingPlatform ?? '',
           title: detailState.title ?? '',
           price: detailState.price ?? 0,
           conditionSummary: detailState.conditionSummary ?? '',
           conditionDetails: detailState.conditionDetails ?? '',
-          warranted: detailState.warrantyPeriodDays != 0, // TODO : 백엔드 구현되면 반영
+          warrantyPeriodDays: detailState.warrantyPeriodDays,
         );
 
-        switch (ref.read(modifyContractViewModelProvider).consentType) {
+        switch (ref.read(createContractViewModelProvider).consentType) {
           case null:
             return;
           case ConsentType.notApplicable:
             detailState.myRole == null
-                ? context.push(AppRoutes.modifySelectRole)
+                ? context.push(AppRoutes.selectRole)
                 : context.push(AppRoutes.contractCreate);
             return;
           case ConsentType.guardianRequired:

@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 
-class HomeContractTypeSelector extends HookConsumerWidget {
-  const HomeContractTypeSelector({super.key});
+class HomeContractTypeSelector extends StatelessWidget {
+  const HomeContractTypeSelector({
+    super.key,
+    required this.selectedIndex,
+    required this.onSelect,
+  });
+
+  final int selectedIndex;
+  final ValueChanged<int> onSelect;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selectedIndex = useState(0);
-
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
@@ -19,9 +22,24 @@ class HomeContractTypeSelector extends HookConsumerWidget {
       ),
       child: Row(
         children: [
-          _SelectItem(label: '전체', index: 0, selectedIndex: selectedIndex),
-          _SelectItem(label: '요청받은 계약', index: 1, selectedIndex: selectedIndex),
-          _SelectItem(label: '수신한 계약', index: 2, selectedIndex: selectedIndex),
+          _SelectItem(
+            label: '전체',
+            index: 0,
+            selectedIndex: selectedIndex,
+            onSelect: onSelect,
+          ),
+          _SelectItem(
+            label: '요청한 계약',
+            index: 1,
+            selectedIndex: selectedIndex,
+            onSelect: onSelect,
+          ),
+          _SelectItem(
+            label: '수신한 계약',
+            index: 2,
+            selectedIndex: selectedIndex,
+            onSelect: onSelect,
+          ),
         ],
       ),
     );
@@ -33,18 +51,20 @@ class _SelectItem extends StatelessWidget {
     required this.label,
     required this.index,
     required this.selectedIndex,
+    required this.onSelect,
   });
 
   final String label;
   final int index;
-  final ValueNotifier<int> selectedIndex;
+  final int selectedIndex;
+  final ValueChanged<int> onSelect;
 
   @override
   Widget build(BuildContext context) {
-    final isSelected = selectedIndex.value == index;
+    final isSelected = selectedIndex == index;
 
     return GestureDetector(
-      onTap: () => selectedIndex.value = index,
+      onTap: () => onSelect(index),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(

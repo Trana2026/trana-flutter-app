@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ContractDto {
 
- String get publicCode; String get status; String? get title; int? get price; String? get myRole; int get attachmentCount; String? get firstAttachmentUrl; DateTime get updatedAt;
+ String get publicCode; String get status; String? get title; int? get price; bool get isCreator; String? get myRole; int get attachmentCount; String? get firstAttachmentUrl; DateTime get updatedAt;
 /// Create a copy of ContractDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ContractDtoCopyWith<ContractDto> get copyWith => _$ContractDtoCopyWithImpl<Cont
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContractDto&&(identical(other.publicCode, publicCode) || other.publicCode == publicCode)&&(identical(other.status, status) || other.status == status)&&(identical(other.title, title) || other.title == title)&&(identical(other.price, price) || other.price == price)&&(identical(other.myRole, myRole) || other.myRole == myRole)&&(identical(other.attachmentCount, attachmentCount) || other.attachmentCount == attachmentCount)&&(identical(other.firstAttachmentUrl, firstAttachmentUrl) || other.firstAttachmentUrl == firstAttachmentUrl)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContractDto&&(identical(other.publicCode, publicCode) || other.publicCode == publicCode)&&(identical(other.status, status) || other.status == status)&&(identical(other.title, title) || other.title == title)&&(identical(other.price, price) || other.price == price)&&(identical(other.isCreator, isCreator) || other.isCreator == isCreator)&&(identical(other.myRole, myRole) || other.myRole == myRole)&&(identical(other.attachmentCount, attachmentCount) || other.attachmentCount == attachmentCount)&&(identical(other.firstAttachmentUrl, firstAttachmentUrl) || other.firstAttachmentUrl == firstAttachmentUrl)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,publicCode,status,title,price,myRole,attachmentCount,firstAttachmentUrl,updatedAt);
+int get hashCode => Object.hash(runtimeType,publicCode,status,title,price,isCreator,myRole,attachmentCount,firstAttachmentUrl,updatedAt);
 
 @override
 String toString() {
-  return 'ContractDto(publicCode: $publicCode, status: $status, title: $title, price: $price, myRole: $myRole, attachmentCount: $attachmentCount, firstAttachmentUrl: $firstAttachmentUrl, updatedAt: $updatedAt)';
+  return 'ContractDto(publicCode: $publicCode, status: $status, title: $title, price: $price, isCreator: $isCreator, myRole: $myRole, attachmentCount: $attachmentCount, firstAttachmentUrl: $firstAttachmentUrl, updatedAt: $updatedAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ContractDtoCopyWith<$Res>  {
   factory $ContractDtoCopyWith(ContractDto value, $Res Function(ContractDto) _then) = _$ContractDtoCopyWithImpl;
 @useResult
 $Res call({
- String publicCode, String status, String? title, int? price, String? myRole, int attachmentCount, String? firstAttachmentUrl, DateTime updatedAt
+ String publicCode, String status, String? title, int? price, bool isCreator, String? myRole, int attachmentCount, String? firstAttachmentUrl, DateTime updatedAt
 });
 
 
@@ -65,13 +65,14 @@ class _$ContractDtoCopyWithImpl<$Res>
 
 /// Create a copy of ContractDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? publicCode = null,Object? status = null,Object? title = freezed,Object? price = freezed,Object? myRole = freezed,Object? attachmentCount = null,Object? firstAttachmentUrl = freezed,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? publicCode = null,Object? status = null,Object? title = freezed,Object? price = freezed,Object? isCreator = null,Object? myRole = freezed,Object? attachmentCount = null,Object? firstAttachmentUrl = freezed,Object? updatedAt = null,}) {
   return _then(_self.copyWith(
 publicCode: null == publicCode ? _self.publicCode : publicCode // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,price: freezed == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
-as int?,myRole: freezed == myRole ? _self.myRole : myRole // ignore: cast_nullable_to_non_nullable
+as int?,isCreator: null == isCreator ? _self.isCreator : isCreator // ignore: cast_nullable_to_non_nullable
+as bool,myRole: freezed == myRole ? _self.myRole : myRole // ignore: cast_nullable_to_non_nullable
 as String?,attachmentCount: null == attachmentCount ? _self.attachmentCount : attachmentCount // ignore: cast_nullable_to_non_nullable
 as int,firstAttachmentUrl: freezed == firstAttachmentUrl ? _self.firstAttachmentUrl : firstAttachmentUrl // ignore: cast_nullable_to_non_nullable
 as String?,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
@@ -160,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String publicCode,  String status,  String? title,  int? price,  String? myRole,  int attachmentCount,  String? firstAttachmentUrl,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String publicCode,  String status,  String? title,  int? price,  bool isCreator,  String? myRole,  int attachmentCount,  String? firstAttachmentUrl,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ContractDto() when $default != null:
-return $default(_that.publicCode,_that.status,_that.title,_that.price,_that.myRole,_that.attachmentCount,_that.firstAttachmentUrl,_that.updatedAt);case _:
+return $default(_that.publicCode,_that.status,_that.title,_that.price,_that.isCreator,_that.myRole,_that.attachmentCount,_that.firstAttachmentUrl,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -181,10 +182,10 @@ return $default(_that.publicCode,_that.status,_that.title,_that.price,_that.myRo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String publicCode,  String status,  String? title,  int? price,  String? myRole,  int attachmentCount,  String? firstAttachmentUrl,  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String publicCode,  String status,  String? title,  int? price,  bool isCreator,  String? myRole,  int attachmentCount,  String? firstAttachmentUrl,  DateTime updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _ContractDto():
-return $default(_that.publicCode,_that.status,_that.title,_that.price,_that.myRole,_that.attachmentCount,_that.firstAttachmentUrl,_that.updatedAt);case _:
+return $default(_that.publicCode,_that.status,_that.title,_that.price,_that.isCreator,_that.myRole,_that.attachmentCount,_that.firstAttachmentUrl,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +202,10 @@ return $default(_that.publicCode,_that.status,_that.title,_that.price,_that.myRo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String publicCode,  String status,  String? title,  int? price,  String? myRole,  int attachmentCount,  String? firstAttachmentUrl,  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String publicCode,  String status,  String? title,  int? price,  bool isCreator,  String? myRole,  int attachmentCount,  String? firstAttachmentUrl,  DateTime updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _ContractDto() when $default != null:
-return $default(_that.publicCode,_that.status,_that.title,_that.price,_that.myRole,_that.attachmentCount,_that.firstAttachmentUrl,_that.updatedAt);case _:
+return $default(_that.publicCode,_that.status,_that.title,_that.price,_that.isCreator,_that.myRole,_that.attachmentCount,_that.firstAttachmentUrl,_that.updatedAt);case _:
   return null;
 
 }
@@ -216,13 +217,14 @@ return $default(_that.publicCode,_that.status,_that.title,_that.price,_that.myRo
 @JsonSerializable()
 
 class _ContractDto implements ContractDto {
-  const _ContractDto({required this.publicCode, required this.status, this.title, this.price, this.myRole, required this.attachmentCount, this.firstAttachmentUrl, required this.updatedAt});
+  const _ContractDto({required this.publicCode, required this.status, this.title, this.price, required this.isCreator, this.myRole, required this.attachmentCount, this.firstAttachmentUrl, required this.updatedAt});
   factory _ContractDto.fromJson(Map<String, dynamic> json) => _$ContractDtoFromJson(json);
 
 @override final  String publicCode;
 @override final  String status;
 @override final  String? title;
 @override final  int? price;
+@override final  bool isCreator;
 @override final  String? myRole;
 @override final  int attachmentCount;
 @override final  String? firstAttachmentUrl;
@@ -241,16 +243,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ContractDto&&(identical(other.publicCode, publicCode) || other.publicCode == publicCode)&&(identical(other.status, status) || other.status == status)&&(identical(other.title, title) || other.title == title)&&(identical(other.price, price) || other.price == price)&&(identical(other.myRole, myRole) || other.myRole == myRole)&&(identical(other.attachmentCount, attachmentCount) || other.attachmentCount == attachmentCount)&&(identical(other.firstAttachmentUrl, firstAttachmentUrl) || other.firstAttachmentUrl == firstAttachmentUrl)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ContractDto&&(identical(other.publicCode, publicCode) || other.publicCode == publicCode)&&(identical(other.status, status) || other.status == status)&&(identical(other.title, title) || other.title == title)&&(identical(other.price, price) || other.price == price)&&(identical(other.isCreator, isCreator) || other.isCreator == isCreator)&&(identical(other.myRole, myRole) || other.myRole == myRole)&&(identical(other.attachmentCount, attachmentCount) || other.attachmentCount == attachmentCount)&&(identical(other.firstAttachmentUrl, firstAttachmentUrl) || other.firstAttachmentUrl == firstAttachmentUrl)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,publicCode,status,title,price,myRole,attachmentCount,firstAttachmentUrl,updatedAt);
+int get hashCode => Object.hash(runtimeType,publicCode,status,title,price,isCreator,myRole,attachmentCount,firstAttachmentUrl,updatedAt);
 
 @override
 String toString() {
-  return 'ContractDto(publicCode: $publicCode, status: $status, title: $title, price: $price, myRole: $myRole, attachmentCount: $attachmentCount, firstAttachmentUrl: $firstAttachmentUrl, updatedAt: $updatedAt)';
+  return 'ContractDto(publicCode: $publicCode, status: $status, title: $title, price: $price, isCreator: $isCreator, myRole: $myRole, attachmentCount: $attachmentCount, firstAttachmentUrl: $firstAttachmentUrl, updatedAt: $updatedAt)';
 }
 
 
@@ -261,7 +263,7 @@ abstract mixin class _$ContractDtoCopyWith<$Res> implements $ContractDtoCopyWith
   factory _$ContractDtoCopyWith(_ContractDto value, $Res Function(_ContractDto) _then) = __$ContractDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String publicCode, String status, String? title, int? price, String? myRole, int attachmentCount, String? firstAttachmentUrl, DateTime updatedAt
+ String publicCode, String status, String? title, int? price, bool isCreator, String? myRole, int attachmentCount, String? firstAttachmentUrl, DateTime updatedAt
 });
 
 
@@ -278,13 +280,14 @@ class __$ContractDtoCopyWithImpl<$Res>
 
 /// Create a copy of ContractDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? publicCode = null,Object? status = null,Object? title = freezed,Object? price = freezed,Object? myRole = freezed,Object? attachmentCount = null,Object? firstAttachmentUrl = freezed,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? publicCode = null,Object? status = null,Object? title = freezed,Object? price = freezed,Object? isCreator = null,Object? myRole = freezed,Object? attachmentCount = null,Object? firstAttachmentUrl = freezed,Object? updatedAt = null,}) {
   return _then(_ContractDto(
 publicCode: null == publicCode ? _self.publicCode : publicCode // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,price: freezed == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
-as int?,myRole: freezed == myRole ? _self.myRole : myRole // ignore: cast_nullable_to_non_nullable
+as int?,isCreator: null == isCreator ? _self.isCreator : isCreator // ignore: cast_nullable_to_non_nullable
+as bool,myRole: freezed == myRole ? _self.myRole : myRole // ignore: cast_nullable_to_non_nullable
 as String?,attachmentCount: null == attachmentCount ? _self.attachmentCount : attachmentCount // ignore: cast_nullable_to_non_nullable
 as int,firstAttachmentUrl: freezed == firstAttachmentUrl ? _self.firstAttachmentUrl : firstAttachmentUrl // ignore: cast_nullable_to_non_nullable
 as String?,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable

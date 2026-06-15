@@ -15,10 +15,7 @@ class HomeSignRequestBanner extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final homeState = ref.watch(homeContractViewModelProvider);
     final count = homeState.myContracts
-        .where(
-          (c) => c.status == ContractStatus.shared,
-          // && c.userType == UserType.receiver, // TODO : 백엔드 구현되면 반영
-        )
+        .where((c) => c.status == ContractStatus.shared && !c.isCreator)
         .length;
 
     return GestureDetector(

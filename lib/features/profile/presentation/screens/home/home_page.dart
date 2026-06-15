@@ -23,8 +23,7 @@ class HomePage extends HookConsumerWidget {
 
     final homeState = ref.watch(homeContractViewModelProvider);
     final hasSharedContract = homeState.myContracts.any(
-      (c) => c.status == ContractStatus.shared,
-      // && c.userType == UserType.receiver, // TODO : 백엔드 구현되면 반영
+      (c) => c.status == ContractStatus.shared && !c.isCreator,
     );
 
     useEffect(() {
@@ -69,15 +68,16 @@ class HomePage extends HookConsumerWidget {
           IndexedStack(index: currentIndex.value, children: pages),
 
           // 서명 요청 수신 배너
-          // if (hasSharedContract)
-          //   const AnimatedPositioned(
-          //     duration: Duration(milliseconds: 250),
-          //     curve: Curves.easeOut,
-          //     left: 20,
-          //     right: 20,
-          //     bottom: 110,
-          //     child: HomeSignRequestBanner(),
-          //   ),
+          if (hasSharedContract)
+            const AnimatedPositioned(
+              duration: Duration(milliseconds: 250),
+              curve: Curves.easeOut,
+              left: 20,
+              right: 20,
+              bottom: 110,
+              child: HomeSignRequestBanner(),
+            ),
+
           Positioned(
             bottom: 0,
             left: 0,

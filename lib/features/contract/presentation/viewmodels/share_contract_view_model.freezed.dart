@@ -14,7 +14,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ShareContractState {
 
- String? get publicCode; String get receiverName; String get receiverPhone; bool get isLoading; String? get error;
+ String? get publicCode;// 계약 publicCode
+ String get receiverName;// 수신자 이름 입력값
+ String get receiverPhone;// 수신자 번호 입력값
+ bool get isLoading; String? get error;
 /// Create a copy of ShareContractState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -214,8 +217,11 @@ class _ShareContractState implements ShareContractState {
   
 
 @override final  String? publicCode;
+// 계약 publicCode
 @override@JsonKey() final  String receiverName;
+// 수신자 이름 입력값
 @override@JsonKey() final  String receiverPhone;
+// 수신자 번호 입력값
 @override@JsonKey() final  bool isLoading;
 @override final  String? error;
 

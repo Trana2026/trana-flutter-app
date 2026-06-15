@@ -6,42 +6,31 @@ import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
-import 'package:trana/features/contract/domain/utils/string_extensions.dart';
 import 'package:trana/core/widgets/contract_form_field.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
+import 'package:trana/features/contract/domain/utils/string_extensions.dart';
 import 'package:trana/features/contract/presentation/screens/create/widgets/contract_photo_section.dart';
 import 'package:trana/features/contract/presentation/screens/create/widgets/trade_type_selector.dart';
 import 'package:trana/features/contract/presentation/viewmodels/ai_auto_fill_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
-import 'package:trana/features/contract/presentation/viewmodels/modify_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/contract_warranty_section.dart';
 
 class CreateContractPage extends HookConsumerWidget {
-  final bool isModify;
-
-  const CreateContractPage({super.key, this.isModify = false});
+  const CreateContractPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final createState = ref.watch(createContractViewModelProvider);
     final createVM = ref.read(createContractViewModelProvider.notifier);
-    final modifyState = ref.watch(modifyContractViewModelProvider);
-    final modifyVM = ref.read(modifyContractViewModelProvider.notifier);
 
-    final platform = isModify
-        ? modifyState.tradingPlatform
-        : createState.tradingPlatform;
-    final title = isModify ? modifyState.title : createState.title;
-    final price = isModify ? modifyState.price : createState.price;
-    final summary = isModify
-        ? modifyState.conditionSummary
-        : createState.conditionSummary;
-    final detail = isModify
-        ? modifyState.conditionDetails
-        : createState.conditionDetails;
-    final role = isModify ? modifyState.role : createState.role;
+    final platform = createState.tradingPlatform;
+    final title = createState.title;
+    final price = createState.price;
+    final summary = createState.conditionSummary;
+    final detail = createState.conditionDetails;
+    final role = createState.role;
 
     final platformCtr = useTextEditingController(text: platform);
     final nameCtr = useTextEditingController(text: title);
@@ -135,7 +124,7 @@ class CreateContractPage extends HookConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TradeTypeSelector(isModify: isModify),
+                    const TradeTypeSelector(),
                     const SizedBox(height: 20),
                     Text(
                       "계약 상세 내용",
@@ -148,7 +137,7 @@ class CreateContractPage extends HookConsumerWidget {
                     const SizedBox(height: 6),
                     Text("계약의 핵심 조건을 입력해주세요", style: context.txt()),
                     const SizedBox(height: 20),
-                    ContractPhotoSection(isModify: isModify),
+                    const ContractPhotoSection(),
                   ],
                 ),
               ),
@@ -205,8 +194,7 @@ class CreateContractPage extends HookConsumerWidget {
                       controller: detailCtr,
                     ),
                     const SizedBox(height: 8),
-                    if (role == Role.seller)
-                      ContractWarrantySection(isModify: isModify),
+                    if (role == Role.seller) const ContractWarrantySection(),
                   ],
                 ),
               ),
@@ -226,43 +214,23 @@ class CreateContractPage extends HookConsumerWidget {
               priceError.value = validateInt(priceCtr.text);
               if (priceError.value != null) return;
 
-              final bool success;
-              if (isModify) {
-                modifyVM.updateEntries(
-                  platformText: platformCtr.text,
-                  nameText: nameCtr.text,
-                  priceText: priceCtr.text,
-                  conditionText: conditionCtr.text,
-                  detailText: detailCtr.text,
+              createVM.updateEntries(
+                platformText: platformCtr.text,
+                nameText: nameCtr.text,
+                priceText: priceCtr.text,
+                conditionText: conditionCtr.text,
+                detailText: detailCtr.text,
+              );
+
+              final success = await createVM.updateDraftEntries();
+              if (!context.mounted) return;
+              if (!success) {
+                showErrorToast(
+                  context,
+                  ref.read(createContractViewModelProvider).error!,
                 );
-                success = await modifyVM.updateDraftEntries();
-                if (!context.mounted) return;
-                if (!success) {
-                  showErrorToast(
-                    context,
-                    ref.read(modifyContractViewModelProvider).error!,
-                  );
-                  modifyVM.clearError();
-                  return;
-                }
-              } else {
-                createVM.updateEntries(
-                  platformText: platformCtr.text,
-                  nameText: nameCtr.text,
-                  priceText: priceCtr.text,
-                  conditionText: conditionCtr.text,
-                  detailText: detailCtr.text,
-                );
-                success = await createVM.updateDraftEntries();
-                if (!context.mounted) return;
-                if (!success) {
-                  showErrorToast(
-                    context,
-                    ref.read(createContractViewModelProvider).error!,
-                  );
-                  createVM.clearError();
-                  return;
-                }
+                createVM.clearError();
+                return;
               }
 
               context.push(AppRoutes.contractPreview);

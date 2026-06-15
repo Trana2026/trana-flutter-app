@@ -8,55 +8,33 @@ import 'package:trana/core/widgets/custom_loading_bar.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/contract/presentation/viewmodels/ai_auto_fill_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
-import 'package:trana/features/contract/presentation/viewmodels/modify_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/ai_autofill_notice_dialog.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class ContractPhotoSection extends HookConsumerWidget {
-  final bool isModify;
-
-  const ContractPhotoSection({super.key, this.isModify = false});
+  const ContractPhotoSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final aiState = ref.watch(aiAutoFillViewModelProvider);
+    final createState = ref.watch(createContractViewModelProvider);
     final createVM = ref.read(createContractViewModelProvider.notifier);
-    final modifyState = ref.watch(modifyContractViewModelProvider);
-    final modifyVM = ref.read(modifyContractViewModelProvider.notifier);
 
-    final existingUrls = isModify
-        ? modifyState.existingAttachmentUrls
-        : const <String>[];
     final selectedImages = useState<List<AssetEntity>>([]);
+    final existingUrls = createState.existingAttachmentUrls;
     final length = existingUrls.length + selectedImages.value.length;
 
     useEffect(() {
-      // modify 모드에서 초기 마운트(빈 선택) 시 기존 첨부파일 삭제 방지
-      if (isModify && selectedImages.value.isEmpty) return null;
-
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        if (isModify) {
-          modifyVM.updateImages(selectedImages.value);
-          final success = await modifyVM.updateAttachments();
-          if (!context.mounted) return;
-          if (!success) {
-            showErrorToast(
-              context,
-              ref.read(modifyContractViewModelProvider).error!,
-            );
-            modifyVM.clearError();
-          }
-        } else {
-          createVM.updateImages(selectedImages.value);
-          final success = await createVM.updateAttachments();
-          if (!context.mounted) return;
-          if (!success) {
-            showErrorToast(
-              context,
-              ref.read(createContractViewModelProvider).error!,
-            );
-            createVM.clearError();
-          }
+        createVM.updateImages(selectedImages.value);
+        final success = await createVM.updateAttachments();
+        if (!context.mounted) return;
+        if (!success) {
+          showErrorToast(
+            context,
+            ref.read(createContractViewModelProvider).error!,
+          );
+          createVM.clearError();
         }
       });
       return null;

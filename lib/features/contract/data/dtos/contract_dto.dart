@@ -10,6 +10,7 @@ abstract class ContractDto with _$ContractDto {
     required String status,
     String? title,
     int? price,
+    required bool isCreator,
     String? myRole,
     required int attachmentCount,
     String? firstAttachmentUrl,
