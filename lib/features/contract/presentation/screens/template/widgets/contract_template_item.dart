@@ -49,7 +49,8 @@ class ContractTemplateItem extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textTertiary,
                   fontSize: 14,
-                  fontFamily: "PretendardMedium",
+                  fontWeight: FontWeight.w500,
+                  height: 1.5,
                   letterSpacing: -0.2,
                 ),
               ),
@@ -58,7 +59,8 @@ class ContractTemplateItem extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textPrimary,
                   fontSize: 21,
-                  fontFamily: "PretendardBold",
+                  fontWeight: FontWeight.w700,
+                  height: 1.5,
                   letterSpacing: -0.2,
                 ),
               ),
@@ -67,7 +69,7 @@ class ContractTemplateItem extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textTertiary,
                   fontSize: 14,
-                  fontFamily: "PretendardMedium",
+                  fontWeight: FontWeight.w500,
                   height: 1.2,
                   letterSpacing: -0.2,
                 ),

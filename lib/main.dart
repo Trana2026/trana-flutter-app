@@ -21,11 +21,7 @@ Future<void> main() async {
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
-  runApp(
-    const ProviderScope(
-      child: TranaApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: TranaApp()));
 }
 
 class TranaApp extends StatelessWidget {

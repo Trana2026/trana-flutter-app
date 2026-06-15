@@ -59,6 +59,9 @@ dependencies:
   dio: ^5.9.2
   firebase_core: ^4.10.0
   firebase_messaging: ^16.3.0
+  cached_network_image: ^3.4.1
+  path_provider: ^2.1.5
+  flutter_svg: ^2.3.0
 
 dev_dependencies:
   flutter_test:
@@ -90,6 +93,7 @@ flutter:
   assets:
     - .env
     - assets/images/
+    - assets/icons/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -104,6 +108,32 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
+    # Coolicons 아이콘
+    - family: coolicons
+      fonts:
+        - asset: assets/fonts/coolicons.ttf
+    # Prdtendard 폰트
+    - family: Pretendard
+      fonts:
+        - asset: assets/fonts/Pretendard-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Pretendard-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Pretendard-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Pretendard-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Pretendard-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Pretendard-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Pretendard-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Pretendard-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Pretendard-Black.ttf
+          weight: 900
+  # Legacy separate font families (used by non-contract code)
     - family: PretendardBlack
       fonts:
         - asset: assets/fonts/Pretendard-Black.ttf
