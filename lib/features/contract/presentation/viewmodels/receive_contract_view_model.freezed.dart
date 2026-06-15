@@ -14,7 +14,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ReceiveContractState {
 
- String? get invitationToken; bool get isLoading; String? get error;
+ String? get invitationToken;// 수신된 초대 토큰
+ bool get isLoading; String? get error;
 /// Create a copy of ReceiveContractState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -212,6 +213,7 @@ class _ReceiveContractState implements ReceiveContractState {
   
 
 @override final  String? invitationToken;
+// 수신된 초대 토큰
 @override@JsonKey() final  bool isLoading;
 @override final  String? error;
 

@@ -20,13 +20,14 @@ mixin _$CreateContractState {
  DeliveryType get deliveryType;// 선택된 거래 방식
  String? get publicCode;// 생성된 Draft 의 publicCode
  List<AssetEntity> get selectedImages;// 등록한 거래 사진 목록
+ List<String> get existingAttachmentUrls;// 기존에 등록된 거래 사진 url (수정 모드)
  List<int> get attachmentIds;// 업로드된 첨부파일 id 목록
  String get tradingPlatform;// 입력된 거래 플랫폼
  String get title;// 입력된 거래 물품명
  int get price;// 입력된 거래 금액
  String get conditionSummary;// 입력된 상품 상태
  String get conditionDetails;// 입력된 상품 상세 설명
- bool get warranted;// 선택된 보증 제공 여부
+ int get warrantyPeriodDays;// 선택된 보증 제공 여부 (0: 미제공, 3: 제공)
  Uint8List? get pdfBytes;// 생성된 Pdf 바이트
  bool get isLoading; String? get error;
 /// Create a copy of CreateContractState
@@ -39,16 +40,16 @@ $CreateContractStateCopyWith<CreateContractState> get copyWith => _$CreateContra
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateContractState&&(identical(other.consentType, consentType) || other.consentType == consentType)&&(identical(other.verifyUrl, verifyUrl) || other.verifyUrl == verifyUrl)&&(identical(other.role, role) || other.role == role)&&(identical(other.deliveryType, deliveryType) || other.deliveryType == deliveryType)&&(identical(other.publicCode, publicCode) || other.publicCode == publicCode)&&const DeepCollectionEquality().equals(other.selectedImages, selectedImages)&&const DeepCollectionEquality().equals(other.attachmentIds, attachmentIds)&&(identical(other.tradingPlatform, tradingPlatform) || other.tradingPlatform == tradingPlatform)&&(identical(other.title, title) || other.title == title)&&(identical(other.price, price) || other.price == price)&&(identical(other.conditionSummary, conditionSummary) || other.conditionSummary == conditionSummary)&&(identical(other.conditionDetails, conditionDetails) || other.conditionDetails == conditionDetails)&&(identical(other.warranted, warranted) || other.warranted == warranted)&&const DeepCollectionEquality().equals(other.pdfBytes, pdfBytes)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateContractState&&(identical(other.consentType, consentType) || other.consentType == consentType)&&(identical(other.verifyUrl, verifyUrl) || other.verifyUrl == verifyUrl)&&(identical(other.role, role) || other.role == role)&&(identical(other.deliveryType, deliveryType) || other.deliveryType == deliveryType)&&(identical(other.publicCode, publicCode) || other.publicCode == publicCode)&&const DeepCollectionEquality().equals(other.selectedImages, selectedImages)&&const DeepCollectionEquality().equals(other.existingAttachmentUrls, existingAttachmentUrls)&&const DeepCollectionEquality().equals(other.attachmentIds, attachmentIds)&&(identical(other.tradingPlatform, tradingPlatform) || other.tradingPlatform == tradingPlatform)&&(identical(other.title, title) || other.title == title)&&(identical(other.price, price) || other.price == price)&&(identical(other.conditionSummary, conditionSummary) || other.conditionSummary == conditionSummary)&&(identical(other.conditionDetails, conditionDetails) || other.conditionDetails == conditionDetails)&&(identical(other.warrantyPeriodDays, warrantyPeriodDays) || other.warrantyPeriodDays == warrantyPeriodDays)&&const DeepCollectionEquality().equals(other.pdfBytes, pdfBytes)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,consentType,verifyUrl,role,deliveryType,publicCode,const DeepCollectionEquality().hash(selectedImages),const DeepCollectionEquality().hash(attachmentIds),tradingPlatform,title,price,conditionSummary,conditionDetails,warranted,const DeepCollectionEquality().hash(pdfBytes),isLoading,error);
+int get hashCode => Object.hash(runtimeType,consentType,verifyUrl,role,deliveryType,publicCode,const DeepCollectionEquality().hash(selectedImages),const DeepCollectionEquality().hash(existingAttachmentUrls),const DeepCollectionEquality().hash(attachmentIds),tradingPlatform,title,price,conditionSummary,conditionDetails,warrantyPeriodDays,const DeepCollectionEquality().hash(pdfBytes),isLoading,error);
 
 @override
 String toString() {
-  return 'CreateContractState(consentType: $consentType, verifyUrl: $verifyUrl, role: $role, deliveryType: $deliveryType, publicCode: $publicCode, selectedImages: $selectedImages, attachmentIds: $attachmentIds, tradingPlatform: $tradingPlatform, title: $title, price: $price, conditionSummary: $conditionSummary, conditionDetails: $conditionDetails, warranted: $warranted, pdfBytes: $pdfBytes, isLoading: $isLoading, error: $error)';
+  return 'CreateContractState(consentType: $consentType, verifyUrl: $verifyUrl, role: $role, deliveryType: $deliveryType, publicCode: $publicCode, selectedImages: $selectedImages, existingAttachmentUrls: $existingAttachmentUrls, attachmentIds: $attachmentIds, tradingPlatform: $tradingPlatform, title: $title, price: $price, conditionSummary: $conditionSummary, conditionDetails: $conditionDetails, warrantyPeriodDays: $warrantyPeriodDays, pdfBytes: $pdfBytes, isLoading: $isLoading, error: $error)';
 }
 
 
@@ -59,7 +60,7 @@ abstract mixin class $CreateContractStateCopyWith<$Res>  {
   factory $CreateContractStateCopyWith(CreateContractState value, $Res Function(CreateContractState) _then) = _$CreateContractStateCopyWithImpl;
 @useResult
 $Res call({
- ConsentType? consentType, String? verifyUrl, Role? role, DeliveryType deliveryType, String? publicCode, List<AssetEntity> selectedImages, List<int> attachmentIds, String tradingPlatform, String title, int price, String conditionSummary, String conditionDetails, bool warranted, Uint8List? pdfBytes, bool isLoading, String? error
+ ConsentType? consentType, String? verifyUrl, Role? role, DeliveryType deliveryType, String? publicCode, List<AssetEntity> selectedImages, List<String> existingAttachmentUrls, List<int> attachmentIds, String tradingPlatform, String title, int price, String conditionSummary, String conditionDetails, int warrantyPeriodDays, Uint8List? pdfBytes, bool isLoading, String? error
 });
 
 
@@ -76,7 +77,7 @@ class _$CreateContractStateCopyWithImpl<$Res>
 
 /// Create a copy of CreateContractState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? consentType = freezed,Object? verifyUrl = freezed,Object? role = freezed,Object? deliveryType = null,Object? publicCode = freezed,Object? selectedImages = null,Object? attachmentIds = null,Object? tradingPlatform = null,Object? title = null,Object? price = null,Object? conditionSummary = null,Object? conditionDetails = null,Object? warranted = null,Object? pdfBytes = freezed,Object? isLoading = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? consentType = freezed,Object? verifyUrl = freezed,Object? role = freezed,Object? deliveryType = null,Object? publicCode = freezed,Object? selectedImages = null,Object? existingAttachmentUrls = null,Object? attachmentIds = null,Object? tradingPlatform = null,Object? title = null,Object? price = null,Object? conditionSummary = null,Object? conditionDetails = null,Object? warrantyPeriodDays = null,Object? pdfBytes = freezed,Object? isLoading = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
 consentType: freezed == consentType ? _self.consentType : consentType // ignore: cast_nullable_to_non_nullable
 as ConsentType?,verifyUrl: freezed == verifyUrl ? _self.verifyUrl : verifyUrl // ignore: cast_nullable_to_non_nullable
@@ -84,14 +85,15 @@ as String?,role: freezed == role ? _self.role : role // ignore: cast_nullable_to
 as Role?,deliveryType: null == deliveryType ? _self.deliveryType : deliveryType // ignore: cast_nullable_to_non_nullable
 as DeliveryType,publicCode: freezed == publicCode ? _self.publicCode : publicCode // ignore: cast_nullable_to_non_nullable
 as String?,selectedImages: null == selectedImages ? _self.selectedImages : selectedImages // ignore: cast_nullable_to_non_nullable
-as List<AssetEntity>,attachmentIds: null == attachmentIds ? _self.attachmentIds : attachmentIds // ignore: cast_nullable_to_non_nullable
+as List<AssetEntity>,existingAttachmentUrls: null == existingAttachmentUrls ? _self.existingAttachmentUrls : existingAttachmentUrls // ignore: cast_nullable_to_non_nullable
+as List<String>,attachmentIds: null == attachmentIds ? _self.attachmentIds : attachmentIds // ignore: cast_nullable_to_non_nullable
 as List<int>,tradingPlatform: null == tradingPlatform ? _self.tradingPlatform : tradingPlatform // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as int,conditionSummary: null == conditionSummary ? _self.conditionSummary : conditionSummary // ignore: cast_nullable_to_non_nullable
 as String,conditionDetails: null == conditionDetails ? _self.conditionDetails : conditionDetails // ignore: cast_nullable_to_non_nullable
-as String,warranted: null == warranted ? _self.warranted : warranted // ignore: cast_nullable_to_non_nullable
-as bool,pdfBytes: freezed == pdfBytes ? _self.pdfBytes : pdfBytes // ignore: cast_nullable_to_non_nullable
+as String,warrantyPeriodDays: null == warrantyPeriodDays ? _self.warrantyPeriodDays : warrantyPeriodDays // ignore: cast_nullable_to_non_nullable
+as int,pdfBytes: freezed == pdfBytes ? _self.pdfBytes : pdfBytes // ignore: cast_nullable_to_non_nullable
 as Uint8List?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -179,10 +181,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ConsentType? consentType,  String? verifyUrl,  Role? role,  DeliveryType deliveryType,  String? publicCode,  List<AssetEntity> selectedImages,  List<int> attachmentIds,  String tradingPlatform,  String title,  int price,  String conditionSummary,  String conditionDetails,  bool warranted,  Uint8List? pdfBytes,  bool isLoading,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ConsentType? consentType,  String? verifyUrl,  Role? role,  DeliveryType deliveryType,  String? publicCode,  List<AssetEntity> selectedImages,  List<String> existingAttachmentUrls,  List<int> attachmentIds,  String tradingPlatform,  String title,  int price,  String conditionSummary,  String conditionDetails,  int warrantyPeriodDays,  Uint8List? pdfBytes,  bool isLoading,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreateContractState() when $default != null:
-return $default(_that.consentType,_that.verifyUrl,_that.role,_that.deliveryType,_that.publicCode,_that.selectedImages,_that.attachmentIds,_that.tradingPlatform,_that.title,_that.price,_that.conditionSummary,_that.conditionDetails,_that.warranted,_that.pdfBytes,_that.isLoading,_that.error);case _:
+return $default(_that.consentType,_that.verifyUrl,_that.role,_that.deliveryType,_that.publicCode,_that.selectedImages,_that.existingAttachmentUrls,_that.attachmentIds,_that.tradingPlatform,_that.title,_that.price,_that.conditionSummary,_that.conditionDetails,_that.warrantyPeriodDays,_that.pdfBytes,_that.isLoading,_that.error);case _:
   return orElse();
 
 }
@@ -200,10 +202,10 @@ return $default(_that.consentType,_that.verifyUrl,_that.role,_that.deliveryType,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ConsentType? consentType,  String? verifyUrl,  Role? role,  DeliveryType deliveryType,  String? publicCode,  List<AssetEntity> selectedImages,  List<int> attachmentIds,  String tradingPlatform,  String title,  int price,  String conditionSummary,  String conditionDetails,  bool warranted,  Uint8List? pdfBytes,  bool isLoading,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ConsentType? consentType,  String? verifyUrl,  Role? role,  DeliveryType deliveryType,  String? publicCode,  List<AssetEntity> selectedImages,  List<String> existingAttachmentUrls,  List<int> attachmentIds,  String tradingPlatform,  String title,  int price,  String conditionSummary,  String conditionDetails,  int warrantyPeriodDays,  Uint8List? pdfBytes,  bool isLoading,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _CreateContractState():
-return $default(_that.consentType,_that.verifyUrl,_that.role,_that.deliveryType,_that.publicCode,_that.selectedImages,_that.attachmentIds,_that.tradingPlatform,_that.title,_that.price,_that.conditionSummary,_that.conditionDetails,_that.warranted,_that.pdfBytes,_that.isLoading,_that.error);case _:
+return $default(_that.consentType,_that.verifyUrl,_that.role,_that.deliveryType,_that.publicCode,_that.selectedImages,_that.existingAttachmentUrls,_that.attachmentIds,_that.tradingPlatform,_that.title,_that.price,_that.conditionSummary,_that.conditionDetails,_that.warrantyPeriodDays,_that.pdfBytes,_that.isLoading,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -220,10 +222,10 @@ return $default(_that.consentType,_that.verifyUrl,_that.role,_that.deliveryType,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ConsentType? consentType,  String? verifyUrl,  Role? role,  DeliveryType deliveryType,  String? publicCode,  List<AssetEntity> selectedImages,  List<int> attachmentIds,  String tradingPlatform,  String title,  int price,  String conditionSummary,  String conditionDetails,  bool warranted,  Uint8List? pdfBytes,  bool isLoading,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ConsentType? consentType,  String? verifyUrl,  Role? role,  DeliveryType deliveryType,  String? publicCode,  List<AssetEntity> selectedImages,  List<String> existingAttachmentUrls,  List<int> attachmentIds,  String tradingPlatform,  String title,  int price,  String conditionSummary,  String conditionDetails,  int warrantyPeriodDays,  Uint8List? pdfBytes,  bool isLoading,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _CreateContractState() when $default != null:
-return $default(_that.consentType,_that.verifyUrl,_that.role,_that.deliveryType,_that.publicCode,_that.selectedImages,_that.attachmentIds,_that.tradingPlatform,_that.title,_that.price,_that.conditionSummary,_that.conditionDetails,_that.warranted,_that.pdfBytes,_that.isLoading,_that.error);case _:
+return $default(_that.consentType,_that.verifyUrl,_that.role,_that.deliveryType,_that.publicCode,_that.selectedImages,_that.existingAttachmentUrls,_that.attachmentIds,_that.tradingPlatform,_that.title,_that.price,_that.conditionSummary,_that.conditionDetails,_that.warrantyPeriodDays,_that.pdfBytes,_that.isLoading,_that.error);case _:
   return null;
 
 }
@@ -235,7 +237,7 @@ return $default(_that.consentType,_that.verifyUrl,_that.role,_that.deliveryType,
 
 
 class _CreateContractState implements CreateContractState {
-  const _CreateContractState({this.consentType, this.verifyUrl, this.role, this.deliveryType = DeliveryType.shipping, this.publicCode, final  List<AssetEntity> selectedImages = const [], final  List<int> attachmentIds = const [], this.tradingPlatform = '', this.title = '', this.price = 0, this.conditionSummary = '', this.conditionDetails = '', this.warranted = false, this.pdfBytes, this.isLoading = false, this.error}): _selectedImages = selectedImages,_attachmentIds = attachmentIds;
+  const _CreateContractState({this.consentType, this.verifyUrl, this.role, this.deliveryType = DeliveryType.shipping, this.publicCode, final  List<AssetEntity> selectedImages = const [], final  List<String> existingAttachmentUrls = const [], final  List<int> attachmentIds = const [], this.tradingPlatform = '', this.title = '', this.price = 0, this.conditionSummary = '', this.conditionDetails = '', this.warrantyPeriodDays = 0, this.pdfBytes, this.isLoading = false, this.error}): _selectedImages = selectedImages,_existingAttachmentUrls = existingAttachmentUrls,_attachmentIds = attachmentIds;
   
 
 @override final  ConsentType? consentType;
@@ -257,8 +259,17 @@ class _CreateContractState implements CreateContractState {
 }
 
 // 등록한 거래 사진 목록
- final  List<int> _attachmentIds;
+ final  List<String> _existingAttachmentUrls;
 // 등록한 거래 사진 목록
+@override@JsonKey() List<String> get existingAttachmentUrls {
+  if (_existingAttachmentUrls is EqualUnmodifiableListView) return _existingAttachmentUrls;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_existingAttachmentUrls);
+}
+
+// 기존에 등록된 거래 사진 url (수정 모드)
+ final  List<int> _attachmentIds;
+// 기존에 등록된 거래 사진 url (수정 모드)
 @override@JsonKey() List<int> get attachmentIds {
   if (_attachmentIds is EqualUnmodifiableListView) return _attachmentIds;
   // ignore: implicit_dynamic_type
@@ -276,8 +287,8 @@ class _CreateContractState implements CreateContractState {
 // 입력된 상품 상태
 @override@JsonKey() final  String conditionDetails;
 // 입력된 상품 상세 설명
-@override@JsonKey() final  bool warranted;
-// 선택된 보증 제공 여부
+@override@JsonKey() final  int warrantyPeriodDays;
+// 선택된 보증 제공 여부 (0: 미제공, 3: 제공)
 @override final  Uint8List? pdfBytes;
 // 생성된 Pdf 바이트
 @override@JsonKey() final  bool isLoading;
@@ -293,16 +304,16 @@ _$CreateContractStateCopyWith<_CreateContractState> get copyWith => __$CreateCon
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateContractState&&(identical(other.consentType, consentType) || other.consentType == consentType)&&(identical(other.verifyUrl, verifyUrl) || other.verifyUrl == verifyUrl)&&(identical(other.role, role) || other.role == role)&&(identical(other.deliveryType, deliveryType) || other.deliveryType == deliveryType)&&(identical(other.publicCode, publicCode) || other.publicCode == publicCode)&&const DeepCollectionEquality().equals(other._selectedImages, _selectedImages)&&const DeepCollectionEquality().equals(other._attachmentIds, _attachmentIds)&&(identical(other.tradingPlatform, tradingPlatform) || other.tradingPlatform == tradingPlatform)&&(identical(other.title, title) || other.title == title)&&(identical(other.price, price) || other.price == price)&&(identical(other.conditionSummary, conditionSummary) || other.conditionSummary == conditionSummary)&&(identical(other.conditionDetails, conditionDetails) || other.conditionDetails == conditionDetails)&&(identical(other.warranted, warranted) || other.warranted == warranted)&&const DeepCollectionEquality().equals(other.pdfBytes, pdfBytes)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateContractState&&(identical(other.consentType, consentType) || other.consentType == consentType)&&(identical(other.verifyUrl, verifyUrl) || other.verifyUrl == verifyUrl)&&(identical(other.role, role) || other.role == role)&&(identical(other.deliveryType, deliveryType) || other.deliveryType == deliveryType)&&(identical(other.publicCode, publicCode) || other.publicCode == publicCode)&&const DeepCollectionEquality().equals(other._selectedImages, _selectedImages)&&const DeepCollectionEquality().equals(other._existingAttachmentUrls, _existingAttachmentUrls)&&const DeepCollectionEquality().equals(other._attachmentIds, _attachmentIds)&&(identical(other.tradingPlatform, tradingPlatform) || other.tradingPlatform == tradingPlatform)&&(identical(other.title, title) || other.title == title)&&(identical(other.price, price) || other.price == price)&&(identical(other.conditionSummary, conditionSummary) || other.conditionSummary == conditionSummary)&&(identical(other.conditionDetails, conditionDetails) || other.conditionDetails == conditionDetails)&&(identical(other.warrantyPeriodDays, warrantyPeriodDays) || other.warrantyPeriodDays == warrantyPeriodDays)&&const DeepCollectionEquality().equals(other.pdfBytes, pdfBytes)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,consentType,verifyUrl,role,deliveryType,publicCode,const DeepCollectionEquality().hash(_selectedImages),const DeepCollectionEquality().hash(_attachmentIds),tradingPlatform,title,price,conditionSummary,conditionDetails,warranted,const DeepCollectionEquality().hash(pdfBytes),isLoading,error);
+int get hashCode => Object.hash(runtimeType,consentType,verifyUrl,role,deliveryType,publicCode,const DeepCollectionEquality().hash(_selectedImages),const DeepCollectionEquality().hash(_existingAttachmentUrls),const DeepCollectionEquality().hash(_attachmentIds),tradingPlatform,title,price,conditionSummary,conditionDetails,warrantyPeriodDays,const DeepCollectionEquality().hash(pdfBytes),isLoading,error);
 
 @override
 String toString() {
-  return 'CreateContractState(consentType: $consentType, verifyUrl: $verifyUrl, role: $role, deliveryType: $deliveryType, publicCode: $publicCode, selectedImages: $selectedImages, attachmentIds: $attachmentIds, tradingPlatform: $tradingPlatform, title: $title, price: $price, conditionSummary: $conditionSummary, conditionDetails: $conditionDetails, warranted: $warranted, pdfBytes: $pdfBytes, isLoading: $isLoading, error: $error)';
+  return 'CreateContractState(consentType: $consentType, verifyUrl: $verifyUrl, role: $role, deliveryType: $deliveryType, publicCode: $publicCode, selectedImages: $selectedImages, existingAttachmentUrls: $existingAttachmentUrls, attachmentIds: $attachmentIds, tradingPlatform: $tradingPlatform, title: $title, price: $price, conditionSummary: $conditionSummary, conditionDetails: $conditionDetails, warrantyPeriodDays: $warrantyPeriodDays, pdfBytes: $pdfBytes, isLoading: $isLoading, error: $error)';
 }
 
 
@@ -313,7 +324,7 @@ abstract mixin class _$CreateContractStateCopyWith<$Res> implements $CreateContr
   factory _$CreateContractStateCopyWith(_CreateContractState value, $Res Function(_CreateContractState) _then) = __$CreateContractStateCopyWithImpl;
 @override @useResult
 $Res call({
- ConsentType? consentType, String? verifyUrl, Role? role, DeliveryType deliveryType, String? publicCode, List<AssetEntity> selectedImages, List<int> attachmentIds, String tradingPlatform, String title, int price, String conditionSummary, String conditionDetails, bool warranted, Uint8List? pdfBytes, bool isLoading, String? error
+ ConsentType? consentType, String? verifyUrl, Role? role, DeliveryType deliveryType, String? publicCode, List<AssetEntity> selectedImages, List<String> existingAttachmentUrls, List<int> attachmentIds, String tradingPlatform, String title, int price, String conditionSummary, String conditionDetails, int warrantyPeriodDays, Uint8List? pdfBytes, bool isLoading, String? error
 });
 
 
@@ -330,7 +341,7 @@ class __$CreateContractStateCopyWithImpl<$Res>
 
 /// Create a copy of CreateContractState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? consentType = freezed,Object? verifyUrl = freezed,Object? role = freezed,Object? deliveryType = null,Object? publicCode = freezed,Object? selectedImages = null,Object? attachmentIds = null,Object? tradingPlatform = null,Object? title = null,Object? price = null,Object? conditionSummary = null,Object? conditionDetails = null,Object? warranted = null,Object? pdfBytes = freezed,Object? isLoading = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? consentType = freezed,Object? verifyUrl = freezed,Object? role = freezed,Object? deliveryType = null,Object? publicCode = freezed,Object? selectedImages = null,Object? existingAttachmentUrls = null,Object? attachmentIds = null,Object? tradingPlatform = null,Object? title = null,Object? price = null,Object? conditionSummary = null,Object? conditionDetails = null,Object? warrantyPeriodDays = null,Object? pdfBytes = freezed,Object? isLoading = null,Object? error = freezed,}) {
   return _then(_CreateContractState(
 consentType: freezed == consentType ? _self.consentType : consentType // ignore: cast_nullable_to_non_nullable
 as ConsentType?,verifyUrl: freezed == verifyUrl ? _self.verifyUrl : verifyUrl // ignore: cast_nullable_to_non_nullable
@@ -338,14 +349,15 @@ as String?,role: freezed == role ? _self.role : role // ignore: cast_nullable_to
 as Role?,deliveryType: null == deliveryType ? _self.deliveryType : deliveryType // ignore: cast_nullable_to_non_nullable
 as DeliveryType,publicCode: freezed == publicCode ? _self.publicCode : publicCode // ignore: cast_nullable_to_non_nullable
 as String?,selectedImages: null == selectedImages ? _self._selectedImages : selectedImages // ignore: cast_nullable_to_non_nullable
-as List<AssetEntity>,attachmentIds: null == attachmentIds ? _self._attachmentIds : attachmentIds // ignore: cast_nullable_to_non_nullable
+as List<AssetEntity>,existingAttachmentUrls: null == existingAttachmentUrls ? _self._existingAttachmentUrls : existingAttachmentUrls // ignore: cast_nullable_to_non_nullable
+as List<String>,attachmentIds: null == attachmentIds ? _self._attachmentIds : attachmentIds // ignore: cast_nullable_to_non_nullable
 as List<int>,tradingPlatform: null == tradingPlatform ? _self.tradingPlatform : tradingPlatform // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as int,conditionSummary: null == conditionSummary ? _self.conditionSummary : conditionSummary // ignore: cast_nullable_to_non_nullable
 as String,conditionDetails: null == conditionDetails ? _self.conditionDetails : conditionDetails // ignore: cast_nullable_to_non_nullable
-as String,warranted: null == warranted ? _self.warranted : warranted // ignore: cast_nullable_to_non_nullable
-as bool,pdfBytes: freezed == pdfBytes ? _self.pdfBytes : pdfBytes // ignore: cast_nullable_to_non_nullable
+as String,warrantyPeriodDays: null == warrantyPeriodDays ? _self.warrantyPeriodDays : warrantyPeriodDays // ignore: cast_nullable_to_non_nullable
+as int,pdfBytes: freezed == pdfBytes ? _self.pdfBytes : pdfBytes // ignore: cast_nullable_to_non_nullable
 as Uint8List?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,

@@ -5,33 +5,24 @@ import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/features/contract/domain/enums/delivery_type.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
-import 'package:trana/features/contract/presentation/viewmodels/modify_contract_view_model.dart';
 
 class TradeTypeSelector extends HookConsumerWidget {
-  final bool isModify;
-
-  const TradeTypeSelector({super.key, this.isModify = false});
+  const TradeTypeSelector({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final createVM = ref.read(createContractViewModelProvider.notifier);
-    final modifyVM = ref.read(modifyContractViewModelProvider.notifier);
 
-    final initialIndex = isModify
-        ? (ref.read(modifyContractViewModelProvider).deliveryType ==
-                  DeliveryType.direct
-              ? 0
-              : 1)
+    final initialIndex =
+        ref.read(createContractViewModelProvider).deliveryType ==
+            DeliveryType.direct
+        ? 0
         : 1;
     final selectedIndex = useState(initialIndex);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (isModify) {
-          modifyVM.updateMethod(selectedIndex.value);
-        } else {
-          createVM.updateMethod(selectedIndex.value);
-        }
+        createVM.updateMethod(selectedIndex.value);
       });
       return null;
     }, [selectedIndex.value]);

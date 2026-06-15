@@ -19,8 +19,7 @@ class ContractPreviewCard extends HookConsumerWidget {
       platform: detailState.tradingPlatform!,
       conditionSummary: detailState.conditionSummary!,
       conditionDetails: detailState.conditionDetails!,
-      isWarranted: true, // TODO : 백엔드 구현되면 반영
-      // detailState.isWarranted
+      isWarranted: detailState.warrantyPeriodDays > 0,
     );
 
     return Container(

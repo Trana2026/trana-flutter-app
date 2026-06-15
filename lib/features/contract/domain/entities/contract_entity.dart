@@ -11,6 +11,7 @@ abstract class ContractEntity with _$ContractEntity {
     required ContractStatus status,
     String? title,
     int? price,
+    required bool isCreator,
     Role? myRole,
     required int attachmentCount,
     String? firstAttachmentUrl,

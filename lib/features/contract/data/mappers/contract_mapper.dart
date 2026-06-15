@@ -11,6 +11,7 @@ extension ContractMapper on ContractDto {
       status: ContractStatus.values.fromApiString(status),
       title: title,
       price: price,
+      isCreator: isCreator,
       myRole: myRole != null ? Role.values.fromApiString(myRole!) : null,
       attachmentCount: attachmentCount,
       firstAttachmentUrl: firstAttachmentUrl,

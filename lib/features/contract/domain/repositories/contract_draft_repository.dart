@@ -23,5 +23,7 @@ abstract interface class ContractDraftRepository {
     String? conditionDetails,
     DeliveryType? deliveryType,
     Role? creatorRole,
+    String? tradingPlatform,
+    int? warrantyPeriodDays,
   });
 }

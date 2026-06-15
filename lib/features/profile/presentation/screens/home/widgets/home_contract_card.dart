@@ -12,14 +12,13 @@ import 'package:trana/features/contract/presentation/extensions/contract_status_
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 
 class HomeContractCard extends HookConsumerWidget {
-  const HomeContractCard({super.key, required this.contract});
+  const HomeContractCard({super.key, required this.c});
 
-  final ContractEntity contract;
+  final ContractEntity c;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailVM = ref.read(detailContractViewModelProvider.notifier);
-    final c = contract;
 
     return GestureDetector(
       onTap: () async {

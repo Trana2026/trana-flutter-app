@@ -61,6 +61,8 @@ class ContractDraftDataSource {
     String? conditionDetails,
     String? deliveryType,
     String? creatorRole,
+    String? tradingPlatform,
+    int? warrantyPeriodDays,
   }) async {
     final response = await dio.patch<Map<String, dynamic>>(
       '/v1/contracts/$publicCode',
@@ -71,6 +73,8 @@ class ContractDraftDataSource {
         'conditionDetails': conditionDetails,
         'deliveryType': deliveryType,
         'creatorRole': creatorRole,
+        'tradingPlatform': tradingPlatform,
+        'warrantyPeriodDays': warrantyPeriodDays,
       }..removeWhere((_, value) => value == null),
     );
     return ContractDraftDto.fromJson(response.data!);

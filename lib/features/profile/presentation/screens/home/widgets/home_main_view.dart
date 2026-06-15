@@ -22,6 +22,13 @@ class HomeMainView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final homeState = ref.watch(homeContractViewModelProvider);
     final isFilterExpanded = useState(false);
+    final typeIndex = useState(0);
+
+    final contracts = switch (typeIndex.value) {
+      1 => homeState.myContracts.where((c) => c.isCreator).toList(),
+      2 => homeState.myContracts.where((c) => !c.isCreator).toList(),
+      _ => homeState.myContracts,
+    };
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -96,7 +103,10 @@ class HomeMainView extends HookConsumerWidget {
                       children: [
                         Text("나의 계약", style: context.txt()),
                         const Spacer(),
-                        const HomeContractTypeSelector(),
+                        HomeContractTypeSelector(
+                    selectedIndex: typeIndex.value,
+                    onSelect: (i) => typeIndex.value = i,
+                  ),
                       ],
                     ),
                     const SizedBox(height: 28),
@@ -118,14 +128,14 @@ class HomeMainView extends HookConsumerWidget {
                     const SizedBox(height: 16),
                     homeState.isLoading
                         ? const Expanded(child: CustomLoadingBar())
-                        : homeState.myContracts.isEmpty
+                        : contracts.isEmpty
                         ? const HomeEmptyState()
                         : Expanded(
                             child: ListView.builder(
                               padding: EdgeInsets.zero,
-                              itemCount: homeState.myContracts.length,
+                              itemCount: contracts.length,
                               itemBuilder: (_, index) => HomeContractCard(
-                                contract: homeState.myContracts[index],
+                                c: contracts[index],
                               ),
                             ),
                           ),

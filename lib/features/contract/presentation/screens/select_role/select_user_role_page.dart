@@ -11,22 +11,15 @@ import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/core/widgets/select_role_card.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
-import 'package:trana/features/contract/presentation/viewmodels/modify_contract_view_model.dart';
 
 class SelectUserRolePage extends HookConsumerWidget {
-  final bool isModify;
-
-  const SelectUserRolePage({super.key, this.isModify = false});
+  const SelectUserRolePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final createVM = ref.read(createContractViewModelProvider.notifier);
-    final modifyVM = ref.read(modifyContractViewModelProvider.notifier);
 
-    final Role? initialRole = isModify
-        ? ref.read(modifyContractViewModelProvider).role
-        : ref.read(createContractViewModelProvider).role;
-
+    final Role? initialRole = ref.read(createContractViewModelProvider).role;
     final selectedIndex = useState<int?>(switch (initialRole) {
       Role.seller => 0,
       Role.buyer => 1,
@@ -35,9 +28,7 @@ class SelectUserRolePage extends HookConsumerWidget {
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        isModify
-            ? modifyVM.updateRole(selectedIndex.value)
-            : createVM.updateRole(selectedIndex.value);
+        createVM.updateRole(selectedIndex.value);
       });
       return null;
     }, [selectedIndex.value]);
@@ -129,34 +120,18 @@ class SelectUserRolePage extends HookConsumerWidget {
             onTap: () async {
               if (!isEnabled) return;
 
-              final bool success;
-              if (isModify) {
-                success = await modifyVM.updateDraftRole();
-                if (!context.mounted) return;
-                if (!success) {
-                  showErrorToast(
-                    context,
-                    ref.read(modifyContractViewModelProvider).error!,
-                  );
-                  modifyVM.clearError();
-                  return;
-                }
-
-                context.push(AppRoutes.modifyContractCreate);
-              } else {
-                success = await createVM.updateDraftRole();
-                if (!context.mounted) return;
-                if (!success) {
-                  showErrorToast(
-                    context,
-                    ref.read(createContractViewModelProvider).error!,
-                  );
-                  createVM.clearError();
-                  return;
-                }
-
-                context.push(AppRoutes.contractCreate);
+              final success = await createVM.updateDraftRole();
+              if (!context.mounted) return;
+              if (!success) {
+                showErrorToast(
+                  context,
+                  ref.read(createContractViewModelProvider).error!,
+                );
+                createVM.clearError();
+                return;
               }
+
+              context.push(AppRoutes.contractCreate);
             },
             backgroundColor: isEnabled
                 ? fxc(context).brandColor!

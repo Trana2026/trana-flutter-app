@@ -102,6 +102,8 @@ class ContractDraftRepositoryImpl implements ContractDraftRepository {
     String? conditionDetails,
     DeliveryType? deliveryType,
     Role? creatorRole,
+    String? tradingPlatform,
+    int? warrantyPeriodDays,
   }) async {
     try {
       final dto = await dataSource.updateDraft(
@@ -112,6 +114,8 @@ class ContractDraftRepositoryImpl implements ContractDraftRepository {
         conditionDetails: conditionDetails,
         deliveryType: deliveryType?.apiString,
         creatorRole: creatorRole?.apiString,
+        tradingPlatform: tradingPlatform,
+        warrantyPeriodDays: warrantyPeriodDays,
       );
       return Success(dto.toEntity());
     } on DioException catch (e) {

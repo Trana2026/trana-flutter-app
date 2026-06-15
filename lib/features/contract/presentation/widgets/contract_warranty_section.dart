@@ -5,30 +5,22 @@ import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
-import 'package:trana/features/contract/presentation/viewmodels/modify_contract_view_model.dart';
 
 class ContractWarrantySection extends HookConsumerWidget {
-  const ContractWarrantySection({super.key, this.isModify = false});
-
-  final bool isModify;
+  const ContractWarrantySection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final createVM = ref.read(createContractViewModelProvider.notifier);
-    final modifyVM = ref.read(modifyContractViewModelProvider.notifier);
 
-    final initialValue = isModify
-        ? ref.read(modifyContractViewModelProvider).warranted
-        : ref.read(createContractViewModelProvider).warranted;
+    final initialValue =
+        ref.read(createContractViewModelProvider).warrantyPeriodDays > 0;
     final isWarranted = useState<bool>(initialValue);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (isModify) {
-          modifyVM.updateWarranted(isWarranted.value);
-        } else {
-          createVM.updateWarranted(isWarranted.value);
-        }
+        final days = isWarranted.value ? 3 : 0;
+        createVM.updateWarrantyPeriod(days);
       });
       return null;
     }, [isWarranted.value]);

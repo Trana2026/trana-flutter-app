@@ -56,8 +56,6 @@ abstract class AppRoutes {
   static const biometricLock = '/biometric-lock';
   static const contractRequest = '/contract/request';
   static const modificationRequest = '/modification/request';
-  static const modifySelectRole = '/modify/select-role';
-  static const modifyContractCreate = '/modify/contract/create';
 }
 
 final appRouter = GoRouter(
@@ -164,14 +162,6 @@ final appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.modificationRequest,
       builder: (context, state) => const ModificationRequestPage(),
-    ),
-    GoRoute(
-      path: AppRoutes.modifySelectRole,
-      builder: (context, state) => const SelectUserRolePage(isModify: true),
-    ),
-    GoRoute(
-      path: AppRoutes.modifyContractCreate,
-      builder: (context, state) => const CreateContractPage(isModify: true),
     ),
   ],
 );
