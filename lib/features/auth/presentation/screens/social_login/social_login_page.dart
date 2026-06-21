@@ -1,14 +1,74 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart'; 
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/error/result.dart';
+import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
 import 'package:trana/features/auth/presentation/screens/social_login/widgets/social_login_button.dart';
+import 'package:trana/features/auth/presentation/viewmodels/social_login_view_model.dart';
 
-class SocialLoginPage extends HookConsumerWidget { 
+/// 미성년자 소셜 로그인 화면 (카카오/구글/애플)
+class SocialLoginPage extends HookConsumerWidget {
   const SocialLoginPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) { 
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isLoading = useState(false);
+
+    // 카카오 로그인
+    Future<void> onKakaoTap() async {
+      if (isLoading.value) return;
+      isLoading.value = true;
+      await ref.read(socialLoginViewModelProvider.notifier).signInWithKakao();
+      isLoading.value = false;
+      if (!context.mounted) return;
+      context.go(AppRoutes.home);
+    }
+
+    // 구글 로그인
+    Future<void> onGoogleTap() async {
+      if (isLoading.value) return;
+      isLoading.value = true;
+      final result = await ref
+          .read(socialLoginViewModelProvider.notifier)
+          .signInWithGoogle();
+      isLoading.value = false;
+      if (!context.mounted) return;
+      result.fold(
+        onSuccess: (_) => context.go(AppRoutes.home),
+        onFailure: (failure) => Fluttertoast.showToast(
+          msg: failure.message,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: vrc(context).secondaryColor!,
+          textColor: vrc(context).textPrimary!,
+        ),
+      );
+    }
+
+    // 애플 로그인
+    Future<void> onAppleTap() async {
+      if (isLoading.value) return;
+      isLoading.value = true;
+      final result = await ref
+          .read(socialLoginViewModelProvider.notifier)
+          .signInWithApple();
+      isLoading.value = false;
+      if (!context.mounted) return;
+      result.fold(
+        onSuccess: (_) => context.go(AppRoutes.home),
+        onFailure: (failure) => Fluttertoast.showToast(
+          msg: failure.message,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: vrc(context).secondaryColor!,
+          textColor: vrc(context).textPrimary!,
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: vrc(context).background,
       body: SafeArea(
@@ -55,13 +115,13 @@ class SocialLoginPage extends HookConsumerWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                "법적 효력이 있는 계약서를 생성하고,\n본인인증을 완료하여 안전하게 거래하세요",
+                "사기 피해 없는 100% 안전 결제와\n검증된 판매자를 지금 만나보세요",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: vrc(context).textPrimary,
+                  color: vrc(context).textSecondary,
                   fontSize: 15,
                   fontFamily: "PretendardMedium",
-                  height: 1.15,
+                  height: 1.3,
                 ),
               ),
               const Spacer(),
@@ -70,30 +130,39 @@ class SocialLoginPage extends HookConsumerWidget {
                 spacing: 5,
                 children: [
                   SocialLoginButton(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HomePage(showGuardianDialog: true),
-                      ),
-                    ),
+                    onTap: onKakaoTap,
+                    iconAsset: 'assets/images/Kakao.svg',
                     backgroundColor: const Color(0xFFFFE51C),
                     foregroundColor: const Color(0xFF1D2432),
                     title: "카카오톡으로 로그인하기",
                   ),
                   SocialLoginButton(
-                    onTap: () {},
+                    onTap: onGoogleTap,
+                    iconAsset: 'assets/images/Google.svg',
                     backgroundColor: const Color(0xFFFFFFFF),
                     foregroundColor: const Color(0xFF1D2432),
                     title: "구글로 로그인하기",
                   ),
                   SocialLoginButton(
-                    onTap: () {},
+                    onTap: onAppleTap,
+                    iconAsset: 'assets/images/Apple.svg',
                     backgroundColor: const Color(0xFFF9FAFB),
                     foregroundColor: const Color(0xFF111827),
                     title: "Apple로 로그인하기",
                   ),
                 ],
               ),
+              const SizedBox(height: 14),
+              Text(
+                "로그인에 문제가 있나요?",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: vrc(context).textTertiary,
+                  fontSize: 13,
+                  fontFamily: "PretendardMedium",
+                ),
+              ),
+              const SizedBox(height: 4),
             ],
           ),
         ),

@@ -1,25 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
 import 'package:trana/core/widgets/primary_button.dart';
+import 'package:trana/features/guardian/presentation/viewmodels/guardian_view_model.dart';
 
+/// 대리인 인증 완료를 polling하며 대기하는 화면
 class GuardianVerifyWaitingPage extends HookConsumerWidget {
   const GuardianVerifyWaitingPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(guardianViewModelProvider); // auto-dispose 방지
+
     final isCompleted = useState(false);
     final currentStep = useState(2);
+    final lifecycle = useAppLifecycleState();
 
     useEffect(() {
-      Future.delayed(const Duration(seconds: 3), () {
-        isCompleted.value = true;
-        currentStep.value = 3;
-      });
-      return null;
-    }, const []);
+      final notifier = ref.read(guardianViewModelProvider.notifier);
+      final inForeground =
+          lifecycle == null || lifecycle == AppLifecycleState.resumed;
+      // 포그라운드 & 미완료일 때만 폴링 (백그라운드로 가서 중단되면 복귀 시 재개)
+      if (inForeground && !isCompleted.value) {
+        notifier.startPolling(
+          onComplete: () {
+            if (context.mounted) {
+              isCompleted.value = true;
+              currentStep.value = 3;
+            }
+          },
+        );
+      } else {
+        notifier.stopPolling();
+      }
+      return () => notifier.stopPolling();
+    }, [lifecycle, isCompleted.value]);
 
     const int totalStep = 3;
     final double progress = currentStep.value / totalStep;
@@ -35,7 +53,7 @@ class GuardianVerifyWaitingPage extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontFamily: "PretendardBold"
+            fontFamily: "PretendardBold",
           ),
         ),
         backgroundColor: vrc(context).background,
@@ -64,7 +82,7 @@ class GuardianVerifyWaitingPage extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textPrimary,
                   fontSize: 20,
-                  fontFamily: "PretendardBold"
+                  fontFamily: "PretendardBold",
                 ),
               ),
             ),
@@ -112,15 +130,7 @@ class GuardianVerifyWaitingPage extends HookConsumerWidget {
             PrimaryButton(
               text: "완료",
               onTap: isCompleted.value
-                  ? () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ),
-                        (route) => false,
-                      );
-                    }
+                  ? () => context.go(AppRoutes.home)
                   : null,
               backgroundColor: isCompleted.value
                   ? fxc(context).brandColor!

@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:trana/core/network/auth_token_store.dart';
 import 'package:trana/features/auth/presentation/screens/splash/splash_page.dart';
 import 'package:trana/features/auth/presentation/screens/intro/intro_page.dart';
 import 'package:trana/features/auth/presentation/screens/select_age/select_user_age_page.dart';
@@ -6,6 +7,7 @@ import 'package:trana/features/auth/presentation/screens/terms/terms_agreement_p
 import 'package:trana/features/auth/presentation/screens/id_card_camera/id_card_camera_page.dart';
 import 'package:trana/features/auth/presentation/screens/id_card_confirm/id_card_confirm_page.dart';
 import 'package:trana/features/auth/presentation/screens/face_verify/face_verify_page.dart';
+import 'package:trana/features/auth/presentation/screens/auth_complete/auth_complete_page.dart';
 import 'package:trana/features/auth/presentation/screens/social_login/social_login_page.dart';
 import 'package:trana/features/auth/presentation/screens/guardian_link/guardian_link_send_page.dart';
 import 'package:trana/features/auth/presentation/screens/guardian_waiting/guardian_verify_waiting_page.dart';
@@ -22,9 +24,10 @@ import 'package:trana/features/contract/presentation/screens/detail/contract_sig
 import 'package:trana/features/contract/presentation/screens/detail/contract_trade_done_page.dart';
 import 'package:trana/features/contract/presentation/screens/detail/contract_report_received_page.dart';
 import 'package:trana/features/contract/presentation/screens/biometric_lock/biometric_lock_page.dart';
-import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
+import 'package:trana/features/guardian/presentation/screens/home_with_guardian_page.dart';
 import 'package:trana/features/notification/presentation/screens/notification/notification_page.dart';
 
+/// 앱 내 모든 라우트 경로 상수
 abstract class AppRoutes {
   // Auth
   static const splash = '/';
@@ -36,6 +39,7 @@ abstract class AppRoutes {
   static const idCardCamera = '/id-card-camera';
   static const idCardConfirm = '/id-card-confirm';
   static const faceVerify = '/face-verify';
+  static const authComplete = '/auth-complete';
 
   // Minor onboarding
   static const socialLogin = '/social-login';
@@ -64,8 +68,25 @@ abstract class AppRoutes {
   static const biometricLock = '/biometric-lock';
 }
 
-final appRouter = GoRouter(
+/// 앱 전체 라우팅 설정 (GoRouter)
+/// 로그아웃 시 intro로 redirect할 보호 라우트 prefix
+const _protectedPrefixes = [
+  '/home',
+  '/contract',
+  '/notification',
+  '/guardian-waiting',
+];
+
+/// 앱 전체 라우팅 (GoRouter). [store] 변화에 반응. 세션 만료 시 보호화면에서 intro로 redirect
+GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
   initialLocation: AppRoutes.splash,
+  refreshListenable: store,
+  redirect: (context, state) {
+    final loc = state.matchedLocation;
+    final isProtected = _protectedPrefixes.any((p) => loc.startsWith(p));
+    if (!store.isLoggedIn && isProtected) return AppRoutes.intro;
+    return null;
+  },
   routes: [
     // ── Auth ──────────────────────────────────────────────
     GoRoute(
@@ -98,6 +119,10 @@ final appRouter = GoRouter(
       path: AppRoutes.faceVerify,
       builder: (context, state) => const FaceVerifyPage(),
     ),
+    GoRoute(
+      path: AppRoutes.authComplete,
+      builder: (context, state) => const AuthCompletePage(),
+    ),
 
     // Minor onboarding
     GoRoute(
@@ -116,7 +141,7 @@ final appRouter = GoRouter(
     // ── Home ──────────────────────────────────────────────
     GoRoute(
       path: AppRoutes.home,
-      builder: (context, state) => const HomePage(),
+      builder: (context, state) => const HomeWithGuardianPage(),
     ),
 
     // ── Notification ──────────────────────────────────────

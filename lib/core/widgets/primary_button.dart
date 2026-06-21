@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PrimaryButton extends HookConsumerWidget { 
+/// 앱 전반에서 사용하는 기본 전체너비 버튼
+class PrimaryButton extends HookConsumerWidget {
   final String text;
   final VoidCallback? onTap;
   final Color backgroundColor;

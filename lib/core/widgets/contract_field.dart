@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart'; 
+import 'package:flutter/services.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:trana/core/theme/app_theme.dart';
 
-class ContractField extends HookConsumerWidget { 
+/// 계약서 입력에 사용하는 스타일 통일 TextField
+class ContractField extends HookConsumerWidget {
   final String hintText;
   final TextEditingController? controller;
   final int maxLines;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
 
   const ContractField({
     super.key,
@@ -15,14 +18,16 @@ class ContractField extends HookConsumerWidget {
     this.controller,
     this.maxLines = 1,
     this.keyboardType,
+    this.inputFormatters,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) { 
+  Widget build(BuildContext context, WidgetRef ref) {
     return TextField(
       controller: controller,
       maxLines: maxLines,
       keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
       textAlignVertical: TextAlignVertical.center,
       style: TextStyle(
         color: vrc(context).textPrimary,

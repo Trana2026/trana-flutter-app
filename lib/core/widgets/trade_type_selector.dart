@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart'; // 추가
 import 'package:hooks_riverpod/hooks_riverpod.dart'; // 추가
 import 'package:trana/core/theme/app_theme.dart';
 
+/// 직거래 / 택배거래 토글 선택 위젯
 class TradeTypeSelector extends HookConsumerWidget {
   const TradeTypeSelector({super.key});
 
