@@ -47,7 +47,7 @@ final class GuardianViewModelProvider
   }
 }
 
-String _$guardianViewModelHash() => r'3ea59672ab9afa56452785f290d94f17eb5714ab';
+String _$guardianViewModelHash() => r'25085bae362107beb3114a2b92e54e0f55455e4c';
 
 /// 보호자 링크 발급 및 인증 완료 폴링 ViewModel
 

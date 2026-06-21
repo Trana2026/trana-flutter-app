@@ -7,7 +7,7 @@ import 'package:trana/core/error/result.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/confirm_action_dialog.dart';
-import 'package:trana/features/guardian/presentation/viewmodels/me_provider.dart';
+import 'package:trana/features/user/presentation/providers/me_provider.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/customer_service_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/device_management_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/dispute_history_contract_page.dart';

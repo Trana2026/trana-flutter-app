@@ -39,6 +39,9 @@ import 'package:trana/features/guardian/data/datasources/dio_guardian_remote_dat
 import 'package:trana/features/guardian/data/guardian_link_store.dart';
 import 'package:trana/features/guardian/data/repositories/guardian_repository_impl.dart';
 import 'package:trana/features/guardian/domain/repositories/guardian_repository.dart';
+import 'package:trana/features/user/data/datasources/user_remote_datasource.dart';
+import 'package:trana/features/user/data/repositories/user_repository_impl.dart';
+import 'package:trana/features/user/domain/repositories/user_repository.dart';
 
 part 'provider.g.dart';
 
@@ -82,6 +85,11 @@ EkycRepository ekycRepository(Ref ref) => EkycRepositoryImpl(
 @riverpod
 GuardianRepository guardianRepository(Ref ref) =>
     GuardianRepositoryImpl(DioGuardianRemoteDatasource(ref.read(dioProvider)));
+
+/// UserRepository
+@riverpod
+UserRepository userRepository(Ref ref) =>
+    UserRepositoryImpl(DioUserRemoteDatasource(ref.read(dioProvider)));
 
 /// 소셜 로그인 UseCase
 @riverpod

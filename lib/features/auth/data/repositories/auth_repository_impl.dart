@@ -5,7 +5,6 @@ import 'package:trana/core/network/api_error_mapper.dart';
 import 'package:trana/core/network/auth_token_store.dart';
 import 'package:trana/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:trana/features/auth/domain/entities/social_provider.dart';
-import 'package:trana/features/auth/domain/entities/user_entity.dart';
 import 'package:trana/features/auth/domain/repositories/auth_repository.dart';
 
 /// AuthRepository 실 구현체 (Dio + 토큰 저장소)
@@ -57,12 +56,5 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (_) {
       return Failure(const UnknownFailure());
     }
-  }
-
-  /// 현재 유저 조회.
-  /// 미성년 MVP에선 미사용 (me 조회는 GuardianRepository.getMe 사용)
-  @override
-  Future<Result<UserEntity>> getCurrentUser() async {
-    return Failure(const UnauthorizedFailure());
   }
 }

@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:trana/features/guardian/domain/entities/user_me_entity.dart';
+import 'package:trana/features/user/domain/entities/user_me_entity.dart';
 
 part 'user_me_dto.freezed.dart';
 part 'user_me_dto.g.dart';

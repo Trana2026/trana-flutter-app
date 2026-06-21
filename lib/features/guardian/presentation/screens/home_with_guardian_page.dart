@@ -6,7 +6,7 @@ import 'package:trana/core/router/app_router.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_identity_verify_dialog.dart';
 import 'package:trana/features/guardian/domain/entities/guardian_verification_state.dart';
 import 'package:trana/features/guardian/presentation/viewmodels/guardian_verification_state_provider.dart';
-import 'package:trana/features/guardian/presentation/viewmodels/me_provider.dart';
+import 'package:trana/features/user/presentation/providers/me_provider.dart';
 import 'package:trana/features/guardian/presentation/widgets/guardian_verification_banner.dart';
 import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
 

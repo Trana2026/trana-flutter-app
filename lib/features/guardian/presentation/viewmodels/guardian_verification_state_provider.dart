@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/features/guardian/domain/entities/guardian_verification_state.dart';
-import 'package:trana/features/guardian/presentation/viewmodels/me_provider.dart';
+import 'package:trana/features/user/presentation/providers/me_provider.dart';
 
 part 'guardian_verification_state_provider.g.dart';
 

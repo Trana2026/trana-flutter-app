@@ -1,6 +1,5 @@
 import 'package:trana/core/error/result.dart';
 import 'package:trana/features/auth/domain/entities/social_provider.dart';
-import 'package:trana/features/auth/domain/entities/user_entity.dart';
 
 /// 인증 관련 데이터 접근 인터페이스
 abstract interface class AuthRepository {
@@ -10,9 +9,6 @@ abstract interface class AuthRepository {
     required String idToken,
     String ageGroup,
   });
-
-  /// 저장된 토큰으로 현재 로그인 유저 조회
-  Future<Result<UserEntity>> getCurrentUser();
 
   /// 로컬 인증 토큰 삭제 후 로그아웃
   Future<Result<void>> signOut();

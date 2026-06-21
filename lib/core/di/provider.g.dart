@@ -8,16 +8,16 @@ part of 'provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Dio (인증 인터셉터 = 토큰 자동부착 + 401 refresh 재시도)
+/// Dio (Interceptor를 통한 토큰 자동부착 / refresh 재시도)
 
 @ProviderFor(dio)
 final dioProvider = DioProvider._();
 
-/// Dio (인증 인터셉터 = 토큰 자동부착 + 401 refresh 재시도)
+/// Dio (Interceptor를 통한 토큰 자동부착 / refresh 재시도)
 
 final class DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
     with $Provider<Dio> {
-  /// Dio (인증 인터셉터 = 토큰 자동부착 + 401 refresh 재시도)
+  /// Dio (Interceptor를 통한 토큰 자동부착 / refresh 재시도)
   DioProvider._()
     : super(
         from: null,
@@ -400,6 +400,52 @@ final class GuardianRepositoryProvider
 
 String _$guardianRepositoryHash() =>
     r'06bd4e423053c50c64b7de0fa4356c7a0843375f';
+
+/// UserRepository (GET /v1/users/me 등 범용 사용자 조회)
+
+@ProviderFor(userRepository)
+final userRepositoryProvider = UserRepositoryProvider._();
+
+/// UserRepository (GET /v1/users/me 등 범용 사용자 조회)
+
+final class UserRepositoryProvider
+    extends $FunctionalProvider<UserRepository, UserRepository, UserRepository>
+    with $Provider<UserRepository> {
+  /// UserRepository (GET /v1/users/me 등 범용 사용자 조회)
+  UserRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'userRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$userRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<UserRepository> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  UserRepository create(Ref ref) {
+    return userRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(UserRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<UserRepository>(value),
+    );
+  }
+}
+
+String _$userRepositoryHash() => r'4c9a3ef67b2b3216a5596af640214bab0c8490f1';
 
 /// 소셜 로그인 UseCase
 

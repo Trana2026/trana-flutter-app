@@ -5,6 +5,7 @@ import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
 import 'package:trana/features/guardian/domain/entities/guardian_link_entity.dart';
 import 'package:trana/features/guardian/domain/repositories/guardian_repository.dart';
+import 'package:trana/features/user/domain/repositories/user_repository.dart';
 
 part 'guardian_view_model.g.dart';
 
@@ -12,6 +13,7 @@ part 'guardian_view_model.g.dart';
 @riverpod
 class GuardianViewModel extends _$GuardianViewModel {
   GuardianRepository get _repository => ref.read(guardianRepositoryProvider);
+  UserRepository get _userRepository => ref.read(userRepositoryProvider);
   Timer? _pollingTimer;
 
   /// 초기 상태 null (링크 미발급). dispose 시 폴링 타이머 자동 취소
@@ -40,7 +42,7 @@ class GuardianViewModel extends _$GuardianViewModel {
   void startPolling({required void Function() onComplete}) {
     _pollingTimer?.cancel();
     _pollingTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
-      final result = await _repository.getMe();
+      final result = await _userRepository.getMe();
       if (result case Success(:final data)) {
         if (data.guardianVerifiedAt != null) {
           _pollingTimer?.cancel();

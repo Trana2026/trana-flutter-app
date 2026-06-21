@@ -8,12 +8,12 @@ part of 'me_provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// 현재 사용자 조회. 홈 보호자 UI 노출 판단용 (실패/미로그인 시 null)
+/// 현재 사용자 조회 (실패/미로그인 시 null)
 
 @ProviderFor(me)
 final meProvider = MeProvider._();
 
-/// 현재 사용자 조회. 홈 보호자 UI 노출 판단용 (실패/미로그인 시 null)
+/// 현재 사용자 조회 (실패/미로그인 시 null)
 
 final class MeProvider
     extends
@@ -23,7 +23,7 @@ final class MeProvider
           FutureOr<UserMeEntity?>
         >
     with $FutureModifier<UserMeEntity?>, $FutureProvider<UserMeEntity?> {
-  /// 현재 사용자 조회. 홈 보호자 UI 노출 판단용 (실패/미로그인 시 null)
+  /// 현재 사용자 조회 (실패/미로그인 시 null)
   MeProvider._()
     : super(
         from: null,
@@ -50,4 +50,4 @@ final class MeProvider
   }
 }
 
-String _$meHash() => r'90ac0a942aadb11d156cc5fd9dc6c95fe02b85c7';
+String _$meHash() => r'0f0bc72051f7deb94268aa8632fd5079b0bf5db3';
