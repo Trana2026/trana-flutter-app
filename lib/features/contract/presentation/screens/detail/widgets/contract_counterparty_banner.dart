@@ -1,79 +1,81 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart'; 
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/features/contract/presentation/extensions/contract_status_ui.dart';
+import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 
 class ContractCounterpartyBanner extends HookConsumerWidget {
-  final Color iconBgColor;
-  final Widget iconWidget;
-  final String topLabel;
-  final String bottomLabel;
-  final bool showChevron;
-
-  const ContractCounterpartyBanner({
-    super.key,
-    required this.iconBgColor,
-    required this.iconWidget,
-    required this.topLabel,
-    required this.bottomLabel,
-    this.showChevron = true,
-  });
+  const ContractCounterpartyBanner({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      width: double.infinity,
-      height: 77,
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-      decoration: BoxDecoration(
-        color: vrc(context).secondaryColor,
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: iconBgColor,
-              borderRadius: BorderRadius.circular(12),
+    final detailState = ref.watch(detailContractViewModelProvider);
+
+    final status = detailState.status;
+
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        width: double.infinity,
+        height: 77,
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: vrc(context).secondaryColor,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                color: status.statusColor(context),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                status.bannerIcon(),
+                color: fxc(context).textBrand,
+                size: 24,
+              ),
             ),
-            child: Center(child: iconWidget),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  topLabel,
-                  style: TextStyle(
-                    color: vrc(context).textTertiary,
-                    fontSize: 12,
-                    fontFamily: "PretendardBold",
-                    letterSpacing: -0.2
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (status.bannerTopLabel().isNotEmpty) ...[
+                    Text(
+                      status.bannerTopLabel(),
+                      style: context.txt(
+                        color: vrc(context).textTertiary,
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                  ],
+                  Text(
+                    status.bannerBottomLabel(),
+                    style: context.txt(
+                      color: vrc(context).textPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  bottomLabel,
-                  style: TextStyle(
-                    color: vrc(context).textPrimary,
-                    fontSize: 17,
-                    fontFamily: "PretendardBold",
-                    letterSpacing: -0.2
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          if (showChevron)
-            Icon(
-              Icons.chevron_right_rounded,
-              color: vrc(context).iconSecondary,
-              size: 26,
-            ),
-        ],
+            const SizedBox(width: 12),
+            if (status.bannerShowChevron())
+              Icon(
+                CooliconsIcon.chevronRight,
+                color: vrc(context).iconSecondary,
+                size: 20,
+              ),
+          ],
+        ),
       ),
     );
   }

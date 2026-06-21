@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart'; // 추가
+import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 
 /// 역할/연령 선택 화면의 선택 가능한 카드 위젯
 class SelectRoleCard extends HookConsumerWidget {
-  final IconData icon;
+  final IconData? icon;
+  final String? iconAsset;
   final String title;
   final String description;
   final bool isSelected;
@@ -13,7 +16,8 @@ class SelectRoleCard extends HookConsumerWidget {
 
   const SelectRoleCard({
     super.key,
-    required this.icon,
+    this.icon,
+    this.iconAsset,
     required this.title,
     required this.description,
     required this.isSelected,
@@ -27,12 +31,11 @@ class SelectRoleCard extends HookConsumerWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        height: 140,
         decoration: BoxDecoration(
           color: isSelected
               ? fxc(context).subtitleGreen
               : vrc(context).secondaryColor,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: isSelected ? fxc(context).brandColor! : Colors.transparent,
             width: 1,
@@ -41,52 +44,51 @@ class SelectRoleCard extends HookConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.all(18),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 40,
-                height: 40,
+                width: 34,
+                height: 34,
                 decoration: BoxDecoration(
                   color: isSelected
                       ? fxc(context).brandColor
-                      : vrc(context).background,
-                  borderRadius: BorderRadius.circular(13),
-                  border: showIconBorder
-                      ? Border.all(
-                          color: isSelected
-                              ? Colors.transparent
-                              : vrc(context).borderPrimary!,
-                        )
-                      : null,
+                      : vrc(context).tertiaryColor,
+                  borderRadius: BorderRadius.circular(11),
                 ),
-                child: Icon(
-                  icon,
-                  color: isSelected
-                      ? fxc(context).textBrand
-                      : vrc(context).iconSecondary,
-                  size: 27,
+                child: Center(
+                  child: iconAsset != null
+                      ? SvgPicture.asset(
+                          iconAsset!,
+                          height: 23,
+                          width: 23,
+                          fit: BoxFit.contain,
+                          colorFilter: ColorFilter.mode(
+                            isSelected
+                                ? fxc(context).textBrand!
+                                : vrc(context).iconDisable!,
+                            BlendMode.srcIn,
+                          ),
+                        )
+                      : Icon(
+                          icon,
+                          color: isSelected
+                              ? fxc(context).textBrand
+                              : vrc(context).iconDisable,
+                          size: 23,
+                        ),
                 ),
               ),
-              const SizedBox(height: 13),
+              const SizedBox(height: 16),
               Text(
                 title,
-                style: TextStyle(
+                style: context.txt(
                   color: vrc(context).textPrimary,
-                  fontSize: 20,
-                  fontFamily: "PretendardBold",
-                  letterSpacing: -0.2
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
-              Text(
-                description,
-                style: TextStyle(
-                  color: vrc(context).textSecondary,
-                  fontSize: 14,
-                  fontFamily: "PretendardMedium",
-                  letterSpacing: -0.2
-                ),
-              ),
+              const SizedBox(height: 4),
+              Text(description, style: context.txt()),
             ],
           ),
         ),

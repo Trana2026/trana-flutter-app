@@ -55,6 +55,15 @@ class ConsentCheckbox extends HookConsumerWidget {
                     width: 2,
                   ),
                 ),
+                child: isSelected.value
+                    ? Center(
+                        child: Icon(
+                          Icons.done,
+                          size: 16,
+                          color: fxc(context).textBrand,
+                        ),
+                      )
+                    : null,
               ),
               const SizedBox(width: 10),
               RichText(
@@ -70,7 +79,7 @@ class ConsentCheckbox extends HookConsumerWidget {
                       text: requiredText,
                       style: TextStyle(
                         color: requiredColor ?? fxc(context).textInfo,
-                        fontFamily: "PretendardBold"
+                        fontFamily: "PretendardBold",
                       ),
                     ),
                     TextSpan(

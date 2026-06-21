@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/contract_field.dart';
 
@@ -8,21 +9,23 @@ import 'package:trana/core/widgets/contract_field.dart';
 class ContractFormField extends HookConsumerWidget {
   final String label;
   final String hintText;
+  final String? errorText;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final int maxLines;
-  final Widget? trailing;
+  final void Function(String)? onChanged;
 
   const ContractFormField({
     super.key,
     required this.label,
     required this.hintText,
+    this.errorText,
     this.controller,
     this.keyboardType,
     this.inputFormatters,
     this.maxLines = 1,
-    this.trailing,
+    this.onChanged,
   });
 
   @override
@@ -32,28 +35,33 @@ class ContractFormField extends HookConsumerWidget {
       children: [
         Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 1.5),
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: vrc(context).textTertiary,
-                  fontSize: 15,
-                  fontFamily: "PretendardMedium"
-                ),
+            Text(
+              label,
+              style: context.txt(
+                color: vrc(context).textTertiary,
+                fontSize: 12,
               ),
             ),
-            if (trailing != null) ...[const SizedBox(width: 6), trailing!],
           ],
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 4),
         ContractField(
+          onChanged: onChanged,
           hintText: hintText,
           controller: controller,
           keyboardType: keyboardType,
           inputFormatters: inputFormatters,
           maxLines: maxLines,
+          hasError: errorText != null,
         ),
+        if (errorText != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              errorText!,
+              style: context.txt(color: fxc(context).textDanger, fontSize: 12),
+            ),
+          ),
       ],
     );
   }

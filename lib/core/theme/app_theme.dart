@@ -5,15 +5,21 @@ import 'package:trana/core/theme/variable_colors.dart';
 
 /// 앱 라이트/다크 테마 정의
 class AppTheme {
+  static const _fontFamily = 'Pretendard'; // 앱 전역 폰트 적용
+
   /// 라이트 모드 테마
   static ThemeData light = ThemeData(
+    appBarTheme: const AppBarTheme(scrolledUnderElevation: 0),
     brightness: Brightness.light,
+    fontFamily: _fontFamily,
     extensions: const [VariableColors.light, FixedColors.constant],
   );
 
   /// 다크 모드 테마
   static ThemeData dark = ThemeData(
+    appBarTheme: const AppBarTheme(scrolledUnderElevation: 0),
     brightness: Brightness.dark,
+    fontFamily: _fontFamily,
     extensions: const [VariableColors.dark, FixedColors.constant],
   );
 }

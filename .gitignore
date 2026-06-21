@@ -52,3 +52,6 @@ app.*.map.json
 /macos/
 /windows/
 /web/
+
+# etc.
+.claude

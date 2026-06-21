@@ -19,9 +19,39 @@ class UnauthorizedFailure extends AppFailure {
   const UnauthorizedFailure([super.message = '인증이 필요합니다.']);
 }
 
+/// 본인/보호자 인증(eKYC) 미완료로 인한 작업 거부
+class KycFailure extends AppFailure {
+  const KycFailure(super.message);
+}
+
 /// 로컬 캐시 저장/조회 실패
 class CacheFailure extends AppFailure {
   const CacheFailure([super.message = '로컬 저장 오류가 발생했습니다.']);
+}
+
+/// 접근 권한 없음 (403)
+class ForbiddenFailure extends AppFailure {
+  const ForbiddenFailure([super.message = '접근 권한이 없습니다.']);
+}
+
+/// 현재 상태와 충돌하는 요청 (409)
+class ConflictFailure extends AppFailure {
+  const ConflictFailure([super.message = '현재 상태에서 수행할 수 없는 작업입니다.']);
+}
+
+/// 이미 삭제된 리소스 (410)
+class GoneFailure extends AppFailure {
+  const GoneFailure([super.message = '이미 삭제된 항목입니다.']);
+}
+
+/// 존재하지 않는 리소스 (404)
+class NotFoundFailure extends AppFailure {
+  const NotFoundFailure([super.message = '존재하지 않거나 삭제된 항목입니다.']);
+}
+
+/// 요청 값 검증 실패 (422)
+class ValidationFailure extends AppFailure {
+  const ValidationFailure([super.message = '요청 값이 올바르지 않습니다.']);
 }
 
 /// 분류되지 않은 예외 상황

@@ -1,20 +1,23 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart'; 
-import 'package:hooks_riverpod/hooks_riverpod.dart'; 
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/contract/presentation/screens/share/contract_share_page.dart';
 import 'package:trana/core/widgets/consent_check_box.dart';
 import 'package:trana/core/widgets/primary_button.dart';
+import 'package:trana/features/contract/presentation/widgets/modals/contract_done_bottom_sheet.dart';
 
-class ContractSignDialog extends HookConsumerWidget { 
-  const ContractSignDialog({super.key});
+class ContractSignDialog extends HookConsumerWidget {
+  final VoidCallback? onCompleted;
+  final BuildContext? parentContext;
+
+  const ContractSignDialog({super.key, this.onCompleted, this.parentContext});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) { 
+  Widget build(BuildContext context, WidgetRef ref) {
     final isSelected = useState(false);
-    
+
     final signatureKey = useMemoized(() => GlobalKey<SfSignaturePadState>());
 
     return Dialog(
@@ -31,7 +34,9 @@ class ContractSignDialog extends HookConsumerWidget {
               style: TextStyle(
                 color: vrc(context).textPrimary,
                 fontSize: 18,
-                fontFamily: "PretendardBold"
+                fontWeight: FontWeight.w700,
+                height: 1.5,
+                letterSpacing: -0.18,
               ),
             ),
             const SizedBox(height: 12),
@@ -62,8 +67,9 @@ class ContractSignDialog extends HookConsumerWidget {
                           style: TextStyle(
                             color: fxc(context).iconDanger,
                             fontSize: 15,
-                            fontFamily: "PretendardBold",
-                            letterSpacing: -0.2
+                            fontWeight: FontWeight.w700,
+                            height: 1.5,
+                            letterSpacing: -0.2,
                           ),
                         ),
                       ],
@@ -73,9 +79,9 @@ class ContractSignDialog extends HookConsumerWidget {
                         style: TextStyle(
                           color: fxc(context).textDanger,
                           fontSize: 13,
-                          fontFamily: "PretendardMedium",
+                          fontWeight: FontWeight.w500,
                           height: 1.2,
-                          letterSpacing: -0.2
+                          letterSpacing: -0.2,
                         ),
                         children: [
                           TextSpan(text: "전자서명 완료 시 본 계약은 법적 효력이 발생할 수 있으며,"),
@@ -132,7 +138,9 @@ class ContractSignDialog extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textTertiary,
                   fontSize: 13,
-                  fontFamily: "PretendardRegular"
+                  fontWeight: FontWeight.w400,
+                  height: 1.5,
+                  letterSpacing: -0.13,
                 ),
               ),
             ),
@@ -152,17 +160,20 @@ class ContractSignDialog extends HookConsumerWidget {
                 Expanded(
                   child: PrimaryButton(
                     text: "완료",
-                    onTap: isSelected.value
-                        ? () {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const ContractSharePage(),
-                              ),
-                              (route) => route.isFirst,
-                            );
-                          }
-                        : null,
+                    onTap: () async {
+                      if (!isSelected.value) return;
+                      onCompleted?.call();
+
+                      Navigator.of(context).pop();
+                      if (parentContext != null && parentContext!.mounted) {
+                        showModalBottomSheet(
+                          context: parentContext!,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => const ContractDoneBottomSheet(),
+                        );
+                      }
+                    },
                     backgroundColor: isSelected.value
                         ? fxc(context).brandColor!
                         : vrc(context).disableColor!,

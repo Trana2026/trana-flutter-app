@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/theme/coolicons_icon.dart';
 
 class HomeEmptyState extends HookConsumerWidget {
   const HomeEmptyState({super.key});
@@ -8,42 +10,34 @@ class HomeEmptyState extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: const EdgeInsets.only(top: 90),
+      padding: const EdgeInsets.symmetric(vertical: 24),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: vrc(context).tertiaryColor,
+                color: vrc(context).secondaryColor,
                 borderRadius: BorderRadius.circular(13),
               ),
               child: Icon(
-                Icons.article_outlined,
+                CooliconsIcon.fileBlank,
                 color: vrc(context).iconSecondary,
                 size: 26,
               ),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 14),
             Text(
               "아직 계약이 없습니다",
-              style: TextStyle(
+              style: context.txt(
                 color: vrc(context).textPrimary,
-                fontSize: 18,
-                fontFamily: "PretendardBold",
-                letterSpacing: -0.2
+                fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 1),
+            const SizedBox(height: 2),
             Text(
               "첫 번째 안전 계약을 작성해보세요",
-              style: TextStyle(
-                color: vrc(context).textSecondary,
-                fontSize: 14,
-                fontFamily: "PretendardRegular",
-                letterSpacing: -0.2
-              ),
+              style: context.txt(fontWeight: FontWeight.w400),
             ),
           ],
         ),
