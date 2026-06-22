@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart'; // 추가
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 
+/// 역할/연령 선택 화면의 선택 가능한 카드 위젯
 class SelectRoleCard extends HookConsumerWidget {
   final IconData? icon;
   final String? iconAsset;

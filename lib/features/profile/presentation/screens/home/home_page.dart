@@ -5,7 +5,7 @@ import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_identity_verify_dialog.dart';
-import 'package:trana/features/profile/presentation/providers/test_user_provider.dart';
+// import 'package:trana/features/profile/presentation/providers/test_user_provider.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_bottom_nav.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_sign_request_banner.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_main_view.dart';
@@ -40,9 +40,9 @@ class HomePage extends HookConsumerWidget {
       }
 
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        // TODO : 테스트용 유저 변경 (로그인)
-        final userVM = ref.read(testUserProvider.notifier);
-        await userVM.login();
+        // 실 인증으로 전환: dio가 createDio(authTokenStore)라 testUser 토큰은 미사용
+        // final userVM = ref.read(testUserProvider.notifier);
+        // await userVM.login();
 
         final success = await homeVM.readMyContracts();
         if (!context.mounted) return;

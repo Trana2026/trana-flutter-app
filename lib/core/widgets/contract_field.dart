@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:trana/core/theme/app_text_style.dart';
 
+import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 
+/// 계약서 입력에 사용하는 스타일 통일 TextField
 class ContractField extends HookConsumerWidget {
   final String hintText;
   final TextEditingController? controller;
   final int maxLines;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
   final bool hasError;
   final void Function(String)? onChanged;
 
@@ -18,6 +21,7 @@ class ContractField extends HookConsumerWidget {
     this.controller,
     this.maxLines = 1,
     this.keyboardType,
+    this.inputFormatters,
     this.hasError = false,
     this.onChanged,
   });
@@ -29,6 +33,7 @@ class ContractField extends HookConsumerWidget {
       controller: controller,
       maxLines: maxLines,
       keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
       textAlignVertical: TextAlignVertical.center,
       style: context.txt(color: vrc(context).textPrimary),
       cursorColor: fxc(context).brandColor,

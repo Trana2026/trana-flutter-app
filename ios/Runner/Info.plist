@@ -28,6 +28,30 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>신분증 촬영을 위해 카메라 접근이 필요합니다</string>
+	<!-- 카카오 로그인: 카카오톡 앱 핸드오프 스킴 조회 -->
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>kakaokompassauth</string>
+		<string>kakaolink</string>
+		<string>kakaotalk</string>
+	</array>
+	<!-- 카카오 로그인 리다이렉트 스킴 (kakao + 네이티브앱키) -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>kakaobf4826557d38ff1dd9c22375c3e6a74e</string>
+			</array>
+		</dict>
+		<!-- 구글 로그인 리다이렉트 스킴 (iOS 클라ID의 역방향) -->
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.932865354659-eermqt1qa52cbmjn42mr09tvtrq33mn5</string>
+			</array>
+		</dict>
+	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>계약서 작성을 위해 사진 라이브러리 접근 권한이 필요합니다.</string>
 	<key>UIApplicationSceneManifest</key>

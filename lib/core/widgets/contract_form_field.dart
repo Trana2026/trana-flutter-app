@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/contract_field.dart';
 
+/// 레이블 + ContractField 조합의 폼 입력 위젯
 class ContractFormField extends HookConsumerWidget {
   final String label;
   final String hintText;
   final String? errorText;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
   final int maxLines;
   final void Function(String)? onChanged;
 
@@ -20,6 +23,7 @@ class ContractFormField extends HookConsumerWidget {
     this.errorText,
     this.controller,
     this.keyboardType,
+    this.inputFormatters,
     this.maxLines = 1,
     this.onChanged,
   });
@@ -46,6 +50,7 @@ class ContractFormField extends HookConsumerWidget {
           hintText: hintText,
           controller: controller,
           keyboardType: keyboardType,
+          inputFormatters: inputFormatters,
           maxLines: maxLines,
           hasError: errorText != null,
         ),

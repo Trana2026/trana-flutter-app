@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
 
+/// 인트로 화면의 서비스 혜택 항목 카드
 class IntroBenefitBox extends HookConsumerWidget {
   final IconData icon;
   final String title;

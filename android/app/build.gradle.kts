@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.trana"
+    namespace = "com.trana.trana"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -23,8 +23,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.trana"
+        applicationId = "com.trana.app.android"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -44,4 +43,13 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    implementation(files("libs/clovaeyed-android-release.aar"))
+    implementation("com.squareup.okhttp3:okhttp:3.12.1")
+    implementation("com.squareup.okhttp3:logging-interceptor:3.12.1")
+    implementation("com.squareup.retrofit2:retrofit:2.6.1")
+    implementation("com.squareup.retrofit2:converter-gson:2.6.1")
+    implementation("com.google.code.gson:gson:2.8.6")
 }

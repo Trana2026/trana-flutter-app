@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// 라이트/다크 모드에 관계없이 고정된 브랜드·상태·아이콘 색상
 @immutable
 class FixedColors extends ThemeExtension<FixedColors> {
   const FixedColors({
@@ -80,6 +81,7 @@ class FixedColors extends ThemeExtension<FixedColors> {
     imageCountBg: Color(0x66424242),
   );
 
+  /// 일부 필드를 교체한 새 FixedColors 인스턴스 생성
   @override
   FixedColors copyWith({Color? brandColor}) => FixedColors(
     brandColor: brandColor ?? this.brandColor,
@@ -108,6 +110,7 @@ class FixedColors extends ThemeExtension<FixedColors> {
     imageCountBg: imageCountBg ?? this.imageCountBg,
   );
 
+  /// 두 FixedColors 사이를 선형 보간
   @override
   FixedColors lerp(ThemeExtension<FixedColors>? other, double t) {
     if (other is! FixedColors) return this;

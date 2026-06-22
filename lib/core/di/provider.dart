@@ -1,8 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:trana/core/network/auth_token_store.dart';
+import 'package:trana/core/network/dio_client.dart';
+import 'package:trana/features/auth/data/datasources/auth_remote_datasource.dart';
+import 'package:trana/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:trana/features/auth/domain/repositories/auth_repository.dart';
+import 'package:trana/features/auth/domain/usecases/social_sign_in_usecase.dart';
 import 'package:trana/features/contract/data/data_sources/contract_ai_extraction_data_source.dart';
 import 'package:trana/features/contract/data/data_sources/contract_attachment_data_source.dart';
 import 'package:trana/features/contract/data/data_sources/contract_draft_data_source.dart';
@@ -27,41 +31,72 @@ import 'package:trana/features/contract/domain/repositories/contract_invitation_
 import 'package:trana/features/contract/domain/repositories/contract_lifecycle_repository.dart';
 import 'package:trana/features/contract/domain/repositories/contract_pdf_repository.dart';
 import 'package:trana/features/contract/domain/repositories/contract_repository.dart';
-import 'package:trana/features/profile/presentation/providers/test_user_provider.dart';
+import 'package:trana/features/ekyc/data/datasources/dio_ekyc_remote_datasource.dart';
+import 'package:trana/features/ekyc/data/datasources/ekyc_detection_service.dart';
+import 'package:trana/features/ekyc/data/repositories/ekyc_repository_impl.dart';
+import 'package:trana/features/ekyc/domain/repositories/ekyc_repository.dart';
+import 'package:trana/features/guardian/data/datasources/dio_guardian_remote_datasource.dart';
+import 'package:trana/features/guardian/data/guardian_link_store.dart';
+import 'package:trana/features/guardian/data/repositories/guardian_repository_impl.dart';
+import 'package:trana/features/guardian/domain/repositories/guardian_repository.dart';
+import 'package:trana/features/user/data/datasources/user_remote_datasource.dart';
+import 'package:trana/features/user/data/repositories/user_repository_impl.dart';
+import 'package:trana/features/user/domain/repositories/user_repository.dart';
 
 part 'provider.g.dart';
 
-/// Supabase 클라이언트 Provider
-final supabaseClientProvider = Provider<SupabaseClient>(
-  (ref) => Supabase.instance.client,
+/// Dio (Interceptor를 통한 토큰 자동부착 / refresh 재시도)
+@riverpod
+Dio dio(Ref ref) => createDio(ref.read(authTokenStoreProvider));
+
+/// Native SDK 감지 서비스
+@riverpod
+EkycDetectionService ekycDetectionService(Ref ref) => EkycDetectionService();
+
+/// secure storage
+@Riverpod(keepAlive: true)
+FlutterSecureStorage secureStorage(Ref ref) => const FlutterSecureStorage();
+
+/// 토큰 저장소 (secure storage)
+@Riverpod(keepAlive: true)
+AuthTokenStore authTokenStore(Ref ref) =>
+    AuthTokenStore(ref.read(secureStorageProvider));
+
+/// 보호자 링크 저장소 (secure storage)
+@Riverpod(keepAlive: true)
+GuardianLinkStore guardianLinkStore(Ref ref) =>
+    GuardianLinkStore(ref.read(secureStorageProvider));
+
+/// AuthRepository
+@riverpod
+AuthRepository authRepository(Ref ref) => AuthRepositoryImpl(
+  DioAuthRemoteDatasource(ref.read(dioProvider)),
+  ref.read(authTokenStoreProvider),
 );
 
-/// Dio Provider
-@Riverpod(keepAlive: true)
-Dio dio(Ref ref) {
-  final url = dotenv.env['BASE_URL'] ?? '';
-  final dio = Dio(BaseOptions(baseUrl: url));
-  dio.interceptors.addAll([
-    InterceptorsWrapper(
-      onRequest: (options, handler) {
-        // TODO : 테스트용 유저 변경 (accessToken)
-        final token = ref.read(testUserProvider)?.accessToken;
-        if (token != null && token.isNotEmpty) {
-          options.headers['Authorization'] = 'Bearer $token';
-        }
-        handler.next(options);
-      },
-    ),
-    LogInterceptor(
-      requestBody: true,
-      responseBody: true,
-      logPrint: (o) => print('[DIO] $o'),
-    ),
-  ]);
-  return dio;
-}
+/// EkycRepository
+@riverpod
+EkycRepository ekycRepository(Ref ref) => EkycRepositoryImpl(
+  DioEkycRemoteDatasource(ref.read(dioProvider)),
+  ref.read(authTokenStoreProvider),
+);
 
-// S3 업로드 전용 Dio Provider (인증 헤더 없음)
+/// GuardianRepository
+@riverpod
+GuardianRepository guardianRepository(Ref ref) =>
+    GuardianRepositoryImpl(DioGuardianRemoteDatasource(ref.read(dioProvider)));
+
+/// UserRepository
+@riverpod
+UserRepository userRepository(Ref ref) =>
+    UserRepositoryImpl(DioUserRemoteDatasource(ref.read(dioProvider)));
+
+/// 소셜 로그인 UseCase
+@riverpod
+SocialSignInUseCase socialSignInUseCase(Ref ref) =>
+    SocialSignInUseCase(ref.read(authRepositoryProvider));
+
+/// S3 업로드 전용 Dio (인증 헤더 없음)
 @Riverpod(keepAlive: true)
 Dio s3Dio(Ref ref) {
   return Dio();

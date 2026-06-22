@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/auth/presentation/screens/id_card_camera/id_card_camera_page.dart';
-import 'package:trana/features/auth/presentation/screens/social_login/social_login_page.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/core/widgets/select_role_card.dart';
 
+/// 성인/미성년자 연령 선택 화면
 class SelectUserAgePage extends HookConsumerWidget {
   const SelectUserAgePage({super.key});
 
@@ -24,7 +25,7 @@ class SelectUserAgePage extends HookConsumerWidget {
           style: TextStyle(
             color: vrc(context).textPrimary,
             fontSize: 17,
-            fontFamily: "PretendardBold"
+            fontFamily: "PretendardBold",
           ),
         ),
         backgroundColor: vrc(context).background,
@@ -41,7 +42,7 @@ class SelectUserAgePage extends HookConsumerWidget {
                 style: TextStyle(
                   color: vrc(context).textPrimary,
                   fontSize: 20,
-                  fontFamily: "PretendardBold"
+                  fontFamily: "PretendardBold",
                 ),
               ),
             ),
@@ -73,7 +74,7 @@ class SelectUserAgePage extends HookConsumerWidget {
             SelectRoleCard(
               icon: Icons.person,
               title: "성인",
-              description: "직접 계약서를 생성할 수 있어요.",
+              description: "본인 인증 후 직접 계약을 생성할 수 있습니다",
               isSelected: selectedIndex.value == 0,
               showIconBorder: true,
               onTap: () => selectedIndex.value = 0,
@@ -83,7 +84,7 @@ class SelectUserAgePage extends HookConsumerWidget {
             SelectRoleCard(
               icon: Icons.person,
               title: "미성년자",
-              description: "계약 생성 시 법적 대리인의 인증 절차가 필요해요.",
+              description: "계약 생성 시 법정대리인의 인증 및 동의가 필요합니다",
               isSelected: selectedIndex.value == 1,
               showIconBorder: true,
               onTap: () => selectedIndex.value = 1,
@@ -96,16 +97,10 @@ class SelectUserAgePage extends HookConsumerWidget {
               onTap: () {
                 if (!isEnabled) return;
                 if (selectedIndex.value == 0) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => IdCardCameraPage()),
-                  );
+                  context.push(AppRoutes.terms);
                 }
                 if (selectedIndex.value == 1) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SocialLoginPage()),
-                  );
+                  context.push(AppRoutes.socialLogin);
                 }
               },
               backgroundColor: isEnabled

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// 라이트/다크 모드에 따라 달라지는 배경·텍스트·아이콘·보더 색상
 @immutable
 class VariableColors extends ThemeExtension<VariableColors> {
   const VariableColors({
@@ -62,6 +63,7 @@ class VariableColors extends ThemeExtension<VariableColors> {
     borderSecondary: Color(0xFF272829),
   );
 
+  /// 일부 필드를 교체한 새 VariableColors 인스턴스 생성
   @override
   VariableColors copyWith({
     Color? background100,
@@ -83,6 +85,7 @@ class VariableColors extends ThemeExtension<VariableColors> {
     borderSecondary: borderSecondary ?? this.borderSecondary
   );
 
+  /// 두 VariableColors 사이를 선형 보간
   @override
   VariableColors lerp(ThemeExtension<VariableColors>? other, double t) {
     if (other is! VariableColors) return this;

@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
 
+/// 약관 동의용 체크박스 (필수/선택 레이블 포함)
 class ConsentCheckbox extends HookConsumerWidget {
   final String? requiredText;
   final String descriptionText;

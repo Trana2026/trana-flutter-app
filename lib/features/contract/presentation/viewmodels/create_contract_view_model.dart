@@ -4,12 +4,12 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
+import 'package:trana/core/utils/enum_extension.dart';
 import 'package:trana/features/contract/domain/enums/age_group.dart';
 import 'package:trana/features/contract/domain/enums/consent_type.dart';
 import 'package:trana/features/contract/domain/enums/delivery_type.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
-import 'package:trana/features/profile/presentation/providers/test_user_provider.dart';
 import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
@@ -88,8 +88,15 @@ class CreateContractViewModel extends _$CreateContractViewModel {
     // 새 계약 시작 시 이전 계약 데이터 초기화
     state = CreateContractState(isLoading: true);
 
-    // TODO : 테스트용 유저 변경 (현재 사용자의 연령대 가져오기)
-    final userAgeGroup = ref.read(testUserProvider)?.ageGroup;
+    // 현재 로그인 유저의 연령대 조회 (GET /v1/users/me, JWT 자동부착)
+    final meResult = await ref.read(userRepositoryProvider).getMe();
+    final ageGroupStr = switch (meResult) {
+      Success(:final data) => data.ageGroup,
+      Failure() => null,
+    };
+    final userAgeGroup = ageGroupStr == null
+        ? null
+        : AgeGroup.values.fromApiString(ageGroupStr);
 
     // 사용자 동의 유형 분류 (성인 = 해당없음, 미성년자 = 보호자 인증 필요)
     switch (userAgeGroup) {
