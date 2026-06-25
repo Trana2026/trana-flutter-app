@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:trana/core/network/auth_token_store.dart';
+import 'package:trana/features/contract/data/services/pending_invitation_token_service.dart';
 import 'package:trana/features/auth/presentation/screens/auth_complete/auth_complete_page.dart';
 import 'package:trana/features/auth/presentation/screens/face_verify/face_verify_page.dart';
 import 'package:trana/features/auth/presentation/screens/guardian_link/guardian_link_send_page.dart';
@@ -14,14 +15,14 @@ import 'package:trana/features/auth/presentation/screens/terms/terms_agreement_p
 import 'package:trana/features/contract/presentation/screens/biometric_lock/biometric_lock_page.dart';
 import 'package:trana/features/contract/presentation/screens/create/create_contract_page.dart';
 import 'package:trana/features/contract/presentation/screens/detail/contract_detail_page.dart';
-import 'package:trana/features/contract/presentation/screens/modify/contract_modify_page.dart';
+import 'package:trana/features/contract/presentation/screens/modify/modification_request_page.dart';
 import 'package:trana/features/contract/presentation/screens/preview/contract_preview_page.dart';
+import 'package:trana/features/contract/presentation/screens/request/contract_final_preview_page.dart';
 import 'package:trana/features/contract/presentation/screens/request/contract_request_detail_page.dart';
-import 'package:trana/features/contract/presentation/screens/request/modification_request_page.dart';
+import 'package:trana/features/contract/presentation/screens/request/contract_request_list_page.dart';
 import 'package:trana/features/contract/presentation/screens/select_role/select_user_role_page.dart';
 import 'package:trana/features/contract/presentation/screens/share/contract_share_page.dart';
 import 'package:trana/features/contract/presentation/screens/template/contract_template_page.dart';
-import 'package:trana/features/guardian/presentation/screens/home_with_guardian_page.dart';
 import 'package:trana/features/notification/presentation/screens/notification/notification_page.dart';
 import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
 
@@ -55,12 +56,13 @@ abstract class AppRoutes {
   static const contractTemplate = '/contract-template';
   static const contractCreate = '/contract/create';
   static const contractPreview = '/contract/preview';
-  static const contractModify = '/contract/modify';
   static const contractShare = '/contract/share';
   static const contractDetail = '/contract/detail';
   static const biometricLock = '/biometric-lock';
-  static const contractRequest = '/contract/request';
+  static const requestDetail = '/request/detail';
+  static const requestList = '/request/list';
   static const modificationRequest = '/modification/request';
+  static const finalPreview = '/final/preview';
 }
 
 /// 앱 전체 라우팅 설정 (GoRouter)
@@ -83,6 +85,18 @@ GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
     return null;
   },
   routes: [
+    // ── Deep Link ─────────────────────────────────────────
+    GoRoute(
+      path: '/contracts/invitations/:token',
+      redirect: (context, state) async {
+        final token = state.pathParameters['token']!;
+        // 초대 토큰 Shared 저장
+        await PendingInvitationTokenService.save(token);
+        // splash 페이지로 라우트
+        return AppRoutes.splash;
+      },
+    ),
+
     // ── Auth ──────────────────────────────────────────────
     GoRoute(
       path: AppRoutes.splash,
@@ -136,7 +150,7 @@ GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
     // ── Home ──────────────────────────────────────────────
     GoRoute(
       path: AppRoutes.home,
-      builder: (context, state) => const HomeWithGuardianPage(),
+      builder: (context, state) => const HomePage(),
     ),
 
     // ── Notification ──────────────────────────────────────
@@ -163,10 +177,6 @@ GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
       builder: (context, state) => const ContractPreviewPage(),
     ),
     GoRoute(
-      path: AppRoutes.contractModify,
-      builder: (context, state) => const ContractModifyPage(),
-    ),
-    GoRoute(
       path: AppRoutes.contractShare,
       builder: (context, state) {
         final publicCode = state.extra as String;
@@ -182,12 +192,20 @@ GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
       builder: (context, state) => const BiometricLockPage(),
     ),
     GoRoute(
-      path: AppRoutes.contractRequest,
+      path: AppRoutes.requestDetail,
       builder: (context, state) => const ContractRequestDetailPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.requestList,
+      builder: (context, state) => const ContractRequestListPage(),
     ),
     GoRoute(
       path: AppRoutes.modificationRequest,
       builder: (context, state) => const ModificationRequestPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.finalPreview,
+      builder: (context, state) => const ContractFinalPreviewPage(),
     ),
   ],
 );

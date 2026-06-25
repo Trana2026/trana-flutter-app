@@ -10,29 +10,39 @@ import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
-import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
-import 'package:trana/features/contract/presentation/viewmodels/delete_contract_view_model.dart';
-import 'package:trana/features/contract/presentation/widgets/modals/guardian_selection_card.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
+import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/delete_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/guardian_link_view_model.dart';
+import 'package:trana/features/contract/presentation/widgets/modals/guardian_selection_card.dart';
 
 class GuardianConsentSignDialog extends HookConsumerWidget {
-  const GuardianConsentSignDialog({super.key});
+  const GuardianConsentSignDialog({super.key, required this.isCreator});
+
+  final bool isCreator;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final createState = ref.watch(createContractViewModelProvider);
     final createVM = ref.read(createContractViewModelProvider.notifier);
+    final guardianState = ref.watch(guardianLinkViewModelProvider);
+    final guardianVM = ref.read(guardianLinkViewModelProvider.notifier);
+    final detailState = ref.watch(detailContractViewModelProvider);
     final deleteVM = ref.read(deleteContractViewModelProvider.notifier);
+
     final selectedIndex = useState<int?>(null);
-    // 0: 선택, 1: 인증 진행 중, 2: 인증 완료
-    final phase = useState(0);
+    final phase = useState(0); // 0: 선택, 1: 인증 진행 중, 2: 인증 완료
     final bool isAnySelected = selectedIndex.value != null;
+    final publicCode = isCreator
+        ? createState.publicCode
+        : detailState.publicCode;
 
     useEffect(() {
       if (phase.value != 1) return null;
       final timer = Timer.periodic(const Duration(seconds: 3), (t) async {
-        final approved = await createVM.checkConsentApproved();
+        final approved = await guardianVM.checkConsentApproved(publicCode);
         if (approved) {
           t.cancel();
           phase.value = 2;
@@ -49,6 +59,21 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
       });
       return timer.cancel;
     }, [phase.value]);
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (isCreator) {
+          final success = await createVM.createDraft();
+          if (!context.mounted) return;
+          if (!success) {
+            final state = ref.read(createContractViewModelProvider);
+            showErrorToast(context, state.error!);
+            createVM.clearError();
+          }
+        }
+      });
+      return null;
+    }, []);
 
     return Dialog(
       backgroundColor: vrc(context).background,
@@ -94,13 +119,11 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
                 onTap: () async {
                   selectedIndex.value = 0;
 
-                  final success = await createVM.createLink();
+                  final linkSuccess = await guardianVM.createLink(publicCode);
                   if (!context.mounted) return;
-                  if (!success) {
-                    showErrorToast(
-                      context,
-                      ref.read(createContractViewModelProvider).error!,
-                    );
+                  if (!linkSuccess) {
+                    final state = ref.read(guardianLinkViewModelProvider);
+                    showErrorToast(context, state.error!);
                     createVM.clearError();
                     return;
                   }
@@ -124,7 +147,7 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Text(
-                          createState.verifyUrl ?? '',
+                          guardianState.verifyUrl ?? '',
                           style: context.txt(
                             color: vrc(context).textPrimary,
                             fontWeight: FontWeight.w400,
@@ -139,7 +162,7 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
                       borderRadius: BorderRadius.circular(20),
                       onTap: () {
                         Clipboard.setData(
-                          ClipboardData(text: createState.verifyUrl ?? ''),
+                          ClipboardData(text: guardianState.verifyUrl ?? ''),
                         );
                         showNormalToast(context, "링크가 복사되었습니다", null);
                       },
@@ -182,13 +205,16 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
               const SizedBox(height: 12),
               PrimaryButton(
                 text: "확인",
-                onTap: () {
+                onTap: () async {
                   if (!isAnySelected) return;
                   if (selectedIndex.value == 0) {
                     phase.value = 1;
                   } else {
                     Navigator.pop(context);
-                    context.push(AppRoutes.selectRole);
+
+                    isCreator
+                        ? context.go(AppRoutes.selectRole)
+                        : context.go(AppRoutes.requestDetail);
                   }
                 },
                 backgroundColor: isAnySelected
@@ -264,17 +290,17 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
             const SizedBox(height: 12),
             InkWell(
               onTap: () async {
-                final success = await deleteVM.deleteDraft(
-                  createState.publicCode!,
-                );
-                if (!context.mounted) return;
-                if (!success) {
-                  showErrorToast(
-                    context,
-                    ref.read(deleteContractViewModelProvider).error!,
+                if (createState.publicCode != null) {
+                  final success = await deleteVM.deleteDraft(
+                    createState.publicCode!,
                   );
-                  deleteVM.clearError();
-                  return;
+                  if (!context.mounted) return;
+                  if (!success) {
+                    final state = ref.read(deleteContractViewModelProvider);
+                    showErrorToast(context, state.error!);
+                    deleteVM.clearError();
+                    return;
+                  }
                 }
 
                 context.pop();

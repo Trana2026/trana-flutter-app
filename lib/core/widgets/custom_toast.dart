@@ -60,30 +60,34 @@ void _showOverlayToast(
                 ),
               ),
               const SizedBox(width: 8),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: textColor,
-                      fontFamily: 'PretendardMedium',
-                      height: 1.5,
-                      letterSpacing: 0.16,
-                    ),
-                  ),
-                  if (!isError && detail != null)
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
-                      detail,
+                      title,
                       style: TextStyle(
-                        fontSize: 12,
                         color: textColor,
+                        fontFamily: 'PretendardMedium',
                         height: 1.5,
                         letterSpacing: 0.16,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                ],
+                    if (!isError && detail != null)
+                      Text(
+                        detail,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: textColor,
+                          height: 1.5,
+                          letterSpacing: 0.16,
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ],
           ),

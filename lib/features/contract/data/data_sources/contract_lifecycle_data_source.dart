@@ -8,7 +8,7 @@ class ContractLifecycleDataSource {
   final Dio dio;
 
   /// POST READY → SHARED 전이 + 카카오톡 알림톡 발송
-  Future<ContractDraftDto> fromReadyToShared(
+  Future<ContractDraftDto> share(
     String publicCode, {
     required String receiverName,
     required String receiverPhone,
@@ -21,7 +21,7 @@ class ContractLifecycleDataSource {
   }
 
   /// POST READY → DRAFT 되돌림
-  Future<ContractDraftDto> fromReadyToDraft(String publicCode) async {
+  Future<ContractDraftDto> revert(String publicCode) async {
     final response = await dio.post<Map<String, dynamic>>(
       '/v1/contracts/$publicCode/revert',
     );
@@ -29,7 +29,7 @@ class ContractLifecycleDataSource {
   }
 
   /// POST DRAFT → READY 전이
-  Future<ContractDraftDto> fromDraftToReady(String publicCode) async {
+  Future<ContractDraftDto> ready(String publicCode) async {
     final response = await dio.post<Map<String, dynamic>>(
       '/v1/contracts/$publicCode/ready',
     );
@@ -37,7 +37,7 @@ class ContractLifecycleDataSource {
   }
 
   /// POST RECEIVER_SIGNED → SIGNED 생성자 최종 서명
-  Future<ContractSignedDto> fromReceiverSignedToSigned(
+  Future<ContractSignedDto> creatorSign(
     String publicCode, {
     required String signatureBase64,
     required List<int> agreedTermIds,

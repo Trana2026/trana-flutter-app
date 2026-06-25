@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/contract/domain/utils/contract_text_builder.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 
 class ContractPreviewCard extends HookConsumerWidget {
@@ -12,15 +11,7 @@ class ContractPreviewCard extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final detailState = ref.watch(detailContractViewModelProvider);
 
-    final contents = buildContractContents(
-      productName: detailState.title!,
-      amount: detailState.price!,
-      transactionMethod: detailState.deliveryType!,
-      platform: detailState.tradingPlatform!,
-      conditionSummary: detailState.conditionSummary!,
-      conditionDetails: detailState.conditionDetails!,
-      isWarranted: detailState.warrantyPeriodDays > 0,
-    );
+    final contents = detailState.contents;
 
     return Container(
       width: double.infinity,
@@ -54,7 +45,7 @@ class ContractPreviewCard extends HookConsumerWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 5),
         Text(
           body,
           style: context.txt(color: vrc(context).textTertiary, fontSize: 12),

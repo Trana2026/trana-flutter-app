@@ -3,17 +3,17 @@ import 'package:trana/features/contract/domain/entities/contract_draft_entity.da
 import 'package:trana/features/contract/domain/entities/contract_signed_entity.dart';
 
 abstract interface class ContractLifecycleRepository {
-  Future<Result<ContractDraftEntity>> fromReadyToShared({
+  Future<Result<ContractDraftEntity>> share({
     required String publicCode,
     required String receiverName,
     required String receiverPhone,
   });
 
-  Future<Result<ContractDraftEntity>> fromReadyToDraft(String publicCode);
+  Future<Result<ContractDraftEntity>> revert(String publicCode);
 
-  Future<Result<ContractDraftEntity>> fromDraftToReady(String publicCode);
+  Future<Result<ContractDraftEntity>> ready(String publicCode);
 
-  Future<Result<ContractSignedEntity>> fromReceiverSignedToSigned({
+  Future<Result<ContractSignedEntity>> creatorSign({
     required String publicCode,
     required String signatureBase64,
     required List<int> agreedTermIds,

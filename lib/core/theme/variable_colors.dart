@@ -66,9 +66,19 @@ class VariableColors extends ThemeExtension<VariableColors> {
   /// 일부 필드를 교체한 새 VariableColors 인스턴스 생성
   @override
   VariableColors copyWith({
-    Color? background100,
-    Color? background200,
-    Color? background300,
+    Color? background,
+    Color? secondaryColor,
+    Color? tertiaryColor,
+    Color? disableColor,
+    Color? textPrimary,
+    Color? textSecondary,
+    Color? textTertiary,
+    Color? textDisable,
+    Color? iconPrimary,
+    Color? iconSecondary,
+    Color? iconDisable,
+    Color? borderPrimary,
+    Color? borderSecondary,
   }) => VariableColors(
     background: background ?? this.background,
     secondaryColor: secondaryColor ?? this.secondaryColor,

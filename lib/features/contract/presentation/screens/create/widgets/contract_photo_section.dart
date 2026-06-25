@@ -30,10 +30,8 @@ class ContractPhotoSection extends HookConsumerWidget {
         final success = await createVM.updateAttachments();
         if (!context.mounted) return;
         if (!success) {
-          showErrorToast(
-            context,
-            ref.read(createContractViewModelProvider).error!,
-          );
+          final state = ref.read(createContractViewModelProvider);
+          showErrorToast(context, state.error!);
           createVM.clearError();
         }
       });

@@ -30,7 +30,7 @@ class AuthInterceptor extends QueuedInterceptor {
   ) async {
     final res = err.response;
     final code = (res?.data is Map)
-        ? (res!.data as Map)['code'] as String?
+        ? (res!.data as Map)['code']?.toString()
         : null;
     final is401 = res?.statusCode == 401;
     final retried = err.requestOptions.extra['__retried'] == true;

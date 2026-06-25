@@ -149,7 +149,8 @@ ContractLifecycleDataSource contractLifecycleDataSource(Ref ref) {
 @riverpod
 ContractPdfDataSource contractPdfDataSource(Ref ref) {
   final dio = ref.watch(dioProvider);
-  return ContractPdfDataSource(dio);
+  final s3Dio = ref.watch(s3DioProvider);
+  return ContractPdfDataSource(dio, s3Dio);
 }
 
 // ==================== Repository ====================

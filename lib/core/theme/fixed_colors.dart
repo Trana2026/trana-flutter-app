@@ -83,7 +83,32 @@ class FixedColors extends ThemeExtension<FixedColors> {
 
   /// 일부 필드를 교체한 새 FixedColors 인스턴스 생성
   @override
-  FixedColors copyWith({Color? brandColor}) => FixedColors(
+  FixedColors copyWith({
+    Color? brandColor,
+    Color? statusSignRequest,
+    Color? statusSignSuccess,
+    Color? statusModifyRequest,
+    Color? statusError,
+    Color? statusDraft,
+    Color? textBrand,
+    Color? subtitleGreen,
+    Color? subtitleBlue,
+    Color? subtitleError,
+    Color? subtitleWarning,
+    Color? subtitleKakao,
+    Color? textGreen,
+    Color? textDanger,
+    Color? textInfo,
+    Color? iconBrand,
+    Color? iconDanger,
+    Color? iconInfo,
+    Color? borderOP,
+    Color? borderKakao,
+    Color? opacitySuccess,
+    Color? opacityBg,
+    Color? opacityError,
+    Color? imageCountBg,
+  }) => FixedColors(
     brandColor: brandColor ?? this.brandColor,
     statusSignRequest: statusSignRequest ?? this.statusSignRequest,
     statusSignSuccess: statusSignSuccess ?? this.statusSignSuccess,

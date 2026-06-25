@@ -210,8 +210,8 @@ return $default(_that.myContracts,_that.selectedStatus,_that.isLoading,_that.err
 /// @nodoc
 
 
-class _HomeContractState implements HomeContractState {
-  const _HomeContractState({final  List<ContractEntity> myContracts = const [], this.selectedStatus, this.isLoading = false, this.error}): _myContracts = myContracts;
+class _HomeContractState extends HomeContractState {
+  const _HomeContractState({final  List<ContractEntity> myContracts = const [], this.selectedStatus, this.isLoading = false, this.error}): _myContracts = myContracts,super._();
   
 
  final  List<ContractEntity> _myContracts;

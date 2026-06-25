@@ -4,8 +4,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
-import 'package:trana/core/utils/enum_extension.dart';
-import 'package:trana/features/contract/domain/enums/age_group.dart';
 import 'package:trana/features/contract/domain/enums/consent_type.dart';
 import 'package:trana/features/contract/domain/enums/delivery_type.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
@@ -22,7 +20,6 @@ part 'create_contract_view_model.g.dart';
 abstract class CreateContractState with _$CreateContractState {
   const factory CreateContractState({
     ConsentType? consentType, // 사용자의 동의 유형
-    String? verifyUrl, // 발급된 보호자 인증 링크
     Role? role, // 선택된 역할
     @Default(DeliveryType.shipping) DeliveryType deliveryType, // 선택된 거래 방식
     String? publicCode, // 생성된 Draft 의 publicCode
@@ -37,6 +34,7 @@ abstract class CreateContractState with _$CreateContractState {
     @Default('') String conditionDetails, // 입력된 상품 상세 설명
     @Default(0) int warrantyPeriodDays, // 선택된 보증 제공 여부 (0: 미제공, 3: 제공)
     Uint8List? pdfBytes, // 생성된 Pdf 바이트
+
     @Default(false) bool isLoading,
     String? error,
   }) = _CreateContractState;
@@ -83,31 +81,22 @@ class CreateContractViewModel extends _$CreateContractViewModel {
     );
   }
 
+  // 사용자 동의 유형 분류 (성인 = 해당없음, 미성년자 = 보호자 인증 필요)
+  void setUserConsentType(bool isMinor) {
+    state = state.copyWith(
+      consentType: isMinor
+          ? ConsentType.guardianRequired
+          : ConsentType.notApplicable,
+    );
+  }
+
   /// Draft 생성 (성공 여부 반환)
   Future<bool> createDraft() async {
     // 새 계약 시작 시 이전 계약 데이터 초기화
-    state = CreateContractState(isLoading: true);
-
-    // 현재 로그인 유저의 연령대 조회 (GET /v1/users/me, JWT 자동부착)
-    final meResult = await ref.read(userRepositoryProvider).getMe();
-    final ageGroupStr = switch (meResult) {
-      Success(:final data) => data.ageGroup,
-      Failure() => null,
-    };
-    final userAgeGroup = ageGroupStr == null
-        ? null
-        : AgeGroup.values.fromApiString(ageGroupStr);
-
-    // 사용자 동의 유형 분류 (성인 = 해당없음, 미성년자 = 보호자 인증 필요)
-    switch (userAgeGroup) {
-      case null:
-        state = state.copyWith(error: '사용자 정보를 가져오는데 실패했습니다');
-        return false;
-      case AgeGroup.adult:
-        state = state.copyWith(consentType: ConsentType.notApplicable);
-      case AgeGroup.minor:
-        state = state.copyWith(consentType: ConsentType.guardianRequired);
-    }
+    state = CreateContractState(
+      isLoading: true,
+      consentType: state.consentType,
+    );
 
     final result = await ref
         .read(contractDraftRepositoryProvider)
@@ -124,14 +113,13 @@ class CreateContractViewModel extends _$CreateContractViewModel {
       ),
     };
 
-    // _refreshHome();
+    await _refresh(state.publicCode);
 
     return result is Success;
   }
 
-  /// 미성년자 보호자 인증 링크 발급 (성공 여부 반환)
-  Future<bool> createLink() async {
-    if (state.consentType == ConsentType.notApplicable) return false;
+  /// Draft 역할 업데이트 (성공 여부 반환)
+  Future<bool> updateDraftRole(int? index) async {
     if (state.publicCode == null) {
       state = state.copyWith(error: '계약 초안 정보가 없습니다.');
       return false;
@@ -139,40 +127,6 @@ class CreateContractViewModel extends _$CreateContractViewModel {
 
     state = state.copyWith(isLoading: true);
 
-    final result = await ref
-        .read(contractGuardianConsentRepositoryProvider)
-        .createLink(state.publicCode!);
-
-    state = switch (result) {
-      Success(:final data) => state.copyWith(
-        isLoading: false,
-        verifyUrl: data.verifyUrl,
-      ),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
-
-    return result is Success;
-  }
-
-  /// 미성년자 계약 생성 보호자 동의 여부 확인
-  Future<bool> checkConsentApproved() async {
-    if (state.publicCode == null) return false;
-
-    final result = await ref
-        .read(contractDraftRepositoryProvider)
-        .readDraft(publicCode: state.publicCode!);
-
-    return switch (result) {
-      Success(:final data) => data.guardianConsentAt != null,
-      Failure() => false,
-    };
-  }
-
-  /// 역할 선택
-  void updateRole(int? index) {
     switch (index) {
       case null:
         state = state.copyWith(role: null);
@@ -181,16 +135,6 @@ class CreateContractViewModel extends _$CreateContractViewModel {
       case 1:
         state = state.copyWith(role: Role.buyer);
     }
-  }
-
-  /// Draft 역할 업데이트 (성공 여부 반환)
-  Future<bool> updateDraftRole() async {
-    if (state.publicCode == null) {
-      state = state.copyWith(error: '계약 초안 정보가 없습니다.');
-      return false;
-    }
-
-    state = state.copyWith(isLoading: true);
 
     final result = await ref
         .read(contractDraftRepositoryProvider)
@@ -207,7 +151,7 @@ class CreateContractViewModel extends _$CreateContractViewModel {
       ),
     };
 
-    _refreshHome();
+    await _refresh(state.publicCode);
 
     return result is Success;
   }
@@ -282,7 +226,7 @@ class CreateContractViewModel extends _$CreateContractViewModel {
       ),
     };
 
-    _refreshHome();
+    await _refresh(state.publicCode);
 
     return result is Success;
   }
@@ -390,7 +334,7 @@ class CreateContractViewModel extends _$CreateContractViewModel {
 
     final result = await ref
         .read(contractLifecycleRepositoryProvider)
-        .fromDraftToReady(state.publicCode!);
+        .ready(state.publicCode!);
 
     state = switch (result) {
       Success() => state.copyWith(isLoading: false),
@@ -401,21 +345,19 @@ class CreateContractViewModel extends _$CreateContractViewModel {
     };
 
     if (result is Success) {
-      await _refreshHome();
-      await _refreshDetail();
+      await _refresh(state.publicCode);
     }
 
     return result is Success;
   }
 
-  Future<void> _refreshHome() {
+  Future<void> _refresh(String? publicCode) async {
     final homeVM = ref.read(homeContractViewModelProvider.notifier);
-    return homeVM.readMyContracts();
-  }
+    await homeVM.readMyContracts();
 
-  Future<void> _refreshDetail() {
+    if (publicCode == null) return;
     final detailVM = ref.read(detailContractViewModelProvider.notifier);
-    return detailVM.refreshDetail();
+    await detailVM.loadDetail(publicCode);
   }
 
   void clearError() => state = state.copyWith(error: null);

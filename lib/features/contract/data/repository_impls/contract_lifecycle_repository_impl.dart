@@ -16,13 +16,13 @@ class ContractLifecycleRepositoryImpl implements ContractLifecycleRepository {
   final ContractLifecycleDataSource dataSource;
 
   @override
-  Future<Result<ContractDraftEntity>> fromReadyToShared({
+  Future<Result<ContractDraftEntity>> share({
     required String publicCode,
     required String receiverName,
     required String receiverPhone,
   }) async {
     try {
-      final dto = await dataSource.fromReadyToShared(
+      final dto = await dataSource.share(
         publicCode,
         receiverName: receiverName,
         receiverPhone: receiverPhone,
@@ -47,11 +47,9 @@ class ContractLifecycleRepositoryImpl implements ContractLifecycleRepository {
   }
 
   @override
-  Future<Result<ContractDraftEntity>> fromReadyToDraft(
-    String publicCode,
-  ) async {
+  Future<Result<ContractDraftEntity>> revert(String publicCode) async {
     try {
-      final dto = await dataSource.fromReadyToDraft(publicCode);
+      final dto = await dataSource.revert(publicCode);
       return Success(dto.toEntity());
     } on DioException catch (e) {
       debugPrint(
@@ -69,11 +67,9 @@ class ContractLifecycleRepositoryImpl implements ContractLifecycleRepository {
   }
 
   @override
-  Future<Result<ContractDraftEntity>> fromDraftToReady(
-    String publicCode,
-  ) async {
+  Future<Result<ContractDraftEntity>> ready(String publicCode) async {
     try {
-      final dto = await dataSource.fromDraftToReady(publicCode);
+      final dto = await dataSource.ready(publicCode);
       return Success(dto.toEntity());
     } on DioException catch (e) {
       debugPrint(
@@ -94,13 +90,13 @@ class ContractLifecycleRepositoryImpl implements ContractLifecycleRepository {
   }
 
   @override
-  Future<Result<ContractSignedEntity>> fromReceiverSignedToSigned({
+  Future<Result<ContractSignedEntity>> creatorSign({
     required String publicCode,
     required String signatureBase64,
     required List<int> agreedTermIds,
   }) async {
     try {
-      final dto = await dataSource.fromReceiverSignedToSigned(
+      final dto = await dataSource.creatorSign(
         publicCode,
         signatureBase64: signatureBase64,
         agreedTermIds: agreedTermIds,

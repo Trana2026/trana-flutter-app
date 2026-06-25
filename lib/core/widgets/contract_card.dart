@@ -11,8 +11,8 @@ import 'package:trana/features/contract/domain/entities/contract_entity.dart';
 import 'package:trana/features/contract/presentation/extensions/contract_status_ui.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 
-class HomeContractCard extends HookConsumerWidget {
-  const HomeContractCard({super.key, required this.c});
+class ContractCard extends HookConsumerWidget {
+  const ContractCard({super.key, required this.c});
 
   final ContractEntity c;
 
@@ -22,13 +22,11 @@ class HomeContractCard extends HookConsumerWidget {
 
     return GestureDetector(
       onTap: () async {
-        final success = await detailVM.loadContract(c);
+        final success = await detailVM.loadDetail(c.publicCode);
         if (!context.mounted) return;
         if (!success) {
-          showErrorToast(
-            context,
-            ref.read(detailContractViewModelProvider).error!,
-          );
+          final state = ref.read(detailContractViewModelProvider);
+          showErrorToast(context, state.error!);
           detailVM.clearError();
           return;
         }
@@ -37,7 +35,7 @@ class HomeContractCard extends HookConsumerWidget {
       },
       child: Container(
         padding: const EdgeInsets.all(14),
-        margin: const EdgeInsets.only(bottom: 20),
+        margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
           color: vrc(context).secondaryColor,
           borderRadius: BorderRadius.circular(20),
@@ -143,7 +141,7 @@ class HomeContractCard extends HookConsumerWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            c.status.statusLabel(),
+                            c.status.statusLabel(c.isCreator),
                             style: context.txt(
                               color: c.status.statusColor(context),
                               fontSize: 12,

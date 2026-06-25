@@ -5,6 +5,7 @@ import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/receive_contract_view_model.dart';
 
 class ContractWarrantySection extends HookConsumerWidget {
   const ContractWarrantySection({super.key});
@@ -12,6 +13,7 @@ class ContractWarrantySection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final createVM = ref.read(createContractViewModelProvider.notifier);
+    final receiveVM = ref.read(receiveContractViewModelProvider.notifier);
 
     final initialValue =
         ref.read(createContractViewModelProvider).warrantyPeriodDays > 0;
@@ -21,6 +23,7 @@ class ContractWarrantySection extends HookConsumerWidget {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final days = isWarranted.value ? 3 : 0;
         createVM.updateWarrantyPeriod(days);
+        receiveVM.updateWarrantyPeriod(days);
       });
       return null;
     }, [isWarranted.value]);

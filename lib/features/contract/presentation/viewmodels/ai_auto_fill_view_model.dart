@@ -22,6 +22,7 @@ abstract class AiAutoFillState with _$AiAutoFillState {
     @Default(0) int amount, // 가격 (AI 분석 결과)
     @Default('') String condition, // 상품 상태 (AI 분석 결과)
     @Default('') String details, // 상품 상세 정보 (AI 분석 결과)
+
     @Default(false) bool isLoading,
     @Default(false) bool completed,
     String? error,

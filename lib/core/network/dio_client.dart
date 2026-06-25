@@ -27,7 +27,7 @@ class _ApiLogInterceptor extends Interceptor {
     if (kDebugMode) {
       final req = response.requestOptions;
       final name = _apiName(req.method, req.path);
-      debugPrint('🌈 [$name 성공] ${response.data}');
+      debugPrint('🌈 [$name 성공]\n${response.data}');
     }
     super.onResponse(response, handler);
   }
@@ -37,7 +37,7 @@ class _ApiLogInterceptor extends Interceptor {
     if (kDebugMode) {
       final req = err.requestOptions;
       final name = _apiName(req.method, req.path);
-      debugPrint('🌈 [$name 실패] ${err.response?.data ?? err.message}');
+      debugPrint('🌈 [$name 실패]\n${err.response?.data ?? err.message}');
     }
     super.onError(err, handler);
   }

@@ -66,27 +66,29 @@ class ConsentCheckbox extends HookConsumerWidget {
                     : null,
               ),
               const SizedBox(width: 10),
-              RichText(
-                text: TextSpan(
-                  style: TextStyle(
-                    color: vrc(context).textSecondary,
-                    fontSize: 13,
-                    fontFamily: "PretendardMedium",
-                    height: 1.2,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: requiredText,
-                      style: TextStyle(
-                        color: requiredColor ?? fxc(context).textInfo,
-                        fontFamily: "PretendardBold",
+              Expanded(
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: vrc(context).textSecondary,
+                      fontSize: 13,
+                      fontFamily: "PretendardMedium",
+                      height: 1.2,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: requiredText,
+                        style: TextStyle(
+                          color: requiredColor ?? fxc(context).textInfo,
+                          fontFamily: "PretendardBold",
+                        ),
                       ),
-                    ),
-                    TextSpan(
-                      text: descriptionText,
-                      style: TextStyle(color: vrc(context).textPrimary),
-                    ),
-                  ],
+                      TextSpan(
+                        text: descriptionText,
+                        style: TextStyle(color: vrc(context).textPrimary),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
