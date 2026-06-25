@@ -63,6 +63,20 @@ class ContractPdfRepositoryImpl implements ContractPdfRepository {
     }
   }
 
+  @override
+  Future<Result<Uint8List>> downloadBytes(String url) async {
+    try {
+      final bytes = await dataSource.downloadBytes(url);
+      return Success(bytes);
+    } on DioException catch (e) {
+      debugPrint('[PdfRepo] downloadBytes: ${e.type} ${e.response?.statusCode}');
+      return Failure(e.toFailure());
+    } catch (e) {
+      debugPrint('[PdfRepo] downloadBytes unexpected: $e');
+      return const Failure(UnknownFailure());
+    }
+  }
+
   String? _errorCode(DioException e) {
     final data = e.response?.data;
     if (data is Map<String, dynamic>) return data['code'] as String?;

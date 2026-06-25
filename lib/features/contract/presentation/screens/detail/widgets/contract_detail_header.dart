@@ -31,7 +31,7 @@ class ContractDetailHeader extends HookConsumerWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    status.statusLabel(),
+                    status.statusLabel(detailState.isCreator),
                     style: context.txt(
                       color: status.statusColor(context),
                       fontSize: 20,

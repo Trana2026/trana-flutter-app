@@ -12,7 +12,6 @@ import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/presentation/screens/preview/widgets/contract_completion_bottom_sheet.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
-import 'package:trana/features/contract/presentation/viewmodels/share_contract_view_model.dart';
 
 class ContractPreviewPage extends HookConsumerWidget {
   const ContractPreviewPage({super.key});
@@ -27,10 +26,8 @@ class ContractPreviewPage extends HookConsumerWidget {
         final success = await createVM.readPdfPreview();
         if (!context.mounted) return;
         if (!success) {
-          showErrorToast(
-            context,
-            ref.read(createContractViewModelProvider).error!,
-          );
+          final state = ref.read(createContractViewModelProvider);
+          showErrorToast(context, state.error!);
           createVM.clearError();
         }
       });
@@ -101,7 +98,7 @@ class ContractPreviewPage extends HookConsumerWidget {
       bottomNavigationBar: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Row(
             children: [
               Expanded(
@@ -120,10 +117,8 @@ class ContractPreviewPage extends HookConsumerWidget {
                     final success = await createVM.ready();
                     if (!context.mounted) return;
                     if (!success) {
-                      showErrorToast(
-                        context,
-                        ref.read(shareContractViewModelProvider).error!,
-                      );
+                      final state = ref.read(createContractViewModelProvider);
+                      showErrorToast(context, state.error!);
                       createVM.clearError();
                     }
 

@@ -3,16 +3,16 @@ import 'package:trana/features/contract/domain/entities/contract_draft_entity.da
 import 'package:trana/features/contract/domain/entities/contract_receiver_signed_entity.dart';
 
 abstract interface class ContractInvitationRepository {
-  Future<Result<ContractDraftEntity>> requestRevision(
-    String publicCode, {
+  Future<Result<ContractDraftEntity>> requestRevision({
+    required String publicCode,
     String? titleReason,
     String? priceReason,
     String? conditionSummaryReason,
     String? conditionDetailsReason,
   });
 
-  Future<Result<ContractReceiverSignedEntity>> receiverSign(
-    String publicCode, {
+  Future<Result<ContractReceiverSignedEntity>> receiverSign({
+    required String publicCode,
     required String signatureBase64,
     required List<int> agreedTermIds,
   });

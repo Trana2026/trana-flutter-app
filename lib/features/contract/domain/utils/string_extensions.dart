@@ -9,4 +9,16 @@ extension StringExtensions on String {
     }
     return NumberFormat('#,###').format(number);
   }
+
+  /// String 01012345678 > 010-1234-5678 (11자리 전화번호 형식) 변환
+  String get toPhoneFormat {
+    final digits = replaceAll(RegExp(r'\D'), '');
+    final d = digits.length > 11 ? digits.substring(0, 11) : digits;
+    return switch (d.length) {
+      0 => '',
+      <= 3 => d,
+      <= 7 => '${d.substring(0, 3)}-${d.substring(3)}',
+      _ => '${d.substring(0, 3)}-${d.substring(3, 7)}-${d.substring(7)}',
+    };
+  }
 }

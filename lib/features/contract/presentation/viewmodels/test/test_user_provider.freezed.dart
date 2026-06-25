@@ -12,7 +12,7 @@ part of 'test_user_provider.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$TestUserEntity {
+mixin _$TestUserEntity implements DiagnosticableTreeMixin {
 
  String get publicCode; String get email; String get nickname; String get status; AgeGroup? get ageGroup; DateTime? get guardianVerifiedAt; String get accessToken; String get refreshToken;
 /// Create a copy of TestUserEntity
@@ -22,6 +22,12 @@ mixin _$TestUserEntity {
 $TestUserEntityCopyWith<TestUserEntity> get copyWith => _$TestUserEntityCopyWithImpl<TestUserEntity>(this as TestUserEntity, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'TestUserEntity'))
+    ..add(DiagnosticsProperty('publicCode', publicCode))..add(DiagnosticsProperty('email', email))..add(DiagnosticsProperty('nickname', nickname))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('ageGroup', ageGroup))..add(DiagnosticsProperty('guardianVerifiedAt', guardianVerifiedAt))..add(DiagnosticsProperty('accessToken', accessToken))..add(DiagnosticsProperty('refreshToken', refreshToken));
+}
 
 @override
 bool operator ==(Object other) {
@@ -33,7 +39,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,publicCode,email,nickname,status,ageGroup,guardianVerifiedAt,accessToken,refreshToken);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'TestUserEntity(publicCode: $publicCode, email: $email, nickname: $nickname, status: $status, ageGroup: $ageGroup, guardianVerifiedAt: $guardianVerifiedAt, accessToken: $accessToken, refreshToken: $refreshToken)';
 }
 
@@ -212,7 +218,7 @@ return $default(_that.publicCode,_that.email,_that.nickname,_that.status,_that.a
 /// @nodoc
 
 
-class _TestUserEntity implements TestUserEntity {
+class _TestUserEntity with DiagnosticableTreeMixin implements TestUserEntity {
   const _TestUserEntity({required this.publicCode, required this.email, required this.nickname, required this.status, this.ageGroup, this.guardianVerifiedAt, required this.accessToken, required this.refreshToken});
   
 
@@ -232,6 +238,12 @@ class _TestUserEntity implements TestUserEntity {
 _$TestUserEntityCopyWith<_TestUserEntity> get copyWith => __$TestUserEntityCopyWithImpl<_TestUserEntity>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'TestUserEntity'))
+    ..add(DiagnosticsProperty('publicCode', publicCode))..add(DiagnosticsProperty('email', email))..add(DiagnosticsProperty('nickname', nickname))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('ageGroup', ageGroup))..add(DiagnosticsProperty('guardianVerifiedAt', guardianVerifiedAt))..add(DiagnosticsProperty('accessToken', accessToken))..add(DiagnosticsProperty('refreshToken', refreshToken));
+}
 
 @override
 bool operator ==(Object other) {
@@ -243,7 +255,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,publicCode,email,nickname,status,ageGroup,guardianVerifiedAt,accessToken,refreshToken);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'TestUserEntity(publicCode: $publicCode, email: $email, nickname: $nickname, status: $status, ageGroup: $ageGroup, guardianVerifiedAt: $guardianVerifiedAt, accessToken: $accessToken, refreshToken: $refreshToken)';
 }
 

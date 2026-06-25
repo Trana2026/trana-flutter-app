@@ -17,6 +17,7 @@ class SelectUserRolePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final createState = ref.watch(createContractViewModelProvider);
     final createVM = ref.read(createContractViewModelProvider.notifier);
 
     final Role? initialRole = ref.read(createContractViewModelProvider).role;
@@ -25,13 +26,6 @@ class SelectUserRolePage extends HookConsumerWidget {
       Role.buyer => 1,
       null => null,
     });
-
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        createVM.updateRole(selectedIndex.value);
-      });
-      return null;
-    }, [selectedIndex.value]);
 
     const int currentStep = 1;
     const int totalStep = 3;
@@ -114,19 +108,30 @@ class SelectUserRolePage extends HookConsumerWidget {
       bottomNavigationBar: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: PrimaryButton(
             text: "다음",
             onTap: () async {
               if (!isEnabled) return;
 
-              final success = await createVM.updateDraftRole();
+              if (createState.publicCode == null) {
+                final success = await createVM.createDraft();
+                if (!context.mounted) return;
+                if (!success) {
+                  final state = ref.read(createContractViewModelProvider);
+                  showErrorToast(context, state.error!);
+                  createVM.clearError();
+                  return;
+                }
+              }
+
+              final success = await createVM.updateDraftRole(
+                selectedIndex.value,
+              );
               if (!context.mounted) return;
               if (!success) {
-                showErrorToast(
-                  context,
-                  ref.read(createContractViewModelProvider).error!,
-                );
+                final state = ref.read(createContractViewModelProvider);
+                showErrorToast(context, state.error!);
                 createVM.clearError();
                 return;
               }

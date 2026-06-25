@@ -2,6 +2,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
+import 'package:trana/features/contract/data/services/pending_invitation_token_service.dart';
+import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
 
 part 'receive_contract_view_model.freezed.dart';
@@ -12,7 +14,9 @@ part 'receive_contract_view_model.g.dart';
 @freezed
 abstract class ReceiveContractState with _$ReceiveContractState {
   const factory ReceiveContractState({
-    String? invitationToken, // 수신된 초대 토큰
+    String? publicCode, // 수신된 계약 publicCode
+    @Default(0) int warrantyPeriodDays, // 선택된 보증 제공 여부 (0: 미제공, 3: 제공)
+
     @Default(false) bool isLoading,
     String? error,
   }) = _ReceiveContractState;
@@ -25,24 +29,19 @@ class ReceiveContractViewModel extends _$ReceiveContractViewModel {
   @override
   ReceiveContractState build() => const ReceiveContractState();
 
-  void loadToken(String token) =>
-      state = state.copyWith(invitationToken: token);
-
-  /// 수신된 초대 수락 (성공 여부 반환)
-  Future<bool> accept() async {
-    if (state.invitationToken == null) {
-      state = state.copyWith(error: '초대 정보가 없습니다.');
-      return false;
-    }
-
+  /// 수신자 초대 수락 (성공 여부 반환)
+  Future<bool> accept(String invitationToken) async {
     state = state.copyWith(isLoading: true, error: null);
 
     final result = await ref
         .read(contractInvitationRepositoryProvider)
-        .acceptInvitation(state.invitationToken!);
+        .acceptInvitation(invitationToken);
 
     state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
+      Success(:final data) => state.copyWith(
+        isLoading: false,
+        publicCode: data.publicCode,
+      ),
       Failure(:final failure) => state.copyWith(
         isLoading: false,
         error: failure.message,
@@ -50,15 +49,24 @@ class ReceiveContractViewModel extends _$ReceiveContractViewModel {
     };
 
     if (result is Success) {
-      await _refreshHome();
+      await PendingInvitationTokenService.clear();
+      await _refresh(state.publicCode);
     }
 
     return result is Success;
   }
 
-  Future<void> _refreshHome() {
+  /// 보증 제공 여부 선택
+  void updateWarrantyPeriod(int v) =>
+      state = state.copyWith(warrantyPeriodDays: v);
+
+  Future<void> _refresh(String? publicCode) async {
     final homeVM = ref.read(homeContractViewModelProvider.notifier);
-    return homeVM.readMyContracts();
+    await homeVM.readMyContracts();
+
+    if (publicCode == null) return;
+    final detailVM = ref.read(detailContractViewModelProvider.notifier);
+    await detailVM.loadDetail(publicCode);
   }
 
   void clearError() => state = state.copyWith(error: null);

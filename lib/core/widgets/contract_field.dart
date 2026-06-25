@@ -36,7 +36,9 @@ class ContractField extends HookConsumerWidget {
       inputFormatters: inputFormatters,
       textAlignVertical: TextAlignVertical.center,
       style: context.txt(color: vrc(context).textPrimary),
-      cursorColor: fxc(context).brandColor,
+      cursorColor: fxc(context).textInfo,
+      cursorHeight: 14,
+      cursorWidth: 1,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: context.txt(color: vrc(context).textDisable),

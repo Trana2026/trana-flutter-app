@@ -205,7 +205,7 @@ class CreateContractPage extends HookConsumerWidget {
       bottomNavigationBar: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: PrimaryButton(
             text: "생성하기",
             onTap: () async {
@@ -225,10 +225,8 @@ class CreateContractPage extends HookConsumerWidget {
               final success = await createVM.updateDraftEntries();
               if (!context.mounted) return;
               if (!success) {
-                showErrorToast(
-                  context,
-                  ref.read(createContractViewModelProvider).error!,
-                );
+                final state = ref.read(createContractViewModelProvider);
+                showErrorToast(context, state.error!);
                 createVM.clearError();
                 return;
               }

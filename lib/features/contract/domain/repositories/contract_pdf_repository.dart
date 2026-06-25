@@ -7,4 +7,6 @@ abstract interface class ContractPdfRepository {
   Future<Result<Uint8List>> preview({required String publicCode});
 
   Future<Result<ContractPdfEntity>> pdf({required String publicCode});
+
+  Future<Result<Uint8List>> downloadBytes(String url);
 }

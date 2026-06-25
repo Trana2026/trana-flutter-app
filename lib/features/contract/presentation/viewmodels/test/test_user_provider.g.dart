@@ -41,7 +41,7 @@ final class TestUserProvider
   }
 }
 
-String _$testUserHash() => r'8c90fad166940e2b301000eb6d108883c962b68e';
+String _$testUserHash() => r'f822ed2940c3d984fe79e996fd73586e7a7045cc';
 
 abstract class _$TestUser extends $Notifier<TestUserEntity?> {
   TestUserEntity? build();

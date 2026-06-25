@@ -1,14 +1,17 @@
+import 'dart:typed_data';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
 import 'package:trana/features/contract/domain/entities/contract_attachment_entity.dart';
 import 'package:trana/features/contract/domain/entities/contract_draft_entity.dart';
-import 'package:trana/features/contract/domain/entities/contract_entity.dart';
+import 'package:trana/features/contract/domain/entities/contract_pdf_entity.dart';
 import 'package:trana/features/contract/domain/enums/consent_type.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/domain/enums/delivery_type.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
+import 'package:trana/features/contract/domain/utils/contract_text_builder.dart';
 import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
 
 part 'detail_contract_view_model.freezed.dart';
@@ -18,9 +21,12 @@ part 'detail_contract_view_model.g.dart';
 
 @freezed
 abstract class DetailContractState with _$DetailContractState {
+  const DetailContractState._();
+
   const factory DetailContractState({
     // ContractEntity 필드
     Role? myRole,
+    @Default(false) bool isCreator,
     @Default(0) int attachmentCount,
     String? firstAttachmentUrl,
 
@@ -42,9 +48,23 @@ abstract class DetailContractState with _$DetailContractState {
     @Default([]) List<int> attachmentIds,
     @Default([]) List<String> attachmentImageUrls,
 
+    // PDF 미리보기
+    Uint8List? pdfBytes,
+
     @Default(false) bool isLoading,
     String? error,
   }) = _DetailContractState;
+
+  // PDF 텍스트
+  List<({String body, String title})> get contents => buildContractContents(
+    title: title ?? '',
+    price: price ?? 0,
+    deliveryType: deliveryType ?? DeliveryType.shipping,
+    tradingPlatform: tradingPlatform ?? '',
+    conditionSummary: conditionSummary ?? '',
+    conditionDetails: conditionDetails ?? '',
+    warrantyPeriodDays: warrantyPeriodDays,
+  );
 }
 
 // ==================== ViewModel ====================
@@ -56,32 +76,40 @@ class DetailContractViewModel extends _$DetailContractViewModel {
     return const DetailContractState();
   }
 
-  /// 선택된 계약 정보 + 첨부 사진 목록 불러오기
-  Future<bool> loadContract(ContractEntity contract) async {
+  /// 선택된 계약 정보 + 첨부 사진 목록 + PDF 불러오기
+  Future<bool> loadDetail(String publicCode) async {
+    final homeState = ref.read(homeContractViewModelProvider);
+    final selectedContract = homeState.myContracts.firstWhere(
+      (c) => c.publicCode == publicCode,
+    );
+
     state = state.copyWith(
       isLoading: true,
-      publicCode: contract.publicCode,
-      status: contract.status,
-      title: contract.title,
-      price: contract.price,
-      myRole: contract.myRole,
-      attachmentCount: contract.attachmentCount,
-      firstAttachmentUrl: contract.firstAttachmentUrl,
-      updatedAt: contract.updatedAt,
+      myRole: selectedContract.myRole,
+      isCreator: selectedContract.isCreator,
+      attachmentCount: selectedContract.attachmentCount,
+      firstAttachmentUrl: selectedContract.firstAttachmentUrl,
+      publicCode: selectedContract.publicCode,
+      status: selectedContract.status,
+      title: selectedContract.title,
+      price: selectedContract.price,
+      updatedAt: selectedContract.updatedAt,
     );
 
     final results = await Future.wait([
       ref
           .read(contractDraftRepositoryProvider)
-          .readDraft(publicCode: contract.publicCode),
+          .readDraft(publicCode: publicCode),
       ref
           .read(contractAttachmentRepositoryProvider)
-          .readAttachments(contract.publicCode),
+          .readAttachments(publicCode),
+      ref.read(contractPdfRepositoryProvider).pdf(publicCode: publicCode),
     ]);
 
     final draftResult = results[0] as Result<ContractDraftEntity>;
     final attachmentsResult =
         results[1] as Result<List<ContractAttachmentEntity>>;
+    final pdfResult = results[2] as Result<ContractPdfEntity>;
 
     if (draftResult case Failure(:final failure)) {
       state = state.copyWith(isLoading: false, error: failure.message);
@@ -100,6 +128,16 @@ class DetailContractViewModel extends _$DetailContractViewModel {
         .whereType<String>()
         .toList();
 
+    Uint8List? pdfBytes;
+    if (pdfResult case Success(:final data)) {
+      final bytesResult = await ref
+          .read(contractPdfRepositoryProvider)
+          .downloadBytes(data.downloadUrl);
+      if (bytesResult case Success(:final data)) {
+        pdfBytes = data;
+      }
+    }
+
     state = state.copyWith(
       isLoading: false,
       deliveryType: draft.deliveryType,
@@ -112,6 +150,7 @@ class DetailContractViewModel extends _$DetailContractViewModel {
       updatedAt: draft.updatedAt,
       attachmentIds: attachments.map((a) => a.id).toList(),
       attachmentImageUrls: imageUrls,
+      pdfBytes: pdfBytes,
     );
     return true;
   }
@@ -122,7 +161,7 @@ class DetailContractViewModel extends _$DetailContractViewModel {
 
     final result = await ref
         .read(contractLifecycleRepositoryProvider)
-        .fromReadyToDraft(state.publicCode);
+        .revert(state.publicCode);
 
     state = switch (result) {
       Success(:final data) => state.copyWith(
@@ -135,21 +174,19 @@ class DetailContractViewModel extends _$DetailContractViewModel {
       ),
     };
 
+    if (result is Success) {
+      await _refresh(state.publicCode);
+    }
+
     return result is Success;
   }
 
-  /// 계약 상세 정보 갱신
-  Future<void> refreshDetail() async {
-    if (state.publicCode.isEmpty) return;
+  Future<void> _refresh(String? publicCode) async {
+    final homeVM = ref.read(homeContractViewModelProvider.notifier);
+    await homeVM.readMyContracts();
 
-    final updated = ref
-        .read(homeContractViewModelProvider)
-        .myContracts
-        .where((c) => c.publicCode == state.publicCode)
-        .firstOrNull;
-    if (updated == null) return;
-
-    await loadContract(updated);
+    if (publicCode == null) return;
+    await loadDetail(publicCode);
   }
 
   void clearError() => state = state.copyWith(error: null);

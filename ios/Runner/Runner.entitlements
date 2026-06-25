@@ -8,5 +8,10 @@
 	</array>
 	<key>aps-environment</key>
 	<string>development</string>
+	<!-- iOS 딥링크 수신 -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:trana.app</string>
+	</array>
 </dict>
 </plist>

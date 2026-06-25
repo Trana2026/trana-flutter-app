@@ -12,12 +12,27 @@ part 'home_contract_view_model.g.dart';
 
 @freezed
 abstract class HomeContractState with _$HomeContractState {
+  const HomeContractState._();
+
   const factory HomeContractState({
     @Default([]) List<ContractEntity> myContracts, // 사용자의 계약 목록
     ContractStatus? selectedStatus, // 상태 필터 선택값
     @Default(false) bool isLoading,
     String? error,
   }) = _HomeContractState;
+
+  // 배너에 표시할 계약 목록
+  List<ContractEntity> get requests => myContracts
+      .where(
+        (c) =>
+            // 서명 요청
+            (c.status == ContractStatus.shared && !c.isCreator) ||
+            // 수정 요청
+            (c.status == ContractStatus.revisionRequested && c.isCreator) ||
+            // 최종 서명 요청
+            (c.status == ContractStatus.receiverSigned && c.isCreator),
+      )
+      .toList();
 }
 
 // ==================== ViewModel ====================

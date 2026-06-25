@@ -111,11 +111,8 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
                 final success = await aiVM.analyzeImages();
                 if (!context.mounted) return;
                 if (!success) {
-                  showErrorToast(
-                    context,
-                    ref.read(aiAutoFillViewModelProvider).error ??
-                        '이미지 분석에 실패했습니다.',
-                  );
+                  final state = ref.read(aiAutoFillViewModelProvider);
+                  showErrorToast(context, state.error ?? '이미지 분석에 실패했습니다.');
                   aiVM.clearError();
                   return;
                 }

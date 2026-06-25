@@ -47,10 +47,9 @@ class DeleteContractViewModel extends _$DeleteContractViewModel {
     return result is Success;
   }
 
-  /// 홈 목록 갱신
-  Future<void> _refreshHome() {
+  Future<void> _refreshHome() async {
     final homeVM = ref.read(homeContractViewModelProvider.notifier);
-    return homeVM.readMyContracts();
+    await homeVM.readMyContracts();
   }
 
   void clearError() => state = state.copyWith(error: null);

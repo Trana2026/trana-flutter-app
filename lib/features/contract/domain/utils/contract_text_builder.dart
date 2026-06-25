@@ -3,16 +3,17 @@ import 'package:trana/features/contract/domain/enums/delivery_type.dart';
 
 /// 계약서 내용 텍스트 생성 (title, body 분리)
 List<({String title, String body})> buildContractContents({
-  required String platform,
-  required String productName,
-  required int amount,
+  required String tradingPlatform,
+  required String title,
+  required int price,
   required String conditionSummary,
   required String conditionDetails,
-  required bool isWarranted,
-  required DeliveryType transactionMethod,
+  required int warrantyPeriodDays,
+  required DeliveryType deliveryType,
 }) {
-  final amountText = amount.toString().toPriceFormat;
-  final methodText = transactionMethod.label;
+  final amountText = price.toString().toPriceFormat;
+  final methodText = deliveryType.label;
+  final isWarranted = warrantyPeriodDays > 0;
 
   return [
     (
@@ -24,9 +25,9 @@ List<({String title, String body})> buildContractContents({
       title: '제2조 (거래 정보 및 방식)',
       body:
           '당사자는 다음 각호의 거래 조건을 확인하고 본 계약을 체결한다.\n'
-          '1. 거래 플랫폼: $platform\n'
+          '1. 거래 플랫폼: $tradingPlatform\n'
           '2. 거래 방식: $methodText\n'
-          '3. 거래 물품명: $productName\n'
+          '3. 거래 물품명: $title\n'
           '4. 거래 금액: 금 $amountText원정',
     ),
     (

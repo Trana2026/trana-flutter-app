@@ -24,44 +24,45 @@ class ContractSummaryCard extends HookConsumerWidget {
 
     return Row(
       children: [
-        if (detailState.firstAttachmentUrl != null)
-          Stack(
-            children: [
-              GestureDetector(
-                onTap: () => ContractImageCarousel.show(context),
-                child: ClipRRect(
-                  borderRadius: BorderRadiusGeometry.circular(16),
-                  child: Image.network(
-                    detailState.firstAttachmentUrl!,
-                    height: 100,
-                    width: 100,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Positioned(
-                right: 5,
-                bottom: 5,
-                child: Container(
-                  height: 20,
-                  width: 20,
-                  decoration: BoxDecoration(
-                    color: fxc(context).imageCountBg,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: Text(
-                      detailState.attachmentCount.toString(),
-                      style: context.txt(
-                        color: fxc(context).textBrand,
-                        fontSize: 10,
+        detailState.firstAttachmentUrl != null
+            ? Stack(
+                children: [
+                  GestureDetector(
+                    onTap: () => ContractImageCarousel.show(context),
+                    child: ClipRRect(
+                      borderRadius: BorderRadiusGeometry.circular(16),
+                      child: Image.network(
+                        detailState.firstAttachmentUrl!,
+                        height: 100,
+                        width: 100,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                ),
-              ),
-            ],
-          ),
+                  Positioned(
+                    right: 5,
+                    bottom: 5,
+                    child: Container(
+                      height: 20,
+                      width: 20,
+                      decoration: BoxDecoration(
+                        color: fxc(context).imageCountBg,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: Text(
+                          detailState.attachmentCount.toString(),
+                          style: context.txt(
+                            color: fxc(context).textBrand,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : placeholder(context),
         const SizedBox(width: 16),
         Expanded(
           child: SizedBox(
@@ -141,6 +142,22 @@ class ContractSummaryCard extends HookConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget placeholder(BuildContext context) {
+    return Container(
+      width: 100,
+      height: 100,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: vrc(context).tertiaryColor,
+      ),
+      child: Icon(
+        CooliconsIcon.image02,
+        color: vrc(context).textDisable,
+        size: 32,
+      ),
     );
   }
 }

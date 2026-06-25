@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/features/contract/presentation/viewmodels/sign_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/contract_sign_dialog.dart';
 import 'package:trana/core/widgets/consent_check_box.dart';
 import 'package:trana/core/widgets/primary_button.dart';
@@ -20,8 +21,9 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final checkedStates = useState<List<bool>>([false, false, false, false]);
+    final signVM = ref.read(signContractViewModelProvider.notifier);
 
+    final checkedStates = useState<List<bool>>([false, false, false, false]);
     final bool allChecked = checkedStates.value.every((e) => e);
 
     return Container(
@@ -49,7 +51,7 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
           const SizedBox(height: 20),
 
           ConsentCheckbox(
-            descriptionText: "판매자의 설명을 충분히 확인했으며,\n해당 조건으로 거래를 진행함에 동의합니다.",
+            descriptionText: "판매자의 설명을 충분히 확인했으며, 해당 조건으로 거래를 진행함에 동의합니다.",
             onChanged: (value) {
               final newList = [...checkedStates.value];
               newList[0] = value;
@@ -60,7 +62,7 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
 
           ConsentCheckbox(
             descriptionText:
-                "계약 확정 이후에는 서로의 합의없이 내용을 변경하거나,\n일방적으로 취소하기 어렵다는 점을 인지합니다.",
+                "계약 확정 이후에는 서로의 합의없이 내용을 변경하거나, 일방적으로 취소하기 어렵다는 점을 인지합니다.",
             onChanged: (value) {
               final newList = [...checkedStates.value];
               newList[1] = value;
@@ -71,7 +73,7 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
 
           ConsentCheckbox(
             descriptionText:
-                "보증 및 환불 조건은 계약서에 기재된 내용에 따르며,\n그 이행은 거래 당사자 간의 책임임을 확인합니다.",
+                "보증 및 환불 조건은 계약서에 기재된 내용에 따르며, 그 이행은 거래 당사자 간의 책임임을 확인합니다.",
             onChanged: (value) {
               final newList = [...checkedStates.value];
               newList[2] = value;
@@ -82,7 +84,7 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
 
           ConsentCheckbox(
             descriptionText:
-                "본 문서는 당사자 간 합의 내용을 기록한 문서이며,\n거래는 서로의 신뢰를 바탕으로 진행됨에 동의합니다.",
+                "본 문서는 당사자 간 합의 내용을 기록한 문서이며, 거래는 서로의 신뢰를 바탕으로 진행됨에 동의합니다.",
             onChanged: (value) {
               final newList = [...checkedStates.value];
               newList[3] = value;
@@ -96,6 +98,8 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
             text: "사인하기",
             onTap: allChecked
                 ? () async {
+                    signVM.agreeContractAgreementTerm();
+
                     bool dialogCompleted = false;
                     final router = GoRouter.of(context);
                     onProceed?.call();

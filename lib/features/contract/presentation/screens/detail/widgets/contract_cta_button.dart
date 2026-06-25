@@ -14,47 +14,86 @@ import 'package:trana/features/contract/presentation/viewmodels/create_contract_
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/delete_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_consent_sign_dialog.dart';
+import 'package:trana/features/user/presentation/providers/me_provider.dart';
 
 class ContractCtaButtons extends HookConsumerWidget {
   const ContractCtaButtons({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(detailContractViewModelProvider);
+    final me = ref.watch(meProvider).value;
+    final isMinor = me?.ageGroup == 'MINOR';
 
+    final detailState = ref.watch(detailContractViewModelProvider);
+    final isCreator = detailState.isCreator;
     final status = detailState.status;
 
     return switch (status) {
+      // 초안 작성중
       ContractStatus.inProgress || ContractStatus.draft => _CtaButtonRow(
         secondary: deleteButton(context, ref),
         primary: writeButton(context, ref),
       ),
+      // 계약서 초안
       ContractStatus.ready => _CtaButtonRow(
         secondary: deleteButton(context, ref),
         primary: requestSignButton(context, ref),
       ),
-      ContractStatus.shared => _CtaButtonRow(
-        primary: _ContractCtaButton(
-          disabled: true,
-          text: "거래 완료 확정",
-          onTap: () {},
-        ),
-      ),
-      ContractStatus.revisionRequested => _CtaButtonRow(
-        primary: requestSignButton(context, ref),
-      ),
-
-      ContractStatus.receiverSigned => _CtaButtonRow(
-        secondary: cancelButton(context),
-        primary: signButton(context),
-      ),
+      // 서명 요청
+      ContractStatus.shared =>
+        isCreator
+            ? _CtaButtonRow(
+                primary: completeButton(context, ref, disabled: true),
+              )
+            : _CtaButtonRow(
+                primary: signButton(
+                  context,
+                  onTap: () {
+                    if (isMinor) {
+                      showDialog(
+                        barrierColor: Colors.black.withValues(alpha: 0.75),
+                        context: context,
+                        builder: (context) =>
+                            const GuardianConsentSignDialog(isCreator: false),
+                      );
+                    } else {
+                      context.push(AppRoutes.requestDetail);
+                    }
+                  },
+                ),
+                secondary: cancelButton(context, disabled: true),
+              ),
+      // 수정 요청
+      ContractStatus.revisionRequested =>
+        isCreator
+            ? _CtaButtonRow(primary: requestSignButton(context, ref))
+            : _CtaButtonRow(
+                primary: requestSignButton(context, ref, disabled: true),
+              ),
+      // 최종 서명 요청
+      ContractStatus.receiverSigned =>
+        isCreator
+            ? _CtaButtonRow(
+                secondary: cancelButton(context),
+                primary: signButton(
+                  context,
+                  onTap: () => context.push(AppRoutes.finalPreview),
+                ),
+              )
+            : _CtaButtonRow(
+                primary: _CtaButtonRow(
+                  primary: completeButton(context, ref, disabled: true),
+                ),
+              ),
+      // 취소
       ContractStatus.cancelRequested ||
       ContractStatus.cancelled => _CtaButtonRow(primary: cancelButton(context)),
-
+      // 양측 서명 완료
       ContractStatus.signed => _CtaButtonRow(
         secondary: reportButton(context),
         primary: completeButton(context, ref),
       ),
+      // 거래 완료
       ContractStatus.completed => _CtaButtonRow(
         secondary: reportButton(context),
         primary: downloadButton(context, ref),
@@ -70,8 +109,8 @@ class ContractCtaButtons extends HookConsumerWidget {
     return _ContractCtaButton(
       disabled: true,
       text: "삭제하기",
-      onTap: () {
-        showDialog(
+      onTap: () async {
+        await showDialog(
           context: context,
           builder: (_) => CustomDialog(
             title: '삭제 안내',
@@ -79,7 +118,14 @@ class ContractCtaButtons extends HookConsumerWidget {
             confirmText: '삭제하기',
             onConfirm: () async {
               if (detailState.status == ContractStatus.ready) {
-                await detailVM.revert();
+                final success = await detailVM.revert();
+                if (!context.mounted) return;
+                if (!success) {
+                  final state = ref.read(detailContractViewModelProvider);
+                  showErrorToast(context, state.error!);
+                  detailVM.clearError();
+                  return;
+                }
               }
 
               final success = await deleteVM.deleteDraft(
@@ -87,18 +133,16 @@ class ContractCtaButtons extends HookConsumerWidget {
               );
               if (!context.mounted) return;
               if (!success) {
-                showErrorToast(
-                  context,
-                  ref.read(deleteContractViewModelProvider).error!,
-                );
+                final state = ref.read(deleteContractViewModelProvider);
+                showErrorToast(context, state.error!);
                 deleteVM.clearError();
                 return;
               }
-
-              context.go(AppRoutes.home);
             },
           ),
         );
+        if (!context.mounted) return;
+        context.go(AppRoutes.home);
       },
     );
   }
@@ -119,20 +163,35 @@ class ContractCtaButtons extends HookConsumerWidget {
     );
   }
 
-  Widget requestSignButton(BuildContext context, WidgetRef ref) {
+  Widget requestSignButton(
+    BuildContext context,
+    WidgetRef ref, {
+    bool disabled = false,
+  }) {
     final detailState = ref.read(detailContractViewModelProvider);
 
     return _ContractCtaButton(
-      disabled: false,
+      disabled: disabled,
       text: "서명 요청하기",
       onTap: () {
+        if (disabled) return;
         context.push(AppRoutes.contractShare, extra: detailState.publicCode);
       },
     );
   }
 
-  Widget completeButton(BuildContext context, WidgetRef ref) {
-    return _ContractCtaButton(disabled: false, text: "거래 완료 확정", onTap: () {});
+  Widget completeButton(
+    BuildContext context,
+    WidgetRef ref, {
+    bool disabled = false,
+  }) {
+    return _ContractCtaButton(
+      disabled: disabled,
+      text: "거래 완료 확정",
+      onTap: () {
+        if (disabled) return;
+      },
+    );
   }
 
   Widget downloadButton(BuildContext context, WidgetRef ref) {
@@ -178,7 +237,8 @@ class ContractCtaButtons extends HookConsumerWidget {
             showDialog(
               barrierColor: Colors.black.withValues(alpha: 0.75),
               context: context,
-              builder: (context) => const GuardianConsentSignDialog(),
+              builder: (context) =>
+                  const GuardianConsentSignDialog(isCreator: true),
             );
             return;
         }
@@ -186,12 +246,18 @@ class ContractCtaButtons extends HookConsumerWidget {
     );
   }
 
-  Widget cancelButton(BuildContext context) {
-    return _ContractCtaButton(disabled: true, text: "취소하기", onTap: () {});
+  Widget cancelButton(BuildContext context, {bool disabled = false}) {
+    return _ContractCtaButton(
+      disabled: disabled,
+      text: "취소하기",
+      onTap: () {
+        if (disabled) return;
+      },
+    );
   }
 
-  Widget signButton(BuildContext context) {
-    return _ContractCtaButton(disabled: true, text: "서명하기", onTap: () {});
+  Widget signButton(BuildContext context, {required void Function() onTap}) {
+    return _ContractCtaButton(disabled: false, text: "서명하기", onTap: onTap);
   }
 }
 

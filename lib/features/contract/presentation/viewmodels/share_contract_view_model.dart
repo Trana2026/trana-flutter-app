@@ -12,10 +12,12 @@ part 'share_contract_view_model.g.dart';
 
 @freezed
 abstract class ShareContractState with _$ShareContractState {
+  const ShareContractState._();
+
   const factory ShareContractState({
-    String? publicCode, // 계약 publicCode
     @Default('') String receiverName, // 수신자 이름 입력값
     @Default('') String receiverPhone, // 수신자 번호 입력값
+
     @Default(false) bool isLoading,
     String? error,
   }) = _ShareContractState;
@@ -28,25 +30,17 @@ class ShareContractViewModel extends _$ShareContractViewModel {
   @override
   ShareContractState build() => const ShareContractState();
 
-  void loadPublicCode(String publicCode) =>
-      state = state.copyWith(publicCode: publicCode);
-
   void updateInput({required String name, required String phone}) =>
       state = state.copyWith(receiverName: name, receiverPhone: phone);
 
   /// 계약서 공유 (서명 요청) + 알림톡 발송 (성공 여부 반환)
-  Future<bool> share() async {
-    if (state.publicCode == null) {
-      state = state.copyWith(error: '계약 정보가 없습니다.');
-      return false;
-    }
-
+  Future<bool> share(String publicCode) async {
     state = state.copyWith(isLoading: true, error: null);
 
     final result = await ref
         .read(contractLifecycleRepositoryProvider)
-        .fromReadyToShared(
-          publicCode: state.publicCode!,
+        .share(
+          publicCode: publicCode,
           receiverName: state.receiverName,
           receiverPhone: state.receiverPhone,
         );
@@ -60,21 +54,18 @@ class ShareContractViewModel extends _$ShareContractViewModel {
     };
 
     if (result is Success) {
-      await _refreshHome();
-      await _refreshDetail();
+      await _refresh(publicCode);
     }
 
     return result is Success;
   }
 
-  Future<void> _refreshHome() {
+  Future<void> _refresh(String publicCode) async {
     final homeVM = ref.read(homeContractViewModelProvider.notifier);
-    return homeVM.readMyContracts();
-  }
+    await homeVM.readMyContracts();
 
-  Future<void> _refreshDetail() {
     final detailVM = ref.read(detailContractViewModelProvider.notifier);
-    return detailVM.refreshDetail();
+    await detailVM.loadDetail(publicCode);
   }
 
   void clearError() => state = state.copyWith(error: null);

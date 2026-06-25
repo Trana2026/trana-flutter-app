@@ -63,7 +63,10 @@ class CustomDialog extends StatelessWidget {
                 Expanded(
                   child: PrimaryButton(
                     text: confirmText,
-                    onTap: onConfirm,
+                    onTap: () {
+                      onConfirm();
+                      Navigator.pop(context, true);
+                    },
                     backgroundColor: confirmColor ?? fxc(context).brandColor!,
                     foregroundColor: fxc(context).textBrand!,
                   ),

@@ -16,8 +16,8 @@ class ContractInvitationRepositoryImpl implements ContractInvitationRepository {
   final ContractInvitationDataSource dataSource;
 
   @override
-  Future<Result<ContractDraftEntity>> requestRevision(
-    String publicCode, {
+  Future<Result<ContractDraftEntity>> requestRevision({
+    required String publicCode,
     String? titleReason,
     String? priceReason,
     String? conditionSummaryReason,
@@ -57,8 +57,8 @@ class ContractInvitationRepositoryImpl implements ContractInvitationRepository {
   }
 
   @override
-  Future<Result<ContractReceiverSignedEntity>> receiverSign(
-    String publicCode, {
+  Future<Result<ContractReceiverSignedEntity>> receiverSign({
+    required String publicCode,
     required String signatureBase64,
     required List<int> agreedTermIds,
   }) async {

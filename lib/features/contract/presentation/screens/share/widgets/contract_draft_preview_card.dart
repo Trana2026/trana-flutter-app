@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/contract/domain/utils/contract_text_builder.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 
 class ContractDraftPreviewCard extends HookConsumerWidget {
-  const ContractDraftPreviewCard({super.key});
+  const ContractDraftPreviewCard({super.key, required this.publicCode});
+
+  final String publicCode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // final shareState = ref.watch(shareContractViewModelProvider);
     final detailState = ref.watch(detailContractViewModelProvider);
+    final detailVM = ref.read(detailContractViewModelProvider.notifier);
 
-    final contents = buildContractContents(
-      productName: detailState.title!,
-      amount: detailState.price!,
-      transactionMethod: detailState.deliveryType!,
-      platform: detailState.tradingPlatform!,
-      conditionSummary: detailState.conditionSummary!,
-      conditionDetails: detailState.conditionDetails!,
-      isWarranted: detailState.warrantyPeriodDays > 0,
-    );
+    final contents = detailState.contents;
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        detailVM.loadDetail(publicCode);
+      });
+      return null;
+    }, []);
 
     return Container(
       width: double.infinity,
