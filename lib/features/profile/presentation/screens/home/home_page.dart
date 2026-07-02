@@ -6,7 +6,7 @@ import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/contract/data/services/pending_invitation_token_service.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/receive_contract_view_model.dart';
-import 'package:trana/features/contract/presentation/viewmodels/test/test_user_provider.dart';
+import 'package:trana/features/profile/presentation/viewmodels/test_user_provider.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_identity_verify_dialog.dart';
 import 'package:trana/features/guardian/domain/entities/guardian_verification_state.dart';
 import 'package:trana/features/guardian/presentation/viewmodels/guardian_verification_state_provider.dart';
@@ -25,9 +25,10 @@ class HomePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = useState<int>(0);
     final pages = [const HomeMainView(), const HomeMainView(), const MyPage()];
+    final isMypage = currentIndex.value == 2;
 
     // ===== 인증 관련 =====
-    final me = ref.watch(meProvider).value;
+    final me = ref.read(meProvider).value;
     final isMinor = me?.ageGroup == 'MINOR';
     final state = ref.watch(guardianVerificationStateProvider).value;
 
@@ -70,9 +71,9 @@ class HomePage extends HookConsumerWidget {
         await userVM.getUser();
 
         // 수신자 invitation 수락
+        final receiveVM = ref.read(receiveContractViewModelProvider.notifier);
         final invitationToken = await PendingInvitationTokenService.get();
         if (invitationToken != null) {
-          final receiveVM = ref.read(receiveContractViewModelProvider.notifier);
           final acceptSuccess = await receiveVM.accept(invitationToken);
           if (!context.mounted) return;
           if (!acceptSuccess) {
@@ -101,11 +102,13 @@ class HomePage extends HookConsumerWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: vrc(context).background,
+      backgroundColor: isMypage
+          ? vrc(context).secondaryColor
+          : vrc(context).background,
       body: Stack(
         children: [
           IndexedStack(index: currentIndex.value, children: pages),
-          if (currentIndex.value != 2) const HomeBanner(),
+          if (!isMypage) const HomeBanner(),
         ],
       ),
 

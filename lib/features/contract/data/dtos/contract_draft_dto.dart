@@ -21,8 +21,23 @@ abstract class ContractDraftDto with _$ContractDraftDto {
     required int version,
     required DateTime createdAt,
     required DateTime updatedAt,
+    ContractRiskSignalsDto? riskSignals,
   }) = _ContractDraftDto;
 
   factory ContractDraftDto.fromJson(Map<String, dynamic> json) =>
       _$ContractDraftDtoFromJson(json);
+}
+
+@freezed
+abstract class ContractRiskSignalsDto with _$ContractRiskSignalsDto {
+  const factory ContractRiskSignalsDto({
+    @Default(false) bool guardianNotConsented,
+    @Default(false) bool hasReportHistory,
+    @Default(false) bool trustScoreZero,
+    int? counterpartyTrustScore,
+    String? counterpartyTrustGrade,
+  }) = _ContractRiskSignalsDto;
+
+  factory ContractRiskSignalsDto.fromJson(Map<String, dynamic> json) =>
+      _$ContractRiskSignalsDtoFromJson(json);
 }

@@ -15,7 +15,7 @@ import 'package:trana/features/auth/presentation/screens/terms/terms_agreement_p
 import 'package:trana/features/contract/presentation/screens/biometric_lock/biometric_lock_page.dart';
 import 'package:trana/features/contract/presentation/screens/create/create_contract_page.dart';
 import 'package:trana/features/contract/presentation/screens/detail/contract_detail_page.dart';
-import 'package:trana/features/contract/presentation/screens/modify/modification_request_page.dart';
+import 'package:trana/features/contract/presentation/screens/revision/revision_request_page.dart';
 import 'package:trana/features/contract/presentation/screens/preview/contract_preview_page.dart';
 import 'package:trana/features/contract/presentation/screens/request/contract_final_preview_page.dart';
 import 'package:trana/features/contract/presentation/screens/request/contract_request_detail_page.dart';
@@ -61,7 +61,7 @@ abstract class AppRoutes {
   static const biometricLock = '/biometric-lock';
   static const requestDetail = '/request/detail';
   static const requestList = '/request/list';
-  static const modificationRequest = '/modification/request';
+  static const revisionRequest = '/revision/request';
   static const finalPreview = '/final/preview';
 }
 
@@ -200,8 +200,8 @@ GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
       builder: (context, state) => const ContractRequestListPage(),
     ),
     GoRoute(
-      path: AppRoutes.modificationRequest,
-      builder: (context, state) => const ModificationRequestPage(),
+      path: AppRoutes.revisionRequest,
+      builder: (context, state) => const RevisionRequestPage(),
     ),
     GoRoute(
       path: AppRoutes.finalPreview,

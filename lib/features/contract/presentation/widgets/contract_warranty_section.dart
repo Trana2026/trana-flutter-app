@@ -5,6 +5,7 @@ import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/receive_contract_view_model.dart';
 
 class ContractWarrantySection extends HookConsumerWidget {
@@ -12,18 +13,25 @@ class ContractWarrantySection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final detailState = ref.watch(detailContractViewModelProvider);
     final createVM = ref.read(createContractViewModelProvider.notifier);
     final receiveVM = ref.read(receiveContractViewModelProvider.notifier);
 
-    final initialValue =
-        ref.read(createContractViewModelProvider).warrantyPeriodDays > 0;
+    final isCreator = detailState.isCreator;
+
+    final initialValue = isCreator
+        ? ref.read(createContractViewModelProvider).warrantyPeriodDays > 0
+        : ref.read(detailContractViewModelProvider).warrantyPeriodDays > 0;
     final isWarranted = useState<bool>(initialValue);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final days = isWarranted.value ? 3 : 0;
-        createVM.updateWarrantyPeriod(days);
-        receiveVM.updateWarrantyPeriod(days);
+        if (isCreator) {
+          createVM.updateWarrantyPeriod(days);
+        } else {
+          receiveVM.updateWarrantyPeriod(days);
+        }
       });
       return null;
     }, [isWarranted.value]);

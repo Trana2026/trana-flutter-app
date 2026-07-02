@@ -12,10 +12,11 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.shared => fxc(context).statusSignSuccess!,
     ContractStatus.revisionRequested => fxc(context).statusModifyRequest!,
     ContractStatus.receiverSigned => fxc(context).statusSignSuccess!,
-    ContractStatus.cancelRequested => fxc(context).statusError!,
-    ContractStatus.cancelled => fxc(context).statusError!,
-
     ContractStatus.signed => fxc(context).statusSignRequest!,
+
+    ContractStatus.cancelRequested ||
+    ContractStatus.cancelled => fxc(context).statusError!,
+    ContractStatus.reported => fxc(context).statusError!,
     ContractStatus.completed => fxc(context).brandColor!,
   };
 
@@ -27,27 +28,35 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.shared => fxc(context).subtitleBlue!,
     ContractStatus.revisionRequested => fxc(context).subtitleWarning!,
     ContractStatus.receiverSigned => fxc(context).subtitleBlue!,
-    ContractStatus.cancelRequested => fxc(context).opacityError!,
-    ContractStatus.cancelled => fxc(context).opacityError!,
-
     ContractStatus.signed => fxc(context).subtitleBlue!,
+
+    ContractStatus.cancelRequested ||
+    ContractStatus.cancelled => fxc(context).opacityError!,
+    ContractStatus.reported => fxc(context).opacityError!,
     ContractStatus.completed => fxc(context).opacitySuccess!,
   };
 
-  String statusLabel(bool isCreator) => switch (this) {
-    ContractStatus.inProgress ||
-    ContractStatus.draft ||
-    ContractStatus.ready => "계약서 초안",
+  String statusLabel(bool isCreator, bool isMyCancel, bool revisionDone) =>
+      switch (this) {
+        ContractStatus.inProgress ||
+        ContractStatus.draft ||
+        ContractStatus.ready => "계약서 초안",
 
-    ContractStatus.shared => isCreator ? "서명 요청됨" : "서명 요청",
-    ContractStatus.revisionRequested => isCreator ? "수정 요청" : "수정 요청됨",
-    ContractStatus.receiverSigned => isCreator ? "최종 서명 요청" : "최종 서명 요청됨",
-    ContractStatus.cancelRequested => "취소 요청",
-    ContractStatus.cancelled => "",
+        ContractStatus.shared => isCreator ? "서명 요청됨" : "서명 요청",
+        ContractStatus.revisionRequested =>
+          isCreator && revisionDone
+              ? "수정 완료"
+              : isCreator && !revisionDone
+              ? "수정 요청"
+              : "수정 요청됨",
+        ContractStatus.receiverSigned => isCreator ? "최종 서명 요청" : "최종 서명 요청됨",
+        ContractStatus.signed => "서명 완료",
 
-    ContractStatus.signed => "서명 완료",
-    ContractStatus.completed => "거래 완료",
-  };
+        ContractStatus.cancelRequested ||
+        ContractStatus.cancelled => isMyCancel ? "취소 요청됨" : "취소 요청",
+        ContractStatus.reported => "신고 접수",
+        ContractStatus.completed => "거래 완료",
+      };
 
   IconData statusIcon() => switch (this) {
     ContractStatus.inProgress ||
@@ -57,10 +66,11 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.shared => CooliconsIcon.editPencilLine02,
     ContractStatus.revisionRequested => CooliconsIcon.circleHelp,
     ContractStatus.receiverSigned => CooliconsIcon.editPencilLine02,
-    ContractStatus.cancelRequested => CooliconsIcon.warning,
-    ContractStatus.cancelled => CooliconsIcon.warning,
-
     ContractStatus.signed => CooliconsIcon.circleCheck,
+
+    ContractStatus.cancelRequested ||
+    ContractStatus.cancelled => CooliconsIcon.triangleWarning,
+    ContractStatus.reported => CooliconsIcon.triangleWarning,
     ContractStatus.completed => CooliconsIcon.circleCheck,
   };
 
@@ -72,10 +82,11 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.shared => fxc(context).statusSignRequest!,
     ContractStatus.revisionRequested => vrc(context).tertiaryColor!,
     ContractStatus.receiverSigned => fxc(context).statusSignRequest!,
-    ContractStatus.cancelRequested => fxc(context).statusError!,
-    ContractStatus.cancelled => fxc(context).statusError!,
-
     ContractStatus.signed => fxc(context).statusSignRequest!,
+
+    ContractStatus.cancelRequested ||
+    ContractStatus.cancelled => fxc(context).statusError!,
+    ContractStatus.reported => fxc(context).statusError!,
     ContractStatus.completed => fxc(context).brandColor!,
   };
 
@@ -87,9 +98,10 @@ extension ContractStatusMeta on ContractStatus {
 
     ContractStatus.shared ||
     ContractStatus.receiverSigned ||
+    ContractStatus.signed ||
+    ContractStatus.reported ||
     ContractStatus.cancelRequested ||
     ContractStatus.cancelled ||
-    ContractStatus.signed ||
     ContractStatus.completed => fxc(context).textBrand!,
   };
 
@@ -101,25 +113,29 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.shared => CooliconsIcon.help,
     ContractStatus.revisionRequested => CooliconsIcon.editPencilLine02,
     ContractStatus.receiverSigned => CooliconsIcon.help,
-    ContractStatus.cancelRequested => CooliconsIcon.warning,
-    ContractStatus.cancelled => CooliconsIcon.warning,
-
     ContractStatus.signed => CooliconsIcon.check,
+
+    ContractStatus.cancelRequested ||
+    ContractStatus.cancelled => CooliconsIcon.triangleWarning,
+    ContractStatus.reported => CooliconsIcon.triangleWarning,
     ContractStatus.completed => CooliconsIcon.circleCheck,
   };
 
   String bannerTopLabel(bool isCreator) => switch (this) {
-    ContractStatus.inProgress => "",
-    ContractStatus.draft => "",
+    ContractStatus.inProgress ||
+    ContractStatus.draft ||
     ContractStatus.ready => "",
 
-    ContractStatus.shared => "거래 상대방",
-    ContractStatus.revisionRequested => isCreator ? "" : "거래 상대방",
-    ContractStatus.receiverSigned => "거래 상대방",
-    ContractStatus.cancelRequested => "진행 상황",
-    ContractStatus.cancelled => "",
-
+    ContractStatus.shared ||
+    ContractStatus.receiverSigned ||
     ContractStatus.signed => "거래 상대방",
+
+    ContractStatus.revisionRequested => isCreator ? "" : "거래 상대방",
+
+    ContractStatus.cancelRequested ||
+    ContractStatus.cancelled ||
+    ContractStatus.reported => "진행 상황",
+
     ContractStatus.completed => "거래 완료",
   };
 
@@ -131,10 +147,10 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.shared => "현재 서명 대기 중..",
     ContractStatus.revisionRequested => isCreator ? "계약서 수정하기" : "수정 진행 중...",
     ContractStatus.receiverSigned => "현재 서명 대기 중..",
-    ContractStatus.cancelRequested => "계약 취소 진행 중",
-    ContractStatus.cancelled => "",
-
     ContractStatus.signed => "서명 완료",
+
+    ContractStatus.cancelRequested || ContractStatus.cancelled => "계약 취소 진행 중",
+    ContractStatus.reported => "신고 접수 중",
     ContractStatus.completed => "무사히 거래가 완료되었어요!",
   };
 
@@ -146,10 +162,10 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.shared => false,
     ContractStatus.revisionRequested => true,
     ContractStatus.receiverSigned => false,
-    ContractStatus.cancelRequested => true,
-    ContractStatus.cancelled => true,
-
     ContractStatus.signed => false,
+
+    ContractStatus.cancelRequested || ContractStatus.cancelled => true,
+    ContractStatus.reported => true,
     ContractStatus.completed => false,
   };
 }

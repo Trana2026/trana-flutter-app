@@ -15,6 +15,7 @@ T _$identity<T>(T value) => value;
 mixin _$GuardianLinkState {
 
  String? get verifyUrl;// 발급된 보호자 인증 링크
+ dynamic get isConsented;// 이미 인증되었는지 여부
  bool get isLoading; String? get error;
 /// Create a copy of GuardianLinkState
 /// with the given fields replaced by the non-null parameter values.
@@ -26,16 +27,16 @@ $GuardianLinkStateCopyWith<GuardianLinkState> get copyWith => _$GuardianLinkStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GuardianLinkState&&(identical(other.verifyUrl, verifyUrl) || other.verifyUrl == verifyUrl)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GuardianLinkState&&(identical(other.verifyUrl, verifyUrl) || other.verifyUrl == verifyUrl)&&const DeepCollectionEquality().equals(other.isConsented, isConsented)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,verifyUrl,isLoading,error);
+int get hashCode => Object.hash(runtimeType,verifyUrl,const DeepCollectionEquality().hash(isConsented),isLoading,error);
 
 @override
 String toString() {
-  return 'GuardianLinkState(verifyUrl: $verifyUrl, isLoading: $isLoading, error: $error)';
+  return 'GuardianLinkState(verifyUrl: $verifyUrl, isConsented: $isConsented, isLoading: $isLoading, error: $error)';
 }
 
 
@@ -46,7 +47,7 @@ abstract mixin class $GuardianLinkStateCopyWith<$Res>  {
   factory $GuardianLinkStateCopyWith(GuardianLinkState value, $Res Function(GuardianLinkState) _then) = _$GuardianLinkStateCopyWithImpl;
 @useResult
 $Res call({
- String? verifyUrl, bool isLoading, String? error
+ String? verifyUrl, dynamic isConsented, bool isLoading, String? error
 });
 
 
@@ -63,10 +64,11 @@ class _$GuardianLinkStateCopyWithImpl<$Res>
 
 /// Create a copy of GuardianLinkState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? verifyUrl = freezed,Object? isLoading = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? verifyUrl = freezed,Object? isConsented = freezed,Object? isLoading = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
 verifyUrl: freezed == verifyUrl ? _self.verifyUrl : verifyUrl // ignore: cast_nullable_to_non_nullable
-as String?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as String?,isConsented: freezed == isConsented ? _self.isConsented : isConsented // ignore: cast_nullable_to_non_nullable
+as dynamic,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -153,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? verifyUrl,  bool isLoading,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? verifyUrl,  dynamic isConsented,  bool isLoading,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GuardianLinkState() when $default != null:
-return $default(_that.verifyUrl,_that.isLoading,_that.error);case _:
+return $default(_that.verifyUrl,_that.isConsented,_that.isLoading,_that.error);case _:
   return orElse();
 
 }
@@ -174,10 +176,10 @@ return $default(_that.verifyUrl,_that.isLoading,_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? verifyUrl,  bool isLoading,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? verifyUrl,  dynamic isConsented,  bool isLoading,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _GuardianLinkState():
-return $default(_that.verifyUrl,_that.isLoading,_that.error);case _:
+return $default(_that.verifyUrl,_that.isConsented,_that.isLoading,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +196,10 @@ return $default(_that.verifyUrl,_that.isLoading,_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? verifyUrl,  bool isLoading,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? verifyUrl,  dynamic isConsented,  bool isLoading,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _GuardianLinkState() when $default != null:
-return $default(_that.verifyUrl,_that.isLoading,_that.error);case _:
+return $default(_that.verifyUrl,_that.isConsented,_that.isLoading,_that.error);case _:
   return null;
 
 }
@@ -209,11 +211,13 @@ return $default(_that.verifyUrl,_that.isLoading,_that.error);case _:
 
 
 class _GuardianLinkState implements GuardianLinkState {
-  const _GuardianLinkState({this.verifyUrl, this.isLoading = false, this.error});
+  const _GuardianLinkState({this.verifyUrl, this.isConsented = false, this.isLoading = false, this.error});
   
 
 @override final  String? verifyUrl;
 // 발급된 보호자 인증 링크
+@override@JsonKey() final  dynamic isConsented;
+// 이미 인증되었는지 여부
 @override@JsonKey() final  bool isLoading;
 @override final  String? error;
 
@@ -227,16 +231,16 @@ _$GuardianLinkStateCopyWith<_GuardianLinkState> get copyWith => __$GuardianLinkS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GuardianLinkState&&(identical(other.verifyUrl, verifyUrl) || other.verifyUrl == verifyUrl)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GuardianLinkState&&(identical(other.verifyUrl, verifyUrl) || other.verifyUrl == verifyUrl)&&const DeepCollectionEquality().equals(other.isConsented, isConsented)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,verifyUrl,isLoading,error);
+int get hashCode => Object.hash(runtimeType,verifyUrl,const DeepCollectionEquality().hash(isConsented),isLoading,error);
 
 @override
 String toString() {
-  return 'GuardianLinkState(verifyUrl: $verifyUrl, isLoading: $isLoading, error: $error)';
+  return 'GuardianLinkState(verifyUrl: $verifyUrl, isConsented: $isConsented, isLoading: $isLoading, error: $error)';
 }
 
 
@@ -247,7 +251,7 @@ abstract mixin class _$GuardianLinkStateCopyWith<$Res> implements $GuardianLinkS
   factory _$GuardianLinkStateCopyWith(_GuardianLinkState value, $Res Function(_GuardianLinkState) _then) = __$GuardianLinkStateCopyWithImpl;
 @override @useResult
 $Res call({
- String? verifyUrl, bool isLoading, String? error
+ String? verifyUrl, dynamic isConsented, bool isLoading, String? error
 });
 
 
@@ -264,10 +268,11 @@ class __$GuardianLinkStateCopyWithImpl<$Res>
 
 /// Create a copy of GuardianLinkState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? verifyUrl = freezed,Object? isLoading = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? verifyUrl = freezed,Object? isConsented = freezed,Object? isLoading = null,Object? error = freezed,}) {
   return _then(_GuardianLinkState(
 verifyUrl: freezed == verifyUrl ? _self.verifyUrl : verifyUrl // ignore: cast_nullable_to_non_nullable
-as String?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as String?,isConsented: freezed == isConsented ? _self.isConsented : isConsented // ignore: cast_nullable_to_non_nullable
+as dynamic,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

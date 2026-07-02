@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:trana/features/contract/data/dtos/contract_confirm_completion_dto.dart';
 import 'package:trana/features/contract/data/dtos/contract_draft_dto.dart';
 import 'package:trana/features/contract/data/dtos/contract_signed_dto.dart';
 
@@ -28,6 +29,14 @@ class ContractLifecycleDataSource {
     return ContractDraftDto.fromJson(response.data!);
   }
 
+  /// POST REVISION_REQUESTED → SHARED 재공유
+  Future<ContractDraftDto> reshare(String publicCode) async {
+    final response = await dio.post<Map<String, dynamic>>(
+      '/v1/contracts/$publicCode/reshare',
+    );
+    return ContractDraftDto.fromJson(response.data!);
+  }
+
   /// POST DRAFT → READY 전이
   Future<ContractDraftDto> ready(String publicCode) async {
     final response = await dio.post<Map<String, dynamic>>(
@@ -50,6 +59,16 @@ class ContractLifecycleDataSource {
       },
     );
     return ContractSignedDto.fromJson(response.data!);
+  }
+
+  /// POST SIGNED → COMPLETED 거래 완료 확인 (양측 클릭 모델)
+  Future<ContractConfirmCompletionDto> confirmCompletion(
+    String publicCode,
+  ) async {
+    final response = await dio.post<Map<String, dynamic>>(
+      '/v1/contracts/$publicCode/confirm-completion',
+    );
+    return ContractConfirmCompletionDto.fromJson(response.data!);
   }
 
   /// GET 상태 전이 로그 (WORM audit)

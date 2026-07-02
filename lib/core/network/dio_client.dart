@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:trana/core/network/auth_interceptor.dart';
 import 'package:trana/core/network/auth_token_store.dart';
 
-const _baseUrl = 'https://trana-api-server-production.up.railway.app';
+const _baseUrl = 'https://dev-api.trana.kr';
 
 const _apiNames = {
   'GET /v1/ekyc/terms': '약관 목록 조회',

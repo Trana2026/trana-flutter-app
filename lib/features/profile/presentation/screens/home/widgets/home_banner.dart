@@ -17,7 +17,7 @@ class HomeBanner extends HookConsumerWidget {
     final hasRequest = homeState.requests.isNotEmpty;
 
     // ===== 인증 관련 =====
-    final me = ref.watch(meProvider).value;
+    final me = ref.read(meProvider).value;
     final isMinor = me?.ageGroup == 'MINOR';
     final state = ref.watch(guardianVerificationStateProvider).value;
     // 진행중(pending) / 완료(verified) 일 때만 하단 고정 배너

@@ -22,26 +22,11 @@ class ContractSharePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final shareVM = ref.read(shareContractViewModelProvider.notifier);
-    // final detailVM = ref.read(detailContractViewModelProvider.notifier);
 
     final nameCtr = useTextEditingController();
     final phoneCtr = useTextEditingController();
     final phoneError = useState<String?>(null);
-
-    // useEffect(() {
-    //   WidgetsBinding.instance.addPostFrameCallback((_) async {
-
-    //     shareVM.loadDraftInfo(publicCode);
-    //   });
-    //   return null;
-    // }, []);
-
-    // useEffect(() {
-    //   WidgetsBinding.instance.addPostFrameCallback((_) async {
-    //     detailVM.loadDetail(publicCode);
-    //   });
-    //   return null;
-    // }, []);
+    final isPending = useRef(false);
 
     useListenable(nameCtr);
     useListenable(phoneCtr);
@@ -174,25 +159,30 @@ class ContractSharePage extends HookConsumerWidget {
                   text: "카카오톡으로 요청하기",
                   onTap: () async {
                     if (!isEnabled) return;
+                    if (isPending.value) return;
+                    isPending.value = true;
+                    try {
+                      phoneError.value = validatePhoneNumber(phoneCtr.text);
+                      if (phoneError.value != null) return;
 
-                    phoneError.value = validatePhoneNumber(phoneCtr.text);
-                    if (phoneError.value != null) return;
+                      shareVM.updateInput(
+                        name: nameCtr.text.trim(),
+                        phone: phoneCtr.text.trim(),
+                      );
 
-                    shareVM.updateInput(
-                      name: nameCtr.text.trim(),
-                      phone: phoneCtr.text.trim(),
-                    );
+                      final success = await shareVM.share(publicCode);
+                      if (!context.mounted) return;
+                      if (!success) {
+                        final state = ref.read(shareContractViewModelProvider);
+                        showErrorToast(context, state.error!);
+                        shareVM.clearError();
+                        return;
+                      }
 
-                    final success = await shareVM.share(publicCode);
-                    if (!context.mounted) return;
-                    if (!success) {
-                      final state = ref.read(shareContractViewModelProvider);
-                      showErrorToast(context, state.error!);
-                      shareVM.clearError();
-                      return;
+                      context.go(AppRoutes.contractDetail);
+                    } finally {
+                      isPending.value = false;
                     }
-
-                    context.go(AppRoutes.contractDetail);
                   },
                   backgroundColor: isEnabled
                       ? fxc(context).brandColor!

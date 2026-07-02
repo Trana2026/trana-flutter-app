@@ -5,7 +5,6 @@ import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
-import 'package:trana/core/widgets/custom_loading_bar.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/screens/detail/widgets/contract_counterparty_banner.dart';
 import 'package:trana/features/contract/presentation/screens/detail/widgets/contract_cta_button.dart';
@@ -26,31 +25,18 @@ class ContractDetailPage extends HookConsumerWidget {
     final bool isDraft =
         status == ContractStatus.inProgress || status == ContractStatus.draft;
 
-    if (detailState.isLoading) {
-      return Scaffold(
-        backgroundColor: vrc(context).background,
-        body: const CustomLoadingBar(),
-      );
-    }
-
     return Scaffold(
       backgroundColor: vrc(context).background,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(35),
-        child: AppBar(
-          backgroundColor: vrc(context).background,
-          leading: InkWell(
-            onTap: () =>
-                context.canPop() ? context.pop() : context.go(AppRoutes.home),
-            child: SizedBox(
-              width: 45,
-              height: 45,
-              child: Icon(
-                CooliconsIcon.closeMd,
-                color: vrc(context).iconPrimary,
-                size: 24,
-              ),
-            ),
+      appBar: AppBar(
+        toolbarHeight: 35,
+        backgroundColor: vrc(context).background,
+        leading: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => context.go(AppRoutes.home),
+          child: Icon(
+            CooliconsIcon.closeMd,
+            color: vrc(context).textPrimary,
+            size: 24,
           ),
         ),
       ),

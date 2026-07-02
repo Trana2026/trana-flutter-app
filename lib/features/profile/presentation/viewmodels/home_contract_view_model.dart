@@ -2,8 +2,10 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
+import 'package:trana/features/contract/domain/entities/contract_cancellation_entity.dart';
 import 'package:trana/features/contract/domain/entities/contract_entity.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
+import 'package:trana/features/contract/domain/enums/dispute_state.dart';
 
 part 'home_contract_view_model.freezed.dart';
 part 'home_contract_view_model.g.dart';
@@ -12,27 +14,13 @@ part 'home_contract_view_model.g.dart';
 
 @freezed
 abstract class HomeContractState with _$HomeContractState {
-  const HomeContractState._();
-
   const factory HomeContractState({
-    @Default([]) List<ContractEntity> myContracts, // 사용자의 계약 목록
-    ContractStatus? selectedStatus, // 상태 필터 선택값
+    @Default([]) List<ContractEntity> myContracts,
+    @Default([]) List<ContractEntity> requests, // 배너에 표시할 계약 목록
+    ContractStatus? selectedStatus,
     @Default(false) bool isLoading,
     String? error,
   }) = _HomeContractState;
-
-  // 배너에 표시할 계약 목록
-  List<ContractEntity> get requests => myContracts
-      .where(
-        (c) =>
-            // 서명 요청
-            (c.status == ContractStatus.shared && !c.isCreator) ||
-            // 수정 요청
-            (c.status == ContractStatus.revisionRequested && c.isCreator) ||
-            // 최종 서명 요청
-            (c.status == ContractStatus.receiverSigned && c.isCreator),
-      )
-      .toList();
 }
 
 // ==================== ViewModel ====================
@@ -55,16 +43,18 @@ class HomeContractViewModel extends _$HomeContractViewModel {
     final selected = state.selectedStatus;
     final isDraftGroup = selected != null && _draftGroup.contains(selected);
 
+    List<ContractEntity> contracts = [];
+    String? error;
+
     if (isDraftGroup) {
       final results = await Future.wait(
-        _draftGroup.map(
-          (s) =>
-              ref.read(contractRepositoryProvider).readMyContracts(status: s),
-        ),
+        _draftGroup.map((s) {
+          return ref
+              .read(contractRepositoryProvider)
+              .readMyContracts(status: s);
+        }),
       );
 
-      final contracts = <ContractEntity>[];
-      String? error;
       for (final result in results) {
         switch (result) {
           case Success(:final data):
@@ -73,27 +63,102 @@ class HomeContractViewModel extends _$HomeContractViewModel {
             error = failure.message;
         }
       }
-
-      state = state.copyWith(
-        isLoading: false,
-        myContracts: contracts,
-        error: error,
-      );
-      return error == null;
     } else {
       final result = await ref
           .read(contractRepositoryProvider)
           .readMyContracts(status: selected);
 
       switch (result) {
-        case Failure(:final failure):
-          state = state.copyWith(isLoading: false, error: failure.message);
-          return false;
         case Success(:final data):
-          state = state.copyWith(isLoading: false, myContracts: data);
-          return true;
+          contracts = data;
+        case Failure(:final failure):
+          error = failure.message;
       }
     }
+
+    if (error != null) {
+      state = state.copyWith(isLoading: false, error: error);
+      return false;
+    }
+
+    contracts = await _applyDisputeStatuses(contracts);
+    final requests = await _computeRequests(contracts);
+
+    state = state.copyWith(
+      isLoading: false,
+      myContracts: contracts,
+      requests: requests,
+    );
+    return true;
+  }
+
+  Future<List<ContractEntity>> _applyDisputeStatuses(
+    List<ContractEntity> contracts,
+  ) async {
+    final signed = contracts
+        .where((c) => c.status == ContractStatus.signed)
+        .toList();
+
+    if (signed.isEmpty) return contracts;
+
+    final disputeRepo = ref.read(contractDisputeRepositoryProvider);
+    final disputeResults = await Future.wait(
+      signed.map((c) => disputeRepo.readDisputes(c.publicCode)),
+    );
+
+    final reportedCodes = <String>{};
+    for (var i = 0; i < signed.length; i++) {
+      if (disputeResults[i] case Success(:final data)) {
+        if (data.any((d) => d.status == DisputeState.reported)) {
+          reportedCodes.add(signed[i].publicCode);
+        }
+      }
+    }
+
+    if (reportedCodes.isEmpty) return contracts;
+
+    return contracts.map((c) {
+      return reportedCodes.contains(c.publicCode)
+          ? c.copyWith(status: ContractStatus.reported)
+          : c;
+    }).toList();
+  }
+
+  Future<List<ContractEntity>> _computeRequests(
+    List<ContractEntity> contracts,
+  ) async {
+    final basic = contracts.where(
+      (c) =>
+          (c.status == ContractStatus.shared && !c.isCreator) ||
+          (c.status == ContractStatus.revisionRequested && c.isCreator) ||
+          (c.status == ContractStatus.receiverSigned && c.isCreator),
+    );
+
+    final cancelRequested = contracts
+        .where((c) => c.status == ContractStatus.cancelRequested)
+        .toList();
+
+    if (cancelRequested.isEmpty) return basic.toList();
+
+    // cancelRequested 계약마다 취소 상태 병렬 조회
+    final cancelRepo = ref.read(contractCancellationRepositoryProvider);
+    final cancelResults = await Future.wait(
+      cancelRequested.map(
+        (c) => cancelRepo.readActiveCancellation(c.publicCode),
+      ),
+    );
+
+    // isMine == false 인 계약 배너 목록에 추가
+    final respondable = <ContractEntity>[];
+    for (var i = 0; i < cancelRequested.length; i++) {
+      if (cancelResults[i] case Success(
+        :final ContractCancellationEntity? data,
+      ) when data?.isMine == false) {
+        respondable.add(cancelRequested[i]);
+      }
+    }
+
+    return [...basic, ...respondable];
   }
 
   /// 상태별 필터 적용

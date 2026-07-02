@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
@@ -18,6 +19,7 @@ class ContractFinalPreviewPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailState = ref.watch(detailContractViewModelProvider);
+    final isPending = useRef(false);
 
     return Scaffold(
       backgroundColor: vrc(context).background,
@@ -77,20 +79,26 @@ class ContractFinalPreviewPage extends HookConsumerWidget {
           child: PrimaryButton(
             text: "서명하기",
             onTap: () async {
-              bool signFlowProceeded = false;
-              final router = GoRouter.of(context);
-              await showModalBottomSheet<void>(
-                context: context,
-                barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
-                backgroundColor: Colors.transparent,
-                isScrollControlled: true,
-                builder: (_) => SignConfirmBottomSheet(
-                  parentContext: context,
-                  onProceed: () => signFlowProceeded = true,
-                ),
-              );
-              if (!signFlowProceeded && context.mounted) {
-                router.go(AppRoutes.home);
+              if (isPending.value) return;
+              isPending.value = true;
+              try {
+                bool signFlowProceeded = false;
+                final router = GoRouter.of(context);
+                await showModalBottomSheet<void>(
+                  context: context,
+                  barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
+                  backgroundColor: Colors.transparent,
+                  isScrollControlled: true,
+                  builder: (_) => SignConfirmBottomSheet(
+                    parentContext: context,
+                    onProceed: () => signFlowProceeded = true,
+                  ),
+                );
+                if (!signFlowProceeded && context.mounted) {
+                  router.go(AppRoutes.home);
+                }
+              } finally {
+                isPending.value = false;
               }
             },
             backgroundColor: fxc(context).brandColor!,

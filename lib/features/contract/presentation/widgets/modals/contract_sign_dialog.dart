@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
-import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
@@ -53,6 +52,20 @@ class ContractSignDialog extends HookConsumerWidget {
               content:
                   "전자서명 완료 시 본 계약은 법적 효력이 발생할 수 있으며, 서명 후에는 계약 내용을 수정하거나 삭제할 수 없습니다.",
             ),
+            if (detailState.guardianNotConsented) ...[
+              const SizedBox(height: 8),
+              const _Warning(
+                title: "꼭 확인하세요",
+                content: "법정 대리인 인증을 안한 사람입니다. 그래도 계약을 생성하시겠습니까?",
+              ),
+            ],
+            if (detailState.hasReportHistory) ...[
+              const SizedBox(height: 8),
+              const _Warning(
+                title: "신고 이력이 있는 사용자입니다.",
+                content: "본 사용자는 다수의 이용자로부터 문제 신고가 접수된 기록이 있습니다.",
+              ),
+            ],
             const SizedBox(height: 8),
             ClipRRect(
               borderRadius: BorderRadius.circular(16),
@@ -109,7 +122,7 @@ class ContractSignDialog extends HookConsumerWidget {
                 Expanded(
                   child: PrimaryButton(
                     text: "취소",
-                    onTap: () => context.go(AppRoutes.contractDetail),
+                    onTap: () => context.pop(),
                     backgroundColor: vrc(context).secondaryColor!,
                     foregroundColor: vrc(context).textPrimary!,
                   ),

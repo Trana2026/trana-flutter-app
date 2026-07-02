@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:trana/core/error/dio_error_mapper.dart';
 import 'package:trana/core/error/failure.dart';
 import 'package:trana/core/error/result.dart';
@@ -31,16 +30,11 @@ class ContractDraftRepositoryImpl implements ContractDraftRepository {
       );
       return Success(dto.toEntity());
     } on DioException catch (e) {
-      debugPrint(
-        '[ContractRepo] createDraft: ${e.type} ${e.response?.statusCode} ${e.message}',
-      );
-      final errorCode = _errorCode(e);
-      if (errorCode == 'CONTRACT_403_GUARDIAN_NOT_VERIFIED') {
+      if (e.response?.statusCode == 403) {
         return const Failure(KycFailure('가입 보호자 인증이 완료되지 않아 계약을 생성할 수 없습니다.'));
       }
       return Failure(e.toFailure());
     } catch (e) {
-      debugPrint('[ContractRepo] createDraft unexpected: $e');
       return const Failure(UnknownFailure());
     }
   }
@@ -53,19 +47,14 @@ class ContractDraftRepositoryImpl implements ContractDraftRepository {
       final dto = await dataSource.readDraft(publicCode: publicCode);
       return Success(dto.toEntity());
     } on DioException catch (e) {
-      debugPrint(
-        '[ContractRepo] readDraft: ${e.type} ${e.response?.statusCode} ${e.message}',
-      );
-      final errorCode = _errorCode(e);
-      if (errorCode == 'CONTRACT_403_OWNER') {
+      if (e.response?.statusCode == 403) {
         return const Failure(ForbiddenFailure('본인이 작성한 계약만 조회할 수 있습니다.'));
       }
-      if (errorCode == 'CONTRACT_404') {
+      if (e.response?.statusCode == 404) {
         return const Failure(NotFoundFailure('계약을 찾을 수 없습니다.'));
       }
       return Failure(e.toFailure());
     } catch (e) {
-      debugPrint('[ContractRepo] readDraft unexpected: $e');
       return const Failure(UnknownFailure());
     }
   }
@@ -76,19 +65,14 @@ class ContractDraftRepositoryImpl implements ContractDraftRepository {
       await dataSource.deleteDraft(publicCode);
       return const Success(null);
     } on DioException catch (e) {
-      debugPrint(
-        '[ContractRepo] deleteDraft: ${e.type} ${e.response?.statusCode} ${e.message}',
-      );
-      final errorCode = _errorCode(e);
-      if (errorCode == 'CONTRACT_409_NOT_DRAFT') {
+      if (e.response?.statusCode == 409) {
         return const Failure(ConflictFailure('DRAFT 상태에서만 삭제할 수 있습니다.'));
       }
-      if (errorCode == 'CONTRACT_410_DELETED') {
+      if (e.response?.statusCode == 410) {
         return const Failure(GoneFailure('이미 삭제된 계약입니다.'));
       }
       return Failure(e.toFailure());
     } catch (e) {
-      debugPrint('[ContractRepo] deleteDraft unexpected: $e');
       return const Failure(UnknownFailure());
     }
   }
@@ -119,29 +103,18 @@ class ContractDraftRepositoryImpl implements ContractDraftRepository {
       );
       return Success(dto.toEntity());
     } on DioException catch (e) {
-      debugPrint(
-        '[ContractRepo] updateDraft: ${e.type} ${e.response?.statusCode} ${e.message}',
-      );
-      final errorCode = _errorCode(e);
-      if (errorCode == 'CONTRACT_403_OWNER') {
+      if (e.response?.statusCode == 403) {
         return const Failure(ForbiddenFailure('본인이 작성한 계약만 수정할 수 있습니다.'));
       }
-      if (errorCode == 'CONTRACT_404') {
+      if (e.response?.statusCode == 404) {
         return const Failure(NotFoundFailure('계약을 찾을 수 없습니다.'));
       }
-      if (errorCode == 'CONTRACT_409_NOT_DRAFT') {
+      if (e.response?.statusCode == 409) {
         return const Failure(ConflictFailure('DRAFT 상태에서만 수정할 수 있습니다.'));
       }
       return Failure(e.toFailure());
     } catch (e) {
-      debugPrint('[ContractRepo] updateDraft unexpected: $e');
       return const Failure(UnknownFailure());
     }
-  }
-
-  String? _errorCode(DioException e) {
-    final data = e.response?.data;
-    if (data is Map<String, dynamic>) return data['code'] as String?;
-    return null;
   }
 }

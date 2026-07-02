@@ -25,6 +25,11 @@ _ContractDraftDto _$ContractDraftDtoFromJson(Map<String, dynamic> json) =>
       version: (json['version'] as num).toInt(),
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
+      riskSignals: json['riskSignals'] == null
+          ? null
+          : ContractRiskSignalsDto.fromJson(
+              json['riskSignals'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$ContractDraftDtoToJson(_ContractDraftDto instance) =>
@@ -44,4 +49,25 @@ Map<String, dynamic> _$ContractDraftDtoToJson(_ContractDraftDto instance) =>
       'version': instance.version,
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt.toIso8601String(),
+      'riskSignals': instance.riskSignals,
     };
+
+_ContractRiskSignalsDto _$ContractRiskSignalsDtoFromJson(
+  Map<String, dynamic> json,
+) => _ContractRiskSignalsDto(
+  guardianNotConsented: json['guardianNotConsented'] as bool? ?? false,
+  hasReportHistory: json['hasReportHistory'] as bool? ?? false,
+  trustScoreZero: json['trustScoreZero'] as bool? ?? false,
+  counterpartyTrustScore: (json['counterpartyTrustScore'] as num?)?.toInt(),
+  counterpartyTrustGrade: json['counterpartyTrustGrade'] as String?,
+);
+
+Map<String, dynamic> _$ContractRiskSignalsDtoToJson(
+  _ContractRiskSignalsDto instance,
+) => <String, dynamic>{
+  'guardianNotConsented': instance.guardianNotConsented,
+  'hasReportHistory': instance.hasReportHistory,
+  'trustScoreZero': instance.trustScoreZero,
+  'counterpartyTrustScore': instance.counterpartyTrustScore,
+  'counterpartyTrustGrade': instance.counterpartyTrustGrade,
+};

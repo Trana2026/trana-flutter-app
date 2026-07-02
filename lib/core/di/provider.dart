@@ -9,6 +9,8 @@ import 'package:trana/features/auth/domain/repositories/auth_repository.dart';
 import 'package:trana/features/auth/domain/usecases/social_sign_in_usecase.dart';
 import 'package:trana/features/contract/data/data_sources/contract_ai_extraction_data_source.dart';
 import 'package:trana/features/contract/data/data_sources/contract_attachment_data_source.dart';
+import 'package:trana/features/contract/data/data_sources/contract_cancellation_data_source.dart';
+import 'package:trana/features/contract/data/data_sources/contract_dispute_data_source.dart';
 import 'package:trana/features/contract/data/data_sources/contract_draft_data_source.dart';
 import 'package:trana/features/contract/data/data_sources/contract_guardian_consent_data_source.dart';
 import 'package:trana/features/contract/data/data_sources/contract_invitation_data_source.dart';
@@ -17,6 +19,8 @@ import 'package:trana/features/contract/data/data_sources/contract_pdf_data_sour
 import 'package:trana/features/contract/data/data_sources/contract_s3_data_source.dart';
 import 'package:trana/features/contract/data/repository_impls/contract_ai_extraction_repository_impl.dart';
 import 'package:trana/features/contract/data/repository_impls/contract_attachment_repository_impl.dart';
+import 'package:trana/features/contract/data/repository_impls/contract_cancellation_repository_impl.dart';
+import 'package:trana/features/contract/data/repository_impls/contract_dispute_repository_impl.dart';
 import 'package:trana/features/contract/data/repository_impls/contract_draft_repository_impl.dart';
 import 'package:trana/features/contract/data/repository_impls/contract_guardian_consent_repository_impl.dart';
 import 'package:trana/features/contract/data/repository_impls/contract_invitation_repository_impl.dart';
@@ -25,6 +29,8 @@ import 'package:trana/features/contract/data/repository_impls/contract_pdf_repos
 import 'package:trana/features/contract/data/repository_impls/contract_repository_impl.dart';
 import 'package:trana/features/contract/domain/repositories/contract_ai_extraction_repository.dart';
 import 'package:trana/features/contract/domain/repositories/contract_attachment_repository.dart';
+import 'package:trana/features/contract/domain/repositories/contract_cancellation_repository.dart';
+import 'package:trana/features/contract/domain/repositories/contract_dispute_repository.dart';
 import 'package:trana/features/contract/domain/repositories/contract_draft_repository.dart';
 import 'package:trana/features/contract/domain/repositories/contract_guardian_consent_repository.dart';
 import 'package:trana/features/contract/domain/repositories/contract_invitation_repository.dart';
@@ -141,6 +147,18 @@ ContractInvitationDataSource contractInvitationDataSource(Ref ref) {
 }
 
 @riverpod
+ContractCancellationDataSource contractCancellationDataSource(Ref ref) {
+  final dio = ref.watch(dioProvider);
+  return ContractCancellationDataSource(dio);
+}
+
+@riverpod
+ContractDisputeDataSource contractDisputeDataSource(Ref ref) {
+  final dio = ref.watch(dioProvider);
+  return ContractDisputeDataSource(dio);
+}
+
+@riverpod
 ContractLifecycleDataSource contractLifecycleDataSource(Ref ref) {
   final dio = ref.watch(dioProvider);
   return ContractLifecycleDataSource(dio);
@@ -190,6 +208,18 @@ ContractGuardianConsentRepository contractGuardianConsentRepository(Ref ref) {
 ContractInvitationRepository contractInvitationRepository(Ref ref) {
   final dataSource = ref.watch(contractInvitationDataSourceProvider);
   return ContractInvitationRepositoryImpl(dataSource);
+}
+
+@riverpod
+ContractCancellationRepository contractCancellationRepository(Ref ref) {
+  final dataSource = ref.watch(contractCancellationDataSourceProvider);
+  return ContractCancellationRepositoryImpl(dataSource);
+}
+
+@riverpod
+ContractDisputeRepository contractDisputeRepository(Ref ref) {
+  final dataSource = ref.watch(contractDisputeDataSourceProvider);
+  return ContractDisputeRepositoryImpl(dataSource);
 }
 
 @riverpod

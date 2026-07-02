@@ -3,11 +3,15 @@ import 'package:trana/features/contract/domain/entities/contract_guardian_consen
 import 'package:trana/features/contract/domain/entities/contract_guardian_consent_link_entity.dart';
 
 abstract interface class ContractGuardianConsentRepository {
-  Future<Result<ContractGuardianConsentLinkEntity>> createLink(
+  Future<Result<ContractGuardianConsentLinkEntity>> guardianConsent(
     String publicCode,
   );
 
   Future<Result<ContractGuardianConsentApproveEntity>> approve({
     required String token,
   });
+
+  Future<Result<ContractGuardianConsentLinkEntity>> receiverGuardianConsent(
+    String publicCode,
+  );
 }

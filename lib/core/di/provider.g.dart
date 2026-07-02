@@ -401,17 +401,17 @@ final class GuardianRepositoryProvider
 String _$guardianRepositoryHash() =>
     r'06bd4e423053c50c64b7de0fa4356c7a0843375f';
 
-/// UserRepository (GET /v1/users/me 등 범용 사용자 조회)
+/// UserRepository
 
 @ProviderFor(userRepository)
 final userRepositoryProvider = UserRepositoryProvider._();
 
-/// UserRepository (GET /v1/users/me 등 범용 사용자 조회)
+/// UserRepository
 
 final class UserRepositoryProvider
     extends $FunctionalProvider<UserRepository, UserRepository, UserRepository>
     with $Provider<UserRepository> {
-  /// UserRepository (GET /v1/users/me 등 범용 사용자 조회)
+  /// UserRepository
   UserRepositoryProvider._()
     : super(
         from: null,
@@ -842,6 +842,105 @@ final class ContractInvitationDataSourceProvider
 String _$contractInvitationDataSourceHash() =>
     r'45babf36f9259a6154bebef5cf3f0fb83dae4d7f';
 
+@ProviderFor(contractCancellationDataSource)
+final contractCancellationDataSourceProvider =
+    ContractCancellationDataSourceProvider._();
+
+final class ContractCancellationDataSourceProvider
+    extends
+        $FunctionalProvider<
+          ContractCancellationDataSource,
+          ContractCancellationDataSource,
+          ContractCancellationDataSource
+        >
+    with $Provider<ContractCancellationDataSource> {
+  ContractCancellationDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'contractCancellationDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$contractCancellationDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<ContractCancellationDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ContractCancellationDataSource create(Ref ref) {
+    return contractCancellationDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ContractCancellationDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ContractCancellationDataSource>(
+        value,
+      ),
+    );
+  }
+}
+
+String _$contractCancellationDataSourceHash() =>
+    r'e22b5f45e6e8049c12dbee64c1a30c5e68d8632d';
+
+@ProviderFor(contractDisputeDataSource)
+final contractDisputeDataSourceProvider = ContractDisputeDataSourceProvider._();
+
+final class ContractDisputeDataSourceProvider
+    extends
+        $FunctionalProvider<
+          ContractDisputeDataSource,
+          ContractDisputeDataSource,
+          ContractDisputeDataSource
+        >
+    with $Provider<ContractDisputeDataSource> {
+  ContractDisputeDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'contractDisputeDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$contractDisputeDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<ContractDisputeDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ContractDisputeDataSource create(Ref ref) {
+    return contractDisputeDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ContractDisputeDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ContractDisputeDataSource>(value),
+    );
+  }
+}
+
+String _$contractDisputeDataSourceHash() =>
+    r'187bc6d4269d843d5ee1be30a0fa8c4b4fd08623';
+
 @ProviderFor(contractLifecycleDataSource)
 final contractLifecycleDataSourceProvider =
     ContractLifecycleDataSourceProvider._();
@@ -937,7 +1036,7 @@ final class ContractPdfDataSourceProvider
 }
 
 String _$contractPdfDataSourceHash() =>
-    r'92267e427291464fb5258c4fd84e26f4ccebbed6';
+    r'5451aa6ad072b052ff7f4747381a75b7b331a4e2';
 
 @ProviderFor(contractRepository)
 final contractRepositoryProvider = ContractRepositoryProvider._();
@@ -1235,6 +1334,105 @@ final class ContractInvitationRepositoryProvider
 
 String _$contractInvitationRepositoryHash() =>
     r'0a2f31abf0f7f7008dc1d3894d6dd1a6cf555cd0';
+
+@ProviderFor(contractCancellationRepository)
+final contractCancellationRepositoryProvider =
+    ContractCancellationRepositoryProvider._();
+
+final class ContractCancellationRepositoryProvider
+    extends
+        $FunctionalProvider<
+          ContractCancellationRepository,
+          ContractCancellationRepository,
+          ContractCancellationRepository
+        >
+    with $Provider<ContractCancellationRepository> {
+  ContractCancellationRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'contractCancellationRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$contractCancellationRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<ContractCancellationRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ContractCancellationRepository create(Ref ref) {
+    return contractCancellationRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ContractCancellationRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ContractCancellationRepository>(
+        value,
+      ),
+    );
+  }
+}
+
+String _$contractCancellationRepositoryHash() =>
+    r'c403ee2c66fe771e08a03f454d8fdcaa384dd37d';
+
+@ProviderFor(contractDisputeRepository)
+final contractDisputeRepositoryProvider = ContractDisputeRepositoryProvider._();
+
+final class ContractDisputeRepositoryProvider
+    extends
+        $FunctionalProvider<
+          ContractDisputeRepository,
+          ContractDisputeRepository,
+          ContractDisputeRepository
+        >
+    with $Provider<ContractDisputeRepository> {
+  ContractDisputeRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'contractDisputeRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$contractDisputeRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<ContractDisputeRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ContractDisputeRepository create(Ref ref) {
+    return contractDisputeRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ContractDisputeRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ContractDisputeRepository>(value),
+    );
+  }
+}
+
+String _$contractDisputeRepositoryHash() =>
+    r'9183d051dab3223715be9c2101956ed4cfc24f92';
 
 @ProviderFor(contractLifecycleRepository)
 final contractLifecycleRepositoryProvider =

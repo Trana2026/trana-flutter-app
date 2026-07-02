@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 
@@ -9,26 +8,32 @@ import 'package:trana/core/theme/app_theme.dart';
 class ContractField extends HookConsumerWidget {
   final String hintText;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
   final int maxLines;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final bool hasError;
   final void Function(String)? onChanged;
+  final bool readOnly;
 
   const ContractField({
     super.key,
     required this.hintText,
     this.controller,
+    this.focusNode,
     this.maxLines = 1,
     this.keyboardType,
     this.inputFormatters,
     this.hasError = false,
     this.onChanged,
+    this.readOnly = false,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return TextField(
+      focusNode: focusNode,
+      onTapOutside: (_) => FocusScope.of(context).unfocus(),
       onChanged: onChanged ?? (v) {},
       controller: controller,
       maxLines: maxLines,
@@ -39,6 +44,7 @@ class ContractField extends HookConsumerWidget {
       cursorColor: fxc(context).textInfo,
       cursorHeight: 14,
       cursorWidth: 1,
+      readOnly: readOnly,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: context.txt(color: vrc(context).textDisable),

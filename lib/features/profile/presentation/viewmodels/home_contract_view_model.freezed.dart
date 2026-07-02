@@ -14,9 +14,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HomeContractState {
 
- List<ContractEntity> get myContracts;// 사용자의 계약 목록
- ContractStatus? get selectedStatus;// 상태 필터 선택값
- bool get isLoading; String? get error;
+ List<ContractEntity> get myContracts; List<ContractEntity> get requests;// 배너에 표시할 계약 목록
+ ContractStatus? get selectedStatus; bool get isLoading; String? get error;
 /// Create a copy of HomeContractState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,16 +26,16 @@ $HomeContractStateCopyWith<HomeContractState> get copyWith => _$HomeContractStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeContractState&&const DeepCollectionEquality().equals(other.myContracts, myContracts)&&(identical(other.selectedStatus, selectedStatus) || other.selectedStatus == selectedStatus)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeContractState&&const DeepCollectionEquality().equals(other.myContracts, myContracts)&&const DeepCollectionEquality().equals(other.requests, requests)&&(identical(other.selectedStatus, selectedStatus) || other.selectedStatus == selectedStatus)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(myContracts),selectedStatus,isLoading,error);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(myContracts),const DeepCollectionEquality().hash(requests),selectedStatus,isLoading,error);
 
 @override
 String toString() {
-  return 'HomeContractState(myContracts: $myContracts, selectedStatus: $selectedStatus, isLoading: $isLoading, error: $error)';
+  return 'HomeContractState(myContracts: $myContracts, requests: $requests, selectedStatus: $selectedStatus, isLoading: $isLoading, error: $error)';
 }
 
 
@@ -47,7 +46,7 @@ abstract mixin class $HomeContractStateCopyWith<$Res>  {
   factory $HomeContractStateCopyWith(HomeContractState value, $Res Function(HomeContractState) _then) = _$HomeContractStateCopyWithImpl;
 @useResult
 $Res call({
- List<ContractEntity> myContracts, ContractStatus? selectedStatus, bool isLoading, String? error
+ List<ContractEntity> myContracts, List<ContractEntity> requests, ContractStatus? selectedStatus, bool isLoading, String? error
 });
 
 
@@ -64,9 +63,10 @@ class _$HomeContractStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeContractState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? myContracts = null,Object? selectedStatus = freezed,Object? isLoading = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? myContracts = null,Object? requests = null,Object? selectedStatus = freezed,Object? isLoading = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
 myContracts: null == myContracts ? _self.myContracts : myContracts // ignore: cast_nullable_to_non_nullable
+as List<ContractEntity>,requests: null == requests ? _self.requests : requests // ignore: cast_nullable_to_non_nullable
 as List<ContractEntity>,selectedStatus: freezed == selectedStatus ? _self.selectedStatus : selectedStatus // ignore: cast_nullable_to_non_nullable
 as ContractStatus?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -155,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ContractEntity> myContracts,  ContractStatus? selectedStatus,  bool isLoading,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ContractEntity> myContracts,  List<ContractEntity> requests,  ContractStatus? selectedStatus,  bool isLoading,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _HomeContractState() when $default != null:
-return $default(_that.myContracts,_that.selectedStatus,_that.isLoading,_that.error);case _:
+return $default(_that.myContracts,_that.requests,_that.selectedStatus,_that.isLoading,_that.error);case _:
   return orElse();
 
 }
@@ -176,10 +176,10 @@ return $default(_that.myContracts,_that.selectedStatus,_that.isLoading,_that.err
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ContractEntity> myContracts,  ContractStatus? selectedStatus,  bool isLoading,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ContractEntity> myContracts,  List<ContractEntity> requests,  ContractStatus? selectedStatus,  bool isLoading,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _HomeContractState():
-return $default(_that.myContracts,_that.selectedStatus,_that.isLoading,_that.error);case _:
+return $default(_that.myContracts,_that.requests,_that.selectedStatus,_that.isLoading,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +196,10 @@ return $default(_that.myContracts,_that.selectedStatus,_that.isLoading,_that.err
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ContractEntity> myContracts,  ContractStatus? selectedStatus,  bool isLoading,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ContractEntity> myContracts,  List<ContractEntity> requests,  ContractStatus? selectedStatus,  bool isLoading,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _HomeContractState() when $default != null:
-return $default(_that.myContracts,_that.selectedStatus,_that.isLoading,_that.error);case _:
+return $default(_that.myContracts,_that.requests,_that.selectedStatus,_that.isLoading,_that.error);case _:
   return null;
 
 }
@@ -210,8 +210,8 @@ return $default(_that.myContracts,_that.selectedStatus,_that.isLoading,_that.err
 /// @nodoc
 
 
-class _HomeContractState extends HomeContractState {
-  const _HomeContractState({final  List<ContractEntity> myContracts = const [], this.selectedStatus, this.isLoading = false, this.error}): _myContracts = myContracts,super._();
+class _HomeContractState implements HomeContractState {
+  const _HomeContractState({final  List<ContractEntity> myContracts = const [], final  List<ContractEntity> requests = const [], this.selectedStatus, this.isLoading = false, this.error}): _myContracts = myContracts,_requests = requests;
   
 
  final  List<ContractEntity> _myContracts;
@@ -221,9 +221,15 @@ class _HomeContractState extends HomeContractState {
   return EqualUnmodifiableListView(_myContracts);
 }
 
-// 사용자의 계약 목록
+ final  List<ContractEntity> _requests;
+@override@JsonKey() List<ContractEntity> get requests {
+  if (_requests is EqualUnmodifiableListView) return _requests;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_requests);
+}
+
+// 배너에 표시할 계약 목록
 @override final  ContractStatus? selectedStatus;
-// 상태 필터 선택값
 @override@JsonKey() final  bool isLoading;
 @override final  String? error;
 
@@ -237,16 +243,16 @@ _$HomeContractStateCopyWith<_HomeContractState> get copyWith => __$HomeContractS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeContractState&&const DeepCollectionEquality().equals(other._myContracts, _myContracts)&&(identical(other.selectedStatus, selectedStatus) || other.selectedStatus == selectedStatus)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeContractState&&const DeepCollectionEquality().equals(other._myContracts, _myContracts)&&const DeepCollectionEquality().equals(other._requests, _requests)&&(identical(other.selectedStatus, selectedStatus) || other.selectedStatus == selectedStatus)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_myContracts),selectedStatus,isLoading,error);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_myContracts),const DeepCollectionEquality().hash(_requests),selectedStatus,isLoading,error);
 
 @override
 String toString() {
-  return 'HomeContractState(myContracts: $myContracts, selectedStatus: $selectedStatus, isLoading: $isLoading, error: $error)';
+  return 'HomeContractState(myContracts: $myContracts, requests: $requests, selectedStatus: $selectedStatus, isLoading: $isLoading, error: $error)';
 }
 
 
@@ -257,7 +263,7 @@ abstract mixin class _$HomeContractStateCopyWith<$Res> implements $HomeContractS
   factory _$HomeContractStateCopyWith(_HomeContractState value, $Res Function(_HomeContractState) _then) = __$HomeContractStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<ContractEntity> myContracts, ContractStatus? selectedStatus, bool isLoading, String? error
+ List<ContractEntity> myContracts, List<ContractEntity> requests, ContractStatus? selectedStatus, bool isLoading, String? error
 });
 
 
@@ -274,9 +280,10 @@ class __$HomeContractStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeContractState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? myContracts = null,Object? selectedStatus = freezed,Object? isLoading = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? myContracts = null,Object? requests = null,Object? selectedStatus = freezed,Object? isLoading = null,Object? error = freezed,}) {
   return _then(_HomeContractState(
 myContracts: null == myContracts ? _self._myContracts : myContracts // ignore: cast_nullable_to_non_nullable
+as List<ContractEntity>,requests: null == requests ? _self._requests : requests // ignore: cast_nullable_to_non_nullable
 as List<ContractEntity>,selectedStatus: freezed == selectedStatus ? _self.selectedStatus : selectedStatus // ignore: cast_nullable_to_non_nullable
 as ContractStatus?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable

@@ -7,8 +7,10 @@ class ContractGuardianConsentDataSource {
 
   final Dio dio;
 
-  /// POST 보호자 동의 링크 발급 (미성년자)
-  Future<ContractGuardianConsentLinkDto> createLink(String publicCode) async {
+  /// POST 요청자 보호자 동의 링크 발급 (미성년자)
+  Future<ContractGuardianConsentLinkDto> guardianConsent(
+    String publicCode,
+  ) async {
     final response = await dio.post<Map<String, dynamic>>(
       '/v1/contracts/$publicCode/guardian-consent',
     );
@@ -24,5 +26,15 @@ class ContractGuardianConsentDataSource {
       data: {'token': token},
     );
     return ContractGuardianConsentApproveDto.fromJson(response.data!);
+  }
+
+  /// POST 수신자 보호자 동의 링크 발급 (미성년자)
+  Future<ContractGuardianConsentLinkDto> receiverGuardianConsent(
+    String publicCode,
+  ) async {
+    final response = await dio.post<Map<String, dynamic>>(
+      '/v1/contracts/$publicCode/receiver-guardian-consent',
+    );
+    return ContractGuardianConsentLinkDto.fromJson(response.data!);
   }
 }

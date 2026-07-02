@@ -42,7 +42,7 @@ final class GuardianLinkViewModelProvider
 }
 
 String _$guardianLinkViewModelHash() =>
-    r'505cc7316c99d340bd70199ea092c8278f83636c';
+    r'6422da0df3ebe2c669c34d882b80eefe5d566b48';
 
 abstract class _$GuardianLinkViewModel extends $Notifier<GuardianLinkState> {
   GuardianLinkState build();

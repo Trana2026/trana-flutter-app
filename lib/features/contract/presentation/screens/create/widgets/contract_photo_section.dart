@@ -22,11 +22,21 @@ class ContractPhotoSection extends HookConsumerWidget {
 
     final selectedImages = useState<List<AssetEntity>>([]);
     final existingUrls = createState.existingAttachmentUrls;
-    final length = existingUrls.length + selectedImages.value.length;
+
+    final isEditMode = existingUrls.isNotEmpty;
+    // final revisionRequested = createState.revisionRequested;
+    // final disabled = revisionRequested || isEditMode;
+
+    final length = isEditMode
+        ? existingUrls.length
+        : selectedImages.value.length;
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (isEditMode) return;
+
         createVM.updateImages(selectedImages.value);
+
         final success = await createVM.updateAttachments();
         if (!context.mounted) return;
         if (!success) {
@@ -37,20 +47,6 @@ class ContractPhotoSection extends HookConsumerWidget {
       });
       return null;
     }, [selectedImages.value]);
-
-    /// 갤러리에서 사진 선택
-    Future<void> pickFromGallery() async {
-      // 선택 시에만 개수 제한 위해 wechat_assets_picker 적용 (type: AssetEntity)
-      final images = await AssetPicker.pickAssets(
-        context,
-        pickerConfig: AssetPickerConfig(
-          selectedAssets: selectedImages.value,
-          maxAssets: 7,
-          requestType: RequestType.image,
-        ),
-      );
-      if (images != null) selectedImages.value = images;
-    }
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -85,9 +81,25 @@ class ContractPhotoSection extends HookConsumerWidget {
               scrollDirection: Axis.horizontal,
               children: [
                 GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     if (aiState.completed) return;
-                    pickFromGallery();
+
+                    if (isEditMode) {
+                      showErrorToast(context, "거래 사진은 수정할 수 없습니다");
+                      return;
+                    }
+
+                    // 갤러리에서 사진 선택
+                    // 선택 시에만 개수 제한 위해 wechat_assets_picker 적용 (type: AssetEntity)
+                    final images = await AssetPicker.pickAssets(
+                      context,
+                      pickerConfig: AssetPickerConfig(
+                        selectedAssets: selectedImages.value,
+                        maxAssets: 7,
+                        requestType: RequestType.image,
+                      ),
+                    );
+                    if (images != null) selectedImages.value = images;
                   },
                   child: Container(
                     width: 68,
@@ -105,53 +117,59 @@ class ContractPhotoSection extends HookConsumerWidget {
                   ),
                 ),
 
-                ...existingUrls.map(
-                  (url) => Padding(
-                    padding: const EdgeInsets.only(left: 4),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Image.network(
-                        url,
-                        width: 68,
-                        height: 68,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (_, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Container(
+                if (isEditMode)
+                  ...existingUrls.map(
+                    (url) => Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.network(
+                            url,
                             width: 68,
                             height: 68,
-                            color: vrc(context).secondaryColor,
-                            child: const CustomLoadingBar(),
-                          );
-                        },
+                            fit: BoxFit.cover,
+                            loadingBuilder: (_, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                width: 68,
+                                height: 68,
+                                color: vrc(context).secondaryColor,
+                                child: const CustomLoadingBar(),
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                ...selectedImages.value.map(
-                  (image) => Padding(
-                    padding: const EdgeInsets.only(left: 4),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: AssetEntityImage(
-                        image,
-                        width: 68,
-                        height: 68,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (_, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Container(
+                if (!isEditMode)
+                  ...selectedImages.value.map(
+                    (image) => Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: AssetEntityImage(
+                            image,
                             width: 68,
                             height: 68,
-                            color: vrc(context).secondaryColor,
-                            child: const CustomLoadingBar(),
-                          );
-                        },
+                            fit: BoxFit.cover,
+                            loadingBuilder: (_, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                width: 68,
+                                height: 68,
+                                color: vrc(context).secondaryColor,
+                                child: const CustomLoadingBar(),
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
@@ -179,7 +197,8 @@ class ContractPhotoSection extends HookConsumerWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  if (aiState.completed) return;
+                  if (aiState.completed || isEditMode) return;
+
                   if (selectedImages.value.isEmpty) {
                     showErrorToast(context, '분석할 이미지를 선택해주세요');
                     return;
@@ -197,16 +216,16 @@ class ContractPhotoSection extends HookConsumerWidget {
                   ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: !aiState.completed
-                        ? fxc(context).brandColor!
-                        : vrc(context).tertiaryColor,
+                    color: (aiState.completed || isEditMode)
+                        ? vrc(context).tertiaryColor
+                        : fxc(context).brandColor!,
                   ),
                   child: Text(
                     aiState.completed ? "분석완료" : "분석하기",
                     style: context.txt(
-                      color: !aiState.completed
-                          ? fxc(context).textBrand!
-                          : vrc(context).iconSecondary,
+                      color: (aiState.completed || isEditMode)
+                          ? vrc(context).iconSecondary
+                          : fxc(context).textBrand!,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

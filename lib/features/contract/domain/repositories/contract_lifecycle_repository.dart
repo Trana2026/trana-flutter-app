@@ -1,4 +1,5 @@
 import 'package:trana/core/error/result.dart';
+import 'package:trana/features/contract/domain/entities/contract_confirm_completion_entity.dart';
 import 'package:trana/features/contract/domain/entities/contract_draft_entity.dart';
 import 'package:trana/features/contract/domain/entities/contract_signed_entity.dart';
 
@@ -11,6 +12,8 @@ abstract interface class ContractLifecycleRepository {
 
   Future<Result<ContractDraftEntity>> revert(String publicCode);
 
+  Future<Result<ContractDraftEntity>> reshare(String publicCode);
+
   Future<Result<ContractDraftEntity>> ready(String publicCode);
 
   Future<Result<ContractSignedEntity>> creatorSign({
@@ -18,4 +21,8 @@ abstract interface class ContractLifecycleRepository {
     required String signatureBase64,
     required List<int> agreedTermIds,
   });
+
+  Future<Result<ContractConfirmCompletionEntity>> confirmCompletion(
+    String publicCode,
+  );
 }

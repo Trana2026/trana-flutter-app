@@ -42,7 +42,7 @@ final class DetailContractViewModelProvider
 }
 
 String _$detailContractViewModelHash() =>
-    r'9f2edf2678f8d49815c28f8249f56914854f469b';
+    r'0b2820b4c50668ceaa1429e846620442f8bb64ca';
 
 abstract class _$DetailContractViewModel
     extends $Notifier<DetailContractState> {
