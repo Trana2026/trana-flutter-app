@@ -33,9 +33,9 @@ class ShareContractViewModel extends _$ShareContractViewModel {
   void updateInput({required String name, required String phone}) =>
       state = state.copyWith(receiverName: name, receiverPhone: phone);
 
-  /// 계약서 공유 (서명 요청) + 알림톡 발송 (성공 여부 반환)
+  /// 계약서 초안 상태 서명 요청 + 알림톡 발송 (성공 여부 반환)
   Future<bool> share(String publicCode) async {
-    state = state.copyWith(isLoading: true, error: null);
+    state = state.copyWith(isLoading: true);
 
     final result = await ref
         .read(contractLifecycleRepositoryProvider)
@@ -44,6 +44,29 @@ class ShareContractViewModel extends _$ShareContractViewModel {
           receiverName: state.receiverName,
           receiverPhone: state.receiverPhone,
         );
+
+    state = switch (result) {
+      Success() => state.copyWith(isLoading: false),
+      Failure(:final failure) => state.copyWith(
+        isLoading: false,
+        error: failure.message,
+      ),
+    };
+
+    if (result is Success) {
+      await _refresh(publicCode);
+    }
+
+    return result is Success;
+  }
+
+  /// 수정 요청 상태 서명 요청 + 알림톡 발송 (성공 여부 반환)
+  Future<bool> reshare(String publicCode) async {
+    state = state.copyWith(isLoading: true);
+
+    final result = await ref
+        .read(contractLifecycleRepositoryProvider)
+        .reshare(publicCode);
 
     state = switch (result) {
       Success() => state.copyWith(isLoading: false),

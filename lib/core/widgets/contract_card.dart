@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/domain/utils/string_extensions.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/contract/domain/entities/contract_entity.dart';
 import 'package:trana/features/contract/presentation/extensions/contract_status_ui.dart';
+import 'package:trana/features/contract/presentation/viewmodels/cancel_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/report_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/revision_request_view_model.dart';
 
 class ContractCard extends HookConsumerWidget {
   const ContractCard({super.key, required this.c});
@@ -19,19 +24,53 @@ class ContractCard extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailVM = ref.read(detailContractViewModelProvider.notifier);
+    final reportVM = ref.read(reportContractViewModelProvider.notifier);
+    final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
+    final isPending = useRef(false);
+
+    final cancelState = ref.watch(cancelContractViewModelProvider);
+    final isMyCancel = cancelState.recentCancel?.isMine == true;
+
+    final revisionState = ref.watch(revisionRequestViewModelProvider);
+    final revisionDone = revisionState.revisionDone;
 
     return GestureDetector(
       onTap: () async {
-        final success = await detailVM.loadDetail(c.publicCode);
+        if (isPending.value) return;
+        isPending.value = true;
+
+        final results = await Future.wait([
+          detailVM.loadDetail(c.publicCode),
+          reportVM.readReport(c.publicCode),
+          cancelVM.readCancel(c.publicCode),
+        ]);
+
         if (!context.mounted) return;
-        if (!success) {
+
+        if (!results[0]) {
           final state = ref.read(detailContractViewModelProvider);
           showErrorToast(context, state.error!);
           detailVM.clearError();
           return;
+        } else if (!results[1]) {
+          final state = ref.read(reportContractViewModelProvider);
+          showErrorToast(context, state.error!);
+          reportVM.clearError();
+          return;
+        } else if (!results[2]) {
+          final state = ref.read(cancelContractViewModelProvider);
+          showErrorToast(context, state.error!);
+          cancelVM.clearError();
+          return;
         }
 
-        context.push(AppRoutes.contractDetail);
+        if (c.status == ContractStatus.inProgress ||
+            c.status == ContractStatus.draft) {
+          context.push(AppRoutes.contractDetail);
+        } else {
+          context.push(AppRoutes.biometricLock);
+        }
+        isPending.value = false;
       },
       child: Container(
         padding: const EdgeInsets.all(14),
@@ -141,7 +180,11 @@ class ContractCard extends HookConsumerWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            c.status.statusLabel(c.isCreator),
+                            c.status.statusLabel(
+                              c.isCreator,
+                              isMyCancel,
+                              revisionDone,
+                            ),
                             style: context.txt(
                               color: c.status.statusColor(context),
                               fontSize: 12,

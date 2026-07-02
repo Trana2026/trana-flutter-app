@@ -21,14 +21,17 @@ class HomeBottomNav extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final me = ref.watch(meProvider).value;
+    final me = ref.read(meProvider).value;
     final isMinor = me?.ageGroup == 'MINOR';
 
     return Container(
       padding: const EdgeInsets.only(top: 12, bottom: 10),
       decoration: BoxDecoration(
         color: vrc(context).background,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
         border: Border.all(color: vrc(context).borderPrimary!),
       ),
       child: SafeArea(

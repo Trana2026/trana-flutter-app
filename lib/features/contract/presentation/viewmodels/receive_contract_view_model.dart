@@ -31,7 +31,7 @@ class ReceiveContractViewModel extends _$ReceiveContractViewModel {
 
   /// 수신자 초대 수락 (성공 여부 반환)
   Future<bool> accept(String invitationToken) async {
-    state = state.copyWith(isLoading: true, error: null);
+    state = state.copyWith(isLoading: true);
 
     final result = await ref
         .read(contractInvitationRepositoryProvider)
@@ -60,11 +60,38 @@ class ReceiveContractViewModel extends _$ReceiveContractViewModel {
   void updateWarrantyPeriod(int v) =>
       state = state.copyWith(warrantyPeriodDays: v);
 
+  /// 수신자(판매자) 보증 기간 변경 (성공 여부 반환)
+  Future<bool> receiverWarranty(String publicCode) async {
+    state = state.copyWith(isLoading: true);
+
+    final result = await ref
+        .read(contractInvitationRepositoryProvider)
+        .receiverWarranty(
+          publicCode: publicCode,
+          warrantyPeriodDays: state.warrantyPeriodDays,
+        );
+
+    state = switch (result) {
+      Success() => state.copyWith(isLoading: false),
+      Failure(:final failure) => state.copyWith(
+        isLoading: false,
+        error: failure.message,
+      ),
+    };
+
+    if (result is Success) {
+      await _refresh(publicCode);
+    }
+
+    return result is Success;
+  }
+
   Future<void> _refresh(String? publicCode) async {
     final homeVM = ref.read(homeContractViewModelProvider.notifier);
     await homeVM.readMyContracts();
 
     if (publicCode == null) return;
+
     final detailVM = ref.read(detailContractViewModelProvider.notifier);
     await detailVM.loadDetail(publicCode);
   }

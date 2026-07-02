@@ -42,7 +42,7 @@ final class ShareContractViewModelProvider
 }
 
 String _$shareContractViewModelHash() =>
-    r'dc3c94f519eab7f8a46a60f990c045316db1a454';
+    r'c670a8db43667c9ae3c13919ca6505440901f46b';
 
 abstract class _$ShareContractViewModel extends $Notifier<ShareContractState> {
   ShareContractState build();

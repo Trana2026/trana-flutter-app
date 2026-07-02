@@ -31,7 +31,7 @@ abstract class TestUserEntity with _$TestUserEntity {
 class TestUser extends _$TestUser {
   static const adult = 'TST-ADL-A01'; // 성인
   static const minor = 'TST-MIN-C01'; // 미성년자
-  static const invitationToken = "JfBMvnqBgnMFV8VWVNhbP"; // 테스트용 초대 토큰 붙여넣기
+  final invitationToken = "5FQwytQvJQ1gV6Uz7OhLA"; // 테스트용 초대 토큰 붙여넣기
 
   @override
   TestUserEntity? build() => null;
@@ -99,6 +99,8 @@ class TestUser extends _$TestUser {
   }
 
   Future<void> saveToken() async {
+    final existing = await PendingInvitationTokenService.get();
+    if (existing != null) return;
     await PendingInvitationTokenService.save(invitationToken);
   }
 }

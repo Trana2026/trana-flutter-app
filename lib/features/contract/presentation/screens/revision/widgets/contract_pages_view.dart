@@ -5,7 +5,7 @@ import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
-import 'package:trana/features/contract/presentation/viewmodels/modification_request_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/revision_request_view_model.dart';
 
 class ContractPagesView extends HookConsumerWidget {
   const ContractPagesView({super.key, required this.onSelectedCountChanged});
@@ -15,7 +15,7 @@ class ContractPagesView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailState = ref.watch(detailContractViewModelProvider);
-    final modifyVM = ref.read(modificationRequestViewModelProvider.notifier);
+    final revisionVM = ref.read(revisionRequestViewModelProvider.notifier);
 
     final contents = detailState.contents;
     final selectedFields = useState<Set<String>>({});
@@ -28,7 +28,7 @@ class ContractPagesView extends HookConsumerWidget {
         updated.remove(field);
       }
       selectedFields.value = updated;
-      modifyVM.updateSelectedFields(updated);
+      revisionVM.updateSelectedFields(updated);
       onSelectedCountChanged(updated.length);
     }
 
@@ -47,9 +47,9 @@ class ContractPagesView extends HookConsumerWidget {
             ),
           ),
           const SizedBox(height: 24),
-          const Text(
+          Text(
             '본 계약서는 안전 거래 플랫폼 Trana를 통하여, 사전에 신분증 OCR 및 안면인식(Face Liveness)을 통한 신원인증을 완료한 당사자 간에 체결되는 법적 구속력을 가진 전자계약서입니다.',
-            style: TextStyle(fontSize: 10, color: Colors.black87, height: 1.5),
+            style: context.txt(fontSize: 10, color: vrc(context).textPrimary),
           ),
           const SizedBox(height: 20),
           ...contents.map(

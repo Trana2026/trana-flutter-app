@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:trana/core/error/dio_error_mapper.dart';
 import 'package:trana/core/error/failure.dart';
 import 'package:trana/core/error/result.dart';
@@ -30,26 +29,21 @@ class ContractAiExtractionRepositoryImpl
       );
       extraction = dto.toEntity();
     } on DioException catch (e) {
-      debugPrint(
-        '[AiExtractionRepo] requestPrefill: ${e.type} ${e.response?.statusCode} ${e.message}',
-      );
-      final errorCode = _errorCode(e);
-      if (errorCode == 'CONTRACT_400_AI_IMAGE_COUNT') {
+      if (e.response?.statusCode == 400) {
         return const Failure(ValidationFailure('사진은 1~2장만 AI 분석에 사용할 수 있습니다.'));
-      }
-      if (errorCode == 'CONTRACT_409_NOT_DRAFT') {
-        return const Failure(ConflictFailure('DRAFT 상태에서만 AI 추출을 요청할 수 있습니다.'));
       }
       if (e.response?.statusCode == 404) {
         return const Failure(NotFoundFailure('첨부파일이 본 계약 소속이 아니거나 존재하지 않습니다.'));
       }
+      if (e.response?.statusCode == 409) {
+        return const Failure(ConflictFailure('DRAFT 상태에서만 AI 추출을 요청할 수 있습니다.'));
+      }
       return Failure(e.toFailure());
     } catch (e) {
-      debugPrint('[AiExtractionRepo] requestPrefill unexpected: $e');
       return const Failure(UnknownFailure());
     }
 
-    // 2. COMPLETED / FAILED 까지 polling (최대 20회, 2초 간격)
+    // 2. SUCCESS / FAILED 까지 polling (최대 20회, 2초 간격)
     var current = extraction;
     const maxRetries = 20;
     for (var i = 0; i < maxRetries; i++) {
@@ -61,23 +55,16 @@ class ContractAiExtractionRepositoryImpl
         final dto = await dataSource.polling(publicCode, current.extractionId);
         current = dto.toEntity();
       } on DioException catch (e) {
-        debugPrint(
-          '[AiExtractionRepo] polling: ${e.type} ${e.response?.statusCode} ${e.message}',
-        );
         if (e.response?.statusCode == 404) {
           return const Failure(NotFoundFailure('본 계약 소속이 아닌 extractionId입니다.'));
         }
         return Failure(e.toFailure());
       } catch (e) {
-        debugPrint('[AiExtractionRepo] polling unexpected: $e');
         return const Failure(UnknownFailure());
       }
     }
 
     if (current.status != 'SUCCESS') {
-      debugPrint(
-        '[AiExtractionRepo] analyzeImages: timed out or failed (status=${current.status})',
-      );
       return const Failure(ServerFailure('AI 분석에 실패했습니다.'));
     }
 
@@ -89,19 +76,9 @@ class ContractAiExtractionRepositoryImpl
       }
       return Success(dto.toEntity());
     } on DioException catch (e) {
-      debugPrint(
-        '[AiExtractionRepo] loadPrefill: ${e.type} ${e.response?.statusCode} ${e.message}',
-      );
       return Failure(e.toFailure());
     } catch (e) {
-      debugPrint('[AiExtractionRepo] loadPrefill unexpected: $e');
       return const Failure(UnknownFailure());
     }
-  }
-
-  String? _errorCode(DioException e) {
-    final data = e.response?.data;
-    if (data is Map<String, dynamic>) return data['code'] as String?;
-    return null;
   }
 }

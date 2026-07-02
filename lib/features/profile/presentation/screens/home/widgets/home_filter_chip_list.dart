@@ -15,8 +15,9 @@ class HomeFilterChipList extends ConsumerWidget {
     ContractStatus.shared, // 서명 요청
     ContractStatus.revisionRequested, // 수정 요청
     ContractStatus.receiverSigned, // 최종 서명 요청
-    ContractStatus.cancelRequested, // 취소 요청
     ContractStatus.signed, // 서명 완료
+    ContractStatus.reported, // 신고 접수
+    ContractStatus.cancelRequested, // 취소 요청
     ContractStatus.completed, // 거래 완료
   ];
 
@@ -34,11 +35,12 @@ class HomeFilterChipList extends ConsumerWidget {
         separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           final status = _representatives[index];
-          final label = status == null ? '전체' : status.statusLabel(true);
+          final label = status == null
+              ? '전체'
+              : status.statusLabel(true, false, false);
           final isSelected = status == null
               ? homeState.selectedStatus == null
-              : homeState.selectedStatus?.statusLabel(true) ==
-                    status.statusLabel(true);
+              : homeState.selectedStatus == status;
           return GestureDetector(
             onTap: () => homeVM.applyStatus(status),
             child: Container(

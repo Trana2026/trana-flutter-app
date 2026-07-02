@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
@@ -9,10 +10,17 @@ import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/contract/domain/enums/consent_type.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/extensions/contract_status_ui.dart';
-import 'package:trana/features/contract/presentation/screens/detail/widgets/contract_report_bottom_sheet.dart';
+import 'package:trana/features/contract/presentation/viewmodels/cancel_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/complete_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/guardian_link_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/report_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/revision_request_view_model.dart';
+import 'package:trana/features/contract/presentation/widgets/modals/contract_cancel_bottom_sheet.dart';
+import 'package:trana/features/contract/presentation/widgets/modals/contract_report_bottom_sheet.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
-import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/delete_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/share_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_consent_sign_dialog.dart';
 import 'package:trana/features/user/presentation/providers/me_provider.dart';
 
@@ -21,12 +29,13 @@ class ContractCtaButtons extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final me = ref.watch(meProvider).value;
-    final isMinor = me?.ageGroup == 'MINOR';
-
     final detailState = ref.watch(detailContractViewModelProvider);
     final isCreator = detailState.isCreator;
     final status = detailState.status;
+
+    final reportState = ref.watch(reportContractViewModelProvider);
+    final cancelState = ref.watch(cancelContractViewModelProvider);
+    final revisionState = ref.watch(revisionRequestViewModelProvider);
 
     return switch (status) {
       // 초안 작성중
@@ -46,27 +55,19 @@ class ContractCtaButtons extends HookConsumerWidget {
                 primary: completeButton(context, ref, disabled: true),
               )
             : _CtaButtonRow(
-                primary: signButton(
-                  context,
-                  onTap: () {
-                    if (isMinor) {
-                      showDialog(
-                        barrierColor: Colors.black.withValues(alpha: 0.75),
-                        context: context,
-                        builder: (context) =>
-                            const GuardianConsentSignDialog(isCreator: false),
-                      );
-                    } else {
-                      context.push(AppRoutes.requestDetail);
-                    }
-                  },
-                ),
+                primary: signButton(context, ref),
                 secondary: cancelButton(context, disabled: true),
               ),
       // 수정 요청
       ContractStatus.revisionRequested =>
         isCreator
-            ? _CtaButtonRow(primary: requestSignButton(context, ref))
+            ? _CtaButtonRow(
+                primary: requestSignButton(
+                  context,
+                  ref,
+                  disabled: !revisionState.revisionDone,
+                ),
+              )
             : _CtaButtonRow(
                 primary: requestSignButton(context, ref, disabled: true),
               ),
@@ -75,24 +76,31 @@ class ContractCtaButtons extends HookConsumerWidget {
         isCreator
             ? _CtaButtonRow(
                 secondary: cancelButton(context),
-                primary: signButton(
-                  context,
-                  onTap: () => context.push(AppRoutes.finalPreview),
-                ),
+                primary: signButton(context, ref),
               )
             : _CtaButtonRow(
                 primary: _CtaButtonRow(
                   primary: completeButton(context, ref, disabled: true),
                 ),
               ),
-      // 취소
-      ContractStatus.cancelRequested ||
-      ContractStatus.cancelled => _CtaButtonRow(primary: cancelButton(context)),
       // 양측 서명 완료
       ContractStatus.signed => _CtaButtonRow(
         secondary: reportButton(context),
         primary: completeButton(context, ref),
       ),
+      // 신고 접수
+      ContractStatus.reported => _CtaButtonRow(
+        primary: cancelReportButton(
+          context,
+          ref,
+          disabled: reportState.recentReport?.isMine != true,
+        ),
+      ),
+      // 취소
+      ContractStatus.cancelRequested || ContractStatus.cancelled =>
+        cancelState.recentCancel?.isMine == true
+            ? _CtaButtonRow(primary: cancelRequestButton(context, ref))
+            : _CtaButtonRow(primary: confirmCancelButton(context, ref)),
       // 거래 완료
       ContractStatus.completed => _CtaButtonRow(
         secondary: reportButton(context),
@@ -101,15 +109,22 @@ class ContractCtaButtons extends HookConsumerWidget {
     };
   }
 
-  Widget deleteButton(BuildContext context, WidgetRef ref) {
+  Widget deleteButton(
+    BuildContext context,
+    WidgetRef ref, {
+    bool disabled = false,
+  }) {
     final detailState = ref.watch(detailContractViewModelProvider);
     final detailVM = ref.read(detailContractViewModelProvider.notifier);
     final deleteVM = ref.read(deleteContractViewModelProvider.notifier);
 
     return _ContractCtaButton(
-      disabled: true,
+      isGrayButton: true,
+      disabled: disabled,
       text: "삭제하기",
       onTap: () async {
+        if (disabled) return;
+
         await showDialog(
           context: context,
           builder: (_) => CustomDialog(
@@ -147,11 +162,14 @@ class ContractCtaButtons extends HookConsumerWidget {
     );
   }
 
-  Widget reportButton(BuildContext context) {
+  Widget reportButton(BuildContext context, {bool disabled = false}) {
     return _ContractCtaButton(
-      disabled: true,
+      isGrayButton: true,
+      disabled: disabled,
       text: "문제 신고",
-      onTap: () {
+      onTap: () async {
+        if (disabled) return;
+
         showModalBottomSheet(
           context: context,
           barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
@@ -163,19 +181,111 @@ class ContractCtaButtons extends HookConsumerWidget {
     );
   }
 
+  Widget cancelReportButton(
+    BuildContext context,
+    WidgetRef ref, {
+    bool disabled = false,
+  }) {
+    final detailState = ref.watch(detailContractViewModelProvider);
+    final reportVM = ref.read(reportContractViewModelProvider.notifier);
+
+    return _ContractCtaButton(
+      isGrayButton: true,
+      disabled: disabled,
+      text: "신고 취소하기",
+      onTap: () async {
+        if (disabled) return;
+
+        final success = await reportVM.cancelReport(detailState.publicCode);
+        if (!context.mounted) return;
+        if (!success) {
+          final state = ref.read(reportContractViewModelProvider);
+          showErrorToast(context, state.error!);
+          reportVM.clearError();
+          return;
+        }
+      },
+    );
+  }
+
+  Widget cancelRequestButton(
+    BuildContext context,
+    WidgetRef ref, {
+    bool disabled = false,
+  }) {
+    return _ContractCtaButton(
+      isGrayButton: true,
+      disabled: disabled,
+      text: "요청 취소하기",
+      onTap: () async {
+        if (disabled) return;
+      },
+    );
+  }
+
+  Widget confirmCancelButton(
+    BuildContext context,
+    WidgetRef ref, {
+    bool disabled = false,
+  }) {
+    final detailState = ref.watch(detailContractViewModelProvider);
+    final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
+
+    return _ContractCtaButton(
+      isGrayButton: true,
+      disabled: disabled,
+      text: "취소 내용 확인하기",
+      onTap: () async {
+        if (disabled) return;
+
+        final success = await cancelVM.readCancel(detailState.publicCode);
+        if (!context.mounted) return;
+        if (!success) {
+          final state = ref.read(cancelContractViewModelProvider);
+          showErrorToast(context, state.error!);
+          cancelVM.clearError();
+          return;
+        }
+
+        showModalBottomSheet(
+          context: context,
+          barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          builder: (_) => ContractCancelBottomSheet(),
+        );
+      },
+    );
+  }
+
   Widget requestSignButton(
     BuildContext context,
     WidgetRef ref, {
     bool disabled = false,
   }) {
     final detailState = ref.read(detailContractViewModelProvider);
+    final shareVM = ref.read(shareContractViewModelProvider.notifier);
 
     return _ContractCtaButton(
       disabled: disabled,
       text: "서명 요청하기",
-      onTap: () {
+      onTap: () async {
         if (disabled) return;
-        context.push(AppRoutes.contractShare, extra: detailState.publicCode);
+
+        // 수정 요청 상태 > 서명 요청
+        if (detailState.status == ContractStatus.revisionRequested) {
+          final success = await shareVM.reshare(detailState.publicCode);
+          if (!context.mounted) return;
+          if (!success) {
+            final state = ref.read(shareContractViewModelProvider);
+            showErrorToast(context, state.error!);
+            shareVM.clearError();
+            return;
+          }
+          // 계약서 초안 > 서명 요청
+        } else {
+          context.push(AppRoutes.contractShare, extra: detailState.publicCode);
+        }
       },
     );
   }
@@ -185,20 +295,43 @@ class ContractCtaButtons extends HookConsumerWidget {
     WidgetRef ref, {
     bool disabled = false,
   }) {
+    final detailState = ref.watch(detailContractViewModelProvider);
+    final completeVM = ref.read(completeContractViewModelProvider.notifier);
+
     return _ContractCtaButton(
       disabled: disabled,
       text: "거래 완료 확정",
-      onTap: () {
+      onTap: () async {
         if (disabled) return;
+
+        final success = await completeVM.complete(detailState.publicCode);
+        if (!context.mounted) return;
+        if (!success) {
+          final state = ref.read(completeContractViewModelProvider);
+          showErrorToast(context, state.error!);
+          completeVM.clearError();
+          return;
+        }
       },
     );
   }
 
   Widget downloadButton(BuildContext context, WidgetRef ref) {
+    final detailVM = ref.read(detailContractViewModelProvider.notifier);
+
     return _ContractCtaButton(
       disabled: false,
       text: "거래 계약서 다운로드",
-      onTap: () {},
+      onTap: () async {
+        final success = await detailVM.downloadPdf();
+        if (!context.mounted) return;
+        if (!success) {
+          final state = ref.read(detailContractViewModelProvider);
+          showErrorToast(context, state.error!);
+          detailVM.clearError();
+          return;
+        }
+      },
     );
   }
 
@@ -209,7 +342,7 @@ class ContractCtaButtons extends HookConsumerWidget {
     return _ContractCtaButton(
       disabled: false,
       text: "이어서 작성하기",
-      onTap: () {
+      onTap: () async {
         createVM.loadFromDraft(
           publicCode: detailState.publicCode,
           consentType: detailState.consentType,
@@ -248,16 +381,59 @@ class ContractCtaButtons extends HookConsumerWidget {
 
   Widget cancelButton(BuildContext context, {bool disabled = false}) {
     return _ContractCtaButton(
+      isGrayButton: true,
       disabled: disabled,
       text: "취소하기",
-      onTap: () {
+      onTap: () async {
         if (disabled) return;
+
+        showModalBottomSheet(
+          context: context,
+          barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          builder: (_) => ContractCancelBottomSheet(),
+        );
       },
     );
   }
 
-  Widget signButton(BuildContext context, {required void Function() onTap}) {
-    return _ContractCtaButton(disabled: false, text: "서명하기", onTap: onTap);
+  Widget signButton(BuildContext context, WidgetRef ref) {
+    final detailState = ref.watch(detailContractViewModelProvider);
+    final me = ref.read(meProvider).value;
+    final isMinor = me?.ageGroup == 'MINOR';
+
+    return _ContractCtaButton(
+      disabled: false,
+      text: "서명하기",
+      onTap: () async {
+        if (detailState.status == ContractStatus.shared) {
+          if (isMinor) {
+            // 이미 인증 완료이면 바로 페이지 이동
+            final guardianState = ref.read(guardianLinkViewModelProvider);
+            if (guardianState.isConsented) {
+              detailState.isCreator
+                  ? context.go(AppRoutes.selectRole)
+                  : context.go(AppRoutes.requestDetail);
+              return;
+            }
+
+            showDialog(
+              barrierColor: Colors.black.withValues(alpha: 0.75),
+              context: context,
+              builder: (context) =>
+                  const GuardianConsentSignDialog(isCreator: false),
+            );
+          } else {
+            context.push(AppRoutes.requestDetail);
+          }
+        } else if (detailState.status == ContractStatus.receiverSigned) {
+          context.push(AppRoutes.finalPreview);
+        } else {
+          return;
+        }
+      },
+    );
   }
 }
 
@@ -281,28 +457,41 @@ class _CtaButtonRow extends StatelessWidget {
 }
 
 class _ContractCtaButton extends HookConsumerWidget {
-  final bool disabled;
-  final String text;
-  final VoidCallback onTap;
-
   const _ContractCtaButton({
     required this.disabled,
     required this.text,
     required this.onTap,
+    this.isGrayButton = false,
   });
+
+  final bool disabled;
+  final String text;
+  final Future<void> Function() onTap;
+  final bool isGrayButton;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailState = ref.watch(detailContractViewModelProvider);
     final status = detailState.status;
+    final isPending = useRef(false);
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: disabled
+          ? null
+          : () async {
+              if (isPending.value) return;
+              isPending.value = true;
+              try {
+                await onTap();
+              } finally {
+                isPending.value = false;
+              }
+            },
       child: Container(
         height: 60,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: disabled
+          color: (disabled || isGrayButton)
               ? vrc(context).secondaryColor
               : status.statusColor(context),
           borderRadius: BorderRadius.circular(20),
@@ -310,7 +499,11 @@ class _ContractCtaButton extends HookConsumerWidget {
         child: Text(
           text,
           style: context.txt(
-            color: disabled ? vrc(context).textPrimary : fxc(context).textBrand,
+            color: disabled
+                ? vrc(context).textDisable
+                : isGrayButton
+                ? vrc(context).textPrimary
+                : fxc(context).textBrand,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),

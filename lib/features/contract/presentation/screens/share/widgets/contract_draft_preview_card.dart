@@ -13,7 +13,6 @@ class ContractDraftPreviewCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final shareState = ref.watch(shareContractViewModelProvider);
     final detailState = ref.watch(detailContractViewModelProvider);
     final detailVM = ref.read(detailContractViewModelProvider.notifier);
 

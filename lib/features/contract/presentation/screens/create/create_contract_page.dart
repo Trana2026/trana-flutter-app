@@ -25,6 +25,7 @@ class CreateContractPage extends HookConsumerWidget {
     final createState = ref.watch(createContractViewModelProvider);
     final createVM = ref.read(createContractViewModelProvider.notifier);
 
+    final revisionRequested = createState.revisionRequested;
     final platform = createState.tradingPlatform;
     final title = createState.title;
     final price = createState.price;
@@ -93,7 +94,7 @@ class CreateContractPage extends HookConsumerWidget {
           ),
         ),
         title: Text(
-          "새 계약 작성",
+          revisionRequested ? "계약서 수정" : "새 계약 작성",
           style: context.txt(
             color: vrc(context).textPrimary,
             fontSize: 16,
@@ -207,7 +208,7 @@ class CreateContractPage extends HookConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: PrimaryButton(
-            text: "생성하기",
+            text: revisionRequested ? "수정 완료" : "생성하기",
             onTap: () async {
               if (!isEnabled) return;
 

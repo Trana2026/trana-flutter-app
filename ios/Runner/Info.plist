@@ -54,6 +54,9 @@
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>계약서 작성을 위해 사진 라이브러리 접근 권한이 필요합니다.</string>
+	<!-- iOS 생체인증 -->
+	<key>NSFaceIDUsageDescription</key>
+	<string>계약서 내용을 확인하려면 Face ID 인증이 필요합니다.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

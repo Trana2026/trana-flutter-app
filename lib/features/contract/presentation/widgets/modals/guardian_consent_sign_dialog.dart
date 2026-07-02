@@ -62,6 +62,7 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
+        // 요청자일 때, 계약 생성 먼저
         if (isCreator) {
           final success = await createVM.createDraft();
           if (!context.mounted) return;
@@ -70,6 +71,18 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
             showErrorToast(context, state.error!);
             createVM.clearError();
           }
+        }
+
+        // 보호자 동의 링크 생성
+        final linkSuccess = isCreator
+            ? await guardianVM.getCreatorGuardianLink(publicCode)
+            : await guardianVM.getReceiverGuardianLink(publicCode);
+        if (!context.mounted) return;
+        if (!linkSuccess) {
+          final state = ref.read(guardianLinkViewModelProvider);
+          showErrorToast(context, state.error!);
+          guardianVM.clearError();
+          return;
         }
       });
       return null;
@@ -116,18 +129,7 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
                 isSelected: selectedIndex.value == 0,
                 activeColor: fxc(context).brandColor!,
                 activeBgColor: fxc(context).subtitleGreen!,
-                onTap: () async {
-                  selectedIndex.value = 0;
-
-                  final linkSuccess = await guardianVM.createLink(publicCode);
-                  if (!context.mounted) return;
-                  if (!linkSuccess) {
-                    final state = ref.read(guardianLinkViewModelProvider);
-                    showErrorToast(context, state.error!);
-                    createVM.clearError();
-                    return;
-                  }
-                },
+                onTap: () => selectedIndex.value = 0,
               ),
               const SizedBox(height: 12),
 

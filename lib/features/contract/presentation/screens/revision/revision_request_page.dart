@@ -5,15 +5,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
-import 'package:trana/features/contract/presentation/screens/modify/widgets/contract_pages_view.dart';
-import 'package:trana/features/contract/presentation/widgets/modals/modification_request_bottom_sheet.dart';
+import 'package:trana/features/contract/presentation/screens/revision/widgets/contract_pages_view.dart';
+import 'package:trana/features/contract/presentation/widgets/modals/revision_request_bottom_sheet.dart';
 
-class ModificationRequestPage extends HookConsumerWidget {
-  const ModificationRequestPage({super.key});
+class RevisionRequestPage extends HookConsumerWidget {
+  const RevisionRequestPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedLength = useState<int>(0);
+    final isPending = useRef(false);
 
     return Scaffold(
       backgroundColor: vrc(context).background,
@@ -56,16 +57,21 @@ class ModificationRequestPage extends HookConsumerWidget {
               child: GestureDetector(
                 onTap: () async {
                   if (selectedLength.value == 0) return;
-
-                  await showModalBottomSheet<void>(
-                    context: context,
-                    barrierColor: const Color(
-                      0xFF000000,
-                    ).withValues(alpha: 0.75),
-                    backgroundColor: Colors.transparent,
-                    isScrollControlled: true,
-                    builder: (_) => ModificationRequestBottomSheet(),
-                  );
+                  if (isPending.value) return;
+                  isPending.value = true;
+                  try {
+                    await showModalBottomSheet<void>(
+                      context: context,
+                      barrierColor: const Color(
+                        0xFF000000,
+                      ).withValues(alpha: 0.75),
+                      backgroundColor: Colors.transparent,
+                      isScrollControlled: true,
+                      builder: (_) => const RevisionRequestBottomSheet(),
+                    );
+                  } finally {
+                    isPending.value = false;
+                  }
                 },
                 child: Container(
                   height: 68,

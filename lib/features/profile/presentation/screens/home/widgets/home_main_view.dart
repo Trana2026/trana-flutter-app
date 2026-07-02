@@ -89,7 +89,7 @@ class HomeMainView extends HookConsumerWidget {
             const SizedBox(height: 8),
             Expanded(
               child: Container(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                 decoration: BoxDecoration(
                   color: vrc(context).background,
                   borderRadius: const BorderRadius.only(

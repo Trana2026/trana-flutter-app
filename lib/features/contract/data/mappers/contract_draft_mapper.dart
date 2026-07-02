@@ -4,13 +4,14 @@ import 'package:trana/features/contract/domain/entities/contract_draft_entity.da
 import 'package:trana/features/contract/domain/enums/consent_type.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/domain/enums/delivery_type.dart';
+import 'package:trana/features/contract/domain/enums/dispute_state.dart';
 
 extension ContractDraftMapper on ContractDraftDto {
   ContractDraftEntity toEntity() {
     return ContractDraftEntity(
       publicCode: publicCode,
       status: ContractStatus.values.fromApiString(status),
-      disputeState: disputeState,
+      disputeState: DisputeState.values.fromApiString(disputeState),
       deliveryType: deliveryType != null
           ? DeliveryType.values.fromApiString(deliveryType!)
           : null,
@@ -27,6 +28,8 @@ extension ContractDraftMapper on ContractDraftDto {
       version: version,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      guardianNotConsented: riskSignals?.guardianNotConsented ?? false,
+      hasReportHistory: riskSignals?.hasReportHistory ?? false,
     );
   }
 }

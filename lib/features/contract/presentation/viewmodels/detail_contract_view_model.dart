@@ -4,12 +4,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
+import 'package:trana/features/contract/data/services/share_service.dart';
 import 'package:trana/features/contract/domain/entities/contract_attachment_entity.dart';
 import 'package:trana/features/contract/domain/entities/contract_draft_entity.dart';
 import 'package:trana/features/contract/domain/entities/contract_pdf_entity.dart';
 import 'package:trana/features/contract/domain/enums/consent_type.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/domain/enums/delivery_type.dart';
+import 'package:trana/features/contract/domain/enums/dispute_state.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/domain/utils/contract_text_builder.dart';
 import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
@@ -50,6 +52,11 @@ abstract class DetailContractState with _$DetailContractState {
 
     // PDF 미리보기
     Uint8List? pdfBytes,
+    String? pdfUrl,
+
+    // riskSignals
+    @Default(false) bool guardianNotConsented,
+    @Default(false) bool hasReportHistory,
 
     @Default(false) bool isLoading,
     String? error,
@@ -129,7 +136,9 @@ class DetailContractViewModel extends _$DetailContractViewModel {
         .toList();
 
     Uint8List? pdfBytes;
+    String? pdfUrl;
     if (pdfResult case Success(:final data)) {
+      pdfUrl = data.downloadUrl;
       final bytesResult = await ref
           .read(contractPdfRepositoryProvider)
           .downloadBytes(data.downloadUrl);
@@ -140,6 +149,9 @@ class DetailContractViewModel extends _$DetailContractViewModel {
 
     state = state.copyWith(
       isLoading: false,
+      status: draft.disputeState == DisputeState.reported
+          ? ContractStatus.reported
+          : draft.status,
       deliveryType: draft.deliveryType,
       consentType: draft.consentType,
       tradingPlatform: draft.tradingPlatform,
@@ -151,6 +163,9 @@ class DetailContractViewModel extends _$DetailContractViewModel {
       attachmentIds: attachments.map((a) => a.id).toList(),
       attachmentImageUrls: imageUrls,
       pdfBytes: pdfBytes,
+      pdfUrl: pdfUrl,
+      guardianNotConsented: draft.guardianNotConsented,
+      hasReportHistory: draft.hasReportHistory,
     );
     return true;
   }
@@ -174,19 +189,25 @@ class DetailContractViewModel extends _$DetailContractViewModel {
       ),
     };
 
-    if (result is Success) {
-      await _refresh(state.publicCode);
-    }
-
     return result is Success;
   }
 
-  Future<void> _refresh(String? publicCode) async {
-    final homeVM = ref.read(homeContractViewModelProvider.notifier);
-    await homeVM.readMyContracts();
+  /// PDF 공유/저장 (성공 여부 반환)
+  Future<bool> downloadPdf() async {
+    final url = state.pdfUrl;
+    if (url == null) {
+      state = state.copyWith(error: 'PDF를 불러올 수 없습니다.');
+      return false;
+    }
 
-    if (publicCode == null) return;
-    await loadDetail(publicCode);
+    try {
+      final filename = 'Trana 물품 거래 계약서 (${state.title}).pdf';
+      await ShareService().sharePdf(url, filename: filename);
+      return true;
+    } catch (_) {
+      state = state.copyWith(error: '공유에 실패했습니다.');
+      return false;
+    }
   }
 
   void clearError() => state = state.copyWith(error: null);

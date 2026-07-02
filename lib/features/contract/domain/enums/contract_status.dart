@@ -7,9 +7,10 @@ enum ContractStatus {
 
   revisionRequested, // 수정 요청
   receiverSigned, // 수신자 1차 서명
+  signed, // 최종 2차 서명
+
+  reported, // 신고 접수
   cancelRequested, // 취소 요청
   cancelled, // 취소 확정
-
-  signed, // 최종 2차 서명
   completed, // 거래 완료
 }

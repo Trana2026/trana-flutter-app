@@ -8,6 +8,7 @@ import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/guardian_link_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_consent_sign_dialog.dart';
 import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
 import 'package:trana/features/user/presentation/providers/me_provider.dart';
@@ -17,10 +18,11 @@ class HomeContractBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final me = ref.watch(meProvider).value;
+    final me = ref.read(meProvider).value;
     final isMinor = me?.ageGroup == 'MINOR';
 
     final homeState = ref.watch(homeContractViewModelProvider);
+    final detailState = ref.watch(detailContractViewModelProvider);
     final detailVM = ref.read(detailContractViewModelProvider.notifier);
     final count = homeState.requests.length;
     final status = homeState.requests.first.status;
@@ -34,6 +36,8 @@ class HomeContractBanner extends ConsumerWidget {
         return (title: "수정 요청", requestType: "수정 요청");
       } else if (status == ContractStatus.receiverSigned) {
         return (title: "최종 서명 요청", requestType: "서명 요청");
+      } else if (status == ContractStatus.cancelRequested) {
+        return (title: "취소 요청", requestType: "취소 요청");
       } else {
         return (title: "", requestType: "");
       }
@@ -58,15 +62,27 @@ class HomeContractBanner extends ConsumerWidget {
         }
 
         if (status == ContractStatus.shared) {
-          isMinor
-              ? showDialog(
-                  barrierColor: Colors.black.withValues(alpha: 0.75),
-                  context: context,
-                  builder: (context) =>
-                      const GuardianConsentSignDialog(isCreator: false),
-                )
-              : context.push(AppRoutes.requestDetail);
-        } else if (status == ContractStatus.revisionRequested) {
+          if (isMinor) {
+            // 이미 인증 완료이면 바로 페이지 이동
+            final guardianState = ref.read(guardianLinkViewModelProvider);
+            if (guardianState.isConsented) {
+              detailState.isCreator
+                  ? context.go(AppRoutes.selectRole)
+                  : context.go(AppRoutes.requestDetail);
+              return;
+            }
+
+            showDialog(
+              barrierColor: Colors.black.withValues(alpha: 0.75),
+              context: context,
+              builder: (context) =>
+                  const GuardianConsentSignDialog(isCreator: false),
+            );
+          } else {
+            context.push(AppRoutes.requestDetail);
+          }
+        } else if (status == ContractStatus.revisionRequested ||
+            status == ContractStatus.cancelRequested) {
           context.push(AppRoutes.contractDetail);
         } else if (status == ContractStatus.receiverSigned) {
           context.push(AppRoutes.finalPreview);
@@ -82,9 +98,13 @@ class HomeContractBanner extends ConsumerWidget {
         child: Row(
           children: [
             Icon(
-              CooliconsIcon.editPencilLine02,
+              status == ContractStatus.cancelRequested
+                  ? CooliconsIcon.triangleWarning
+                  : CooliconsIcon.editPencilLine02,
               size: 24,
-              color: fxc(context).statusModifyRequest,
+              color: status == ContractStatus.cancelRequested
+                  ? fxc(context).statusError
+                  : fxc(context).statusModifyRequest,
             ),
             const SizedBox(width: 8),
             Expanded(

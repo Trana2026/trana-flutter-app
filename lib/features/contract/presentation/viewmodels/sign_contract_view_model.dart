@@ -109,6 +109,7 @@ class SignContractViewModel extends _$SignContractViewModel {
     await homeVM.readMyContracts();
 
     if (publicCode == null) return;
+
     final detailVM = ref.read(detailContractViewModelProvider.notifier);
     await detailVM.loadDetail(publicCode);
   }

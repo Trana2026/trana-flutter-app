@@ -11,10 +11,12 @@ class ContractFormField extends HookConsumerWidget {
   final String hintText;
   final String? errorText;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final int maxLines;
   final void Function(String)? onChanged;
+  final bool readOnly;
 
   const ContractFormField({
     super.key,
@@ -22,10 +24,12 @@ class ContractFormField extends HookConsumerWidget {
     required this.hintText,
     this.errorText,
     this.controller,
+    this.focusNode,
     this.keyboardType,
     this.inputFormatters,
     this.maxLines = 1,
     this.onChanged,
+    this.readOnly = false,
   });
 
   @override
@@ -33,30 +37,28 @@ class ContractFormField extends HookConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Text(
-              label,
-              style: context.txt(
-                color: vrc(context).textTertiary,
-                fontSize: 12,
-              ),
-            ),
-          ],
+        Text(
+          label,
+          style: context.txt(color: vrc(context).textTertiary, fontSize: 12),
         ),
         const SizedBox(height: 4),
         ContractField(
           onChanged: onChanged,
           hintText: hintText,
           controller: controller,
+          focusNode: focusNode,
           keyboardType: keyboardType,
           inputFormatters: inputFormatters,
           maxLines: maxLines,
           hasError: errorText != null,
+          readOnly: readOnly,
         ),
         if (errorText != null)
           Padding(
-            padding: const EdgeInsets.only(top: 4),
+            padding: EdgeInsets.only(
+              top: 4,
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
             child: Text(
               errorText!,
               style: context.txt(color: fxc(context).textDanger, fontSize: 12),

@@ -25,7 +25,7 @@ abstract class CreateContractState with _$CreateContractState {
     String? publicCode, // 생성된 Draft 의 publicCode
     @Default([]) List<AssetEntity> selectedImages, // 등록한 거래 사진 목록
     @Default([])
-    List<String> existingAttachmentUrls, // 기존에 등록된 거래 사진 url (수정 모드)
+    List<String> existingAttachmentUrls, // 기존에 등록된 거래 사진 url (기존값 불러오기)
     @Default([]) List<int> attachmentIds, // 업로드된 첨부파일 id 목록
     @Default('') String tradingPlatform, // 입력된 거래 플랫폼
     @Default('') String title, // 입력된 거래 물품명
@@ -34,6 +34,7 @@ abstract class CreateContractState with _$CreateContractState {
     @Default('') String conditionDetails, // 입력된 상품 상세 설명
     @Default(0) int warrantyPeriodDays, // 선택된 보증 제공 여부 (0: 미제공, 3: 제공)
     Uint8List? pdfBytes, // 생성된 Pdf 바이트
+    @Default(false) bool revisionRequested, // 수정 요청 상태일 때
 
     @Default(false) bool isLoading,
     String? error,
@@ -45,11 +46,9 @@ abstract class CreateContractState with _$CreateContractState {
 @Riverpod(keepAlive: true)
 class CreateContractViewModel extends _$CreateContractViewModel {
   @override
-  CreateContractState build() {
-    return const CreateContractState();
-  }
+  CreateContractState build() => const CreateContractState();
 
-  /// 기존 데이터를 상태에 로드 (수정 모드)
+  /// 기존 데이터를 상태에 로드 (기존값 불러오기)
   void loadFromDraft({
     required String publicCode,
     required ConsentType? consentType,
@@ -79,6 +78,11 @@ class CreateContractViewModel extends _$CreateContractViewModel {
       conditionDetails: conditionDetails,
       warrantyPeriodDays: warrantyPeriodDays,
     );
+  }
+
+  /// 수정 요청 상태 변경
+  void setRevisionRequestedMode(bool v) {
+    state = state.copyWith(revisionRequested: v);
   }
 
   // 사용자 동의 유형 분류 (성인 = 해당없음, 미성년자 = 보호자 인증 필요)
@@ -113,7 +117,7 @@ class CreateContractViewModel extends _$CreateContractViewModel {
       ),
     };
 
-    await _refresh(state.publicCode);
+    await _refreshHome();
 
     return result is Success;
   }
@@ -308,19 +312,50 @@ class CreateContractViewModel extends _$CreateContractViewModel {
 
     state = state.copyWith(isLoading: true);
 
-    final result = await ref
-        .read(contractPdfRepositoryProvider)
-        .preview(publicCode: state.publicCode!);
+    if (state.revisionRequested) {
+      final result = await ref
+          .read(contractPdfRepositoryProvider)
+          .pdf(publicCode: state.publicCode!);
 
-    state = switch (result) {
-      Success(:final data) => state.copyWith(isLoading: false, pdfBytes: data),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
+      if (result case Failure(:final failure)) {
+        state = state.copyWith(isLoading: false, error: failure.message);
+        return false;
+      }
 
-    return result is Success;
+      final bytesResult = await ref
+          .read(contractPdfRepositoryProvider)
+          .downloadBytes((result as Success).data.downloadUrl);
+
+      state = switch (bytesResult) {
+        Success(:final data) => state.copyWith(
+          isLoading: false,
+          pdfBytes: data,
+        ),
+        Failure(:final failure) => state.copyWith(
+          isLoading: false,
+          error: failure.message,
+        ),
+      };
+
+      return bytesResult is Success;
+    } else {
+      final result = await ref
+          .read(contractPdfRepositoryProvider)
+          .preview(publicCode: state.publicCode!);
+
+      state = switch (result) {
+        Success(:final data) => state.copyWith(
+          isLoading: false,
+          pdfBytes: data,
+        ),
+        Failure(:final failure) => state.copyWith(
+          isLoading: false,
+          error: failure.message,
+        ),
+      };
+
+      return result is Success;
+    }
   }
 
   /// Ready 상태 전이 (성공 여부 반환)
@@ -351,11 +386,17 @@ class CreateContractViewModel extends _$CreateContractViewModel {
     return result is Success;
   }
 
+  Future<void> _refreshHome() async {
+    final homeVM = ref.read(homeContractViewModelProvider.notifier);
+    await homeVM.readMyContracts();
+  }
+
   Future<void> _refresh(String? publicCode) async {
     final homeVM = ref.read(homeContractViewModelProvider.notifier);
     await homeVM.readMyContracts();
 
     if (publicCode == null) return;
+
     final detailVM = ref.read(detailContractViewModelProvider.notifier);
     await detailVM.loadDetail(publicCode);
   }

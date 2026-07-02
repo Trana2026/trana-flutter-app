@@ -9,7 +9,6 @@ import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/core/widgets/select_role_card.dart';
-import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 
 class SelectUserRolePage extends HookConsumerWidget {
@@ -20,20 +19,15 @@ class SelectUserRolePage extends HookConsumerWidget {
     final createState = ref.watch(createContractViewModelProvider);
     final createVM = ref.read(createContractViewModelProvider.notifier);
 
-    final Role? initialRole = ref.read(createContractViewModelProvider).role;
-    final selectedIndex = useState<int?>(switch (initialRole) {
-      Role.seller => 0,
-      Role.buyer => 1,
-      null => null,
-    });
+    final selectedIndex = useState<int?>(null);
+    final bool isEnabled = selectedIndex.value != null;
+    final isPending = useRef(false);
 
     const int currentStep = 1;
     const int totalStep = 3;
-
     final double progress = currentStep / totalStep;
     final double screenWidth = MediaQuery.of(context).size.width;
     final double barWidth = screenWidth * progress;
-    final bool isEnabled = selectedIndex.value != null;
 
     return Scaffold(
       backgroundColor: vrc(context).background,
@@ -113,9 +107,23 @@ class SelectUserRolePage extends HookConsumerWidget {
             text: "다음",
             onTap: () async {
               if (!isEnabled) return;
+              if (isPending.value) return;
+              isPending.value = true;
+              try {
+                if (createState.publicCode == null) {
+                  final success = await createVM.createDraft();
+                  if (!context.mounted) return;
+                  if (!success) {
+                    final state = ref.read(createContractViewModelProvider);
+                    showErrorToast(context, state.error!);
+                    createVM.clearError();
+                    return;
+                  }
+                }
 
-              if (createState.publicCode == null) {
-                final success = await createVM.createDraft();
+                final success = await createVM.updateDraftRole(
+                  selectedIndex.value,
+                );
                 if (!context.mounted) return;
                 if (!success) {
                   final state = ref.read(createContractViewModelProvider);
@@ -123,20 +131,11 @@ class SelectUserRolePage extends HookConsumerWidget {
                   createVM.clearError();
                   return;
                 }
-              }
 
-              final success = await createVM.updateDraftRole(
-                selectedIndex.value,
-              );
-              if (!context.mounted) return;
-              if (!success) {
-                final state = ref.read(createContractViewModelProvider);
-                showErrorToast(context, state.error!);
-                createVM.clearError();
-                return;
+                context.push(AppRoutes.contractCreate);
+              } finally {
+                isPending.value = false;
               }
-
-              context.push(AppRoutes.contractCreate);
             },
             backgroundColor: isEnabled
                 ? fxc(context).brandColor!

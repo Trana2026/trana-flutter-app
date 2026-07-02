@@ -1,12 +1,62 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart'; 
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/router/app_router.dart';
+import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
+import 'package:trana/features/contract/data/services/biometric_service.dart';
 
 class BiometricLockPage extends HookConsumerWidget {
   const BiometricLockPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isPending = useRef(false);
+    final errorMessage = useState<String?>(null);
+
+    Future<void> authenticate() async {
+      if (isPending.value) return;
+      isPending.value = true;
+      errorMessage.value = null;
+      try {
+        final service = BiometricService();
+        final canAuth = await service.canAuthenticate();
+        if (!canAuth) {
+          errorMessage.value = '이 기기에서는 생체 인증을 사용할 수 없습니다.';
+          return;
+        }
+
+        final success = await service.authenticate();
+        if (!context.mounted) return;
+
+        if (success) {
+          context.pushReplacement(AppRoutes.contractDetail);
+        } else {
+          errorMessage.value = '인증에 실패했습니다. 다시 시도해주세요.';
+        }
+      } finally {
+        isPending.value = false;
+      }
+    }
+
+    // 페이지 진입 시 자동으로 생체 인증 실행
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) => authenticate());
+      return null;
+    }, const []);
+
+    // 인증 실패 시 토스트
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (errorMessage.value != null) {
+          showErrorToast(context, errorMessage.value!);
+        }
+      });
+      return null;
+    }, [errorMessage.value]);
+
     return Scaffold(
       backgroundColor: vrc(context).background,
       body: SafeArea(
@@ -21,8 +71,8 @@ class BiometricLockPage extends HookConsumerWidget {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: fxc(context).subtitleGreen,
-                  borderRadius: BorderRadius.circular(25),
+                  color: fxc(context).opacitySuccess,
+                  borderRadius: BorderRadius.circular(28),
                 ),
                 child: Icon(
                   Icons.shield_outlined,
@@ -30,31 +80,25 @@ class BiometricLockPage extends HookConsumerWidget {
                   color: fxc(context).iconBrand,
                 ),
               ),
-              const SizedBox(height: 35),
-
+              const SizedBox(height: 33),
               Text(
                 "보안 문서",
-                style: TextStyle(
+                style: context.txt(
                   color: vrc(context).textPrimary,
                   fontSize: 20,
-                  fontFamily: "PretendardBold"
+                  fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 10),
               Text(
                 "이 계약서에는 민감한 개인정보가 포함되어 있습니다.\n내용을 보려면 인증이 필요해요.",
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: vrc(context).textSecondary,
-                  fontSize: 14,
-                  fontFamily: "PretendardMedium"
-                ),
+                style: context.txt(),
               ),
-              const SizedBox(height: 35),
-
+              const SizedBox(height: 39),
               InkWell(
-                onTap: () {},
-                borderRadius: BorderRadius.circular(16), 
+                onTap: authenticate,
+                borderRadius: BorderRadius.circular(16),
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(
@@ -68,10 +112,10 @@ class BiometricLockPage extends HookConsumerWidget {
                   child: Text(
                     "생체 인증으로 잠금 해제",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: context.txt(
                       color: vrc(context).textPrimary,
-                      fontSize: 18,
-                      fontFamily: "PretendardSemiBold"
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),

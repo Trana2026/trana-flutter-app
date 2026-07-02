@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
@@ -8,9 +9,11 @@ import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/widgets/custom_loading_bar.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/receive_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/contract_warranty_section.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/sign_confirm_bottom_sheet.dart';
 
@@ -20,6 +23,8 @@ class ContractRequestDetailPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailState = ref.watch(detailContractViewModelProvider);
+    final receiveVM = ref.read(receiveContractViewModelProvider.notifier);
+    final isPending = useRef(false);
 
     return Scaffold(
       backgroundColor: vrc(context).background,
@@ -87,9 +92,7 @@ class ContractRequestDetailPage extends HookConsumerWidget {
               Expanded(
                 child: PrimaryButton(
                   text: "수정하기",
-                  onTap: () {
-                    context.push(AppRoutes.modificationRequest);
-                  },
+                  onTap: () => context.push(AppRoutes.revisionRequest),
                   backgroundColor: vrc(context).secondaryColor!,
                   foregroundColor: vrc(context).textPrimary!,
                 ),
@@ -99,22 +102,43 @@ class ContractRequestDetailPage extends HookConsumerWidget {
                 child: PrimaryButton(
                   text: "서명하기",
                   onTap: () async {
-                    bool signFlowProceeded = false;
-                    final router = GoRouter.of(context);
-                    await showModalBottomSheet<void>(
-                      context: context,
-                      barrierColor: const Color(
-                        0xFF000000,
-                      ).withValues(alpha: 0.75),
-                      backgroundColor: Colors.transparent,
-                      isScrollControlled: true,
-                      builder: (_) => SignConfirmBottomSheet(
-                        parentContext: context,
-                        onProceed: () => signFlowProceeded = true,
-                      ),
-                    );
-                    if (!signFlowProceeded && context.mounted) {
-                      router.go(AppRoutes.home);
+                    if (isPending.value) return;
+                    isPending.value = true;
+                    try {
+                      if (detailState.myRole == Role.seller) {
+                        final success = await receiveVM.receiverWarranty(
+                          detailState.publicCode,
+                        );
+                        if (!context.mounted) return;
+                        if (!success) {
+                          final state = ref.read(
+                            receiveContractViewModelProvider,
+                          );
+                          showErrorToast(context, state.error!);
+                          receiveVM.clearError();
+                          return;
+                        }
+                      }
+
+                      bool signFlowProceeded = false;
+                      final router = GoRouter.of(context);
+                      await showModalBottomSheet<void>(
+                        context: context,
+                        barrierColor: const Color(
+                          0xFF000000,
+                        ).withValues(alpha: 0.75),
+                        backgroundColor: Colors.transparent,
+                        isScrollControlled: true,
+                        builder: (_) => SignConfirmBottomSheet(
+                          parentContext: context,
+                          onProceed: () => signFlowProceeded = true,
+                        ),
+                      );
+                      if (!signFlowProceeded && context.mounted) {
+                        router.go(AppRoutes.home);
+                      }
+                    } finally {
+                      isPending.value = false;
                     }
                   },
                   backgroundColor: fxc(context).brandColor!,

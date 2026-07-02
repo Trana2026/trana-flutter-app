@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:trana/core/error/dio_error_mapper.dart';
 import 'package:trana/core/utils/enum_extension.dart';
 import 'package:trana/core/error/failure.dart';
@@ -27,12 +26,8 @@ class ContractRepositoryImpl implements ContractRepository {
       );
       return Success(dtos.map((dto) => dto.toEntity()).toList());
     } on DioException catch (e) {
-      debugPrint(
-        '[ContractRepo] readMyContracts: ${e.type} ${e.response?.statusCode} ${e.message}',
-      );
       return Failure(e.toFailure());
     } catch (e) {
-      debugPrint('[ContractRepo] readMyContracts unexpected: $e');
       return const Failure(UnknownFailure());
     }
   }
