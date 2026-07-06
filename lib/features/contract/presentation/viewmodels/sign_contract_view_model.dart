@@ -28,21 +28,27 @@ class SignContractViewModel extends _$SignContractViewModel {
   @override
   SignContractState build() => const SignContractState();
 
+  /// 서명 플로우 시작 전 이전 시도의 잔여 상태 초기화
+  void reset() {
+    state = const SignContractState();
+  }
+
   /// TRANA 거래 계약 동의 (id: 5)
   void agreeContractAgreementTerm() {
-    final List<int> updated = [...state.agreedTermIds, 5];
+    // keepAlive 상태라 재시도 시 중복 누적 방지 (서버가 약관 2개 정확히 요구)
+    final updated = {...state.agreedTermIds, 5}.toList();
     state = state.copyWith(agreedTermIds: updated);
   }
 
   /// TRANA 전자서명 동의 (id: 6)
   void agreeElectronicSignatureTerm(bool v) {
-    final updated = [...state.agreedTermIds];
+    final updated = {...state.agreedTermIds};
     if (v) {
       updated.add(6);
     } else {
       updated.remove(6);
     }
-    state = state.copyWith(agreedTermIds: updated);
+    state = state.copyWith(agreedTermIds: updated.toList());
   }
 
   /// 전자 서명 데이터
@@ -72,6 +78,7 @@ class SignContractViewModel extends _$SignContractViewModel {
 
     if (result is Success) {
       await _refresh(publicCode);
+      reset();
     }
 
     return result is Success;
@@ -99,6 +106,7 @@ class SignContractViewModel extends _$SignContractViewModel {
 
     if (result is Success) {
       await _refresh(publicCode);
+      reset();
     }
 
     return result is Success;
