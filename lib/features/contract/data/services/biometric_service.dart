@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:local_auth/local_auth.dart';
 
 class BiometricService {
@@ -20,7 +21,9 @@ class BiometricService {
         biometricOnly: true,
         persistAcrossBackgrounding: true,
       );
-    } catch (_) {
+    } catch (e) {
+      // 사용자 취소 외 플랫폼 에러(설정 누락 등) 원인 추적용
+      debugPrint('[BiometricService] authenticate error: $e');
       return false;
     }
   }
