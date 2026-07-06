@@ -32,15 +32,15 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <!-- Android 딥링크 수신 -->
+            <!-- Android App Links 수신 (초대/계약 상세 딥링크) -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data
                     android:scheme="https"
-                    android:host="trana.app"
-                    android:pathPrefix="/contracts/invitations/"/>
+                    android:host="trana.kr"
+                    android:pathPrefix="/contracts"/>
             </intent-filter>
         </activity>
         <!-- 카카오 로그인 리다이렉트 핸들러 (scheme = kakao + 네이티브앱키) -->

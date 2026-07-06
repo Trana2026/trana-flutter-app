@@ -3,9 +3,17 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
+import 'package:go_router/go_router.dart';
+import 'package:trana/core/router/app_router.dart';
+import 'package:trana/features/contract/data/services/deferred_link_service.dart';
+import 'package:trana/features/contract/data/services/pending_contract_code_service.dart';
 import 'package:trana/features/contract/data/services/pending_invitation_token_service.dart';
+import 'package:trana/features/contract/domain/enums/contract_status.dart';
+import 'package:trana/features/contract/presentation/viewmodels/cancel_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/receive_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/report_contract_view_model.dart';
 import 'package:trana/features/profile/presentation/viewmodels/test_user_provider.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_identity_verify_dialog.dart';
 import 'package:trana/features/guardian/domain/entities/guardian_verification_state.dart';
@@ -20,6 +28,44 @@ import 'package:trana/features/user/presentation/providers/me_provider.dart';
 class HomePage extends HookConsumerWidget {
   final bool showGuardianDialog;
   const HomePage({super.key, this.showGuardianDialog = false});
+
+  /// 딥링크로 저장된 계약코드 소비 후 상세로 이동
+  Future<void> _consumePendingContractCode(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final publicCode = await PendingContractCodeService.get();
+    if (publicCode == null) return;
+    await PendingContractCodeService.clear();
+
+    final detailVM = ref.read(detailContractViewModelProvider.notifier);
+    final reportVM = ref.read(reportContractViewModelProvider.notifier);
+    final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
+
+    final results = await Future.wait([
+      detailVM.loadDetail(publicCode),
+      reportVM.readReport(publicCode),
+      cancelVM.readCancel(publicCode),
+    ]);
+    if (!context.mounted) return;
+
+    // 본인 계약이 아니거나(403) 없는 계약(404)이면 홈에 머무름
+    if (results.contains(false)) {
+      final state = ref.read(detailContractViewModelProvider);
+      showErrorToast(context, state.error ?? '계약을 불러오지 못했습니다.');
+      detailVM.clearError();
+      reportVM.clearError();
+      cancelVM.clearError();
+      return;
+    }
+
+    final status = ref.read(detailContractViewModelProvider).status;
+    if (status == ContractStatus.inProgress || status == ContractStatus.draft) {
+      context.push(AppRoutes.contractDetail);
+    } else {
+      context.push(AppRoutes.biometricLock);
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -70,6 +116,9 @@ class HomePage extends HookConsumerWidget {
         final userVM = ref.read(testUserProvider.notifier);
         await userVM.getUser();
 
+        // 스토어 설치 유입 시 Install Referrer에서 초대 토큰 복구 (최초 1회)
+        await DeferredLinkService.restoreInvitationToken();
+
         // 수신자 invitation 수락
         final receiveVM = ref.read(receiveContractViewModelProvider.notifier);
         final invitationToken = await PendingInvitationTokenService.get();
@@ -96,6 +145,9 @@ class HomePage extends HookConsumerWidget {
           showErrorToast(context, state.error!);
           homeVM.clearError();
         }
+
+        // 알림톡 딥링크로 수신한 계약코드가 있으면 상세로 이동
+        await _consumePendingContractCode(context, ref);
       });
       return null;
     }, []);
