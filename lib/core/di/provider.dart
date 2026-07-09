@@ -45,6 +45,24 @@ import 'package:trana/features/guardian/data/datasources/dio_guardian_remote_dat
 import 'package:trana/features/guardian/data/guardian_link_store.dart';
 import 'package:trana/features/guardian/data/repositories/guardian_repository_impl.dart';
 import 'package:trana/features/guardian/domain/repositories/guardian_repository.dart';
+import 'package:trana/features/profile/data/datasources/device_token_data_source.dart';
+import 'package:trana/features/profile/data/datasources/trust_score_data_source.dart';
+import 'package:trana/features/profile/data/datasources/user_consent_data_source.dart';
+import 'package:trana/features/profile/data/datasources/user_info_data_source.dart';
+import 'package:trana/features/profile/data/datasources/user_inquiry_data_source.dart';
+import 'package:trana/features/profile/data/datasources/user_preference_data_source.dart';
+import 'package:trana/features/profile/data/repository_impls/device_token_repository_impl.dart';
+import 'package:trana/features/profile/data/repository_impls/trust_score_repository_impl.dart';
+import 'package:trana/features/profile/data/repository_impls/user_consent_repository_impl.dart';
+import 'package:trana/features/profile/data/repository_impls/user_info_repository_impl.dart';
+import 'package:trana/features/profile/data/repository_impls/user_inquiry_repository_impl.dart';
+import 'package:trana/features/profile/data/repository_impls/user_preference_repository_impl.dart';
+import 'package:trana/features/profile/domain/repositories/device_token_repository.dart';
+import 'package:trana/features/profile/domain/repositories/trust_score_repository.dart';
+import 'package:trana/features/profile/domain/repositories/user_consent_repository.dart';
+import 'package:trana/features/profile/domain/repositories/user_info_repository.dart';
+import 'package:trana/features/profile/domain/repositories/user_inquiry_repository.dart';
+import 'package:trana/features/profile/domain/repositories/user_preference_repository.dart';
 import 'package:trana/features/user/data/datasources/user_remote_datasource.dart';
 import 'package:trana/features/user/data/repositories/user_repository_impl.dart';
 import 'package:trana/features/user/domain/repositories/user_repository.dart';
@@ -171,6 +189,42 @@ ContractPdfDataSource contractPdfDataSource(Ref ref) {
   return ContractPdfDataSource(dio, s3Dio);
 }
 
+@riverpod
+DeviceTokenDataSource deviceTokenDataSource(Ref ref) {
+  final dio = ref.watch(dioProvider);
+  return DeviceTokenDataSource(dio);
+}
+
+@riverpod
+TrustScoreDataSource trustScoreDataSource(Ref ref) {
+  final dio = ref.watch(dioProvider);
+  return TrustScoreDataSource(dio);
+}
+
+@riverpod
+UserConsentDataSource userConsentDataSource(Ref ref) {
+  final dio = ref.watch(dioProvider);
+  return UserConsentDataSource(dio);
+}
+
+@riverpod
+UserInfoDataSource userInfoDataSource(Ref ref) {
+  final dio = ref.watch(dioProvider);
+  return UserInfoDataSource(dio);
+}
+
+@riverpod
+UserInquiryDataSource userInquiryDataSource(Ref ref) {
+  final dio = ref.watch(dioProvider);
+  return UserInquiryDataSource(dio);
+}
+
+@riverpod
+UserPreferenceDataSource userPreferenceDataSource(Ref ref) {
+  final dio = ref.watch(dioProvider);
+  return UserPreferenceDataSource(dio);
+}
+
 // ==================== Repository ====================
 
 @riverpod
@@ -232,4 +286,40 @@ ContractLifecycleRepository contractLifecycleRepository(Ref ref) {
 ContractPdfRepository contractPdfRepository(Ref ref) {
   final dataSource = ref.watch(contractPdfDataSourceProvider);
   return ContractPdfRepositoryImpl(dataSource);
+}
+
+@riverpod
+DeviceTokenRepository deviceTokenRepository(Ref ref) {
+  final dataSource = ref.watch(deviceTokenDataSourceProvider);
+  return DeviceTokenRepositoryImpl(dataSource);
+}
+
+@riverpod
+TrustScoreRepository trustScoreRepository(Ref ref) {
+  final dataSource = ref.watch(trustScoreDataSourceProvider);
+  return TrustScoreRepositoryImpl(dataSource);
+}
+
+@riverpod
+UserConsentRepository userConsentRepository(Ref ref) {
+  final dataSource = ref.watch(userConsentDataSourceProvider);
+  return UserConsentRepositoryImpl(dataSource);
+}
+
+@riverpod
+UserInfoRepository userInfoRepository(Ref ref) {
+  final dataSource = ref.watch(userInfoDataSourceProvider);
+  return UserInfoRepositoryImpl(dataSource);
+}
+
+@riverpod
+UserInquiryRepository userInquiryRepository(Ref ref) {
+  final dataSource = ref.watch(userInquiryDataSourceProvider);
+  return UserInquiryRepositoryImpl(dataSource);
+}
+
+@riverpod
+UserPreferenceRepository userPreferenceRepository(Ref ref) {
+  final dataSource = ref.watch(userPreferenceDataSourceProvider);
+  return UserPreferenceRepositoryImpl(dataSource);
 }

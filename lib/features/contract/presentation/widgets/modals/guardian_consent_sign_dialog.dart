@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
@@ -176,15 +176,9 @@ class GuardianConsentSignDialog extends HookConsumerWidget {
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Center(
-                          child: SvgPicture.asset(
-                            'assets/icons/copy.svg',
-                            height: 24,
-                            width: 24,
-                            fit: BoxFit.contain,
-                            colorFilter: ColorFilter.mode(
-                              fxc(context).brandColor!,
-                              BlendMode.srcIn,
-                            ),
+                          child: AppIcon.svg(
+                            asset: 'assets/icons/copy.svg',
+                            color: fxc(context).brandColor!,
                           ),
                         ),
                       ),

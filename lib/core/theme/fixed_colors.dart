@@ -28,6 +28,9 @@ class FixedColors extends ThemeExtension<FixedColors> {
     required this.opacityBg,
     required this.opacityError,
     required this.imageCountBg,
+    required this.trustScore,
+    required this.unchangeableBlack,
+    required this.unchangeableWhite,
   });
   final Color? brandColor;
   final Color? statusSignRequest;
@@ -53,6 +56,9 @@ class FixedColors extends ThemeExtension<FixedColors> {
   final Color? opacityBg;
   final Color? opacityError;
   final Color? imageCountBg;
+  final Color? trustScore;
+  final Color? unchangeableBlack;
+  final Color? unchangeableWhite;
 
   static const FixedColors constant = FixedColors(
     brandColor: Color(0xFF40C572),
@@ -79,6 +85,9 @@ class FixedColors extends ThemeExtension<FixedColors> {
     opacityBg: Color(0x8041444F),
     opacityError: Color(0x1FFB2C36),
     imageCountBg: Color(0x66424242),
+    trustScore: Color(0xFFBAF863),
+    unchangeableBlack: Color(0xFF272829),
+    unchangeableWhite: Color(0xFFFFFFFF),
   );
 
   /// 일부 필드를 교체한 새 FixedColors 인스턴스 생성
@@ -108,6 +117,9 @@ class FixedColors extends ThemeExtension<FixedColors> {
     Color? opacityBg,
     Color? opacityError,
     Color? imageCountBg,
+    Color? trustScore,
+    Color? unchangeableBlack,
+    Color? unchangeableWhite,
   }) => FixedColors(
     brandColor: brandColor ?? this.brandColor,
     statusSignRequest: statusSignRequest ?? this.statusSignRequest,
@@ -133,6 +145,9 @@ class FixedColors extends ThemeExtension<FixedColors> {
     opacityBg: opacityBg ?? this.opacityBg,
     opacityError: opacityError ?? this.opacityError,
     imageCountBg: imageCountBg ?? this.imageCountBg,
+    trustScore: trustScore ?? this.trustScore,
+    unchangeableBlack: unchangeableBlack ?? this.unchangeableBlack,
+    unchangeableWhite: unchangeableWhite ?? this.unchangeableWhite,
   );
 
   /// 두 FixedColors 사이를 선형 보간
@@ -176,6 +191,17 @@ class FixedColors extends ThemeExtension<FixedColors> {
       opacityBg: Color.lerp(opacityBg, other.opacityBg, t),
       opacityError: Color.lerp(opacityError, other.opacityError, t),
       imageCountBg: Color.lerp(imageCountBg, other.imageCountBg, t),
+      trustScore: Color.lerp(trustScore, other.trustScore, t),
+      unchangeableBlack: Color.lerp(
+        unchangeableBlack,
+        other.unchangeableBlack,
+        t,
+      ),
+      unchangeableWhite: Color.lerp(
+        unchangeableWhite,
+        other.unchangeableWhite,
+        t,
+      ),
     );
   }
 }

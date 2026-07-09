@@ -14,7 +14,8 @@ class ContractFormField extends HookConsumerWidget {
   final FocusNode? focusNode;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
-  final int maxLines;
+  final int? minLines;
+  final int? maxLines;
   final void Function(String)? onChanged;
   final bool readOnly;
 
@@ -27,6 +28,7 @@ class ContractFormField extends HookConsumerWidget {
     this.focusNode,
     this.keyboardType,
     this.inputFormatters,
+    this.minLines,
     this.maxLines = 1,
     this.onChanged,
     this.readOnly = false,
@@ -49,6 +51,7 @@ class ContractFormField extends HookConsumerWidget {
           focusNode: focusNode,
           keyboardType: keyboardType,
           inputFormatters: inputFormatters,
+          minLines: minLines,
           maxLines: maxLines,
           hasError: errorText != null,
           readOnly: readOnly,

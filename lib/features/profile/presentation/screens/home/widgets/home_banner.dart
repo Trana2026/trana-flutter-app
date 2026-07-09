@@ -14,7 +14,7 @@ class HomeBanner extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // ===== 계약 관련 =====
     final homeState = ref.watch(homeContractViewModelProvider);
-    final hasRequest = homeState.requests.isNotEmpty;
+    final hasRequest = homeState.requestedContracts.isNotEmpty;
 
     // ===== 인증 관련 =====
     final me = ref.read(meProvider).value;

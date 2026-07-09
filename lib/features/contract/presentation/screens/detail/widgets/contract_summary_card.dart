@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/features/contract/domain/utils/string_extensions.dart';
 import 'package:trana/features/contract/presentation/screens/detail/widgets/contract_image_carousel.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
@@ -95,15 +95,10 @@ class ContractSummaryCard extends HookConsumerWidget {
                       ),
                       child: Row(
                         children: [
-                          SvgPicture.asset(
-                            'assets/icons/box.svg',
-                            height: 16,
-                            width: 16,
-                            fit: BoxFit.contain,
-                            colorFilter: ColorFilter.mode(
-                              vrc(context).iconSecondary!,
-                              BlendMode.srcIn,
-                            ),
+                          AppIcon.svg(
+                            asset: 'assets/icons/box.svg',
+                            size: 16,
+                            color: vrc(context).iconSecondary,
                           ),
                           const SizedBox(width: 6),
                           Text(

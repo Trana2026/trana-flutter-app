@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 
 class ContractDraftPreviewCard extends HookConsumerWidget {
@@ -38,13 +38,9 @@ class ContractDraftPreviewCard extends HookConsumerWidget {
           children: [
             Row(
               children: [
-                SvgPicture.asset(
-                  'assets/icons/file.svg',
-                  fit: BoxFit.contain,
-                  colorFilter: ColorFilter.mode(
-                    fxc(context).textInfo!,
-                    BlendMode.srcIn,
-                  ),
+                AppIcon.svg(
+                  asset: 'assets/icons/file.svg',
+                  color: fxc(context).textInfo!,
                 ),
                 const SizedBox(width: 8),
                 Text(

@@ -1038,6 +1038,294 @@ final class ContractPdfDataSourceProvider
 String _$contractPdfDataSourceHash() =>
     r'5451aa6ad072b052ff7f4747381a75b7b331a4e2';
 
+@ProviderFor(deviceTokenDataSource)
+final deviceTokenDataSourceProvider = DeviceTokenDataSourceProvider._();
+
+final class DeviceTokenDataSourceProvider
+    extends
+        $FunctionalProvider<
+          DeviceTokenDataSource,
+          DeviceTokenDataSource,
+          DeviceTokenDataSource
+        >
+    with $Provider<DeviceTokenDataSource> {
+  DeviceTokenDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'deviceTokenDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$deviceTokenDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<DeviceTokenDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  DeviceTokenDataSource create(Ref ref) {
+    return deviceTokenDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(DeviceTokenDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<DeviceTokenDataSource>(value),
+    );
+  }
+}
+
+String _$deviceTokenDataSourceHash() =>
+    r'5cc420f63cd6d45804df0149013e423a243898ea';
+
+@ProviderFor(trustScoreDataSource)
+final trustScoreDataSourceProvider = TrustScoreDataSourceProvider._();
+
+final class TrustScoreDataSourceProvider
+    extends
+        $FunctionalProvider<
+          TrustScoreDataSource,
+          TrustScoreDataSource,
+          TrustScoreDataSource
+        >
+    with $Provider<TrustScoreDataSource> {
+  TrustScoreDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'trustScoreDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$trustScoreDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<TrustScoreDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  TrustScoreDataSource create(Ref ref) {
+    return trustScoreDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(TrustScoreDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<TrustScoreDataSource>(value),
+    );
+  }
+}
+
+String _$trustScoreDataSourceHash() =>
+    r'293ee9c36d7dd31339d69cab5cb38f145316af71';
+
+@ProviderFor(userConsentDataSource)
+final userConsentDataSourceProvider = UserConsentDataSourceProvider._();
+
+final class UserConsentDataSourceProvider
+    extends
+        $FunctionalProvider<
+          UserConsentDataSource,
+          UserConsentDataSource,
+          UserConsentDataSource
+        >
+    with $Provider<UserConsentDataSource> {
+  UserConsentDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'userConsentDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$userConsentDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<UserConsentDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  UserConsentDataSource create(Ref ref) {
+    return userConsentDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(UserConsentDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<UserConsentDataSource>(value),
+    );
+  }
+}
+
+String _$userConsentDataSourceHash() =>
+    r'90f523c3429b9652e12301eb8ee607050a72f64e';
+
+@ProviderFor(userInfoDataSource)
+final userInfoDataSourceProvider = UserInfoDataSourceProvider._();
+
+final class UserInfoDataSourceProvider
+    extends
+        $FunctionalProvider<
+          UserInfoDataSource,
+          UserInfoDataSource,
+          UserInfoDataSource
+        >
+    with $Provider<UserInfoDataSource> {
+  UserInfoDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'userInfoDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$userInfoDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<UserInfoDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  UserInfoDataSource create(Ref ref) {
+    return userInfoDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(UserInfoDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<UserInfoDataSource>(value),
+    );
+  }
+}
+
+String _$userInfoDataSourceHash() =>
+    r'ee82c65422647315ea19a91f84d61c7f2f17a0eb';
+
+@ProviderFor(userInquiryDataSource)
+final userInquiryDataSourceProvider = UserInquiryDataSourceProvider._();
+
+final class UserInquiryDataSourceProvider
+    extends
+        $FunctionalProvider<
+          UserInquiryDataSource,
+          UserInquiryDataSource,
+          UserInquiryDataSource
+        >
+    with $Provider<UserInquiryDataSource> {
+  UserInquiryDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'userInquiryDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$userInquiryDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<UserInquiryDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  UserInquiryDataSource create(Ref ref) {
+    return userInquiryDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(UserInquiryDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<UserInquiryDataSource>(value),
+    );
+  }
+}
+
+String _$userInquiryDataSourceHash() =>
+    r'2fb485f34150f4c73b2bb5920eca233d742fe322';
+
+@ProviderFor(userPreferenceDataSource)
+final userPreferenceDataSourceProvider = UserPreferenceDataSourceProvider._();
+
+final class UserPreferenceDataSourceProvider
+    extends
+        $FunctionalProvider<
+          UserPreferenceDataSource,
+          UserPreferenceDataSource,
+          UserPreferenceDataSource
+        >
+    with $Provider<UserPreferenceDataSource> {
+  UserPreferenceDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'userPreferenceDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$userPreferenceDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<UserPreferenceDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  UserPreferenceDataSource create(Ref ref) {
+    return userPreferenceDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(UserPreferenceDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<UserPreferenceDataSource>(value),
+    );
+  }
+}
+
+String _$userPreferenceDataSourceHash() =>
+    r'a8d057446cb7fbe607c5f0275d94ae0d4a1e4297';
+
 @ProviderFor(contractRepository)
 final contractRepositoryProvider = ContractRepositoryProvider._();
 
@@ -1530,3 +1818,291 @@ final class ContractPdfRepositoryProvider
 
 String _$contractPdfRepositoryHash() =>
     r'689fc95eae58260289ff671b05485c932446946f';
+
+@ProviderFor(deviceTokenRepository)
+final deviceTokenRepositoryProvider = DeviceTokenRepositoryProvider._();
+
+final class DeviceTokenRepositoryProvider
+    extends
+        $FunctionalProvider<
+          DeviceTokenRepository,
+          DeviceTokenRepository,
+          DeviceTokenRepository
+        >
+    with $Provider<DeviceTokenRepository> {
+  DeviceTokenRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'deviceTokenRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$deviceTokenRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<DeviceTokenRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  DeviceTokenRepository create(Ref ref) {
+    return deviceTokenRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(DeviceTokenRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<DeviceTokenRepository>(value),
+    );
+  }
+}
+
+String _$deviceTokenRepositoryHash() =>
+    r'6870e92d025c7b345e98a3d4010034c563f0cc3f';
+
+@ProviderFor(trustScoreRepository)
+final trustScoreRepositoryProvider = TrustScoreRepositoryProvider._();
+
+final class TrustScoreRepositoryProvider
+    extends
+        $FunctionalProvider<
+          TrustScoreRepository,
+          TrustScoreRepository,
+          TrustScoreRepository
+        >
+    with $Provider<TrustScoreRepository> {
+  TrustScoreRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'trustScoreRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$trustScoreRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<TrustScoreRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  TrustScoreRepository create(Ref ref) {
+    return trustScoreRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(TrustScoreRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<TrustScoreRepository>(value),
+    );
+  }
+}
+
+String _$trustScoreRepositoryHash() =>
+    r'7dd81d98193ce30b298b6beadf64f6512586dfac';
+
+@ProviderFor(userConsentRepository)
+final userConsentRepositoryProvider = UserConsentRepositoryProvider._();
+
+final class UserConsentRepositoryProvider
+    extends
+        $FunctionalProvider<
+          UserConsentRepository,
+          UserConsentRepository,
+          UserConsentRepository
+        >
+    with $Provider<UserConsentRepository> {
+  UserConsentRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'userConsentRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$userConsentRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<UserConsentRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  UserConsentRepository create(Ref ref) {
+    return userConsentRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(UserConsentRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<UserConsentRepository>(value),
+    );
+  }
+}
+
+String _$userConsentRepositoryHash() =>
+    r'9c60f83259de00a947e34c9d15d42e98b0fbf54a';
+
+@ProviderFor(userInfoRepository)
+final userInfoRepositoryProvider = UserInfoRepositoryProvider._();
+
+final class UserInfoRepositoryProvider
+    extends
+        $FunctionalProvider<
+          UserInfoRepository,
+          UserInfoRepository,
+          UserInfoRepository
+        >
+    with $Provider<UserInfoRepository> {
+  UserInfoRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'userInfoRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$userInfoRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<UserInfoRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  UserInfoRepository create(Ref ref) {
+    return userInfoRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(UserInfoRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<UserInfoRepository>(value),
+    );
+  }
+}
+
+String _$userInfoRepositoryHash() =>
+    r'e99b50b6c8d8ae458a95b8607b60739551b8f71e';
+
+@ProviderFor(userInquiryRepository)
+final userInquiryRepositoryProvider = UserInquiryRepositoryProvider._();
+
+final class UserInquiryRepositoryProvider
+    extends
+        $FunctionalProvider<
+          UserInquiryRepository,
+          UserInquiryRepository,
+          UserInquiryRepository
+        >
+    with $Provider<UserInquiryRepository> {
+  UserInquiryRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'userInquiryRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$userInquiryRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<UserInquiryRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  UserInquiryRepository create(Ref ref) {
+    return userInquiryRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(UserInquiryRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<UserInquiryRepository>(value),
+    );
+  }
+}
+
+String _$userInquiryRepositoryHash() =>
+    r'ccad9788e539e5184d6675fe55c222124d5a0e36';
+
+@ProviderFor(userPreferenceRepository)
+final userPreferenceRepositoryProvider = UserPreferenceRepositoryProvider._();
+
+final class UserPreferenceRepositoryProvider
+    extends
+        $FunctionalProvider<
+          UserPreferenceRepository,
+          UserPreferenceRepository,
+          UserPreferenceRepository
+        >
+    with $Provider<UserPreferenceRepository> {
+  UserPreferenceRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'userPreferenceRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$userPreferenceRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<UserPreferenceRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  UserPreferenceRepository create(Ref ref) {
+    return userPreferenceRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(UserPreferenceRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<UserPreferenceRepository>(value),
+    );
+  }
+}
+
+String _$userPreferenceRepositoryHash() =>
+    r'cbc8ea0f80bfca7e5d1e67fea5d5e9ea267cdd33';
