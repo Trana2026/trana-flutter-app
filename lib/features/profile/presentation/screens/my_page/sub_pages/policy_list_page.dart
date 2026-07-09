@@ -1,28 +1,128 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/router/app_router.dart';
+import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/core/utils/date_time_extensions.dart';
+import 'package:trana/core/widgets/custom_app_bar.dart';
+import 'package:trana/features/profile/domain/entities/user_consent_entity.dart';
+import 'package:trana/features/profile/presentation/viewmodels/user_consent_view_model.dart';
 
 class PolicyListPage extends HookConsumerWidget {
   const PolicyListPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final consentState = ref.watch(userConsentViewModelProvider);
+    final consentVM = ref.read(userConsentViewModelProvider.notifier);
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        consentVM.readConsents();
+      });
+      return null;
+    }, []);
+
     return Scaffold(
       backgroundColor: vrc(context).background,
-      appBar: AppBar(
-        backgroundColor: vrc(context).background,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          "약관 및 정책",
-          style: TextStyle(
-            color: vrc(context).textPrimary,
-            fontSize: 17,
-            fontFamily: "PretendardBold"
+      appBar: CustomAppBar.leading(
+        title: "약관 및 정책",
+        onTapLeading: () => context.pop(),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("트라나", style: context.txt(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 4),
+              Text(
+                "약관 및 개인정보 처리 동의",
+                style: context.txt(
+                  color: vrc(context).textPrimary,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 40),
+              Text(
+                "회원 필수 동의서",
+                style: context.txt(
+                  color: vrc(context).textPrimary,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              consentState.consents.isEmpty
+                  ? Center(
+                      child: Text(
+                        "약관이 없습니다",
+                        style: context.txt(color: vrc(context).textPrimary),
+                      ),
+                    )
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(20),
+                      itemCount: consentState.consents.length,
+                      itemBuilder: (_, i) =>
+                          PolicyListItem(consent: consentState.consents[i]),
+                    ),
+            ],
           ),
         ),
       ),
-      body: Center(),
+    );
+  }
+}
+
+class PolicyListItem extends StatelessWidget {
+  const PolicyListItem({super.key, required this.consent});
+
+  final UserConsentEntity consent;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => context.push(AppRoutes.policyDetail, extra: consent),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    consent.title,
+                    style: context.txt(fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    consent.agreedAt.toDotFormat,
+                    style: context.txt(
+                      color: vrc(context).textTertiary,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(
+              CooliconsIcon.caretRightSm,
+              size: 20,
+              color: vrc(context).iconDisable,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

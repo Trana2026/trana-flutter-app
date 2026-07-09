@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart'; // 추가
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/widgets/app_icon.dart';
 
 /// 역할/연령 선택 화면의 선택 가능한 카드 위젯
 class SelectRoleCard extends HookConsumerWidget {
-  final IconData? icon;
-  final String? iconAsset;
+  final AppIcon appIcon;
   final String title;
   final String description;
   final bool isSelected;
@@ -16,8 +15,7 @@ class SelectRoleCard extends HookConsumerWidget {
 
   const SelectRoleCard({
     super.key,
-    this.icon,
-    this.iconAsset,
+    required this.appIcon,
     required this.title,
     required this.description,
     required this.isSelected,
@@ -55,27 +53,11 @@ class SelectRoleCard extends HookConsumerWidget {
                       : vrc(context).tertiaryColor,
                   borderRadius: BorderRadius.circular(11),
                 ),
-                child: Center(
-                  child: iconAsset != null
-                      ? SvgPicture.asset(
-                          iconAsset!,
-                          height: 23,
-                          width: 23,
-                          fit: BoxFit.contain,
-                          colorFilter: ColorFilter.mode(
-                            isSelected
-                                ? fxc(context).textBrand!
-                                : vrc(context).iconDisable!,
-                            BlendMode.srcIn,
-                          ),
-                        )
-                      : Icon(
-                          icon,
-                          color: isSelected
-                              ? fxc(context).textBrand
-                              : vrc(context).iconDisable,
-                          size: 23,
-                        ),
+                child: appIcon.copyWith(
+                  size: 23,
+                  color: isSelected
+                      ? fxc(context).textBrand
+                      : vrc(context).iconDisable,
                 ),
               ),
               const SizedBox(height: 16),

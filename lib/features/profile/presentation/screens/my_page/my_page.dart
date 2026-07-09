@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -6,193 +7,173 @@ import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/core/utils/date_time_extensions.dart';
+import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/core/widgets/confirm_action_dialog.dart';
-import 'package:trana/features/user/presentation/providers/me_provider.dart';
-import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/customer_service_page.dart';
-import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/device_management_page.dart';
-import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/dispute_history_contract_page.dart';
-import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/inquiry_history_page.dart';
-import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/pending_contract_page.dart';
-import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/policy_list_page.dart';
-import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/profile_edit_page.dart';
-import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/total_contract_page.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
+import 'package:trana/features/contract/domain/enums/age_group.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/widgets/my_page_menu_item.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/widgets/profile_score_card.dart';
-import 'package:trana/features/profile/presentation/screens/my_page/widgets/section_title.dart';
-import 'package:trana/features/profile/presentation/screens/my_page/widgets/trust_report_card.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/widgets/section_card.dart';
-import 'package:trana/features/notification/presentation/screens/notification/notification_page.dart'; // 추가 필요
+import 'package:trana/features/profile/presentation/screens/my_page/widgets/trailing_language_dropdown.dart';
+import 'package:trana/features/profile/presentation/screens/my_page/widgets/trailing_push_toggle.dart';
+import 'package:trana/features/profile/presentation/screens/my_page/widgets/trailing_verify_status.dart';
+import 'package:trana/features/profile/presentation/screens/my_page/widgets/trust_report_card.dart';
+import 'package:trana/features/profile/presentation/viewmodels/device_token_view_model.dart';
+import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
+import 'package:trana/features/profile/presentation/viewmodels/my_page_view_model.dart';
+import 'package:trana/features/user/presentation/providers/me_provider.dart';
 
-class MyPage extends ConsumerWidget {
+class MyPage extends HookConsumerWidget {
   const MyPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final homeState = ref.watch(homeContractViewModelProvider);
+    final mypageState = ref.watch(myPageViewModelProvider);
+    final mypageVM = ref.read(myPageViewModelProvider.notifier);
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        mypageVM.loadData();
+      });
+      return null;
+    }, []);
+
+    // TODO: 실제 기기 정보에 맞게 변경 (백엔드 구현되면)
+    final int currentDeviceId = 1;
+    final currentDevice = mypageState.devices
+        .where((d) => d.id == currentDeviceId)
+        .firstOrNull;
+
     return Scaffold(
       backgroundColor: vrc(context).secondaryColor,
       body: SafeArea(
         child: ListView(
-          padding: EdgeInsets.fromLTRB(20, 20, 20, 100),
+          padding: const EdgeInsets.all(16),
           children: [
-            ProfileScoreCard(),
-            SizedBox(height: 16),
-            TrustReportCard(),
+            const ProfileScoreCard(),
+            const SizedBox(height: 16),
+            const TrustReportCard(),
 
-            // 1. 나의 계약 섹션
-            SectionTitle(title: "나의 계약"),
             SectionCard(
+              title: "나의 계약",
               children: [
                 MyPageMenuItem(
-                  icon: Icons.description_outlined,
-                  title: "총 계약 내역",
-                  trailing: "3건",
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TotalContractPage(),
-                    ),
-                  ),
+                  appIcon: AppIcon.data(icon: CooliconsIcon.fileBlank),
+                  label: "총 계약 내역",
+                  trailingText: "${homeState.myContracts.length}건",
+                  onTap: () => context.push(AppRoutes.totalContract),
                 ),
                 MyPageMenuItem(
-                  icon: Icons.error_outline,
-                  title: "미체결 계약",
-                  trailing: "1건",
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PendingContractPage(),
-                    ),
-                  ),
+                  appIcon: AppIcon.svg(asset: 'assets/icons/file_warning.svg'),
+                  label: "미체결 계약",
+                  trailingText: "${homeState.pendingContracts.length}건",
+                  onTap: () => context.push(AppRoutes.pendingContract),
                 ),
                 MyPageMenuItem(
-                  icon: Icons.report_problem_outlined,
-                  title: "신고 / 분쟁 내역",
-                  trailing: "1건",
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DisputeHistoryContractPage(),
-                    ),
-                  ),
+                  appIcon: AppIcon.data(icon: CooliconsIcon.triangleWarning),
+                  label: "신고 / 분쟁 내역",
+                  trailingText: "${homeState.disputingContracts.length}건",
+                  onTap: () => context.push(AppRoutes.disputeContract),
                 ),
               ],
             ),
-            SizedBox(height: 15),
-            // 2. 인증하기 섹션
-            SectionTitle(title: "인증하기"),
-            SectionCard(
-              children: [
-                MyPageMenuItem(
-                  icon: Icons.check_circle_outline,
-                  title: "KYC 인증",
-                  statusText: "완료",
-                  showChevron: false,
-                ),
-                MyPageMenuItem(
-                  icon: Icons.security_outlined,
-                  title: "법정대리인 인증",
-                  statusText: "인증하기",
-                  showChevron: false,
-                ),
-              ],
-            ),
-            SizedBox(height: 15),
 
-            // 4. 보안 관리 섹션
-            SectionTitle(title: "보안 관리"),
             SectionCard(
+              title: "인증하기",
               children: [
                 MyPageMenuItem(
-                  icon: Icons.phone_android,
-                  title: "로그인 기기 관리",
-                  trailing: "2대",
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DeviceManagementPage(),
-                    ),
+                  appIcon: AppIcon.data(icon: CooliconsIcon.circleCheck),
+                  label: "본인 인증",
+                  customTrailing: TrailingVerifyStatus(
+                    verified: mypageState.userVerified,
                   ),
                 ),
+                if (mypageState.ageGroup == AgeGroup.minor)
+                  MyPageMenuItem(
+                    appIcon: AppIcon.svg(
+                      asset: 'assets/icons/shield_warning.svg',
+                    ),
+                    label: "법정대리인 인증",
+                    customTrailing: TrailingVerifyStatus(
+                      verified: mypageState.guardianVerifiedAt != null,
+                    ),
+                  ),
+              ],
+            ),
+
+            SectionCard(
+              title: "보안 관리",
+              children: [
                 MyPageMenuItem(
-                  icon: Icons.access_time,
-                  title: "최근 로그인 기록",
-                  trailing: "2026.03.06,Seoul",
+                  appIcon: AppIcon.data(icon: CooliconsIcon.mobileButton),
+                  label: "로그인 기기 관리",
+                  trailingText: "${mypageState.devices.length}대",
+                  onTap: () => context.push(AppRoutes.deviceManage),
+                ),
+                MyPageMenuItem(
+                  appIcon: AppIcon.data(icon: Icons.access_time),
+                  label: "최근 로그인 기록",
+                  trailingText: "${(currentDevice?.lastUsedAt).timeAgo}, Seoul",
                   showChevron: false,
                 ),
               ],
             ),
-            SizedBox(height: 15),
 
-            // 4. 고객 지원 섹션
-            SectionTitle(title: "고객 지원"),
             SectionCard(
+              title: "고객 지원",
               children: [
                 MyPageMenuItem(
-                  icon: Icons.notifications_none,
-                  title: "공지사항",
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => NotificationPage()),
-                  ),
+                  appIcon: AppIcon.data(icon: CooliconsIcon.bell),
+                  label: "공지사항",
+                  onTap: () => context.push(AppRoutes.notification),
                 ),
                 MyPageMenuItem(
-                  icon: Icons.help_outline,
-                  title: "고객 센터",
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CustomerServicePage(),
-                    ),
-                  ),
+                  appIcon: AppIcon.data(icon: CooliconsIcon.circleHelp),
+                  label: "고객 센터",
+                  onTap: () => context.push(AppRoutes.customerService),
                 ),
                 MyPageMenuItem(
-                  icon: Icons.contact_support_outlined,
-                  title: "문의 내역 관리",
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => InquiryHistoryPage(),
-                    ),
-                  ),
+                  appIcon: AppIcon.svg(asset: 'assets/icons/file_help.svg'),
+                  label: "문의 내역 관리",
+                  onTap: () => context.push(AppRoutes.inquiryHistory),
                 ),
                 MyPageMenuItem(
-                  icon: Icons.article_outlined,
-                  title: "약관 및 정책",
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => PolicyListPage()),
-                  ),
+                  appIcon: AppIcon.svg(asset: 'assets/icons/file.svg'),
+                  label: "약관 및 정책",
+                  onTap: () => context.push(AppRoutes.policyList),
                 ),
               ],
             ),
-            SizedBox(height: 15),
 
-            // 5. 계정 관리 섹션
-            SectionTitle(title: "계정 관리"),
             SectionCard(
+              title: "계정 관리",
               children: [
                 MyPageMenuItem(
-                  icon: Icons.notifications_none,
-                  title: "푸시 알림 설정",
-                  isSwitch: true,
+                  appIcon: AppIcon.data(icon: CooliconsIcon.bell),
+                  label: "푸시 알림 설정",
+                  customTrailing: const TrailingPushToggle(),
                 ),
                 MyPageMenuItem(
-                  icon: Icons.person_outline,
-                  title: "개인정보 관리",
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProfileEditPage()),
-                  ),
+                  appIcon: AppIcon.data(icon: CooliconsIcon.user01),
+                  label: "개인정보 관리",
+                  onTap: () => context.push(AppRoutes.editProfile),
                 ),
-                MyPageMenuItem(icon: Icons.language, title: "언어 설정"),
                 MyPageMenuItem(
-                  icon: Icons.logout,
-                  title: "로그아웃",
+                  appIcon: AppIcon.data(icon: CooliconsIcon.globe),
+                  label: "언어 설정",
+                  customTrailing: const TrailingLanguageDropdown(),
+                ),
+                MyPageMenuItem(
+                  appIcon: AppIcon.data(icon: Icons.logout),
+                  label: "로그아웃",
                   onTap: () => _onLogout(context, ref),
                 ),
                 MyPageMenuItem(
-                  icon: Icons.delete_outline,
-                  title: "탈퇴하기",
+                  appIcon: AppIcon.data(icon: CooliconsIcon.trashFull),
+                  label: "탈퇴하기",
                   onTap: () => _onWithdraw(context, ref),
                 ),
               ],
@@ -215,6 +196,17 @@ class MyPage extends ConsumerWidget {
       ),
     );
     if (ok != true) return;
+
+    // 로그아웃 시 FCM 디바이스 토큰 해제
+    final deviceVM = ref.read(deviceTokenViewModelProvider.notifier);
+    final success = await deviceVM.deleteToken();
+    if (!context.mounted) return;
+    if (!success) {
+      final state = ref.read(deviceTokenViewModelProvider);
+      showErrorToast(context, state.error!);
+      deviceVM.clearError();
+    }
+
     await ref.read(authRepositoryProvider).signOut();
     await ref.read(guardianLinkStoreProvider).clear();
     ref.invalidate(meProvider);

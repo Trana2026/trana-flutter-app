@@ -4,7 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trana/core/di/provider.dart';
-import 'package:trana/core/utils/enum_extension.dart';
+import 'package:trana/core/utils/enum_extensions.dart';
 import 'package:trana/features/contract/data/services/pending_invitation_token_service.dart';
 import 'package:trana/features/contract/domain/enums/age_group.dart';
 
@@ -92,7 +92,8 @@ class TestUser extends _$TestUser {
       tokenStore.refreshToken = refreshToken;
     } on DioException catch (e) {
       debugPrint(
-        '[TestUser] login failed: ${e.response?.statusCode} ${e.message}',
+        '[TestUser] login failed: ${e.requestOptions.method} ${e.requestOptions.path} '
+        '${e.response?.statusCode} ${e.response?.data}',
       );
       rethrow;
     }

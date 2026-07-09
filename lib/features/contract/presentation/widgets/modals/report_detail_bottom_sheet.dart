@@ -107,7 +107,6 @@ class ReportDetailBottomSheet extends HookConsumerWidget {
                           label: "신고 사유",
                           hintText: "신고 사유를 입력해주세요.",
                           controller: reasonCtr,
-                          maxLines: 1,
                           readOnly: true,
                         ),
                         const SizedBox(height: 8),

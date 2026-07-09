@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/widgets/app_icon.dart';
 
 class HomeFilterButton extends StatelessWidget {
   const HomeFilterButton({
@@ -25,17 +25,10 @@ class HomeFilterButton extends StatelessWidget {
               : vrc(context).secondaryColor,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Center(
-          child: SvgPicture.asset(
-            'assets/icons/filter_line.svg',
-            height: 20,
-            width: 20,
-            fit: BoxFit.contain,
-            colorFilter: ColorFilter.mode(
-              isActive ? fxc(context).textBrand! : vrc(context).iconPrimary!,
-              BlendMode.srcIn,
-            ),
-          ),
+        child: AppIcon.svg(
+          asset: 'assets/icons/filter_line.svg',
+          size: 20,
+          color: isActive ? fxc(context).textBrand! : vrc(context).iconPrimary!,
         ),
       ),
     );

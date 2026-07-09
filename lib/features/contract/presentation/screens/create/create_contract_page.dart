@@ -5,8 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/core/utils/validation.dart';
 import 'package:trana/core/widgets/contract_form_field.dart';
+import 'package:trana/core/widgets/custom_app_bar.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
@@ -75,44 +76,15 @@ class CreateContractPage extends HookConsumerWidget {
 
     const int currentStep = 2;
     const int totalStep = 3;
-
     final double progress = currentStep / totalStep;
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double barWidth = screenWidth * progress;
 
     return Scaffold(
       backgroundColor: vrc(context).background,
       resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        backgroundColor: vrc(context).background,
-        leading: InkWell(
-          onTap: () => context.go(AppRoutes.home),
-          child: Icon(
-            CooliconsIcon.chevronLeft,
-            color: vrc(context).iconPrimary,
-            size: 24,
-          ),
-        ),
-        title: Text(
-          revisionRequested ? "계약서 수정" : "새 계약 작성",
-          style: context.txt(
-            color: vrc(context).textPrimary,
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: 4,
-              width: barWidth,
-              color: fxc(context).brandColor,
-            ),
-          ),
-        ),
+      appBar: CustomAppBar.leading(
+        title: revisionRequested ? "계약서 수정" : "새 계약 작성",
+        onTapLeading: () => context.go(AppRoutes.home),
+        bottomProgress: progress,
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -212,7 +184,7 @@ class CreateContractPage extends HookConsumerWidget {
             onTap: () async {
               if (!isEnabled) return;
 
-              priceError.value = validateInt(priceCtr.text);
+              priceError.value = Validation.price(priceCtr.text);
               if (priceError.value != null) return;
 
               createVM.updateEntries(
@@ -244,12 +216,5 @@ class CreateContractPage extends HookConsumerWidget {
         ),
       ),
     );
-  }
-
-  String? validateInt(String? v) {
-    if (v == null || int.tryParse(v.replaceAll(',', '')) == null) {
-      return '금액은 숫자로 입력해주세요.';
-    }
-    return null;
   }
 }

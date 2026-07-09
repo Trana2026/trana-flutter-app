@@ -24,8 +24,8 @@ class HomeContractBanner extends ConsumerWidget {
     final homeState = ref.watch(homeContractViewModelProvider);
     final detailState = ref.watch(detailContractViewModelProvider);
     final detailVM = ref.read(detailContractViewModelProvider.notifier);
-    final count = homeState.requests.length;
-    final status = homeState.requests.first.status;
+    final count = homeState.requestedContracts.length;
+    final status = homeState.requestedContracts.first.status;
 
     ({String title, String requestType}) getTitle() {
       if (count > 1) {
@@ -51,7 +51,7 @@ class HomeContractBanner extends ConsumerWidget {
         }
 
         final success = await detailVM.loadDetail(
-          homeState.requests.first.publicCode,
+          homeState.requestedContracts.first.publicCode,
         );
         if (!context.mounted) return;
         if (!success) {
