@@ -38,7 +38,7 @@ class ContractSignDialog extends HookConsumerWidget {
       insetPadding: const EdgeInsets.symmetric(horizontal: 20),
       child: Padding(
         padding: const EdgeInsets.all(20),
-        // 경고 박스가 최대 3개까지 쌓여 소형 기기에서 넘칠 수 있어 스크롤 허용
+        // 소형 화면 고려해서 스크롤 허용
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -102,7 +102,8 @@ class ContractSignDialog extends HookConsumerWidget {
                             },
                           ),
                         ),
-                        // 서명 전 안내 문구. 획을 가리지 않도록 터치 통과
+                        // 서명 전 안내 문구
+                        // 서명이 화면에 없을때만 출력
                         if (!hasSignature.value)
                           Positioned.fill(
                             child: IgnorePointer(
@@ -117,7 +118,8 @@ class ContractSignDialog extends HookConsumerWidget {
                               ),
                             ),
                           ),
-                        // 서명이 있을 때만 노출되는 다시 그리기
+                        // 다시 그리기 버튼
+                        // 서명이 있을 때만 출력
                         if (hasSignature.value)
                           Positioned(
                             top: 8,

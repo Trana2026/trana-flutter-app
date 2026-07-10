@@ -15,7 +15,6 @@ abstract class SignContractState with _$SignContractState {
   const factory SignContractState({
     @Default('') String signatureBase64,
     @Default([]) List<int> agreedTermIds, // 동의한 약관 id 목록
-
     @Default(false) bool isLoading,
     String? error,
   }) = _SignContractState;
@@ -28,19 +27,20 @@ class SignContractViewModel extends _$SignContractViewModel {
   @override
   SignContractState build() => const SignContractState();
 
-  /// 서명 플로우 시작 전 이전 시도의 잔여 상태 초기화
+  /// 서명 플로우 시작 전에 이전 시도 초기화
   void reset() {
     state = const SignContractState();
   }
 
-  /// TRANA 거래 계약 동의 (id: 5)
+  /// 거래 계약 약관 동의
   void agreeContractAgreementTerm() {
-    // keepAlive 상태라 재시도 시 중복 누적 방지 (서버가 약관 2개 정확히 요구)
+    // 약관 정확히 2개 아니면 예외 터짐
+    // keepAlive 상태라 재시도 시 중복 누적될 수 있어서 {}(set) 사용
     final updated = {...state.agreedTermIds, 5}.toList();
     state = state.copyWith(agreedTermIds: updated);
   }
 
-  /// TRANA 전자서명 동의 (id: 6)
+  /// 전자서명 약관 동의
   void agreeElectronicSignatureTerm(bool v) {
     final updated = {...state.agreedTermIds};
     if (v) {
@@ -56,7 +56,7 @@ class SignContractViewModel extends _$SignContractViewModel {
     state = state.copyWith(signatureBase64: v);
   }
 
-  /// 수신자 서명 (성공 여부 반환)
+  /// 수신자 서명 제출 후 계약 목록 및 상세 정보 갱신
   Future<bool> receiverSign(String publicCode) async {
     state = state.copyWith(isLoading: true);
 
@@ -84,7 +84,7 @@ class SignContractViewModel extends _$SignContractViewModel {
     return result is Success;
   }
 
-  /// 생성자 최종 서명 (성공 여부 반환)
+  /// 생성자 최종 서명 제출 후 계약 목록 및 상세 정보 갱신
   Future<bool> creatorSign(String publicCode) async {
     state = state.copyWith(isLoading: true);
 
@@ -112,6 +112,7 @@ class SignContractViewModel extends _$SignContractViewModel {
     return result is Success;
   }
 
+  /// 계약 목록 및 상세 정보 갱신
   Future<void> _refresh(String? publicCode) async {
     final homeVM = ref.read(homeContractViewModelProvider.notifier);
     await homeVM.readMyContracts();

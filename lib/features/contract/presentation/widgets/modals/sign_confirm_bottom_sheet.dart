@@ -98,7 +98,6 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
             text: "사인하기",
             onTap: allChecked
                 ? () async {
-                    // 이전 시도/다른 계약의 잔여 동의·서명 상태 제거 후 시작
                     signVM.reset();
                     signVM.agreeContractAgreementTerm();
 
