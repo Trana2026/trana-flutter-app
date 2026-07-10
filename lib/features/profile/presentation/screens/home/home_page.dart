@@ -29,7 +29,7 @@ class HomePage extends HookConsumerWidget {
   final bool showGuardianDialog;
   const HomePage({super.key, this.showGuardianDialog = false});
 
-  /// 딥링크로 저장된 계약코드 소비 후 상세로 이동
+  /// 딥링크로 저장된 계약코드 사용 후 상세로 이동
   Future<void> _consumePendingContractCode(
     BuildContext context,
     WidgetRef ref,
@@ -49,7 +49,7 @@ class HomePage extends HookConsumerWidget {
     ]);
     if (!context.mounted) return;
 
-    // 본인 계약이 아니거나(403) 없는 계약(404)이면 홈에 머무름
+    // 본인 계약이 아니거나(403) 없는 계약(404)일 경우
     if (results.contains(false)) {
       final state = ref.read(detailContractViewModelProvider);
       showErrorToast(context, state.error ?? '계약을 불러오지 못했습니다.');
@@ -79,7 +79,7 @@ class HomePage extends HookConsumerWidget {
     final state = ref.watch(guardianVerificationStateProvider).value;
 
     // 앱 재개 시 me/상태 1회 갱신
-    // 백그라운드에서 보호자 인증 완료했을경우 감지하기 위해서
+    // 백그라운드에서 보호자 인증 완료했을 경우 감지하기 위함
     final lifecycle = useAppLifecycleState();
     useEffect(() {
       if (lifecycle == AppLifecycleState.resumed) {
@@ -88,7 +88,7 @@ class HomePage extends HookConsumerWidget {
       return null;
     }, [lifecycle]);
 
-    // 미발급,만료됐을경우 인증시작유도 안내팝업 1회 노출
+    // 미발급, 만료됐을경우 인증시작 유도 팝업 1회 노출
     final shouldPrompt =
         isMinor &&
         (state == GuardianVerificationState.notIssued ||
@@ -116,7 +116,7 @@ class HomePage extends HookConsumerWidget {
         final userVM = ref.read(testUserProvider.notifier);
         await userVM.getUser();
 
-        // 스토어 설치 유입 시 Install Referrer에서 초대 토큰 복구 (최초 1회)
+        // 플레이스토어 설치 유입 시 Install Referrer에서 초대 토큰 복구
         await DeferredLinkService.restoreInvitationToken();
 
         // 수신자 invitation 수락
