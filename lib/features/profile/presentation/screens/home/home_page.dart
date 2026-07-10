@@ -6,7 +6,8 @@ import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/contract/data/services/pending_invitation_token_service.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/receive_contract_view_model.dart';
-import 'package:trana/features/profile/presentation/viewmodels/test_user_provider.dart';
+// 테스트 유저 로그인
+// import 'package:trana/features/profile/presentation/viewmodels/test_user_provider.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_identity_verify_dialog.dart';
 import 'package:trana/features/guardian/domain/entities/guardian_verification_state.dart';
 import 'package:trana/features/guardian/presentation/viewmodels/guardian_verification_state_provider.dart';
@@ -66,9 +67,9 @@ class HomePage extends HookConsumerWidget {
     // ===== 계약 관련 =====
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        // TODO : 테스트 유저 로그인 (추후 삭제 예정)
-        final userVM = ref.read(testUserProvider.notifier);
-        await userVM.getUser();
+        // 테스트 유저 로그인
+        // final userVM = ref.read(testUserProvider.notifier);
+        // await userVM.getUser();
 
         // 수신자 invitation 수락
         final receiveVM = ref.read(receiveContractViewModelProvider.notifier);
