@@ -5,7 +5,9 @@ import 'package:trana/core/network/auth_token_store.dart';
 import 'package:trana/core/network/dio_client.dart';
 import 'package:trana/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:trana/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:trana/features/auth/data/repositories/pass_auth_repository_impl.dart';
 import 'package:trana/features/auth/domain/repositories/auth_repository.dart';
+import 'package:trana/features/auth/domain/repositories/pass_auth_repository.dart';
 import 'package:trana/features/auth/domain/usecases/social_sign_in_usecase.dart';
 import 'package:trana/features/contract/data/data_sources/contract_ai_extraction_data_source.dart';
 import 'package:trana/features/contract/data/data_sources/contract_attachment_data_source.dart';
@@ -63,46 +65,17 @@ EkycDetectionService ekycDetectionService(Ref ref) => EkycDetectionService();
 @Riverpod(keepAlive: true)
 FlutterSecureStorage secureStorage(Ref ref) => const FlutterSecureStorage();
 
-/// 토큰 저장소 (secure storage)
+/// 토큰 저장소
 @Riverpod(keepAlive: true)
 AuthTokenStore authTokenStore(Ref ref) =>
     AuthTokenStore(ref.read(secureStorageProvider));
 
-/// 보호자 링크 저장소 (secure storage)
+/// 대리인인증 링크 저장소
 @Riverpod(keepAlive: true)
 GuardianLinkStore guardianLinkStore(Ref ref) =>
     GuardianLinkStore(ref.read(secureStorageProvider));
 
-/// AuthRepository
-@riverpod
-AuthRepository authRepository(Ref ref) => AuthRepositoryImpl(
-  DioAuthRemoteDatasource(ref.read(dioProvider)),
-  ref.read(authTokenStoreProvider),
-);
-
-/// EkycRepository
-@riverpod
-EkycRepository ekycRepository(Ref ref) => EkycRepositoryImpl(
-  DioEkycRemoteDatasource(ref.read(dioProvider)),
-  ref.read(authTokenStoreProvider),
-);
-
-/// GuardianRepository
-@riverpod
-GuardianRepository guardianRepository(Ref ref) =>
-    GuardianRepositoryImpl(DioGuardianRemoteDatasource(ref.read(dioProvider)));
-
-/// UserRepository
-@riverpod
-UserRepository userRepository(Ref ref) =>
-    UserRepositoryImpl(DioUserRemoteDatasource(ref.read(dioProvider)));
-
-/// 소셜 로그인 UseCase
-@riverpod
-SocialSignInUseCase socialSignInUseCase(Ref ref) =>
-    SocialSignInUseCase(ref.read(authRepositoryProvider));
-
-/// S3 업로드 전용 Dio (인증 헤더 없음)
+/// S3 업로드 전용 Dio
 @Riverpod(keepAlive: true)
 Dio s3Dio(Ref ref) {
   return Dio();
@@ -174,6 +147,30 @@ ContractPdfDataSource contractPdfDataSource(Ref ref) {
 // ==================== Repository ====================
 
 @riverpod
+AuthRepository authRepository(Ref ref) => AuthRepositoryImpl(
+  DioAuthRemoteDatasource(ref.read(dioProvider)),
+  ref.read(authTokenStoreProvider),
+);
+
+@riverpod
+PassAuthRepository passAuthRepository(Ref ref) =>
+    PassAuthRepositoryImpl(ref.read(authTokenStoreProvider));
+
+@riverpod
+EkycRepository ekycRepository(Ref ref) => EkycRepositoryImpl(
+  DioEkycRemoteDatasource(ref.read(dioProvider)),
+  ref.read(authTokenStoreProvider),
+);
+
+@riverpod
+GuardianRepository guardianRepository(Ref ref) =>
+    GuardianRepositoryImpl(DioGuardianRemoteDatasource(ref.read(dioProvider)));
+
+@riverpod
+UserRepository userRepository(Ref ref) =>
+    UserRepositoryImpl(DioUserRemoteDatasource(ref.read(dioProvider)));
+
+@riverpod
 ContractRepository contractRepository(Ref ref) {
   final dataSource = ref.watch(contractDraftDataSourceProvider);
   return ContractRepositoryImpl(dataSource);
@@ -233,3 +230,9 @@ ContractPdfRepository contractPdfRepository(Ref ref) {
   final dataSource = ref.watch(contractPdfDataSourceProvider);
   return ContractPdfRepositoryImpl(dataSource);
 }
+
+// ==================== UseCase ====================
+
+@riverpod
+SocialSignInUseCase socialSignInUseCase(Ref ref) =>
+    SocialSignInUseCase(ref.read(authRepositoryProvider));
