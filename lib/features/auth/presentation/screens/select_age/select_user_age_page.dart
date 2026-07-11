@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/core/widgets/select_role_card.dart';
 
@@ -72,7 +73,7 @@ class SelectUserAgePage extends HookConsumerWidget {
             const SizedBox(height: 15),
 
             SelectRoleCard(
-              icon: Icons.person,
+              appIcon: AppIcon.data(icon: Icons.person),
               title: "성인",
               description: "본인 인증 후 직접 계약을 생성할 수 있습니다",
               isSelected: selectedIndex.value == 0,
@@ -82,7 +83,7 @@ class SelectUserAgePage extends HookConsumerWidget {
             const SizedBox(height: 10),
 
             SelectRoleCard(
-              icon: Icons.person,
+              appIcon: AppIcon.data(icon: Icons.person),
               title: "미성년자",
               description: "계약 생성 시 법정대리인의 인증 및 동의가 필요합니다",
               isSelected: selectedIndex.value == 1,

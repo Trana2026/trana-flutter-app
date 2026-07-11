@@ -1,104 +1,103 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/features/profile/presentation/viewmodels/my_page_view_model.dart';
 
-class ProfileScoreCard extends StatelessWidget {
+class ProfileScoreCard extends HookConsumerWidget {
   const ProfileScoreCard({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mypageState = ref.watch(myPageViewModelProvider);
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: vrc(context).background,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Text(
+            mypageState.name,
+            style: context.txt(
+              color: vrc(context).textPrimary,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Row(
             children: [
-              Text(
-                "트라나",
-                style: TextStyle(
-                  color: vrc(context).textPrimary,
-                  fontSize: 22,
-                  fontFamily: "PretendardBold",
-                  letterSpacing: -0.2
-                ),
+              Icon(
+                Icons.shield_rounded,
+                size: 16,
+                color: mypageState.userVerified
+                    ? fxc(context).brandColor
+                    : vrc(context).textTertiary,
               ),
-              SizedBox(height: 3),
-              Padding(
-                padding: const EdgeInsets.only(left: 0.5),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.shield_rounded,
-                      color: fxc(context).brandColor,
-                      size: 18,
-                    ),
-                    const SizedBox(width: 2),
-                    Text(
-                      "신원 인증 완료",
-                      style: TextStyle(
-                        color: fxc(context).brandColor,
-                        fontSize: 13,
-                        fontFamily: "PretendardMedium",
-                        letterSpacing: -0.2
-                      ),
-                    ),
-                  ],
+              const SizedBox(width: 4),
+              Text(
+                mypageState.userVerified ? "신원 인증 완료" : "신원 인증 미완료",
+                style: context.txt(
+                  color: mypageState.userVerified
+                      ? fxc(context).brandColor
+                      : vrc(context).textTertiary,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
             children: [
               Text(
                 "신뢰 점수",
-                style: TextStyle(
+                style: context.txt(color: vrc(context).textPrimary),
+              ),
+              const Spacer(),
+              Text(
+                mypageState.trustScore.toString(),
+                style: context.txt(
                   color: vrc(context).textPrimary,
-                  fontSize: 16,
-                  fontFamily: "PretendardMedium",
-                  letterSpacing: -0.2
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: "85",
-                      style: TextStyle(
-                        color: vrc(context).textPrimary,
-                        fontSize: 20,
-                        fontFamily: "PretendardSemiBold"
-                      ),
-                    ),
-                    TextSpan(
-                      text: " / 100",
-                      style: TextStyle(
-                        color: vrc(context).textPrimary,
-                        fontFamily: "PretendardMedium",
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
+              const SizedBox(width: 4),
+              Text(
+                "/ 100",
+                style: context.txt(color: vrc(context).textPrimary),
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 4),
           ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: 0.85,
-              backgroundColor: vrc(context).secondaryColor,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                fxc(context).brandColor!,
-              ),
-              minHeight: 8,
+            borderRadius: BorderRadius.circular(3),
+            child: Stack(
+              children: [
+                LinearProgressIndicator(
+                  value: 0,
+                  minHeight: 8,
+                  backgroundColor: vrc(context).secondaryColor!,
+                ),
+                ShaderMask(
+                  blendMode: BlendMode.srcIn,
+                  shaderCallback: (bounds) => LinearGradient(
+                    colors: [
+                      fxc(context).brandColor!,
+                      fxc(context).trustScore!,
+                    ],
+                  ).createShader(bounds),
+                  child: LinearProgressIndicator(
+                    value: mypageState.trustScore / 100,
+                    minHeight: 8,
+                    backgroundColor: Colors.transparent,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

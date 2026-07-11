@@ -9,7 +9,8 @@ class ContractField extends HookConsumerWidget {
   final String hintText;
   final TextEditingController? controller;
   final FocusNode? focusNode;
-  final int maxLines;
+  final int? minLines;
+  final int? maxLines;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final bool hasError;
@@ -21,6 +22,7 @@ class ContractField extends HookConsumerWidget {
     required this.hintText,
     this.controller,
     this.focusNode,
+    this.minLines,
     this.maxLines = 1,
     this.keyboardType,
     this.inputFormatters,
@@ -36,6 +38,7 @@ class ContractField extends HookConsumerWidget {
       onTapOutside: (_) => FocusScope.of(context).unfocus(),
       onChanged: onChanged ?? (v) {},
       controller: controller,
+      minLines: minLines ?? maxLines,
       maxLines: maxLines,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
@@ -67,7 +70,9 @@ class ContractField extends HookConsumerWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: hasError
+          borderSide: readOnly
+              ? BorderSide.none
+              : hasError
               ? BorderSide(color: fxc(context).iconDanger!)
               : BorderSide(color: fxc(context).brandColor!),
         ),

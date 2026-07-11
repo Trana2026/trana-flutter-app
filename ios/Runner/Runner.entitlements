@@ -11,7 +11,7 @@
 	<!-- iOS 딥링크 수신 -->
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:trana.app</string>
+		<string>applinks:trana.kr</string>
 	</array>
 </dict>
 </plist>
