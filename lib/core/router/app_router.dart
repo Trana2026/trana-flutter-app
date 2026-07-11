@@ -25,7 +25,17 @@ import 'package:trana/features/contract/presentation/screens/select_role/select_
 import 'package:trana/features/contract/presentation/screens/share/contract_share_page.dart';
 import 'package:trana/features/contract/presentation/screens/template/contract_template_page.dart';
 import 'package:trana/features/notification/presentation/screens/notification/notification_page.dart';
+import 'package:trana/features/profile/domain/entities/user_consent_entity.dart';
 import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
+import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/customer_service_page.dart';
+import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/device_management_page.dart';
+import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/dispute_history_contract_page.dart';
+import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/inquiry_history_page.dart';
+import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/pending_contract_page.dart';
+import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/policy_detail_page.dart';
+import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/policy_list_page.dart';
+import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/edit_profile_page.dart';
+import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/total_contract_page.dart';
 
 /// 앱 내 모든 라우트 경로 상수
 abstract class AppRoutes {
@@ -49,31 +59,35 @@ abstract class AppRoutes {
   // Home
   static const home = '/home';
 
-  // Notification
-  static const notification = '/notification';
-
   // Contract
-  static const selectRole = '/select-role';
-  static const contractTemplate = '/contract-template';
+  static const selectRole = '/contract/select-role';
+  static const contractTemplate = '/contract/template';
   static const contractCreate = '/contract/create';
   static const contractPreview = '/contract/preview';
   static const contractShare = '/contract/share';
   static const contractDetail = '/contract/detail';
-  static const biometricLock = '/biometric-lock';
-  static const requestDetail = '/request/detail';
-  static const requestList = '/request/list';
-  static const revisionRequest = '/revision/request';
-  static const finalPreview = '/final/preview';
+  static const biometricLock = '/contract/biometric-lock';
+  static const requestDetail = '/contract/request-detail';
+  static const requestList = '/contract/request-list';
+  static const revisionRequest = '/contract/revision-request';
+  static const finalPreview = '/contract/final-preview';
+
+  // MyPage
+  static const totalContract = '/my/total-contract';
+  static const pendingContract = '/my/pending-contract';
+  static const disputeContract = '/my/dispute-contract';
+  static const deviceManage = '/my/device-manage';
+  static const notification = '/my/notification';
+  static const customerService = '/my/customer-service';
+  static const inquiryHistory = '/my/inquiry-history';
+  static const policyList = '/my/policy-list';
+  static const policyDetail = '/my/policy-detail';
+  static const editProfile = '/my/edit-profile';
 }
 
 /// 앱 전체 라우팅 설정 (GoRouter)
 /// 로그아웃 시 intro로 redirect할 보호 라우트 prefix
-const _protectedPrefixes = [
-  '/home',
-  '/contract',
-  '/notification',
-  '/guardian-waiting',
-];
+const _protectedPrefixes = ['/home', '/contract', '/my', '/guardian-waiting'];
 
 /// 앱 전체 라우팅 (GoRouter). [store] 변화에 반응. 세션 만료 시 보호화면에서 intro로 redirect
 GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
@@ -163,12 +177,6 @@ GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
       builder: (context, state) => const HomePage(),
     ),
 
-    // ── Notification ──────────────────────────────────────
-    GoRoute(
-      path: AppRoutes.notification,
-      builder: (context, state) => const NotificationPage(),
-    ),
-
     // ── Contract ──────────────────────────────────────────
     GoRoute(
       path: AppRoutes.selectRole,
@@ -216,6 +224,51 @@ GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
     GoRoute(
       path: AppRoutes.finalPreview,
       builder: (context, state) => const ContractFinalPreviewPage(),
+    ),
+
+    // ── MyPage ──────────────────────────────────────
+    GoRoute(
+      path: AppRoutes.totalContract,
+      builder: (context, state) => const TotalContractPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.pendingContract,
+      builder: (context, state) => const PendingContractPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.disputeContract,
+      builder: (context, state) => const DisputeHistoryContractPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.deviceManage,
+      builder: (context, state) => const DeviceManagementPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.notification,
+      builder: (context, state) => const NotificationPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.customerService,
+      builder: (context, state) => const CustomerServicePage(),
+    ),
+    GoRoute(
+      path: AppRoutes.inquiryHistory,
+      builder: (context, state) => const InquiryHistoryPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.policyList,
+      builder: (context, state) => const PolicyListPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.policyDetail,
+      builder: (context, state) {
+        final consent = state.extra as UserConsentEntity;
+        return PolicyDetailPage(consent: consent);
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.editProfile,
+      builder: (context, state) => const EditProfilePage(),
     ),
   ],
 );

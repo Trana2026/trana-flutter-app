@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_consent_sign_dialog.dart';
 import 'package:trana/features/user/presentation/providers/me_provider.dart';
 
@@ -39,22 +39,18 @@ class HomeBottomNav extends HookConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _NavItem(
-              icon: CooliconsIcon.house01,
-              activeIcon: CooliconsIcon.house01,
-              activeIconAsset: 'assets/icons/home_fill.svg',
+              appIcon: AppIcon.data(icon: CooliconsIcon.house01),
+              activeAppIcon: AppIcon.svg(asset: 'assets/icons/home_fill.svg'),
               label: '홈',
               isActive: currentIndex == 0,
               onTap: () => onIndexChanged(0),
             ),
             const SizedBox(width: 60),
             _NavItem(
-              icon: CooliconsIcon.fileAdd,
-              iconAsset: 'assets/icons/file_add.svg',
-              activeIcon: CooliconsIcon.fileAdd,
-              activeIconAsset: 'assets/icons/file_add.svg',
+              appIcon: AppIcon.svg(asset: 'assets/icons/file_add.svg'),
               label: '계약 작성',
               isActive: currentIndex == 1,
-              onTap: () async {
+              onTap: () {
                 onIndexChanged(1);
 
                 isMinor
@@ -69,8 +65,7 @@ class HomeBottomNav extends HookConsumerWidget {
             ),
             const SizedBox(width: 60),
             _NavItem(
-              icon: CooliconsIcon.user01,
-              activeIcon: CooliconsIcon.user01,
+              appIcon: AppIcon.data(icon: CooliconsIcon.user01),
               label: '마이페이지',
               isActive: currentIndex == 2,
               onTap: () => onIndexChanged(2),
@@ -84,19 +79,15 @@ class HomeBottomNav extends HookConsumerWidget {
 
 class _NavItem extends StatelessWidget {
   const _NavItem({
-    required this.icon,
-    required this.activeIcon,
+    required this.appIcon,
+    this.activeAppIcon,
     required this.label,
     required this.isActive,
     required this.onTap,
-    this.iconAsset,
-    this.activeIconAsset,
   });
 
-  final IconData icon;
-  final String? iconAsset;
-  final IconData activeIcon;
-  final String? activeIconAsset;
+  final AppIcon appIcon;
+  final AppIcon? activeAppIcon;
   final String label;
   final bool isActive;
   final VoidCallback onTap;
@@ -116,22 +107,10 @@ class _NavItem extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              if (isActive && activeIconAsset != null)
-                SvgPicture.asset(
-                  activeIconAsset!,
-                  height: 24,
-                  width: 24,
-                  colorFilter: ColorFilter.mode(itemColor, BlendMode.srcIn),
-                )
-              else if (!isActive && iconAsset != null)
-                SvgPicture.asset(
-                  iconAsset!,
-                  height: 24,
-                  width: 24,
-                  colorFilter: ColorFilter.mode(itemColor, BlendMode.srcIn),
-                )
+              if (isActive && activeAppIcon != null)
+                activeAppIcon!.copyWith(color: itemColor)
               else
-                Icon(isActive ? activeIcon : icon, color: itemColor, size: 24),
+                appIcon.copyWith(color: itemColor),
               const SizedBox(height: 2),
               Text(
                 label,

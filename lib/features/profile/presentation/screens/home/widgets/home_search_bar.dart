@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/widgets/app_icon.dart';
 
 class HomeSearchBar extends HookConsumerWidget {
   const HomeSearchBar({super.key});
@@ -19,19 +19,12 @@ class HomeSearchBar extends HookConsumerWidget {
         style: context.txt(color: vrc(context).textPrimary),
         cursorColor: vrc(context).textPrimary,
         decoration: InputDecoration(
-          prefixIconConstraints: const BoxConstraints(
-            minWidth: 20,
-            minHeight: 20,
-          ),
+          prefixIconConstraints: const BoxConstraints.tightFor(width: 38),
           prefixIcon: Padding(
             padding: const EdgeInsets.only(left: 14),
-            child: SvgPicture.asset(
-              'assets/icons/search.svg',
-              fit: BoxFit.contain,
-              colorFilter: ColorFilter.mode(
-                vrc(context).iconDisable!,
-                BlendMode.srcIn,
-              ),
+            child: AppIcon.svg(
+              asset: 'assets/icons/search.svg',
+              color: vrc(context).iconDisable!,
             ),
           ),
           hintText: "물품명, 거래자, ID 검색...",

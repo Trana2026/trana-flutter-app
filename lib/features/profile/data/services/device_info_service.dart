@@ -1,0 +1,56 @@
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:ios_utsname_ext/extension.dart';
+import 'package:trana/features/profile/domain/enums/device_platform.dart';
+
+enum DeviceType { mobile, desktop }
+
+// enum PlatformType { android, ios, etc }
+
+class DeviceInfoService {
+  static final _plugin = DeviceInfoPlugin();
+
+  /// 기기 종류 (mobile, desktop)
+  static Future<DeviceType> getDeviceType() async {
+    if (Platform.isAndroid || Platform.isIOS) return DeviceType.mobile;
+    return DeviceType.desktop;
+  }
+
+  /// 플랫폼 (android, ios)
+  static Future<DevicePlatform> getPlatform() async {
+    if (Platform.isAndroid) return DevicePlatform.android;
+    if (Platform.isIOS) return DevicePlatform.ios;
+    return DevicePlatform.etc;
+  }
+
+  /// 모델명 (ex. iPhone 13)
+  static Future<String> getDeviceModel() async {
+    if (Platform.isAndroid) {
+      final info = await _plugin.androidInfo;
+      return info.model;
+    }
+
+    if (Platform.isIOS) {
+      final info = await _plugin.iosInfo;
+      return info.utsname.machine.iOSProductName;
+    }
+
+    if (Platform.isMacOS) {
+      final info = await _plugin.macOsInfo;
+      return info.model;
+    }
+
+    if (Platform.isWindows) {
+      final info = await _plugin.windowsInfo;
+      return info.computerName;
+    }
+
+    if (Platform.isLinux) {
+      final info = await _plugin.linuxInfo;
+      return info.prettyName;
+    }
+
+    return "Unknown";
+  }
+}

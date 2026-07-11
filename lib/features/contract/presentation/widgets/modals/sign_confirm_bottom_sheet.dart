@@ -98,6 +98,7 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
             text: "사인하기",
             onTap: allChecked
                 ? () async {
+                    signVM.reset();
                     signVM.agreeContractAgreementTerm();
 
                     bool dialogCompleted = false;

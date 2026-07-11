@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:trana/core/error/dio_error_mapper.dart';
-import 'package:trana/core/utils/enum_extension.dart';
+import 'package:trana/core/utils/enum_extensions.dart';
 import 'package:trana/core/error/failure.dart';
 import 'package:trana/core/error/result.dart';
 import 'package:trana/features/contract/data/data_sources/contract_draft_data_source.dart';

@@ -14,13 +14,32 @@ part 'home_contract_view_model.g.dart';
 
 @freezed
 abstract class HomeContractState with _$HomeContractState {
+  const HomeContractState._();
+
   const factory HomeContractState({
-    @Default([]) List<ContractEntity> myContracts,
-    @Default([]) List<ContractEntity> requests, // 배너에 표시할 계약 목록
-    ContractStatus? selectedStatus,
+    @Default([]) List<ContractEntity> myContracts, // 사용자의 계약 전체 목록
+    @Default([]) List<ContractEntity> requestedContracts, // 배너에 표시할 계약 목록
+    ContractStatus? selectedStatus, // 상태 필터 선택값
+
     @Default(false) bool isLoading,
     String? error,
   }) = _HomeContractState;
+
+  // 미체결 계약 목록 (양측서명/완료/신고/취소 상태 제외)
+  List<ContractEntity> get pendingContracts => myContracts
+      .where(
+        (c) =>
+            (c.status != ContractStatus.signed) &&
+            (c.status != ContractStatus.completed) &&
+            (c.status != ContractStatus.reported) &&
+            (c.status != ContractStatus.cancelRequested) &&
+            (c.status != ContractStatus.cancelled),
+      )
+      .toList();
+
+  // 분쟁 계약 목록 (신고 상태)
+  List<ContractEntity> get disputingContracts =>
+      myContracts.where((c) => c.status == ContractStatus.reported).toList();
 }
 
 // ==================== ViewModel ====================
@@ -36,7 +55,7 @@ class HomeContractViewModel extends _$HomeContractViewModel {
   @override
   HomeContractState build() => const HomeContractState();
 
-  /// 현재 사용자의 계약 목록 불러오기 (성공 여부 반환)
+  /// 사용자의 계약 전체 목록 불러오기 (성공 여부 반환)
   Future<bool> readMyContracts() async {
     state = state.copyWith(isLoading: true);
 
@@ -82,12 +101,12 @@ class HomeContractViewModel extends _$HomeContractViewModel {
     }
 
     contracts = await _applyDisputeStatuses(contracts);
-    final requests = await _computeRequests(contracts);
+    final requestedContracts = await _computeRequests(contracts);
 
     state = state.copyWith(
       isLoading: false,
       myContracts: contracts,
-      requests: requests,
+      requestedContracts: requestedContracts,
     );
     return true;
   }

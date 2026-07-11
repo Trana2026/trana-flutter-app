@@ -22,7 +22,9 @@ import 'package:trana/features/profile/presentation/screens/home/widgets/home_ba
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_bottom_nav.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_main_view.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/my_page.dart';
+import 'package:trana/features/profile/presentation/viewmodels/device_token_view_model.dart';
 import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
+import 'package:trana/features/profile/presentation/viewmodels/test_user_provider.dart';
 import 'package:trana/features/user/presentation/providers/me_provider.dart';
 
 class HomePage extends HookConsumerWidget {
@@ -121,15 +123,12 @@ class HomePage extends HookConsumerWidget {
 
         // 수신자 invitation 수락
         final receiveVM = ref.read(receiveContractViewModelProvider.notifier);
-        final invitationToken = await PendingInvitationTokenService.get();
-        if (invitationToken != null) {
-          final acceptSuccess = await receiveVM.accept(invitationToken);
-          if (!context.mounted) return;
-          if (!acceptSuccess) {
-            final state = ref.read(receiveContractViewModelProvider);
-            showErrorToast(context, state.error!);
-            receiveVM.clearError();
-          }
+        final acceptSuccess = await receiveVM.accept();
+        if (!context.mounted) return;
+        if (!acceptSuccess) {
+          final state = ref.read(receiveContractViewModelProvider);
+          showErrorToast(context, state.error!);
+          receiveVM.clearError();
         }
 
         // 사용자 동의 유형 정의
@@ -151,6 +150,31 @@ class HomePage extends HookConsumerWidget {
       });
       return null;
     }, []);
+
+    // ===== 기기/토큰 관련 =====
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        // 기기 정보 + FCM 토큰 저장
+        final deviceVM = ref.read(deviceTokenViewModelProvider.notifier);
+        final registerSuccess = await deviceVM.registerToken();
+        if (!context.mounted) return;
+        if (!registerSuccess) {
+          final state = ref.read(deviceTokenViewModelProvider);
+          showErrorToast(context, state.error!);
+          deviceVM.clearError();
+        }
+
+        // 기기 활성 ping
+        final success = await deviceVM.ping();
+        if (!context.mounted) return;
+        if (!success) {
+          final state = ref.read(deviceTokenViewModelProvider);
+          showErrorToast(context, state.error!);
+          deviceVM.clearError();
+        }
+      });
+      return null;
+    }, [lifecycle]);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,

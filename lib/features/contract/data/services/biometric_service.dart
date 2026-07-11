@@ -3,7 +3,7 @@ import 'package:local_auth/local_auth.dart';
 class BiometricService {
   final LocalAuthentication _auth = LocalAuthentication();
 
-  /// 생체 인증 사용 가능 여부
+  /// 생체 인증 사용가능 여부
   Future<bool> canAuthenticate() async {
     try {
       return await _auth.canCheckBiometrics || await _auth.isDeviceSupported();
@@ -20,7 +20,7 @@ class BiometricService {
         biometricOnly: true,
         persistAcrossBackgrounding: true,
       );
-    } catch (_) {
+    } catch (e) {
       return false;
     }
   }

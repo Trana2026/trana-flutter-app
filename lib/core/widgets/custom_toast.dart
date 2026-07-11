@@ -30,7 +30,7 @@ void _showOverlayToast(
 
   final entry = OverlayEntry(
     builder: (ctx) => Positioned(
-      bottom: 80,
+      bottom: 110,
       left: 20,
       right: 20,
       child: Material(

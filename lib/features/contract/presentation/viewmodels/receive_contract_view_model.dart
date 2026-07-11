@@ -30,8 +30,14 @@ class ReceiveContractViewModel extends _$ReceiveContractViewModel {
   ReceiveContractState build() => const ReceiveContractState();
 
   /// 수신자 초대 수락 (성공 여부 반환)
-  Future<bool> accept(String invitationToken) async {
+  Future<bool> accept() async {
     state = state.copyWith(isLoading: true);
+
+    final invitationToken = await PendingInvitationTokenService.get();
+    if (invitationToken == null) {
+      state = state.copyWith(isLoading: false);
+      return true;
+    }
 
     final result = await ref
         .read(contractInvitationRepositoryProvider)
