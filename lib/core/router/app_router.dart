@@ -9,6 +9,7 @@ import 'package:trana/features/auth/presentation/screens/guardian_waiting/guardi
 import 'package:trana/features/auth/presentation/screens/id_card_camera/id_card_camera_page.dart';
 import 'package:trana/features/auth/presentation/screens/id_card_confirm/id_card_confirm_page.dart';
 import 'package:trana/features/auth/presentation/screens/intro/intro_page.dart';
+import 'package:trana/features/auth/presentation/screens/pass_verify/pass_verify_page.dart';
 import 'package:trana/features/auth/presentation/screens/select_age/select_user_age_page.dart';
 import 'package:trana/features/auth/presentation/screens/social_login/social_login_page.dart';
 import 'package:trana/features/auth/presentation/screens/splash/splash_page.dart';
@@ -43,6 +44,9 @@ abstract class AppRoutes {
   static const splash = '/';
   static const intro = '/intro';
   static const selectAge = '/select-age';
+
+  // PASS onboarding (성인/미성년 통합)
+  static const passVerify = '/pass-verify';
 
   // Adult onboarding
   static const terms = '/terms';
@@ -133,6 +137,15 @@ GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
     GoRoute(
       path: AppRoutes.selectAge,
       builder: (context, state) => const SelectUserAgePage(),
+    ),
+
+    // PASS onboarding
+    GoRoute(
+      path: AppRoutes.passVerify,
+      builder: (context, state) {
+        final signupSessionId = state.extra as String;
+        return PassVerifyPage(signupSessionId: signupSessionId);
+      },
     ),
 
     // Adult onboarding

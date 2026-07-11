@@ -1,7 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <!-- PASS 본인확인 웹뷰 로드 -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <!-- camera 플러그인이 추가하는 RECORD_AUDIO 제거 (영상녹화 불필요) -->
+    <!-- camera 플러그인이 추가하는 RECORD_AUDIO 제거 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" tools:node="remove" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <!-- Android 생체인증 -->

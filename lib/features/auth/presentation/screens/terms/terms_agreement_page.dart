@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:trana/core/di/provider.dart';
+// eKYC 플로우 재도입 시 주석 해제
+// import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/ekyc/presentation/viewmodels/adult_kyc_view_model.dart';
+// eKYC 플로우 재도입 시 주석 해제
+// import 'package:trana/features/ekyc/presentation/viewmodels/adult_kyc_view_model.dart';
 import 'package:trana/features/ekyc/presentation/viewmodels/terms_view_model.dart';
 
 /// 약관 미리보기에 표시되는 항목(제목 및 요약 본문)
@@ -28,8 +30,7 @@ class TermsAgreementPage extends HookConsumerWidget {
 
     const currentStep = 1;
     const totalStep = 5;
-    // 피그마 프레임 width(375) 대비 비례 스케일
-    final s = MediaQuery.sizeOf(context).width / 375;
+    final scale = MediaQuery.sizeOf(context).width / 375;
 
     Future<void> submit() async {
       final termIds = termsAsync.value?.map((e) => e.id).toList();
@@ -50,11 +51,15 @@ class TermsAgreementPage extends HookConsumerWidget {
         return;
       }
 
-      ref
-          .read(adultKycViewModelProvider.notifier)
-          .setSignupSessionId(signupSessionId);
-      ref.read(authTokenStoreProvider); // 초기화 보장
-      context.push(AppRoutes.idCardCamera);
+      // EKYC 플로우
+      // PASS 전환으로 비활성. 재도입 시 아래 주석 해제
+      // ref
+      //     .read(adultKycViewModelProvider.notifier)
+      //     .setSignupSessionId(signupSessionId);
+      // ref.read(authTokenStoreProvider); // 초기화 보장
+      // context.push(AppRoutes.idCardCamera);
+
+      context.push(AppRoutes.passVerify, extra: signupSessionId);
     }
 
     return Scaffold(
@@ -67,7 +72,7 @@ class TermsAgreementPage extends HookConsumerWidget {
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_new,
-            size: 20 * s,
+            size: 20 * scale,
             color: vrc(context).iconPrimary,
           ),
           onPressed: () => context.pop(),
@@ -76,18 +81,18 @@ class TermsAgreementPage extends HookConsumerWidget {
           "본인 인증",
           style: TextStyle(
             color: vrc(context).textPrimary,
-            fontSize: 16 * s,
+            fontSize: 16 * scale,
             fontFamily: "PretendardBold",
-            letterSpacing: -0.16 * s,
+            letterSpacing: -0.16 * scale,
           ),
         ),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(4 * s),
+          preferredSize: Size.fromHeight(4 * scale),
           child: Align(
             alignment: Alignment.centerLeft,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
-              height: 4 * s,
+              height: 4 * scale,
               width:
                   MediaQuery.sizeOf(context).width * (currentStep / totalStep),
               color: fxc(context).brandColor,
@@ -96,7 +101,7 @@ class TermsAgreementPage extends HookConsumerWidget {
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(20 * s, 24 * s, 20 * s, 0),
+        padding: EdgeInsets.fromLTRB(20 * scale, 24 * scale, 20 * scale, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -104,32 +109,32 @@ class TermsAgreementPage extends HookConsumerWidget {
               "서비스 이용 약관",
               style: TextStyle(
                 color: vrc(context).textPrimary,
-                fontSize: 20 * s,
+                fontSize: 20 * scale,
                 fontFamily: "PretendardBold",
-                letterSpacing: -0.20 * s,
+                letterSpacing: -0.20 * scale,
               ),
             ),
-            SizedBox(height: 6 * s),
+            SizedBox(height: 6 * scale),
             Text(
               "원활한 서비스 이용을 위해 약관에 동의해 주세요.",
               style: TextStyle(
                 color: vrc(context).textSecondary,
-                fontSize: 14 * s,
+                fontSize: 14 * scale,
                 fontFamily: "PretendardMedium",
-                letterSpacing: -0.14 * s,
+                letterSpacing: -0.14 * scale,
               ),
             ),
-            SizedBox(height: 20 * s),
-            _PreviewCard(scale: s),
-            SizedBox(height: 12 * s),
+            SizedBox(height: 20 * scale),
+            _PreviewCard(scale: scale),
+            SizedBox(height: 12 * scale),
             Center(
               child: Text(
                 "전문 보기",
                 style: TextStyle(
                   color: vrc(context).textTertiary,
-                  fontSize: 12 * s,
+                  fontSize: 12 * scale,
                   fontFamily: "PretendardBold",
-                  letterSpacing: -0.12 * s,
+                  letterSpacing: -0.12 * scale,
                 ),
               ),
             ),
@@ -137,18 +142,18 @@ class TermsAgreementPage extends HookConsumerWidget {
         ),
       ),
       bottomNavigationBar: SafeArea(
-        minimum: EdgeInsets.fromLTRB(20 * s, 0, 20 * s, 16 * s),
+        minimum: EdgeInsets.fromLTRB(20 * scale, 0, 20 * scale, 16 * scale),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             _AgreeCheckRow(
-              scale: s,
+              scale: scale,
               checked: agreed.value,
               onTap: () => agreed.value = !agreed.value,
             ),
-            SizedBox(height: 10 * s),
+            SizedBox(height: 10 * scale),
             _StartButton(
-              scale: s,
+              scale: scale,
               enabled: agreed.value && !isLoading.value,
               loading: isLoading.value,
               onTap: submit,

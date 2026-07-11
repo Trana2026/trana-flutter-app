@@ -5,7 +5,6 @@ import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/features/auth/presentation/screens/intro/widgets/intro_glow_background.dart';
 
-/// 서비스 소개 및 본인 인증 시작 진입 화면
 class IntroPage extends HookConsumerWidget {
   const IntroPage({super.key});
 
@@ -13,7 +12,8 @@ class IntroPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bg = vrc(context).background!;
     // 피그마 와이어프레임 width(375) 대비 비례 스케일
-    final s = MediaQuery.sizeOf(context).width / 375;
+    // 글로우 등을 직접구현함에 따라 최대한 동일하게 화면을 구현하기위해 사용
+    final scale = MediaQuery.sizeOf(context).width / 375;
 
     return Scaffold(
       backgroundColor: bg,
@@ -22,11 +22,11 @@ class IntroPage extends HookConsumerWidget {
           // 배경 블러 글로우
           const IntroGlowBackground(),
 
-          // 에셋 일러스트 (격자 그리드 + 박스 + 점)
+          // 에셋 (격자그리드 + 박스 + 원형오브젝트)
           Positioned(
             left: 0,
             right: 0,
-            top: 118 * s,
+            top: 118 * scale,
             child: Image.asset(
               "assets/images/intro_hero.png",
               width: double.infinity,
@@ -34,12 +34,12 @@ class IntroPage extends HookConsumerWidget {
             ),
           ),
 
-          // 본문 가독성을 위한 배경색 페이드
+          // 본문 배경색 페이드
           Positioned(
             left: 0,
             right: 0,
-            top: 378 * s,
-            height: 434 * s,
+            top: 378 * scale,
+            height: 434 * scale,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -54,15 +54,15 @@ class IntroPage extends HookConsumerWidget {
 
           // 타이틀
           Positioned(
-            left: 20 * s,
-            top: 482 * s,
+            left: 20 * scale,
+            top: 482 * scale,
             child: Text.rich(
               TextSpan(
                 style: TextStyle(
-                  fontSize: 28 * s,
+                  fontSize: 28 * scale,
                   fontFamily: "PretendardBold",
                   height: 1.2,
-                  letterSpacing: -0.28 * s,
+                  letterSpacing: -0.28 * scale,
                   color: vrc(context).textPrimary,
                 ),
                 children: [
@@ -79,48 +79,27 @@ class IntroPage extends HookConsumerWidget {
 
           // 서브타이틀
           Positioned(
-            left: 20 * s,
-            top: 562 * s,
+            left: 20 * scale,
+            top: 562 * scale,
             child: Text(
               "거래 조건을 명확히 기록하고, 본인 인증을 통해\n법적 효력이 있는 계약을 체결하세요",
               style: TextStyle(
-                fontSize: 14 * s,
+                fontSize: 14 * scale,
                 fontFamily: "PretendardMedium",
                 height: 1.5,
-                letterSpacing: -0.14 * s,
+                letterSpacing: -0.14 * scale,
                 color: vrc(context).textSecondary,
               ),
             ),
           ),
 
-          // 본인 인증 시작 버튼
+          // 본인인증 시작 버튼
           Positioned(
-            left: 20 * s,
-            top: 702 * s,
-            width: 335 * s,
-            height: 52 * s,
-            child: _StartButton(scale: s),
-          ),
-
-          // 이미 계정이 있으신가요? 링크
-          Positioned(
-            left: 0,
-            right: 0,
-            top: 766 * s,
-            child: Center(
-              child: GestureDetector(
-                onTap: () => context.push(AppRoutes.socialLogin),
-                child: Text(
-                  "이미 계정이 있으신가요?",
-                  style: TextStyle(
-                    fontSize: 12 * s,
-                    fontFamily: "PretendardBold",
-                    letterSpacing: -0.12 * s,
-                    color: vrc(context).textSecondary,
-                  ),
-                ),
-              ),
-            ),
+            left: 20 * scale,
+            top: 702 * scale,
+            width: 335 * scale,
+            height: 52 * scale,
+            child: _StartButton(scale: scale),
           ),
         ],
       ),
@@ -128,7 +107,6 @@ class IntroPage extends HookConsumerWidget {
   }
 }
 
-/// 본인 인증 플로우(나이 선택)로 진입하는 메인 CTA 버튼
 class _StartButton extends StatelessWidget {
   const _StartButton({required this.scale});
 
@@ -141,7 +119,10 @@ class _StartButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(16 * scale),
       child: InkWell(
         borderRadius: BorderRadius.circular(16 * scale),
-        onTap: () => context.push(AppRoutes.selectAge),
+        // EKYC 플로우
+        // PASS 전환으로 비활성. 재도입 시 아래 주석 해제
+        // onTap: () => context.push(AppRoutes.selectAge),
+        onTap: () => context.push(AppRoutes.terms),
         child: Center(
           child: Text(
             "본인 인증하여 시작하기",

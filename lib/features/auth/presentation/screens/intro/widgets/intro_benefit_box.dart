@@ -49,7 +49,7 @@ class IntroBenefitBox extends HookConsumerWidget {
                     style: TextStyle(
                       color: vrc(context).textPrimary,
                       fontSize: 17,
-                      fontFamily: "PretendardBold"
+                      fontFamily: "PretendardBold",
                     ),
                   ),
                   Text(
@@ -57,7 +57,7 @@ class IntroBenefitBox extends HookConsumerWidget {
                     style: TextStyle(
                       color: vrc(context).textSecondary,
                       fontSize: 14,
-                      fontFamily: "PretendardRegular"
+                      fontFamily: "PretendardRegular",
                     ),
                   ),
                 ],

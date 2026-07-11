@@ -8,16 +8,166 @@ part of 'provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Dio (Interceptor를 통한 토큰 자동부착 / refresh 재시도)
+/// 보안 저장소
+
+@ProviderFor(secureStorage)
+final secureStorageProvider = SecureStorageProvider._();
+
+/// 보안 저장소
+
+final class SecureStorageProvider
+    extends
+        $FunctionalProvider<
+          FlutterSecureStorage,
+          FlutterSecureStorage,
+          FlutterSecureStorage
+        >
+    with $Provider<FlutterSecureStorage> {
+  /// 보안 저장소
+  SecureStorageProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'secureStorageProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$secureStorageHash();
+
+  @$internal
+  @override
+  $ProviderElement<FlutterSecureStorage> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  FlutterSecureStorage create(Ref ref) {
+    return secureStorage(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(FlutterSecureStorage value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<FlutterSecureStorage>(value),
+    );
+  }
+}
+
+String _$secureStorageHash() => r'a4f75721472cf77465bf47f759c90de5ca30856e';
+
+/// 인증 토큰 저장소
+
+@ProviderFor(authTokenStore)
+final authTokenStoreProvider = AuthTokenStoreProvider._();
+
+/// 인증 토큰 저장소
+
+final class AuthTokenStoreProvider
+    extends $FunctionalProvider<AuthTokenStore, AuthTokenStore, AuthTokenStore>
+    with $Provider<AuthTokenStore> {
+  /// 인증 토큰 저장소
+  AuthTokenStoreProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'authTokenStoreProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$authTokenStoreHash();
+
+  @$internal
+  @override
+  $ProviderElement<AuthTokenStore> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  AuthTokenStore create(Ref ref) {
+    return authTokenStore(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AuthTokenStore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AuthTokenStore>(value),
+    );
+  }
+}
+
+String _$authTokenStoreHash() => r'9c832bc3bddaa58855b087c358fe88f9570249b4';
+
+/// 대리인 인증 링크 저장소
+
+@ProviderFor(guardianLinkStore)
+final guardianLinkStoreProvider = GuardianLinkStoreProvider._();
+
+/// 대리인 인증 링크 저장소
+
+final class GuardianLinkStoreProvider
+    extends
+        $FunctionalProvider<
+          GuardianLinkStore,
+          GuardianLinkStore,
+          GuardianLinkStore
+        >
+    with $Provider<GuardianLinkStore> {
+  /// 대리인 인증 링크 저장소
+  GuardianLinkStoreProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'guardianLinkStoreProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$guardianLinkStoreHash();
+
+  @$internal
+  @override
+  $ProviderElement<GuardianLinkStore> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  GuardianLinkStore create(Ref ref) {
+    return guardianLinkStore(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GuardianLinkStore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GuardianLinkStore>(value),
+    );
+  }
+}
+
+String _$guardianLinkStoreHash() => r'b28b3829d4b6043e2e2c30eb4144a06436752d84';
+
+/// 인증 및 토큰 갱신 인터셉터가 적용된 Dio
 
 @ProviderFor(dio)
 final dioProvider = DioProvider._();
 
-/// Dio (Interceptor를 통한 토큰 자동부착 / refresh 재시도)
+/// 인증 및 토큰 갱신 인터셉터가 적용된 Dio
 
 final class DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
     with $Provider<Dio> {
-  /// Dio (Interceptor를 통한 토큰 자동부착 / refresh 재시도)
+  /// 인증 및 토큰 갱신 인터셉터가 적용된 Dio
   DioProvider._()
     : super(
         from: null,
@@ -51,14 +201,59 @@ final class DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
   }
 }
 
-String _$dioHash() => r'831184870f94e5154f9953c0d36bd27b52d8972f';
+String _$dioHash() => r'0c4b161246e27dfaad7d85f794fa0f4f45464ffc';
 
-/// Native SDK 감지 서비스
+/// S3 업로드 전용 Dio
+
+@ProviderFor(s3Dio)
+final s3DioProvider = S3DioProvider._();
+
+/// S3 업로드 전용 Dio
+
+final class S3DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
+    with $Provider<Dio> {
+  /// S3 업로드 전용 Dio
+  S3DioProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r's3DioProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$s3DioHash();
+
+  @$internal
+  @override
+  $ProviderElement<Dio> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Dio create(Ref ref) {
+    return s3Dio(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Dio value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Dio>(value),
+    );
+  }
+}
+
+String _$s3DioHash() => r'fa29615182f6a02e2a5e4e837dafd51b56b0080e';
+
+/// eKYC Native SDK 감지 서비스
 
 @ProviderFor(ekycDetectionService)
 final ekycDetectionServiceProvider = EkycDetectionServiceProvider._();
 
-/// Native SDK 감지 서비스
+/// eKYC Native SDK 감지 서비스
 
 final class EkycDetectionServiceProvider
     extends
@@ -68,7 +263,7 @@ final class EkycDetectionServiceProvider
           EkycDetectionService
         >
     with $Provider<EkycDetectionService> {
-  /// Native SDK 감지 서비스
+  /// eKYC Native SDK 감지 서비스
   EkycDetectionServiceProvider._()
     : super(
         from: null,
@@ -104,446 +299,7 @@ final class EkycDetectionServiceProvider
 }
 
 String _$ekycDetectionServiceHash() =>
-    r'e7430509dfc018398d7ff2f2ba9a6c50a2a21d26';
-
-/// secure storage
-
-@ProviderFor(secureStorage)
-final secureStorageProvider = SecureStorageProvider._();
-
-/// secure storage
-
-final class SecureStorageProvider
-    extends
-        $FunctionalProvider<
-          FlutterSecureStorage,
-          FlutterSecureStorage,
-          FlutterSecureStorage
-        >
-    with $Provider<FlutterSecureStorage> {
-  /// secure storage
-  SecureStorageProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'secureStorageProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$secureStorageHash();
-
-  @$internal
-  @override
-  $ProviderElement<FlutterSecureStorage> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
-
-  @override
-  FlutterSecureStorage create(Ref ref) {
-    return secureStorage(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(FlutterSecureStorage value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<FlutterSecureStorage>(value),
-    );
-  }
-}
-
-String _$secureStorageHash() => r'0cd1b80f91784467390034386f925a0be155bfbd';
-
-/// 토큰 저장소 (secure storage)
-
-@ProviderFor(authTokenStore)
-final authTokenStoreProvider = AuthTokenStoreProvider._();
-
-/// 토큰 저장소 (secure storage)
-
-final class AuthTokenStoreProvider
-    extends $FunctionalProvider<AuthTokenStore, AuthTokenStore, AuthTokenStore>
-    with $Provider<AuthTokenStore> {
-  /// 토큰 저장소 (secure storage)
-  AuthTokenStoreProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'authTokenStoreProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$authTokenStoreHash();
-
-  @$internal
-  @override
-  $ProviderElement<AuthTokenStore> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  AuthTokenStore create(Ref ref) {
-    return authTokenStore(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AuthTokenStore value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<AuthTokenStore>(value),
-    );
-  }
-}
-
-String _$authTokenStoreHash() => r'9c4027ba1ce68ab1d4b36044350523e1052294b3';
-
-/// 보호자 링크 저장소 (secure storage)
-
-@ProviderFor(guardianLinkStore)
-final guardianLinkStoreProvider = GuardianLinkStoreProvider._();
-
-/// 보호자 링크 저장소 (secure storage)
-
-final class GuardianLinkStoreProvider
-    extends
-        $FunctionalProvider<
-          GuardianLinkStore,
-          GuardianLinkStore,
-          GuardianLinkStore
-        >
-    with $Provider<GuardianLinkStore> {
-  /// 보호자 링크 저장소 (secure storage)
-  GuardianLinkStoreProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'guardianLinkStoreProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$guardianLinkStoreHash();
-
-  @$internal
-  @override
-  $ProviderElement<GuardianLinkStore> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
-
-  @override
-  GuardianLinkStore create(Ref ref) {
-    return guardianLinkStore(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(GuardianLinkStore value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<GuardianLinkStore>(value),
-    );
-  }
-}
-
-String _$guardianLinkStoreHash() => r'24906f2a6e5d83e7d94297f700cff06a0823481f';
-
-/// AuthRepository
-
-@ProviderFor(authRepository)
-final authRepositoryProvider = AuthRepositoryProvider._();
-
-/// AuthRepository
-
-final class AuthRepositoryProvider
-    extends $FunctionalProvider<AuthRepository, AuthRepository, AuthRepository>
-    with $Provider<AuthRepository> {
-  /// AuthRepository
-  AuthRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'authRepositoryProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$authRepositoryHash();
-
-  @$internal
-  @override
-  $ProviderElement<AuthRepository> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  AuthRepository create(Ref ref) {
-    return authRepository(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AuthRepository value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<AuthRepository>(value),
-    );
-  }
-}
-
-String _$authRepositoryHash() => r'dfb917a58f679e16137758260215926b7f72e970';
-
-/// EkycRepository
-
-@ProviderFor(ekycRepository)
-final ekycRepositoryProvider = EkycRepositoryProvider._();
-
-/// EkycRepository
-
-final class EkycRepositoryProvider
-    extends $FunctionalProvider<EkycRepository, EkycRepository, EkycRepository>
-    with $Provider<EkycRepository> {
-  /// EkycRepository
-  EkycRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'ekycRepositoryProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$ekycRepositoryHash();
-
-  @$internal
-  @override
-  $ProviderElement<EkycRepository> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  EkycRepository create(Ref ref) {
-    return ekycRepository(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(EkycRepository value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<EkycRepository>(value),
-    );
-  }
-}
-
-String _$ekycRepositoryHash() => r'5f758bf717614ccf1b03faf1a1651612beb86b03';
-
-/// GuardianRepository
-
-@ProviderFor(guardianRepository)
-final guardianRepositoryProvider = GuardianRepositoryProvider._();
-
-/// GuardianRepository
-
-final class GuardianRepositoryProvider
-    extends
-        $FunctionalProvider<
-          GuardianRepository,
-          GuardianRepository,
-          GuardianRepository
-        >
-    with $Provider<GuardianRepository> {
-  /// GuardianRepository
-  GuardianRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'guardianRepositoryProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$guardianRepositoryHash();
-
-  @$internal
-  @override
-  $ProviderElement<GuardianRepository> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
-
-  @override
-  GuardianRepository create(Ref ref) {
-    return guardianRepository(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(GuardianRepository value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<GuardianRepository>(value),
-    );
-  }
-}
-
-String _$guardianRepositoryHash() =>
-    r'06bd4e423053c50c64b7de0fa4356c7a0843375f';
-
-/// UserRepository
-
-@ProviderFor(userRepository)
-final userRepositoryProvider = UserRepositoryProvider._();
-
-/// UserRepository
-
-final class UserRepositoryProvider
-    extends $FunctionalProvider<UserRepository, UserRepository, UserRepository>
-    with $Provider<UserRepository> {
-  /// UserRepository
-  UserRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'userRepositoryProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$userRepositoryHash();
-
-  @$internal
-  @override
-  $ProviderElement<UserRepository> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  UserRepository create(Ref ref) {
-    return userRepository(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(UserRepository value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<UserRepository>(value),
-    );
-  }
-}
-
-String _$userRepositoryHash() => r'4c9a3ef67b2b3216a5596af640214bab0c8490f1';
-
-/// 소셜 로그인 UseCase
-
-@ProviderFor(socialSignInUseCase)
-final socialSignInUseCaseProvider = SocialSignInUseCaseProvider._();
-
-/// 소셜 로그인 UseCase
-
-final class SocialSignInUseCaseProvider
-    extends
-        $FunctionalProvider<
-          SocialSignInUseCase,
-          SocialSignInUseCase,
-          SocialSignInUseCase
-        >
-    with $Provider<SocialSignInUseCase> {
-  /// 소셜 로그인 UseCase
-  SocialSignInUseCaseProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'socialSignInUseCaseProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$socialSignInUseCaseHash();
-
-  @$internal
-  @override
-  $ProviderElement<SocialSignInUseCase> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
-
-  @override
-  SocialSignInUseCase create(Ref ref) {
-    return socialSignInUseCase(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(SocialSignInUseCase value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<SocialSignInUseCase>(value),
-    );
-  }
-}
-
-String _$socialSignInUseCaseHash() =>
-    r'7507677934c6bdc1bcdcefb68254f2323be2e05d';
-
-/// S3 업로드 전용 Dio (인증 헤더 없음)
-
-@ProviderFor(s3Dio)
-final s3DioProvider = S3DioProvider._();
-
-/// S3 업로드 전용 Dio (인증 헤더 없음)
-
-final class S3DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
-    with $Provider<Dio> {
-  /// S3 업로드 전용 Dio (인증 헤더 없음)
-  S3DioProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r's3DioProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$s3DioHash();
-
-  @$internal
-  @override
-  $ProviderElement<Dio> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  Dio create(Ref ref) {
-    return s3Dio(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Dio value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<Dio>(value),
-    );
-  }
-}
-
-String _$s3DioHash() => r'fa29615182f6a02e2a5e4e837dafd51b56b0080e';
+    r'8908f9bbc4b25a77659b805302f8db6ad7252e8f';
 
 @ProviderFor(contractDraftDataSource)
 final contractDraftDataSourceProvider = ContractDraftDataSourceProvider._();
@@ -1326,6 +1082,225 @@ final class UserPreferenceDataSourceProvider
 String _$userPreferenceDataSourceHash() =>
     r'a8d057446cb7fbe607c5f0275d94ae0d4a1e4297';
 
+@ProviderFor(authRepository)
+final authRepositoryProvider = AuthRepositoryProvider._();
+
+final class AuthRepositoryProvider
+    extends $FunctionalProvider<AuthRepository, AuthRepository, AuthRepository>
+    with $Provider<AuthRepository> {
+  AuthRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'authRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$authRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<AuthRepository> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  AuthRepository create(Ref ref) {
+    return authRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AuthRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AuthRepository>(value),
+    );
+  }
+}
+
+String _$authRepositoryHash() => r'7d8a0cf0c2711df29848880d792e7d826515c6f6';
+
+@ProviderFor(passAuthRepository)
+final passAuthRepositoryProvider = PassAuthRepositoryProvider._();
+
+final class PassAuthRepositoryProvider
+    extends
+        $FunctionalProvider<
+          PassAuthRepository,
+          PassAuthRepository,
+          PassAuthRepository
+        >
+    with $Provider<PassAuthRepository> {
+  PassAuthRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'passAuthRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$passAuthRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<PassAuthRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  PassAuthRepository create(Ref ref) {
+    return passAuthRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PassAuthRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<PassAuthRepository>(value),
+    );
+  }
+}
+
+String _$passAuthRepositoryHash() =>
+    r'65354d03f619241c1b9395a4c81c92877c1d0de9';
+
+@ProviderFor(ekycRepository)
+final ekycRepositoryProvider = EkycRepositoryProvider._();
+
+final class EkycRepositoryProvider
+    extends $FunctionalProvider<EkycRepository, EkycRepository, EkycRepository>
+    with $Provider<EkycRepository> {
+  EkycRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'ekycRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$ekycRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<EkycRepository> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  EkycRepository create(Ref ref) {
+    return ekycRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(EkycRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<EkycRepository>(value),
+    );
+  }
+}
+
+String _$ekycRepositoryHash() => r'25833c1b2065bad30ba47ef02507cc5d6eac1891';
+
+@ProviderFor(guardianRepository)
+final guardianRepositoryProvider = GuardianRepositoryProvider._();
+
+final class GuardianRepositoryProvider
+    extends
+        $FunctionalProvider<
+          GuardianRepository,
+          GuardianRepository,
+          GuardianRepository
+        >
+    with $Provider<GuardianRepository> {
+  GuardianRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'guardianRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$guardianRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<GuardianRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  GuardianRepository create(Ref ref) {
+    return guardianRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GuardianRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GuardianRepository>(value),
+    );
+  }
+}
+
+String _$guardianRepositoryHash() =>
+    r'53d0c0dc7619187e5544b8032a1ba887912c969f';
+
+@ProviderFor(userRepository)
+final userRepositoryProvider = UserRepositoryProvider._();
+
+final class UserRepositoryProvider
+    extends $FunctionalProvider<UserRepository, UserRepository, UserRepository>
+    with $Provider<UserRepository> {
+  UserRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'userRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$userRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<UserRepository> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  UserRepository create(Ref ref) {
+    return userRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(UserRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<UserRepository>(value),
+    );
+  }
+}
+
+String _$userRepositoryHash() => r'a396287575028955d8dde651538babe943491c89';
+
 @ProviderFor(contractRepository)
 final contractRepositoryProvider = ContractRepositoryProvider._();
 
@@ -2106,3 +2081,51 @@ final class UserPreferenceRepositoryProvider
 
 String _$userPreferenceRepositoryHash() =>
     r'cbc8ea0f80bfca7e5d1e67fea5d5e9ea267cdd33';
+
+@ProviderFor(socialSignInUseCase)
+final socialSignInUseCaseProvider = SocialSignInUseCaseProvider._();
+
+final class SocialSignInUseCaseProvider
+    extends
+        $FunctionalProvider<
+          SocialSignInUseCase,
+          SocialSignInUseCase,
+          SocialSignInUseCase
+        >
+    with $Provider<SocialSignInUseCase> {
+  SocialSignInUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'socialSignInUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$socialSignInUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<SocialSignInUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  SocialSignInUseCase create(Ref ref) {
+    return socialSignInUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SocialSignInUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SocialSignInUseCase>(value),
+    );
+  }
+}
+
+String _$socialSignInUseCaseHash() =>
+    r'9f9fc7176e7de2abc90c9bc3289d18c50dccd64a';
