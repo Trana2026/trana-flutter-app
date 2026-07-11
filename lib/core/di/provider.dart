@@ -71,32 +71,43 @@ import 'package:trana/features/user/domain/repositories/user_repository.dart';
 
 part 'provider.g.dart';
 
-/// Dio (Interceptor를 통한 토큰 자동부착 및 refresh 재시도)
+/// 보안 저장소
+@Riverpod(keepAlive: true)
+FlutterSecureStorage secureStorage(Ref ref) {
+  return const FlutterSecureStorage();
+}
+
+/// 인증 토큰 저장소
+@Riverpod(keepAlive: true)
+AuthTokenStore authTokenStore(Ref ref) {
+  final secureStorage = ref.read(secureStorageProvider);
+  return AuthTokenStore(secureStorage);
+}
+
+/// 대리인 인증 링크 저장소
+@Riverpod(keepAlive: true)
+GuardianLinkStore guardianLinkStore(Ref ref) {
+  final secureStorage = ref.read(secureStorageProvider);
+  return GuardianLinkStore(secureStorage);
+}
+
+/// 인증 및 토큰 갱신 인터셉터가 적용된 Dio
 @riverpod
-Dio dio(Ref ref) => createDio(ref.read(authTokenStoreProvider));
-
-/// Native SDK 감지 서비스
-@riverpod
-EkycDetectionService ekycDetectionService(Ref ref) => EkycDetectionService();
-
-/// secure storage
-@Riverpod(keepAlive: true)
-FlutterSecureStorage secureStorage(Ref ref) => const FlutterSecureStorage();
-
-/// 토큰 저장소
-@Riverpod(keepAlive: true)
-AuthTokenStore authTokenStore(Ref ref) =>
-    AuthTokenStore(ref.read(secureStorageProvider));
-
-/// 대리인인증 링크 저장소
-@Riverpod(keepAlive: true)
-GuardianLinkStore guardianLinkStore(Ref ref) =>
-    GuardianLinkStore(ref.read(secureStorageProvider));
+Dio dio(Ref ref) {
+  final authTokenStore = ref.read(authTokenStoreProvider);
+  return createDio(authTokenStore);
+}
 
 /// S3 업로드 전용 Dio
 @Riverpod(keepAlive: true)
 Dio s3Dio(Ref ref) {
   return Dio();
+}
+
+/// eKYC Native SDK 감지 서비스
+@riverpod
+EkycDetectionService ekycDetectionService(Ref ref) {
+  return EkycDetectionService();
 }
 
 // ==================== DataSource ====================
@@ -201,28 +212,36 @@ UserPreferenceDataSource userPreferenceDataSource(Ref ref) {
 // ==================== Repository ====================
 
 @riverpod
-AuthRepository authRepository(Ref ref) => AuthRepositoryImpl(
-  DioAuthRemoteDatasource(ref.read(dioProvider)),
-  ref.read(authTokenStoreProvider),
-);
+AuthRepository authRepository(Ref ref) {
+  final dio = ref.read(dioProvider);
+  final authTokenStore = ref.read(authTokenStoreProvider);
+  return AuthRepositoryImpl(DioAuthRemoteDatasource(dio), authTokenStore);
+}
 
 @riverpod
-PassAuthRepository passAuthRepository(Ref ref) =>
-    PassAuthRepositoryImpl(ref.read(authTokenStoreProvider));
+PassAuthRepository passAuthRepository(Ref ref) {
+  final authTokenStore = ref.read(authTokenStoreProvider);
+  return PassAuthRepositoryImpl(authTokenStore);
+}
 
 @riverpod
-EkycRepository ekycRepository(Ref ref) => EkycRepositoryImpl(
-  DioEkycRemoteDatasource(ref.read(dioProvider)),
-  ref.read(authTokenStoreProvider),
-);
+EkycRepository ekycRepository(Ref ref) {
+  final dio = ref.read(dioProvider);
+  final authTokenStore = ref.read(authTokenStoreProvider);
+  return EkycRepositoryImpl(DioEkycRemoteDatasource(dio), authTokenStore);
+}
 
 @riverpod
-GuardianRepository guardianRepository(Ref ref) =>
-    GuardianRepositoryImpl(DioGuardianRemoteDatasource(ref.read(dioProvider)));
+GuardianRepository guardianRepository(Ref ref) {
+  final dio = ref.read(dioProvider);
+  return GuardianRepositoryImpl(DioGuardianRemoteDatasource(dio));
+}
 
 @riverpod
-UserRepository userRepository(Ref ref) =>
-    UserRepositoryImpl(DioUserRemoteDatasource(ref.read(dioProvider)));
+UserRepository userRepository(Ref ref) {
+  final dio = ref.read(dioProvider);
+  return UserRepositoryImpl(DioUserRemoteDatasource(dio));
+}
 
 @riverpod
 ContractRepository contractRepository(Ref ref) {
@@ -324,5 +343,7 @@ UserPreferenceRepository userPreferenceRepository(Ref ref) {
 // ==================== UseCase ====================
 
 @riverpod
-SocialSignInUseCase socialSignInUseCase(Ref ref) =>
-    SocialSignInUseCase(ref.read(authRepositoryProvider));
+SocialSignInUseCase socialSignInUseCase(Ref ref) {
+  final authRepository = ref.read(authRepositoryProvider);
+  return SocialSignInUseCase(authRepository);
+}
