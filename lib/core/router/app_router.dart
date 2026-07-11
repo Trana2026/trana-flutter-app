@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:trana/core/network/auth_token_store.dart';
+import 'package:trana/features/contract/data/services/pending_contract_code_service.dart';
 import 'package:trana/features/contract/data/services/pending_invitation_token_service.dart';
 import 'package:trana/features/auth/presentation/screens/auth_complete/auth_complete_page.dart';
 import 'package:trana/features/auth/presentation/screens/face_verify/face_verify_page.dart';
@@ -107,6 +108,15 @@ GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
         // 초대 토큰 Shared 저장
         await PendingInvitationTokenService.save(token);
         // splash 페이지로 라우트
+        return AppRoutes.splash;
+      },
+    ),
+    GoRoute(
+      path: '/contracts/:publicCode',
+      redirect: (context, state) async {
+        final publicCode = state.pathParameters['publicCode']!;
+        // 계약코드 SharedPreference 저장 후 홈 진입 시 상세로 이동
+        await PendingContractCodeService.save(publicCode);
         return AppRoutes.splash;
       },
     ),
