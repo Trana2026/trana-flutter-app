@@ -92,7 +92,7 @@ class VariableColors extends ThemeExtension<VariableColors> {
     iconSecondary: iconSecondary ?? this.iconSecondary,
     iconDisable: iconDisable ?? this.iconDisable,
     borderPrimary: borderPrimary ?? this.borderPrimary,
-    borderSecondary: borderSecondary ?? this.borderSecondary
+    borderSecondary: borderSecondary ?? this.borderSecondary,
   );
 
   /// 두 VariableColors 사이를 선형 보간
@@ -112,7 +112,7 @@ class VariableColors extends ThemeExtension<VariableColors> {
       iconSecondary: Color.lerp(iconSecondary, other.iconSecondary, t),
       iconDisable: Color.lerp(iconDisable, other.iconDisable, t),
       borderPrimary: Color.lerp(borderPrimary, other.borderPrimary, t),
-      borderSecondary: Color.lerp(borderSecondary, other.borderSecondary, t)
+      borderSecondary: Color.lerp(borderSecondary, other.borderSecondary, t),
     );
   }
 }

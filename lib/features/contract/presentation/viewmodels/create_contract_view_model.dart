@@ -94,6 +94,11 @@ class CreateContractViewModel extends _$CreateContractViewModel {
     );
   }
 
+  /// 새 계약 작성 상태 초기화
+  void startNew() {
+    state = CreateContractState(consentType: state.consentType);
+  }
+
   /// Draft 생성 (성공 여부 반환)
   Future<bool> createDraft() async {
     // 새 계약 시작 시 이전 계약 데이터 초기화

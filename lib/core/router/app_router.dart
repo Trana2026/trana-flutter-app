@@ -93,14 +93,19 @@ abstract class AppRoutes {
 /// 로그아웃 시 intro로 redirect할 보호 라우트 prefix
 const _protectedPrefixes = ['/home', '/contract', '/my', '/guardian-waiting'];
 
+/// 경로 단위 하나를 기준으로 보호 라우트 판정
+/// (/contract는 /contract/*만 매칭, 딥링크 /contracts/*는 제외)
+bool _isProtected(String loc) =>
+    _protectedPrefixes.any((p) => loc == p || loc.startsWith('$p/'));
+
 /// 앱 전체 라우팅 (GoRouter). [store] 변화에 반응. 세션 만료 시 보호화면에서 intro로 redirect
 GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
   initialLocation: AppRoutes.splash,
   refreshListenable: store,
   redirect: (context, state) {
-    final loc = state.matchedLocation;
-    final isProtected = _protectedPrefixes.any((p) => loc.startsWith(p));
-    if (!store.isLoggedIn && isProtected) return AppRoutes.intro;
+    if (!store.isLoggedIn && _isProtected(state.matchedLocation)) {
+      return AppRoutes.intro;
+    }
     return null;
   },
   routes: [

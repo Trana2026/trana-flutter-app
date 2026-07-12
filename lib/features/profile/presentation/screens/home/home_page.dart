@@ -7,14 +7,13 @@ import 'package:go_router/go_router.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/features/contract/data/services/deferred_link_service.dart';
 import 'package:trana/features/contract/data/services/pending_contract_code_service.dart';
-import 'package:trana/features/contract/data/services/pending_invitation_token_service.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/viewmodels/cancel_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/receive_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/report_contract_view_model.dart';
-import 'package:trana/features/profile/presentation/viewmodels/test_user_provider.dart';
+// import 'package:trana/features/profile/presentation/viewmodels/test_user_provider.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_identity_verify_dialog.dart';
 import 'package:trana/features/guardian/domain/entities/guardian_verification_state.dart';
 import 'package:trana/features/guardian/presentation/viewmodels/guardian_verification_state_provider.dart';
@@ -24,7 +23,6 @@ import 'package:trana/features/profile/presentation/screens/home/widgets/home_ma
 import 'package:trana/features/profile/presentation/screens/my_page/my_page.dart';
 import 'package:trana/features/profile/presentation/viewmodels/device_token_view_model.dart';
 import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
-import 'package:trana/features/profile/presentation/viewmodels/test_user_provider.dart';
 import 'package:trana/features/user/presentation/providers/me_provider.dart';
 
 class HomePage extends HookConsumerWidget {
@@ -114,7 +112,7 @@ class HomePage extends HookConsumerWidget {
     // ===== 계약 관련 =====
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        // 테스트 유저 로그인
+        // 테스트 유저 로그인 (사용 시 주석 해제)
         // final userVM = ref.read(testUserProvider.notifier);
         // await userVM.getUser();
 

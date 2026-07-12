@@ -6,6 +6,7 @@ import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/widgets/app_icon.dart';
+import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_consent_sign_dialog.dart';
 import 'package:trana/features/user/presentation/providers/me_provider.dart';
 
@@ -52,6 +53,9 @@ class HomeBottomNav extends HookConsumerWidget {
               isActive: currentIndex == 1,
               onTap: () {
                 onIndexChanged(1);
+
+                // 새 계약 작성 상태 초기화
+                ref.read(createContractViewModelProvider.notifier).startNew();
 
                 isMinor
                     ? showDialog(

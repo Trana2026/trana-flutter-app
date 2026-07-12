@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trana/core/di/provider.dart';
+import 'package:trana/core/error/failure.dart';
 import 'package:trana/core/error/result.dart';
 import 'package:trana/features/contract/data/services/pending_invitation_token_service.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
@@ -57,6 +58,11 @@ class ReceiveContractViewModel extends _$ReceiveContractViewModel {
     if (result is Success) {
       await PendingInvitationTokenService.clear();
       await _refresh(state.publicCode);
+    }
+
+    // 영구 실패한 초대 토큰 폐기
+    if (result case Failure(:final failure) when failure.isPermanent) {
+      await PendingInvitationTokenService.clear();
     }
 
     return result is Success;

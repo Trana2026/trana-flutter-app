@@ -30,7 +30,7 @@ class UserInquiryDataSource {
   /// GET 1:1 문의 상세 조회 (본인)
   Future<UserInquiryDto> getInquiryDetail(String publicCode) async {
     final response = await dio.get<Map<String, dynamic>>(
-      '/v1/users/me/inquiries/{$publicCode}',
+      '/v1/users/me/inquiries/$publicCode',
     );
     return UserInquiryDto.fromJson(response.data!);
   }

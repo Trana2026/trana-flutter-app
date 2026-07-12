@@ -34,7 +34,7 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <!-- Android App Links 수신 (초대/계약 상세 딥링크) -->
+            <!-- Android 앱링크 수신 (초대/계약 상세 딥링크) -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -43,6 +43,15 @@
                     android:scheme="https"
                     android:host="trana.kr"
                     android:pathPrefix="/contracts"/>
+            </intent-filter>
+            <!-- 커스텀 스킴 수신 (알림톡 앱링크) -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="trana"
+                    android:host="trana.kr"/>
             </intent-filter>
         </activity>
         <!-- 카카오 로그인 리다이렉트 핸들러 (scheme = kakao + 네이티브앱키) -->

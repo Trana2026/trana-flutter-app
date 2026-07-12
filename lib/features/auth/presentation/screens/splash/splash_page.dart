@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/features/auth/presentation/screens/splash/widgets/splash_glow_background.dart';
-import 'package:trana/features/profile/presentation/viewmodels/test_user_provider.dart';
+// import 'package:trana/features/profile/presentation/viewmodels/test_user_provider.dart';
 
 /// 앱 시작 시 3초 후 인트로 화면으로 자동 이동하는 스플래시 화면
 class SplashPage extends HookConsumerWidget {
@@ -17,13 +17,13 @@ class SplashPage extends HookConsumerWidget {
       Future.delayed(const Duration(seconds: 3), () async {
         if (!context.mounted) return;
 
-        // TODO : 테스트 유저 자동 로그인 (추후 삭제 예정)
-        try {
-          await ref.read(testUserProvider.notifier).getUser();
-        } catch (_) {
-          // dev 토큰 발급 실패 시 기존 흐름(intro)으로 진행
-        }
-        if (!context.mounted) return;
+        // 테스트 유저 자동 로그인 (사용 시 주석 해제)
+        // try {
+        //   await ref.read(testUserProvider.notifier).getUser();
+        // } catch (_) {
+        //   // dev 토큰 발급 실패 시 기존 흐름(intro)으로 진행
+        // }
+        // if (!context.mounted) return;
 
         // 재진입. 저장된 토큰 있으면 홈으로, 없으면 intro로 이동
         final token = ref.read(authTokenStoreProvider).accessToken;

@@ -17,6 +17,13 @@ class Validation {
     return null;
   }
 
+  /// 전화번호 비교용 정규화 (숫자만 추출, 국가번호 82 → 0)
+  static String normalizePhone(String v) {
+    final digits = v.replaceAll(RegExp(r'\D'), '');
+    if (digits.startsWith('82')) return '0${digits.substring(2)}';
+    return digits;
+  }
+
   /// 이메일 형식 검증
   static String? email(String? v) {
     if (v == null || v.trim().isEmpty) {
