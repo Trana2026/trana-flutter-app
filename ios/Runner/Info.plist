@@ -35,16 +35,16 @@
 		<string>kakaolink</string>
 		<string>kakaotalk</string>
 	</array>
-	<!-- 카카오 로그인 리다이렉트 스킴 (kakao + 네이티브앱키) -->
 	<key>CFBundleURLTypes</key>
 	<array>
-		<!-- 알림톡 앱링크 버튼 linkIos 커스텀 스킴 -->
+		<!-- 커스텀 스킴 (알림톡 딥링크) -->
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>trana</string>
 			</array>
 		</dict>
+		<!-- 카카오 로그인 리다이렉트 스킴 (kakao + 네이티브앱키) -->
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
