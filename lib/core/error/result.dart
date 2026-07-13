@@ -26,23 +26,22 @@ extension ResultExtension<T> on Result<T> {
 
   /// 성공 시 데이터, 실패 시 null
   T? get dataOrNull => switch (this) {
-        Success(:final data) => data,
-        Failure() => null,
-      };
+    Success(:final data) => data,
+    Failure() => null,
+  };
 
   /// 실패 시 AppFailure, 성공 시 null
   AppFailure? get failureOrNull => switch (this) {
-        Success() => null,
-        Failure(:final failure) => failure,
-      };
+    Success() => null,
+    Failure(:final failure) => failure,
+  };
 
   /// 성공/실패에 따라 콜백을 분기 실행
   R fold<R>({
     required R Function(T data) onSuccess,
     required R Function(AppFailure failure) onFailure,
-  }) =>
-      switch (this) {
-        Success(:final data) => onSuccess(data),
-        Failure(:final failure) => onFailure(failure),
-      };
+  }) => switch (this) {
+    Success(:final data) => onSuccess(data),
+    Failure(:final failure) => onFailure(failure),
+  };
 }

@@ -93,12 +93,16 @@ class SessionExpiredFailure extends AppFailure {
 
 /// 이미 인증된 신분증 (IDENTITY_409_DUPLICATE) — 로그인 유도
 class DuplicateIdentityFailure extends AppFailure {
-  const DuplicateIdentityFailure([super.message = '이미 인증된 신분증입니다. 로그인을 시도해주세요.']);
+  const DuplicateIdentityFailure([
+    super.message = '이미 인증된 신분증입니다. 로그인을 시도해주세요.',
+  ]);
 }
 
 /// 보호자 링크 만료/없음/이미 사용됨 (GUARDIAN_410_LINK / GUARDIAN_404_LINK)
 class GuardianLinkExpiredFailure extends AppFailure {
-  const GuardianLinkExpiredFailure([super.message = '보호자 인증 링크가 만료되었습니다. 새 링크를 요청해주세요.']);
+  const GuardianLinkExpiredFailure([
+    super.message = '보호자 인증 링크가 만료되었습니다. 새 링크를 요청해주세요.',
+  ]);
 }
 
 // ── 미성년 플로우(소셜 + 보호자) 관련 실패 ──────────────────────
@@ -115,5 +119,13 @@ class GuardianAlreadyVerifiedFailure extends AppFailure {
 
 /// 보호자 링크 발급 대상이 미성년자가 아님 (GUARDIAN_403_NOT_MINOR)
 class GuardianNotMinorFailure extends AppFailure {
-  const GuardianNotMinorFailure([super.message = '미성년자 계정만 보호자 인증을 요청할 수 있습니다.']);
+  const GuardianNotMinorFailure([
+    super.message = '미성년자 계정만 보호자 인증을 요청할 수 있습니다.',
+  ]);
+}
+
+/// 재시도해도 결과가 바뀌지 않는 실패 (pending 데이터 폐기 판단용)
+extension AppFailureRetry on AppFailure {
+  bool get isPermanent =>
+      this is NotFoundFailure || this is GoneFailure || this is ConflictFailure;
 }

@@ -10,7 +10,8 @@ abstract class UserMeDto with _$UserMeDto {
   const factory UserMeDto({
     required String publicCode,
     String? email,
-    String? nickname,
+    String? name,
+    String? phone,
     required String status,
     String? ageGroup,
     String? guardianVerifiedAt,
@@ -25,7 +26,8 @@ extension UserMeDtoMapper on UserMeDto {
   UserMeEntity toEntity() => UserMeEntity(
     publicCode: publicCode,
     email: email,
-    nickname: nickname,
+    name: name,
+    phone: phone,
     status: status,
     ageGroup: ageGroup,
     guardianVerifiedAt: guardianVerifiedAt != null

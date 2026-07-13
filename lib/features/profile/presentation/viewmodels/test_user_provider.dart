@@ -16,7 +16,7 @@ abstract class TestUserEntity with _$TestUserEntity {
   const factory TestUserEntity({
     required String publicCode,
     required String email,
-    required String nickname,
+    required String name,
     required String status,
     AgeGroup? ageGroup,
     DateTime? guardianVerifiedAt,
@@ -75,7 +75,7 @@ class TestUser extends _$TestUser {
       state = TestUserEntity(
         publicCode: (me['publicCode'] as String?) ?? '',
         email: (me['email'] as String?) ?? '',
-        nickname: (me['nickname'] as String?) ?? '',
+        name: (me['name'] as String?) ?? '',
         status: (me['status'] as String?) ?? '',
         ageGroup: me['ageGroup'] != null
             ? AgeGroup.values.fromApiString(me['ageGroup'] as String)

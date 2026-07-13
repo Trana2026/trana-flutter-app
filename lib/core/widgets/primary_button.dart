@@ -17,7 +17,7 @@ class PrimaryButton extends HookConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) { 
+  Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
       width: double.infinity,
       height: 54,
@@ -35,7 +35,7 @@ class PrimaryButton extends HookConsumerWidget {
           text,
           style: const TextStyle(
             fontSize: 17,
-            fontFamily: "PretendardSemiBold"
+            fontFamily: "PretendardSemiBold",
           ),
         ),
       ),
