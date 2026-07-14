@@ -8,6 +8,9 @@ abstract class DeviceTokenEntity with _$DeviceTokenEntity {
   const factory DeviceTokenEntity({
     required int id,
     required DevicePlatform platform,
+    String? deviceModel,
+    String? osVersion,
+    String? appVersion,
     required DateTime createdAt,
     DateTime? lastUsedAt,
   }) = _DeviceTokenEntity;

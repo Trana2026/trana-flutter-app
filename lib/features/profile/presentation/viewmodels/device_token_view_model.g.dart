@@ -42,7 +42,7 @@ final class DeviceTokenViewModelProvider
 }
 
 String _$deviceTokenViewModelHash() =>
-    r'97d9efd7e21781e0d9c98dcff4f7ab3037050e92';
+    r'a2ea97daece31090ca2d0f6c4dc367b7d59b9094';
 
 abstract class _$DeviceTokenViewModel extends $Notifier<DeviceTokenState> {
   DeviceTokenState build();

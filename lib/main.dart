@@ -8,11 +8,15 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/features/notification/data/services/notification_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
+
+  // 알림 권한 요청 + 포그라운드 표시 설정 (Firebase 초기화 직후 1회)
+  await NotificationService.initialize();
 
   // .env 로드 (pubspec assets 번들). 이후 dotenv.env['KEY']로 접근
   await dotenv.load(fileName: '.env');

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DeviceTokenEntity {
 
- int get id; DevicePlatform get platform; DateTime get createdAt; DateTime? get lastUsedAt;
+ int get id; DevicePlatform get platform; String? get deviceModel; String? get osVersion; String? get appVersion; DateTime get createdAt; DateTime? get lastUsedAt;
 /// Create a copy of DeviceTokenEntity
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $DeviceTokenEntityCopyWith<DeviceTokenEntity> get copyWith => _$DeviceTokenEntit
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DeviceTokenEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.lastUsedAt, lastUsedAt) || other.lastUsedAt == lastUsedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DeviceTokenEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.deviceModel, deviceModel) || other.deviceModel == deviceModel)&&(identical(other.osVersion, osVersion) || other.osVersion == osVersion)&&(identical(other.appVersion, appVersion) || other.appVersion == appVersion)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.lastUsedAt, lastUsedAt) || other.lastUsedAt == lastUsedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,platform,createdAt,lastUsedAt);
+int get hashCode => Object.hash(runtimeType,id,platform,deviceModel,osVersion,appVersion,createdAt,lastUsedAt);
 
 @override
 String toString() {
-  return 'DeviceTokenEntity(id: $id, platform: $platform, createdAt: $createdAt, lastUsedAt: $lastUsedAt)';
+  return 'DeviceTokenEntity(id: $id, platform: $platform, deviceModel: $deviceModel, osVersion: $osVersion, appVersion: $appVersion, createdAt: $createdAt, lastUsedAt: $lastUsedAt)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $DeviceTokenEntityCopyWith<$Res>  {
   factory $DeviceTokenEntityCopyWith(DeviceTokenEntity value, $Res Function(DeviceTokenEntity) _then) = _$DeviceTokenEntityCopyWithImpl;
 @useResult
 $Res call({
- int id, DevicePlatform platform, DateTime createdAt, DateTime? lastUsedAt
+ int id, DevicePlatform platform, String? deviceModel, String? osVersion, String? appVersion, DateTime createdAt, DateTime? lastUsedAt
 });
 
 
@@ -62,11 +62,14 @@ class _$DeviceTokenEntityCopyWithImpl<$Res>
 
 /// Create a copy of DeviceTokenEntity
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? platform = null,Object? createdAt = null,Object? lastUsedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? platform = null,Object? deviceModel = freezed,Object? osVersion = freezed,Object? appVersion = freezed,Object? createdAt = null,Object? lastUsedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,platform: null == platform ? _self.platform : platform // ignore: cast_nullable_to_non_nullable
-as DevicePlatform,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DevicePlatform,deviceModel: freezed == deviceModel ? _self.deviceModel : deviceModel // ignore: cast_nullable_to_non_nullable
+as String?,osVersion: freezed == osVersion ? _self.osVersion : osVersion // ignore: cast_nullable_to_non_nullable
+as String?,appVersion: freezed == appVersion ? _self.appVersion : appVersion // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,lastUsedAt: freezed == lastUsedAt ? _self.lastUsedAt : lastUsedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
@@ -153,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  DevicePlatform platform,  DateTime createdAt,  DateTime? lastUsedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  DevicePlatform platform,  String? deviceModel,  String? osVersion,  String? appVersion,  DateTime createdAt,  DateTime? lastUsedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DeviceTokenEntity() when $default != null:
-return $default(_that.id,_that.platform,_that.createdAt,_that.lastUsedAt);case _:
+return $default(_that.id,_that.platform,_that.deviceModel,_that.osVersion,_that.appVersion,_that.createdAt,_that.lastUsedAt);case _:
   return orElse();
 
 }
@@ -174,10 +177,10 @@ return $default(_that.id,_that.platform,_that.createdAt,_that.lastUsedAt);case _
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  DevicePlatform platform,  DateTime createdAt,  DateTime? lastUsedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  DevicePlatform platform,  String? deviceModel,  String? osVersion,  String? appVersion,  DateTime createdAt,  DateTime? lastUsedAt)  $default,) {final _that = this;
 switch (_that) {
 case _DeviceTokenEntity():
-return $default(_that.id,_that.platform,_that.createdAt,_that.lastUsedAt);case _:
+return $default(_that.id,_that.platform,_that.deviceModel,_that.osVersion,_that.appVersion,_that.createdAt,_that.lastUsedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +197,10 @@ return $default(_that.id,_that.platform,_that.createdAt,_that.lastUsedAt);case _
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  DevicePlatform platform,  DateTime createdAt,  DateTime? lastUsedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  DevicePlatform platform,  String? deviceModel,  String? osVersion,  String? appVersion,  DateTime createdAt,  DateTime? lastUsedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _DeviceTokenEntity() when $default != null:
-return $default(_that.id,_that.platform,_that.createdAt,_that.lastUsedAt);case _:
+return $default(_that.id,_that.platform,_that.deviceModel,_that.osVersion,_that.appVersion,_that.createdAt,_that.lastUsedAt);case _:
   return null;
 
 }
@@ -209,11 +212,14 @@ return $default(_that.id,_that.platform,_that.createdAt,_that.lastUsedAt);case _
 
 
 class _DeviceTokenEntity implements DeviceTokenEntity {
-  const _DeviceTokenEntity({required this.id, required this.platform, required this.createdAt, this.lastUsedAt});
+  const _DeviceTokenEntity({required this.id, required this.platform, this.deviceModel, this.osVersion, this.appVersion, required this.createdAt, this.lastUsedAt});
   
 
 @override final  int id;
 @override final  DevicePlatform platform;
+@override final  String? deviceModel;
+@override final  String? osVersion;
+@override final  String? appVersion;
 @override final  DateTime createdAt;
 @override final  DateTime? lastUsedAt;
 
@@ -227,16 +233,16 @@ _$DeviceTokenEntityCopyWith<_DeviceTokenEntity> get copyWith => __$DeviceTokenEn
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeviceTokenEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.lastUsedAt, lastUsedAt) || other.lastUsedAt == lastUsedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeviceTokenEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.deviceModel, deviceModel) || other.deviceModel == deviceModel)&&(identical(other.osVersion, osVersion) || other.osVersion == osVersion)&&(identical(other.appVersion, appVersion) || other.appVersion == appVersion)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.lastUsedAt, lastUsedAt) || other.lastUsedAt == lastUsedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,platform,createdAt,lastUsedAt);
+int get hashCode => Object.hash(runtimeType,id,platform,deviceModel,osVersion,appVersion,createdAt,lastUsedAt);
 
 @override
 String toString() {
-  return 'DeviceTokenEntity(id: $id, platform: $platform, createdAt: $createdAt, lastUsedAt: $lastUsedAt)';
+  return 'DeviceTokenEntity(id: $id, platform: $platform, deviceModel: $deviceModel, osVersion: $osVersion, appVersion: $appVersion, createdAt: $createdAt, lastUsedAt: $lastUsedAt)';
 }
 
 
@@ -247,7 +253,7 @@ abstract mixin class _$DeviceTokenEntityCopyWith<$Res> implements $DeviceTokenEn
   factory _$DeviceTokenEntityCopyWith(_DeviceTokenEntity value, $Res Function(_DeviceTokenEntity) _then) = __$DeviceTokenEntityCopyWithImpl;
 @override @useResult
 $Res call({
- int id, DevicePlatform platform, DateTime createdAt, DateTime? lastUsedAt
+ int id, DevicePlatform platform, String? deviceModel, String? osVersion, String? appVersion, DateTime createdAt, DateTime? lastUsedAt
 });
 
 
@@ -264,11 +270,14 @@ class __$DeviceTokenEntityCopyWithImpl<$Res>
 
 /// Create a copy of DeviceTokenEntity
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? platform = null,Object? createdAt = null,Object? lastUsedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? platform = null,Object? deviceModel = freezed,Object? osVersion = freezed,Object? appVersion = freezed,Object? createdAt = null,Object? lastUsedAt = freezed,}) {
   return _then(_DeviceTokenEntity(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,platform: null == platform ? _self.platform : platform // ignore: cast_nullable_to_non_nullable
-as DevicePlatform,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DevicePlatform,deviceModel: freezed == deviceModel ? _self.deviceModel : deviceModel // ignore: cast_nullable_to_non_nullable
+as String?,osVersion: freezed == osVersion ? _self.osVersion : osVersion // ignore: cast_nullable_to_non_nullable
+as String?,appVersion: freezed == appVersion ? _self.appVersion : appVersion // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,lastUsedAt: freezed == lastUsedAt ? _self.lastUsedAt : lastUsedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));

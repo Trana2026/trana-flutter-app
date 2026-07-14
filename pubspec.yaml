@@ -75,8 +75,10 @@ dependencies:
   play_install_referrer: ^0.5.0
   webview_flutter: ^4.14.1
   device_info_plus: ^12.4.0
+  package_info_plus: ^9.0.0
   ios_utsname_ext: ^2.3.0
   dropdown_button2: ^3.1.0
+  flutter_local_notifications: ^22.0.1
 
 dev_dependencies:
   flutter_test:

@@ -842,6 +842,54 @@ final class DeviceTokenDataSourceProvider
 String _$deviceTokenDataSourceHash() =>
     r'5cc420f63cd6d45804df0149013e423a243898ea';
 
+@ProviderFor(notificationDataSource)
+final notificationDataSourceProvider = NotificationDataSourceProvider._();
+
+final class NotificationDataSourceProvider
+    extends
+        $FunctionalProvider<
+          NotificationDataSource,
+          NotificationDataSource,
+          NotificationDataSource
+        >
+    with $Provider<NotificationDataSource> {
+  NotificationDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'notificationDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$notificationDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<NotificationDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  NotificationDataSource create(Ref ref) {
+    return notificationDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(NotificationDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<NotificationDataSource>(value),
+    );
+  }
+}
+
+String _$notificationDataSourceHash() =>
+    r'801834306c61780acb855f0e2e48e0d60ca7d78a';
+
 @ProviderFor(trustScoreDataSource)
 final trustScoreDataSourceProvider = TrustScoreDataSourceProvider._();
 
@@ -1841,6 +1889,54 @@ final class DeviceTokenRepositoryProvider
 
 String _$deviceTokenRepositoryHash() =>
     r'6870e92d025c7b345e98a3d4010034c563f0cc3f';
+
+@ProviderFor(notificationRepository)
+final notificationRepositoryProvider = NotificationRepositoryProvider._();
+
+final class NotificationRepositoryProvider
+    extends
+        $FunctionalProvider<
+          NotificationRepository,
+          NotificationRepository,
+          NotificationRepository
+        >
+    with $Provider<NotificationRepository> {
+  NotificationRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'notificationRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$notificationRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<NotificationRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  NotificationRepository create(Ref ref) {
+    return notificationRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(NotificationRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<NotificationRepository>(value),
+    );
+  }
+}
+
+String _$notificationRepositoryHash() =>
+    r'1a3278c215fde1e182197c1aa8857d9bc46b91b2';
 
 @ProviderFor(trustScoreRepository)
 final trustScoreRepositoryProvider = TrustScoreRepositoryProvider._();

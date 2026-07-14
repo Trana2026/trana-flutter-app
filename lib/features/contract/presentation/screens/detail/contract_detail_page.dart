@@ -28,6 +28,7 @@ class ContractDetailPage extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: vrc(context).background,
       appBar: AppBar(
+        backgroundColor: vrc(context).background,
         toolbarHeight: 35,
         leading: GestureDetector(
           behavior: HitTestBehavior.opaque,

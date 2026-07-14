@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserInfoEntity {
 
- String get publicCode; String? get email; UserStatus get status; AgeGroup get ageGroup; DateTime? get guardianVerifiedAt; String? get name; String? get birthDate; Gender get gender; String? get phone; bool get pushEnabled;
+ String get publicCode; String? get email; UserStatus get status; AgeGroup get ageGroup; DateTime? get guardianVerifiedAt; String? get name; String? get birthDate; Gender? get gender; String? get phone; bool get pushEnabled;
 /// Create a copy of UserInfoEntity
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $UserInfoEntityCopyWith<$Res>  {
   factory $UserInfoEntityCopyWith(UserInfoEntity value, $Res Function(UserInfoEntity) _then) = _$UserInfoEntityCopyWithImpl;
 @useResult
 $Res call({
- String publicCode, String? email, UserStatus status, AgeGroup ageGroup, DateTime? guardianVerifiedAt, String? name, String? birthDate, Gender gender, String? phone, bool pushEnabled
+ String publicCode, String? email, UserStatus status, AgeGroup ageGroup, DateTime? guardianVerifiedAt, String? name, String? birthDate, Gender? gender, String? phone, bool pushEnabled
 });
 
 
@@ -62,7 +62,7 @@ class _$UserInfoEntityCopyWithImpl<$Res>
 
 /// Create a copy of UserInfoEntity
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? publicCode = null,Object? email = freezed,Object? status = null,Object? ageGroup = null,Object? guardianVerifiedAt = freezed,Object? name = freezed,Object? birthDate = freezed,Object? gender = null,Object? phone = freezed,Object? pushEnabled = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? publicCode = null,Object? email = freezed,Object? status = null,Object? ageGroup = null,Object? guardianVerifiedAt = freezed,Object? name = freezed,Object? birthDate = freezed,Object? gender = freezed,Object? phone = freezed,Object? pushEnabled = null,}) {
   return _then(_self.copyWith(
 publicCode: null == publicCode ? _self.publicCode : publicCode // ignore: cast_nullable_to_non_nullable
 as String,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
@@ -71,8 +71,8 @@ as UserStatus,ageGroup: null == ageGroup ? _self.ageGroup : ageGroup // ignore: 
 as AgeGroup,guardianVerifiedAt: freezed == guardianVerifiedAt ? _self.guardianVerifiedAt : guardianVerifiedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,birthDate: freezed == birthDate ? _self.birthDate : birthDate // ignore: cast_nullable_to_non_nullable
-as String?,gender: null == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
-as Gender,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as String?,gender: freezed == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
+as Gender?,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String?,pushEnabled: null == pushEnabled ? _self.pushEnabled : pushEnabled // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
@@ -159,7 +159,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String publicCode,  String? email,  UserStatus status,  AgeGroup ageGroup,  DateTime? guardianVerifiedAt,  String? name,  String? birthDate,  Gender gender,  String? phone,  bool pushEnabled)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String publicCode,  String? email,  UserStatus status,  AgeGroup ageGroup,  DateTime? guardianVerifiedAt,  String? name,  String? birthDate,  Gender? gender,  String? phone,  bool pushEnabled)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserInfoEntity() when $default != null:
 return $default(_that.publicCode,_that.email,_that.status,_that.ageGroup,_that.guardianVerifiedAt,_that.name,_that.birthDate,_that.gender,_that.phone,_that.pushEnabled);case _:
@@ -180,7 +180,7 @@ return $default(_that.publicCode,_that.email,_that.status,_that.ageGroup,_that.g
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String publicCode,  String? email,  UserStatus status,  AgeGroup ageGroup,  DateTime? guardianVerifiedAt,  String? name,  String? birthDate,  Gender gender,  String? phone,  bool pushEnabled)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String publicCode,  String? email,  UserStatus status,  AgeGroup ageGroup,  DateTime? guardianVerifiedAt,  String? name,  String? birthDate,  Gender? gender,  String? phone,  bool pushEnabled)  $default,) {final _that = this;
 switch (_that) {
 case _UserInfoEntity():
 return $default(_that.publicCode,_that.email,_that.status,_that.ageGroup,_that.guardianVerifiedAt,_that.name,_that.birthDate,_that.gender,_that.phone,_that.pushEnabled);case _:
@@ -200,7 +200,7 @@ return $default(_that.publicCode,_that.email,_that.status,_that.ageGroup,_that.g
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String publicCode,  String? email,  UserStatus status,  AgeGroup ageGroup,  DateTime? guardianVerifiedAt,  String? name,  String? birthDate,  Gender gender,  String? phone,  bool pushEnabled)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String publicCode,  String? email,  UserStatus status,  AgeGroup ageGroup,  DateTime? guardianVerifiedAt,  String? name,  String? birthDate,  Gender? gender,  String? phone,  bool pushEnabled)?  $default,) {final _that = this;
 switch (_that) {
 case _UserInfoEntity() when $default != null:
 return $default(_that.publicCode,_that.email,_that.status,_that.ageGroup,_that.guardianVerifiedAt,_that.name,_that.birthDate,_that.gender,_that.phone,_that.pushEnabled);case _:
@@ -215,7 +215,7 @@ return $default(_that.publicCode,_that.email,_that.status,_that.ageGroup,_that.g
 
 
 class _UserInfoEntity implements UserInfoEntity {
-  const _UserInfoEntity({required this.publicCode, this.email, required this.status, required this.ageGroup, this.guardianVerifiedAt, this.name, this.birthDate, required this.gender, this.phone, required this.pushEnabled});
+  const _UserInfoEntity({required this.publicCode, this.email, required this.status, required this.ageGroup, this.guardianVerifiedAt, this.name, this.birthDate, this.gender, this.phone, required this.pushEnabled});
   
 
 @override final  String publicCode;
@@ -225,7 +225,7 @@ class _UserInfoEntity implements UserInfoEntity {
 @override final  DateTime? guardianVerifiedAt;
 @override final  String? name;
 @override final  String? birthDate;
-@override final  Gender gender;
+@override final  Gender? gender;
 @override final  String? phone;
 @override final  bool pushEnabled;
 
@@ -259,7 +259,7 @@ abstract mixin class _$UserInfoEntityCopyWith<$Res> implements $UserInfoEntityCo
   factory _$UserInfoEntityCopyWith(_UserInfoEntity value, $Res Function(_UserInfoEntity) _then) = __$UserInfoEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String publicCode, String? email, UserStatus status, AgeGroup ageGroup, DateTime? guardianVerifiedAt, String? name, String? birthDate, Gender gender, String? phone, bool pushEnabled
+ String publicCode, String? email, UserStatus status, AgeGroup ageGroup, DateTime? guardianVerifiedAt, String? name, String? birthDate, Gender? gender, String? phone, bool pushEnabled
 });
 
 
@@ -276,7 +276,7 @@ class __$UserInfoEntityCopyWithImpl<$Res>
 
 /// Create a copy of UserInfoEntity
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? publicCode = null,Object? email = freezed,Object? status = null,Object? ageGroup = null,Object? guardianVerifiedAt = freezed,Object? name = freezed,Object? birthDate = freezed,Object? gender = null,Object? phone = freezed,Object? pushEnabled = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? publicCode = null,Object? email = freezed,Object? status = null,Object? ageGroup = null,Object? guardianVerifiedAt = freezed,Object? name = freezed,Object? birthDate = freezed,Object? gender = freezed,Object? phone = freezed,Object? pushEnabled = null,}) {
   return _then(_UserInfoEntity(
 publicCode: null == publicCode ? _self.publicCode : publicCode // ignore: cast_nullable_to_non_nullable
 as String,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
@@ -285,8 +285,8 @@ as UserStatus,ageGroup: null == ageGroup ? _self.ageGroup : ageGroup // ignore: 
 as AgeGroup,guardianVerifiedAt: freezed == guardianVerifiedAt ? _self.guardianVerifiedAt : guardianVerifiedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,birthDate: freezed == birthDate ? _self.birthDate : birthDate // ignore: cast_nullable_to_non_nullable
-as String?,gender: null == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
-as Gender,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as String?,gender: freezed == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
+as Gender?,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String?,pushEnabled: null == pushEnabled ? _self.pushEnabled : pushEnabled // ignore: cast_nullable_to_non_nullable
 as bool,
   ));

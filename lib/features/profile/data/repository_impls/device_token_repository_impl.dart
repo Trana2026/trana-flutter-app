@@ -30,16 +30,22 @@ class DeviceTokenRepositoryImpl implements DeviceTokenRepository {
   }
 
   @override
-  Future<Result<void>> createDeviceToken({
+  Future<Result<int>> createDeviceToken({
     required String token,
     required DevicePlatform platform,
+    String? deviceModel,
+    String? osVersion,
+    String? appVersion,
   }) async {
     try {
-      await dataSource.postDeviceToken(
+      final result = await dataSource.postDeviceToken(
         token: token,
         platform: platform.apiString,
+        deviceModel: deviceModel,
+        osVersion: osVersion,
+        appVersion: appVersion,
       );
-      return Success(null);
+      return Success(result);
     } on DioException catch (e) {
       if (e.response?.statusCode == 400) {
         return const Failure(ForbiddenFailure('입력값 검증에 실패했습니다.'));

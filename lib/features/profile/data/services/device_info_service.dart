@@ -2,20 +2,19 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:ios_utsname_ext/extension.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:trana/features/profile/domain/enums/device_platform.dart';
 
-enum DeviceType { mobile, desktop }
-
-// enum PlatformType { android, ios, etc }
+// enum DeviceType { mobile, desktop }
 
 class DeviceInfoService {
   static final _plugin = DeviceInfoPlugin();
 
   /// 기기 종류 (mobile, desktop)
-  static Future<DeviceType> getDeviceType() async {
-    if (Platform.isAndroid || Platform.isIOS) return DeviceType.mobile;
-    return DeviceType.desktop;
-  }
+  // static Future<DeviceType> getDeviceType() async {
+  //   if (Platform.isAndroid || Platform.isIOS) return DeviceType.mobile;
+  //   return DeviceType.desktop;
+  // }
 
   /// 플랫폼 (android, ios)
   static Future<DevicePlatform> getPlatform() async {
@@ -52,5 +51,26 @@ class DeviceInfoService {
     }
 
     return "Unknown";
+  }
+
+  /// OS 버전 (ex. iOS 18.2, Android 14)
+  static Future<String> getOsVersion() async {
+    if (Platform.isAndroid) {
+      final info = await _plugin.androidInfo;
+      return 'Android ${info.version.release}';
+    }
+
+    if (Platform.isIOS) {
+      final info = await _plugin.iosInfo;
+      return '${info.systemName} ${info.systemVersion}';
+    }
+
+    return Platform.operatingSystemVersion;
+  }
+
+  /// 앱 버전 (ex. 1.2.3+45)
+  static Future<String> getAppVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    return '${info.version}+${info.buildNumber}';
   }
 }

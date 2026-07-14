@@ -9,6 +9,8 @@
     <!-- Android 생체인증 -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <!-- 푸시 알림 표시 (Android 13+ 런타임 권한) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application
         android:label="trana"
         android:name="${applicationName}"
@@ -67,6 +69,14 @@
                     android:scheme="kakaobf4826557d38ff1dd9c22375c3e6a74e" />
             </intent-filter>
         </activity>
+
+        <!-- FCM 알림이 백그라운드/종료 상태에서 표시될 때 사용할 기본 채널/아이콘 -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="high_importance_channel" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher" />
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

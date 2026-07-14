@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/features/auth/presentation/screens/splash/widgets/splash_glow_background.dart';
-// import 'package:trana/features/profile/presentation/viewmodels/test_user_provider.dart';
+// import 'package:trana/core/dev/test_user_provider.dart';
 
 /// 앱 시작 시 3초 후 인트로 화면으로 자동 이동하는 스플래시 화면
 class SplashPage extends HookConsumerWidget {

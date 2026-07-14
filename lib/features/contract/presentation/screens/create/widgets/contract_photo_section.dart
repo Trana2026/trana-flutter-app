@@ -24,9 +24,6 @@ class ContractPhotoSection extends HookConsumerWidget {
     final existingUrls = createState.existingAttachmentUrls;
 
     final isEditMode = existingUrls.isNotEmpty;
-    // final revisionRequested = createState.revisionRequested;
-    // final disabled = revisionRequested || isEditMode;
-
     final length = isEditMode
         ? existingUrls.length
         : selectedImages.value.length;

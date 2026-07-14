@@ -8,6 +8,9 @@ extension DeviceTokenMapper on DeviceTokenDto {
     return DeviceTokenEntity(
       id: id,
       platform: DevicePlatform.values.fromApiString(platform),
+      deviceModel: deviceModel,
+      osVersion: osVersion,
+      appVersion: appVersion,
       createdAt: createdAt,
       lastUsedAt: lastUsedAt,
     );

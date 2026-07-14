@@ -47,6 +47,9 @@ import 'package:trana/features/guardian/data/datasources/dio_guardian_remote_dat
 import 'package:trana/features/guardian/data/guardian_link_store.dart';
 import 'package:trana/features/guardian/data/repositories/guardian_repository_impl.dart';
 import 'package:trana/features/guardian/domain/repositories/guardian_repository.dart';
+import 'package:trana/features/notification/data/datasources/notification_data_source.dart';
+import 'package:trana/features/notification/data/repository_impls/notification_repository_impl.dart';
+import 'package:trana/features/notification/domain/repositories/notification_repository.dart';
 import 'package:trana/features/profile/data/datasources/device_token_data_source.dart';
 import 'package:trana/features/profile/data/datasources/trust_score_data_source.dart';
 import 'package:trana/features/profile/data/datasources/user_consent_data_source.dart';
@@ -180,6 +183,12 @@ DeviceTokenDataSource deviceTokenDataSource(Ref ref) {
 }
 
 @riverpod
+NotificationDataSource notificationDataSource(Ref ref) {
+  final dio = ref.watch(dioProvider);
+  return NotificationDataSource(dio);
+}
+
+@riverpod
 TrustScoreDataSource trustScoreDataSource(Ref ref) {
   final dio = ref.watch(dioProvider);
   return TrustScoreDataSource(dio);
@@ -308,6 +317,12 @@ ContractPdfRepository contractPdfRepository(Ref ref) {
 DeviceTokenRepository deviceTokenRepository(Ref ref) {
   final dataSource = ref.watch(deviceTokenDataSourceProvider);
   return DeviceTokenRepositoryImpl(dataSource);
+}
+
+@riverpod
+NotificationRepository notificationRepository(Ref ref) {
+  final dataSource = ref.watch(notificationDataSourceProvider);
+  return NotificationRepositoryImpl(dataSource);
 }
 
 @riverpod

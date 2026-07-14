@@ -8,6 +8,9 @@ abstract class DeviceTokenDto with _$DeviceTokenDto {
   const factory DeviceTokenDto({
     required int id,
     required String platform,
+    String? deviceModel,
+    String? osVersion,
+    String? appVersion,
     required DateTime createdAt,
     DateTime? lastUsedAt,
   }) = _DeviceTokenDto;

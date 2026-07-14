@@ -10,6 +10,9 @@ _DeviceTokenDto _$DeviceTokenDtoFromJson(Map<String, dynamic> json) =>
     _DeviceTokenDto(
       id: (json['id'] as num).toInt(),
       platform: json['platform'] as String,
+      deviceModel: json['deviceModel'] as String?,
+      osVersion: json['osVersion'] as String?,
+      appVersion: json['appVersion'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
       lastUsedAt: json['lastUsedAt'] == null
           ? null
@@ -20,6 +23,9 @@ Map<String, dynamic> _$DeviceTokenDtoToJson(_DeviceTokenDto instance) =>
     <String, dynamic>{
       'id': instance.id,
       'platform': instance.platform,
+      'deviceModel': instance.deviceModel,
+      'osVersion': instance.osVersion,
+      'appVersion': instance.appVersion,
       'createdAt': instance.createdAt.toIso8601String(),
       'lastUsedAt': instance.lastUsedAt?.toIso8601String(),
     };

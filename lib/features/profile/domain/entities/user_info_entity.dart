@@ -15,7 +15,7 @@ abstract class UserInfoEntity with _$UserInfoEntity {
     DateTime? guardianVerifiedAt,
     String? name,
     String? birthDate,
-    required Gender gender,
+    Gender? gender,
     String? phone,
     required bool pushEnabled,
   }) = _UserInfoEntity;

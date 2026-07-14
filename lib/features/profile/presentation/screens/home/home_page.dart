@@ -13,7 +13,7 @@ import 'package:trana/features/contract/presentation/viewmodels/create_contract_
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/receive_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/report_contract_view_model.dart';
-// import 'package:trana/features/profile/presentation/viewmodels/test_user_provider.dart';
+import 'package:trana/core/dev/test_user_provider.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_identity_verify_dialog.dart';
 import 'package:trana/features/guardian/domain/entities/guardian_verification_state.dart';
 import 'package:trana/features/guardian/presentation/viewmodels/guardian_verification_state_provider.dart';
@@ -113,8 +113,9 @@ class HomePage extends HookConsumerWidget {
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         // 테스트 유저 로그인 (사용 시 주석 해제)
-        // final userVM = ref.read(testUserProvider.notifier);
-        // await userVM.getUser();
+        // TODO : 비활성화
+        final userVM = ref.read(testUserProvider.notifier);
+        await userVM.getUser();
 
         // 플레이스토어 설치 유입 시 Install Referrer에서 초대 토큰 복구
         await DeferredLinkService.restoreInvitationToken();
@@ -152,8 +153,11 @@ class HomePage extends HookConsumerWidget {
     // ===== 기기/토큰 관련 =====
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        // 기기 정보 + FCM 토큰 저장
+        // FCM 토큰 + 현재 기기 정보 식별
         final deviceVM = ref.read(deviceTokenViewModelProvider.notifier);
+        await deviceVM.getDeviceInfo();
+
+        // FCM 토큰 저장
         final registerSuccess = await deviceVM.registerToken();
         if (!context.mounted) return;
         if (!registerSuccess) {
