@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:trana/core/widgets/custom_loading_bar.dart';
 
-/// [isPending]이 true일 때 [child] 위에 살짝 딤 처리된 오버레이 + 로딩 인디케이터를 띄우고
-/// 터치를 차단한다. 비동기 작업(버튼 탭 등) 진행 중 화면 전체를 잠글 때 사용.
+/// [isPending] == true 일 때 [child] 위에 뜨는 로딩 오버레이.
+/// 딤 처리 + 로딩 인디케이터 + 터치 차단
+/// 비동기 작업(버튼 탭 등) 진행 중 중복 호출 방지 및 UX 개선 위해 사용
 class PendingOverlay extends StatelessWidget {
   const PendingOverlay({
     super.key,
@@ -19,8 +20,10 @@ class PendingOverlay extends StatelessWidget {
       children: [
         child,
         if (isPending) ...[
-          const ModalBarrier(dismissible: false, color: Colors.black26),
-          const CustomLoadingBar(),
+          const Positioned.fill(
+            child: ModalBarrier(dismissible: false, color: Colors.black26),
+          ),
+          const Positioned.fill(child: CustomLoadingBar()),
         ],
       ],
     );

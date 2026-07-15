@@ -42,7 +42,7 @@ final class RevisionRequestViewModelProvider
 }
 
 String _$revisionRequestViewModelHash() =>
-    r'07883ee906ff14f65f964dfcdf0a5632004a36c1';
+    r'875e3f986573a18731a5f5c26c23b2c9d4221c5c';
 
 abstract class _$RevisionRequestViewModel
     extends $Notifier<RevisionRequestState> {

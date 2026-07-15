@@ -8,6 +8,7 @@ import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_app_bar.dart';
+import 'package:trana/core/widgets/custom_bottom_sheet.dart';
 import 'package:trana/core/widgets/custom_loading_bar.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
@@ -24,6 +25,7 @@ class ContractRequestDetailPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final detailState = ref.watch(detailContractViewModelProvider);
     final receiveVM = ref.read(receiveContractViewModelProvider.notifier);
+
     final isPending = useRef(false);
 
     return Scaffold(
@@ -75,22 +77,21 @@ class ContractRequestDetailPage extends HookConsumerWidget {
           child: Row(
             children: [
               Expanded(
-                child: PrimaryButton(
+                child: PrimaryButton.mono(
                   text: "수정하기",
                   onTap: () => context.push(AppRoutes.revisionRequest),
-                  backgroundColor: vrc(context).secondaryColor!,
-                  foregroundColor: vrc(context).textPrimary!,
                 ),
               ),
               const SizedBox(width: 9),
               Expanded(
-                child: PrimaryButton(
+                child: PrimaryButton.brand(
                   text: "서명하기",
                   onTap: () async {
                     if (isPending.value) return;
                     isPending.value = true;
                     try {
                       if (detailState.myRole == Role.seller) {
+                        // 수신자(판매자) 보증 기간 변경 (판매자일 때)
                         final success = await receiveVM.receiverWarranty(
                           detailState.publicCode,
                         );
@@ -105,29 +106,14 @@ class ContractRequestDetailPage extends HookConsumerWidget {
                         }
                       }
 
-                      bool signFlowProceeded = false;
-                      final router = GoRouter.of(context);
-                      await showModalBottomSheet<void>(
-                        context: context,
-                        barrierColor: const Color(
-                          0xFF000000,
-                        ).withValues(alpha: 0.75),
-                        backgroundColor: Colors.transparent,
-                        isScrollControlled: true,
-                        builder: (_) => SignConfirmBottomSheet(
-                          parentContext: context,
-                          onProceed: () => signFlowProceeded = true,
-                        ),
+                      await showCustomBottomSheet<void>(
+                        context,
+                        SignConfirmBottomSheet(parentContext: context),
                       );
-                      if (!signFlowProceeded && context.mounted) {
-                        router.go(AppRoutes.home);
-                      }
                     } finally {
                       isPending.value = false;
                     }
                   },
-                  backgroundColor: fxc(context).brandColor!,
-                  foregroundColor: fxc(context).textBrand!,
                 ),
               ),
             ],

@@ -23,7 +23,7 @@ class SelectUserRolePage extends HookConsumerWidget {
     final createVM = ref.read(createContractViewModelProvider.notifier);
 
     final selectedIndex = useState<int?>(null);
-    final bool isEnabled = selectedIndex.value != null;
+    final isEnabled = selectedIndex.value != null;
     final isPending = useState(false);
 
     const int currentStep = 1;
@@ -81,13 +81,14 @@ class SelectUserRolePage extends HookConsumerWidget {
           top: false,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: PrimaryButton(
+            child: PrimaryButton.brand(
               text: "다음",
+              disabled: !isEnabled,
               onTap: () async {
-                if (!isEnabled) return;
                 if (isPending.value) return;
                 isPending.value = true;
                 try {
+                  // 계약 생성
                   if (createState.publicCode == null) {
                     final success = await createVM.createDraft();
                     if (!context.mounted) return;
@@ -99,6 +100,7 @@ class SelectUserRolePage extends HookConsumerWidget {
                     }
                   }
 
+                  // 역할 업데이트
                   final success = await createVM.updateDraftRole(
                     selectedIndex.value,
                   );
@@ -115,12 +117,6 @@ class SelectUserRolePage extends HookConsumerWidget {
                   isPending.value = false;
                 }
               },
-              backgroundColor: isEnabled
-                  ? fxc(context).brandColor!
-                  : vrc(context).disableColor!,
-              foregroundColor: isEnabled
-                  ? fxc(context).textBrand!
-                  : vrc(context).textDisable!,
             ),
           ),
         ),

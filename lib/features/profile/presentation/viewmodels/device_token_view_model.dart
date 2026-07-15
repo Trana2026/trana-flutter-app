@@ -22,7 +22,6 @@ abstract class DeviceTokenState with _$DeviceTokenState {
     @Default('') String appVersion, // 앱 버전
     @Default(-1) int currentDeviceId, // 현재 사용중인 device id
 
-    @Default(false) bool isLoading,
     String? error,
   }) = _DeviceTokenState;
 }
@@ -36,8 +35,6 @@ class DeviceTokenViewModel extends _$DeviceTokenViewModel {
 
   /// 현재 기기 정보 식별
   Future<void> getDeviceInfo() async {
-    state = state.copyWith(isLoading: true);
-
     final (token, platform, deviceModel, osVersion, appVersion) = await (
       FcmService.getFcmToken(),
       DeviceInfoService.getPlatform(),
@@ -47,7 +44,6 @@ class DeviceTokenViewModel extends _$DeviceTokenViewModel {
     ).wait;
 
     state = state.copyWith(
-      isLoading: false,
       token: token,
       platform: platform,
       deviceModel: deviceModel,
@@ -63,8 +59,6 @@ class DeviceTokenViewModel extends _$DeviceTokenViewModel {
       return false;
     }
 
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(deviceTokenRepositoryProvider)
         .createDeviceToken(
@@ -76,14 +70,8 @@ class DeviceTokenViewModel extends _$DeviceTokenViewModel {
         );
 
     state = switch (result) {
-      Success(:final data) => state.copyWith(
-        isLoading: false,
-        currentDeviceId: data,
-      ),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
+      Success(:final data) => state.copyWith(currentDeviceId: data),
+      Failure(:final failure) => state.copyWith(error: failure.message),
     };
 
     return result is Success;
@@ -96,19 +84,13 @@ class DeviceTokenViewModel extends _$DeviceTokenViewModel {
       return false;
     }
 
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(deviceTokenRepositoryProvider)
         .deleteDeviceToken(state.token);
 
-    state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
+    if (result case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+    }
 
     await _refresh();
 
@@ -122,19 +104,13 @@ class DeviceTokenViewModel extends _$DeviceTokenViewModel {
       return false;
     }
 
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(deviceTokenRepositoryProvider)
         .ping(state.token);
 
-    state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
+    if (result case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+    }
 
     await _refresh();
 
@@ -143,17 +119,11 @@ class DeviceTokenViewModel extends _$DeviceTokenViewModel {
 
   /// 기기 강제 해제 (성공 여부 반환)
   Future<bool> disconnect(int id) async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref.read(deviceTokenRepositoryProvider).disconnect(id);
 
-    state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
+    if (result case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+    }
 
     await _refresh();
 

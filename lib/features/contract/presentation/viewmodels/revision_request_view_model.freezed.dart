@@ -15,8 +15,9 @@ T _$identity<T>(T value) => value;
 mixin _$RevisionRequestState {
 
  Set<String> get selectedFields;// 선택한 영역 이름 목록
+// 각 영역 수정 요청 내용
  String get deliveryTypeReason; String get tradingPlatformReason; String get titleReason; String get priceReason; String get conditionSummaryReason; String get conditionDetailsReason; bool get revisionDone;// 수정 완료 여부
- bool get isLoading; String? get error;
+ String? get error;
 /// Create a copy of RevisionRequestState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,16 +28,16 @@ $RevisionRequestStateCopyWith<RevisionRequestState> get copyWith => _$RevisionRe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RevisionRequestState&&const DeepCollectionEquality().equals(other.selectedFields, selectedFields)&&(identical(other.deliveryTypeReason, deliveryTypeReason) || other.deliveryTypeReason == deliveryTypeReason)&&(identical(other.tradingPlatformReason, tradingPlatformReason) || other.tradingPlatformReason == tradingPlatformReason)&&(identical(other.titleReason, titleReason) || other.titleReason == titleReason)&&(identical(other.priceReason, priceReason) || other.priceReason == priceReason)&&(identical(other.conditionSummaryReason, conditionSummaryReason) || other.conditionSummaryReason == conditionSummaryReason)&&(identical(other.conditionDetailsReason, conditionDetailsReason) || other.conditionDetailsReason == conditionDetailsReason)&&(identical(other.revisionDone, revisionDone) || other.revisionDone == revisionDone)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RevisionRequestState&&const DeepCollectionEquality().equals(other.selectedFields, selectedFields)&&(identical(other.deliveryTypeReason, deliveryTypeReason) || other.deliveryTypeReason == deliveryTypeReason)&&(identical(other.tradingPlatformReason, tradingPlatformReason) || other.tradingPlatformReason == tradingPlatformReason)&&(identical(other.titleReason, titleReason) || other.titleReason == titleReason)&&(identical(other.priceReason, priceReason) || other.priceReason == priceReason)&&(identical(other.conditionSummaryReason, conditionSummaryReason) || other.conditionSummaryReason == conditionSummaryReason)&&(identical(other.conditionDetailsReason, conditionDetailsReason) || other.conditionDetailsReason == conditionDetailsReason)&&(identical(other.revisionDone, revisionDone) || other.revisionDone == revisionDone)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(selectedFields),deliveryTypeReason,tradingPlatformReason,titleReason,priceReason,conditionSummaryReason,conditionDetailsReason,revisionDone,isLoading,error);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(selectedFields),deliveryTypeReason,tradingPlatformReason,titleReason,priceReason,conditionSummaryReason,conditionDetailsReason,revisionDone,error);
 
 @override
 String toString() {
-  return 'RevisionRequestState(selectedFields: $selectedFields, deliveryTypeReason: $deliveryTypeReason, tradingPlatformReason: $tradingPlatformReason, titleReason: $titleReason, priceReason: $priceReason, conditionSummaryReason: $conditionSummaryReason, conditionDetailsReason: $conditionDetailsReason, revisionDone: $revisionDone, isLoading: $isLoading, error: $error)';
+  return 'RevisionRequestState(selectedFields: $selectedFields, deliveryTypeReason: $deliveryTypeReason, tradingPlatformReason: $tradingPlatformReason, titleReason: $titleReason, priceReason: $priceReason, conditionSummaryReason: $conditionSummaryReason, conditionDetailsReason: $conditionDetailsReason, revisionDone: $revisionDone, error: $error)';
 }
 
 
@@ -47,7 +48,7 @@ abstract mixin class $RevisionRequestStateCopyWith<$Res>  {
   factory $RevisionRequestStateCopyWith(RevisionRequestState value, $Res Function(RevisionRequestState) _then) = _$RevisionRequestStateCopyWithImpl;
 @useResult
 $Res call({
- Set<String> selectedFields, String deliveryTypeReason, String tradingPlatformReason, String titleReason, String priceReason, String conditionSummaryReason, String conditionDetailsReason, bool revisionDone, bool isLoading, String? error
+ Set<String> selectedFields, String deliveryTypeReason, String tradingPlatformReason, String titleReason, String priceReason, String conditionSummaryReason, String conditionDetailsReason, bool revisionDone, String? error
 });
 
 
@@ -64,7 +65,7 @@ class _$RevisionRequestStateCopyWithImpl<$Res>
 
 /// Create a copy of RevisionRequestState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? selectedFields = null,Object? deliveryTypeReason = null,Object? tradingPlatformReason = null,Object? titleReason = null,Object? priceReason = null,Object? conditionSummaryReason = null,Object? conditionDetailsReason = null,Object? revisionDone = null,Object? isLoading = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? selectedFields = null,Object? deliveryTypeReason = null,Object? tradingPlatformReason = null,Object? titleReason = null,Object? priceReason = null,Object? conditionSummaryReason = null,Object? conditionDetailsReason = null,Object? revisionDone = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
 selectedFields: null == selectedFields ? _self.selectedFields : selectedFields // ignore: cast_nullable_to_non_nullable
 as Set<String>,deliveryTypeReason: null == deliveryTypeReason ? _self.deliveryTypeReason : deliveryTypeReason // ignore: cast_nullable_to_non_nullable
@@ -74,7 +75,6 @@ as String,priceReason: null == priceReason ? _self.priceReason : priceReason // 
 as String,conditionSummaryReason: null == conditionSummaryReason ? _self.conditionSummaryReason : conditionSummaryReason // ignore: cast_nullable_to_non_nullable
 as String,conditionDetailsReason: null == conditionDetailsReason ? _self.conditionDetailsReason : conditionDetailsReason // ignore: cast_nullable_to_non_nullable
 as String,revisionDone: null == revisionDone ? _self.revisionDone : revisionDone // ignore: cast_nullable_to_non_nullable
-as bool,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -161,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Set<String> selectedFields,  String deliveryTypeReason,  String tradingPlatformReason,  String titleReason,  String priceReason,  String conditionSummaryReason,  String conditionDetailsReason,  bool revisionDone,  bool isLoading,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Set<String> selectedFields,  String deliveryTypeReason,  String tradingPlatformReason,  String titleReason,  String priceReason,  String conditionSummaryReason,  String conditionDetailsReason,  bool revisionDone,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RevisionRequestState() when $default != null:
-return $default(_that.selectedFields,_that.deliveryTypeReason,_that.tradingPlatformReason,_that.titleReason,_that.priceReason,_that.conditionSummaryReason,_that.conditionDetailsReason,_that.revisionDone,_that.isLoading,_that.error);case _:
+return $default(_that.selectedFields,_that.deliveryTypeReason,_that.tradingPlatformReason,_that.titleReason,_that.priceReason,_that.conditionSummaryReason,_that.conditionDetailsReason,_that.revisionDone,_that.error);case _:
   return orElse();
 
 }
@@ -182,10 +182,10 @@ return $default(_that.selectedFields,_that.deliveryTypeReason,_that.tradingPlatf
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Set<String> selectedFields,  String deliveryTypeReason,  String tradingPlatformReason,  String titleReason,  String priceReason,  String conditionSummaryReason,  String conditionDetailsReason,  bool revisionDone,  bool isLoading,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Set<String> selectedFields,  String deliveryTypeReason,  String tradingPlatformReason,  String titleReason,  String priceReason,  String conditionSummaryReason,  String conditionDetailsReason,  bool revisionDone,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _RevisionRequestState():
-return $default(_that.selectedFields,_that.deliveryTypeReason,_that.tradingPlatformReason,_that.titleReason,_that.priceReason,_that.conditionSummaryReason,_that.conditionDetailsReason,_that.revisionDone,_that.isLoading,_that.error);case _:
+return $default(_that.selectedFields,_that.deliveryTypeReason,_that.tradingPlatformReason,_that.titleReason,_that.priceReason,_that.conditionSummaryReason,_that.conditionDetailsReason,_that.revisionDone,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +202,10 @@ return $default(_that.selectedFields,_that.deliveryTypeReason,_that.tradingPlatf
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Set<String> selectedFields,  String deliveryTypeReason,  String tradingPlatformReason,  String titleReason,  String priceReason,  String conditionSummaryReason,  String conditionDetailsReason,  bool revisionDone,  bool isLoading,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Set<String> selectedFields,  String deliveryTypeReason,  String tradingPlatformReason,  String titleReason,  String priceReason,  String conditionSummaryReason,  String conditionDetailsReason,  bool revisionDone,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _RevisionRequestState() when $default != null:
-return $default(_that.selectedFields,_that.deliveryTypeReason,_that.tradingPlatformReason,_that.titleReason,_that.priceReason,_that.conditionSummaryReason,_that.conditionDetailsReason,_that.revisionDone,_that.isLoading,_that.error);case _:
+return $default(_that.selectedFields,_that.deliveryTypeReason,_that.tradingPlatformReason,_that.titleReason,_that.priceReason,_that.conditionSummaryReason,_that.conditionDetailsReason,_that.revisionDone,_that.error);case _:
   return null;
 
 }
@@ -217,7 +217,7 @@ return $default(_that.selectedFields,_that.deliveryTypeReason,_that.tradingPlatf
 
 
 class _RevisionRequestState implements RevisionRequestState {
-  const _RevisionRequestState({final  Set<String> selectedFields = const <String>{}, this.deliveryTypeReason = '', this.tradingPlatformReason = '', this.titleReason = '', this.priceReason = '', this.conditionSummaryReason = '', this.conditionDetailsReason = '', this.revisionDone = false, this.isLoading = false, this.error}): _selectedFields = selectedFields;
+  const _RevisionRequestState({final  Set<String> selectedFields = const <String>{}, this.deliveryTypeReason = '', this.tradingPlatformReason = '', this.titleReason = '', this.priceReason = '', this.conditionSummaryReason = '', this.conditionDetailsReason = '', this.revisionDone = false, this.error}): _selectedFields = selectedFields;
   
 
  final  Set<String> _selectedFields;
@@ -228,6 +228,7 @@ class _RevisionRequestState implements RevisionRequestState {
 }
 
 // 선택한 영역 이름 목록
+// 각 영역 수정 요청 내용
 @override@JsonKey() final  String deliveryTypeReason;
 @override@JsonKey() final  String tradingPlatformReason;
 @override@JsonKey() final  String titleReason;
@@ -236,7 +237,6 @@ class _RevisionRequestState implements RevisionRequestState {
 @override@JsonKey() final  String conditionDetailsReason;
 @override@JsonKey() final  bool revisionDone;
 // 수정 완료 여부
-@override@JsonKey() final  bool isLoading;
 @override final  String? error;
 
 /// Create a copy of RevisionRequestState
@@ -249,16 +249,16 @@ _$RevisionRequestStateCopyWith<_RevisionRequestState> get copyWith => __$Revisio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RevisionRequestState&&const DeepCollectionEquality().equals(other._selectedFields, _selectedFields)&&(identical(other.deliveryTypeReason, deliveryTypeReason) || other.deliveryTypeReason == deliveryTypeReason)&&(identical(other.tradingPlatformReason, tradingPlatformReason) || other.tradingPlatformReason == tradingPlatformReason)&&(identical(other.titleReason, titleReason) || other.titleReason == titleReason)&&(identical(other.priceReason, priceReason) || other.priceReason == priceReason)&&(identical(other.conditionSummaryReason, conditionSummaryReason) || other.conditionSummaryReason == conditionSummaryReason)&&(identical(other.conditionDetailsReason, conditionDetailsReason) || other.conditionDetailsReason == conditionDetailsReason)&&(identical(other.revisionDone, revisionDone) || other.revisionDone == revisionDone)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RevisionRequestState&&const DeepCollectionEquality().equals(other._selectedFields, _selectedFields)&&(identical(other.deliveryTypeReason, deliveryTypeReason) || other.deliveryTypeReason == deliveryTypeReason)&&(identical(other.tradingPlatformReason, tradingPlatformReason) || other.tradingPlatformReason == tradingPlatformReason)&&(identical(other.titleReason, titleReason) || other.titleReason == titleReason)&&(identical(other.priceReason, priceReason) || other.priceReason == priceReason)&&(identical(other.conditionSummaryReason, conditionSummaryReason) || other.conditionSummaryReason == conditionSummaryReason)&&(identical(other.conditionDetailsReason, conditionDetailsReason) || other.conditionDetailsReason == conditionDetailsReason)&&(identical(other.revisionDone, revisionDone) || other.revisionDone == revisionDone)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_selectedFields),deliveryTypeReason,tradingPlatformReason,titleReason,priceReason,conditionSummaryReason,conditionDetailsReason,revisionDone,isLoading,error);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_selectedFields),deliveryTypeReason,tradingPlatformReason,titleReason,priceReason,conditionSummaryReason,conditionDetailsReason,revisionDone,error);
 
 @override
 String toString() {
-  return 'RevisionRequestState(selectedFields: $selectedFields, deliveryTypeReason: $deliveryTypeReason, tradingPlatformReason: $tradingPlatformReason, titleReason: $titleReason, priceReason: $priceReason, conditionSummaryReason: $conditionSummaryReason, conditionDetailsReason: $conditionDetailsReason, revisionDone: $revisionDone, isLoading: $isLoading, error: $error)';
+  return 'RevisionRequestState(selectedFields: $selectedFields, deliveryTypeReason: $deliveryTypeReason, tradingPlatformReason: $tradingPlatformReason, titleReason: $titleReason, priceReason: $priceReason, conditionSummaryReason: $conditionSummaryReason, conditionDetailsReason: $conditionDetailsReason, revisionDone: $revisionDone, error: $error)';
 }
 
 
@@ -269,7 +269,7 @@ abstract mixin class _$RevisionRequestStateCopyWith<$Res> implements $RevisionRe
   factory _$RevisionRequestStateCopyWith(_RevisionRequestState value, $Res Function(_RevisionRequestState) _then) = __$RevisionRequestStateCopyWithImpl;
 @override @useResult
 $Res call({
- Set<String> selectedFields, String deliveryTypeReason, String tradingPlatformReason, String titleReason, String priceReason, String conditionSummaryReason, String conditionDetailsReason, bool revisionDone, bool isLoading, String? error
+ Set<String> selectedFields, String deliveryTypeReason, String tradingPlatformReason, String titleReason, String priceReason, String conditionSummaryReason, String conditionDetailsReason, bool revisionDone, String? error
 });
 
 
@@ -286,7 +286,7 @@ class __$RevisionRequestStateCopyWithImpl<$Res>
 
 /// Create a copy of RevisionRequestState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? selectedFields = null,Object? deliveryTypeReason = null,Object? tradingPlatformReason = null,Object? titleReason = null,Object? priceReason = null,Object? conditionSummaryReason = null,Object? conditionDetailsReason = null,Object? revisionDone = null,Object? isLoading = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? selectedFields = null,Object? deliveryTypeReason = null,Object? tradingPlatformReason = null,Object? titleReason = null,Object? priceReason = null,Object? conditionSummaryReason = null,Object? conditionDetailsReason = null,Object? revisionDone = null,Object? error = freezed,}) {
   return _then(_RevisionRequestState(
 selectedFields: null == selectedFields ? _self._selectedFields : selectedFields // ignore: cast_nullable_to_non_nullable
 as Set<String>,deliveryTypeReason: null == deliveryTypeReason ? _self.deliveryTypeReason : deliveryTypeReason // ignore: cast_nullable_to_non_nullable
@@ -296,7 +296,6 @@ as String,priceReason: null == priceReason ? _self.priceReason : priceReason // 
 as String,conditionSummaryReason: null == conditionSummaryReason ? _self.conditionSummaryReason : conditionSummaryReason // ignore: cast_nullable_to_non_nullable
 as String,conditionDetailsReason: null == conditionDetailsReason ? _self.conditionDetailsReason : conditionDetailsReason // ignore: cast_nullable_to_non_nullable
 as String,revisionDone: null == revisionDone ? _self.revisionDone : revisionDone // ignore: cast_nullable_to_non_nullable
-as bool,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

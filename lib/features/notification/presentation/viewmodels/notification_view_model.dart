@@ -11,14 +11,21 @@ part 'notification_view_model.g.dart';
 
 @freezed
 abstract class NotificationState with _$NotificationState {
+  const NotificationState._();
+
   const factory NotificationState({
     @Default([]) List<NotificationEntity> notifications, // 알림 목록
     @Default(0) int page, // 마지막으로 불러온 페이지
-    @Default(true) bool hasNext, // 다음 페이지 존재 여부
+    @Default(false) bool hasNext, // 다음 페이지 존재 여부
 
-    @Default(false) bool isLoading,
+    @Default(false) bool isLoadingNotis, // 최초 목록 로드 중 여부
+    @Default(false) bool isLoadingMoreNotis, // 추가 목록 로드 중 여부
     String? error,
   }) = _NotificationState;
+
+  // 읽지 않은 알림 목록
+  List<NotificationEntity> get unreadNotis =>
+      notifications.where((n) => !n.isRead).toList();
 }
 
 // ==================== ViewModel ====================
@@ -30,7 +37,7 @@ class NotificationViewModel extends _$NotificationViewModel {
 
   /// 알림 목록 최초 조회 (성공 여부 반환)
   Future<bool> loadNotifications() async {
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoadingNotis: true);
 
     final result = await ref
         .read(notificationRepositoryProvider)
@@ -38,13 +45,13 @@ class NotificationViewModel extends _$NotificationViewModel {
 
     state = switch (result) {
       Success(:final data) => state.copyWith(
-        isLoading: false,
+        isLoadingNotis: false,
         notifications: data.content,
         page: data.page,
         hasNext: data.hasNext,
       ),
       Failure(:final failure) => state.copyWith(
-        isLoading: false,
+        isLoadingNotis: false,
         error: failure.message,
       ),
     };
@@ -54,9 +61,9 @@ class NotificationViewModel extends _$NotificationViewModel {
 
   /// 알림 목록 추가 조회 (성공 여부 반환)
   Future<bool> loadMore() async {
-    if (!state.hasNext || state.isLoading) return false;
+    if (!state.hasNext || state.isLoadingMoreNotis) return false;
 
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoadingMoreNotis: true);
 
     final result = await ref
         .read(notificationRepositoryProvider)
@@ -64,13 +71,13 @@ class NotificationViewModel extends _$NotificationViewModel {
 
     state = switch (result) {
       Success(:final data) => state.copyWith(
-        isLoading: false,
+        isLoadingMoreNotis: false,
         notifications: [...state.notifications, ...data.content],
         page: data.page,
         hasNext: data.hasNext,
       ),
       Failure(:final failure) => state.copyWith(
-        isLoading: false,
+        isLoadingMoreNotis: false,
         error: failure.message,
       ),
     };
@@ -80,8 +87,6 @@ class NotificationViewModel extends _$NotificationViewModel {
 
   /// 알림 읽음 처리 (성공 여부 반환)
   Future<bool> readNotification(int id) async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(notificationRepositoryProvider)
         .readNotification(id);
@@ -89,7 +94,6 @@ class NotificationViewModel extends _$NotificationViewModel {
     switch (result) {
       case Success():
         state = state.copyWith(
-          isLoading: false,
           notifications: [
             for (final n in state.notifications)
               if (n.id == id)
@@ -99,7 +103,7 @@ class NotificationViewModel extends _$NotificationViewModel {
           ],
         );
       case Failure(:final failure):
-        state = state.copyWith(isLoading: false, error: failure.message);
+        state = state.copyWith(error: failure.message);
     }
 
     return result is Success;
@@ -107,23 +111,17 @@ class NotificationViewModel extends _$NotificationViewModel {
 
   /// 알림 삭제 (성공 여부 반환)
   Future<bool> deleteNotification(int id) async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(notificationRepositoryProvider)
         .deleteNotification(id);
 
-    switch (result) {
-      case Success():
-        state = state.copyWith(
-          isLoading: false,
-          notifications: state.notifications.where((n) => n.id != id).toList(),
-        );
-      case Failure(:final failure):
-        state = state.copyWith(isLoading: false, error: failure.message);
+    if (result case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+      return false;
     }
 
-    return result is Success;
+    await loadNotifications();
+    return true;
   }
 
   void clearError() => state = state.copyWith(error: null);

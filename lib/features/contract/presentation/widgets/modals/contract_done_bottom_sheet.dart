@@ -52,24 +52,20 @@ class ContractDoneBottomSheet extends HookConsumerWidget {
             const SizedBox(height: 32),
             Column(
               children: [
-                PrimaryButton(
+                PrimaryButton.brand(
                   text: "계약서 확인하기",
                   onTap: () {
                     Navigator.pop(context);
                     context.go(AppRoutes.contractDetail);
                   },
-                  backgroundColor: fxc(context).brandColor!,
-                  foregroundColor: fxc(context).textBrand!,
                 ),
                 const SizedBox(height: 8),
-                PrimaryButton(
+                PrimaryButton.mono(
                   text: "홈으로 돌아가기",
                   onTap: () {
                     Navigator.pop(context);
                     context.go(AppRoutes.home);
                   },
-                  backgroundColor: vrc(context).secondaryColor!,
-                  foregroundColor: vrc(context).textPrimary!,
                 ),
               ],
             ),

@@ -100,12 +100,11 @@ bool _isProtected(String loc) =>
 
 /// 앱 전체 라우팅 (GoRouter). [store] 변화에 반응. 세션 만료 시 보호화면에서 intro로 redirect
 GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
-  // TODO: splash 로 변경
-  initialLocation: AppRoutes.home,
+  initialLocation: AppRoutes.splash,
   refreshListenable: store,
   redirect: (context, state) {
     if (!store.isLoggedIn && _isProtected(state.matchedLocation)) {
-      return AppRoutes.home; // TODO: intro 로 변경
+      return AppRoutes.intro;
     }
     return null;
   },

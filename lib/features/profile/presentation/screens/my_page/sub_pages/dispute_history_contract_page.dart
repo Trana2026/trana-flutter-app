@@ -29,8 +29,8 @@ class DisputeHistoryContractPage extends HookConsumerWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.zero,
                 itemCount: homeState.disputingContracts.length,
-                itemBuilder: (_, index) =>
-                    ContractCard(c: homeState.disputingContracts[index]),
+                itemBuilder: (_, i) =>
+                    ContractCard(c: homeState.disputingContracts[i]),
               ),
             ),
     );

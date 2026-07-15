@@ -4,9 +4,8 @@ import 'package:trana/core/theme/app_theme.dart';
 
 /// 여러 경로의 아이콘 렌더링 통합 위젯
 /// size 기본값 = 24, color 기본값 = vrc(context).iconPrimary
-/// 1. SVG 아이콘 : AppIcon.svg(asset: "assets/icons/file.svg")
-/// 2. Coolicons / Material 아이콘 : AppIcon.data(icon: CooliconsIcon.file)
 class AppIcon extends StatelessWidget {
+  /// SVG 아이콘 : AppIcon.svg(asset: "assets/icons/file.svg")
   const AppIcon.svg({
     super.key,
     required String asset,
@@ -15,6 +14,7 @@ class AppIcon extends StatelessWidget {
   }) : _asset = asset,
        _icon = null;
 
+  /// Coolicons / Material 아이콘 : AppIcon.data(icon: CooliconsIcon.file)
   const AppIcon.data({
     super.key,
     required IconData icon,

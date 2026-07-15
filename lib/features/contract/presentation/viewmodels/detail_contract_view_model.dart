@@ -54,9 +54,16 @@ abstract class DetailContractState with _$DetailContractState {
     Uint8List? pdfBytes,
     String? pdfUrl,
 
-    // riskSignals
-    @Default(false) bool guardianNotConsented,
+    // 위험 신호
     @Default(false) bool hasReportHistory,
+    @Default(false) bool trustScoreZero,
+    int? counterpartyTrustScore,
+    String? counterpartyTrustGrade,
+    @Default(false) bool counterpartyIsMinor,
+    @Default(false) bool counterpartyVerified,
+    @Default(0) int counterpartyTradeCount,
+    @Default(0) int counterpartyDisputeCount,
+    @Default(0) int counterpartyConfirmedReportCount,
 
     @Default(false) bool isLoading,
     String? error,
@@ -72,6 +79,9 @@ abstract class DetailContractState with _$DetailContractState {
     conditionDetails: conditionDetails ?? '',
     warrantyPeriodDays: warrantyPeriodDays,
   );
+
+  // 계약 취소 가능 여부 (상대방이 미성년자이거나 분쟁 이력 존재)
+  bool get canCancel => counterpartyIsMinor || counterpartyDisputeCount > 0;
 }
 
 // ==================== ViewModel ====================
@@ -164,8 +174,17 @@ class DetailContractViewModel extends _$DetailContractViewModel {
       attachmentImageUrls: imageUrls,
       pdfBytes: pdfBytes,
       pdfUrl: pdfUrl,
-      guardianNotConsented: draft.guardianNotConsented,
-      hasReportHistory: draft.hasReportHistory,
+      hasReportHistory: draft.riskSignals?.hasReportHistory ?? false,
+      trustScoreZero: draft.riskSignals?.trustScoreZero ?? false,
+      counterpartyTrustScore: draft.riskSignals?.counterpartyTrustScore,
+      counterpartyTrustGrade: draft.riskSignals?.counterpartyTrustGrade,
+      counterpartyIsMinor: draft.riskSignals?.counterpartyIsMinor ?? false,
+      counterpartyVerified: draft.riskSignals?.counterpartyVerified ?? false,
+      counterpartyTradeCount: draft.riskSignals?.counterpartyTradeCount ?? 0,
+      counterpartyDisputeCount:
+          draft.riskSignals?.counterpartyDisputeCount ?? 0,
+      counterpartyConfirmedReportCount:
+          draft.riskSignals?.counterpartyConfirmedReportCount ?? 0,
     );
     return true;
   }

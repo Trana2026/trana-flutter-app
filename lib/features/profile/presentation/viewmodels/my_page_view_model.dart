@@ -40,7 +40,6 @@ abstract class MyPageState with _$MyPageState {
 
     @Default([]) List<DeviceTokenEntity> devices, // 기기 목록
 
-    @Default(false) bool isLoading,
     String? error,
   }) = _MyPageState;
 
@@ -59,8 +58,6 @@ class MyPageViewModel extends _$MyPageViewModel {
 
   /// 사용자 정보 + 신뢰 점수 + 기기 목록 불러오기 (성공 여부 반환)
   Future<bool> loadData() async {
-    state = state.copyWith(isLoading: true);
-
     final results = await Future.wait([
       ref.read(userInfoRepositoryProvider).readUser(),
       ref.read(trustScoreRepositoryProvider).readTrustScore(),
@@ -72,15 +69,15 @@ class MyPageViewModel extends _$MyPageViewModel {
     final deviceResult = results[2] as Result<List<DeviceTokenEntity>>;
 
     if (infoResult case Failure(:final failure)) {
-      state = state.copyWith(isLoading: false, error: failure.message);
+      state = state.copyWith(error: failure.message);
       return false;
     }
     if (trustResult case Failure(:final failure)) {
-      state = state.copyWith(isLoading: false, error: failure.message);
+      state = state.copyWith(error: failure.message);
       return false;
     }
     if (deviceResult case Failure(:final failure)) {
-      state = state.copyWith(isLoading: false, error: failure.message);
+      state = state.copyWith(error: failure.message);
       return false;
     }
 
@@ -89,8 +86,6 @@ class MyPageViewModel extends _$MyPageViewModel {
     final devices = (deviceResult as Success<List<DeviceTokenEntity>>).data;
 
     state = state.copyWith(
-      isLoading: false,
-
       publicCode: info.publicCode,
       email: info.email,
       status: info.status,
@@ -116,21 +111,13 @@ class MyPageViewModel extends _$MyPageViewModel {
 
   /// 푸시 알림 토글 (성공 여부 반환)
   Future<bool> togglePushEnagled(bool v) async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(userPreferenceRepositoryProvider)
         .togglePushEnabled(v);
 
     state = switch (result) {
-      Success(:final data) => state.copyWith(
-        isLoading: false,
-        pushEnabled: data.pushEnabled,
-      ),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
+      Success(:final data) => state.copyWith(pushEnabled: data.pushEnabled),
+      Failure(:final failure) => state.copyWith(error: failure.message),
     };
 
     return result is Success;

@@ -16,6 +16,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final aiState = ref.watch(aiAutoFillViewModelProvider);
     final aiVM = ref.read(aiAutoFillViewModelProvider.notifier);
+
     final isSelected = useState(false);
 
     return Dialog(
@@ -99,15 +100,17 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
               ),
             ),
             const SizedBox(height: 12),
-            PrimaryButton(
-              text: aiState.isLoading ? "이미지를 분석 중이에요..." : "분석하기",
+            PrimaryButton.brand(
+              text: aiState.isLoadingAnalysis ? "이미지를 분석 중이에요..." : "분석하기",
+              disabled: !isSelected.value,
               onTap: () async {
-                if (!isSelected.value || aiState.isLoading) return;
+                if (aiState.isLoadingAnalysis) return;
 
                 if (aiState.autoFillConsentedAt == null) {
                   aiVM.consentAutoFill();
                 }
 
+                // AI 이미지 분석
                 final success = await aiVM.analyzeImages();
                 if (!context.mounted) return;
                 if (!success) {
@@ -119,12 +122,6 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
 
                 Navigator.pop(context);
               },
-              backgroundColor: isSelected.value
-                  ? fxc(context).brandColor!
-                  : vrc(context).disableColor!,
-              foregroundColor: isSelected.value
-                  ? fxc(context).textBrand!
-                  : vrc(context).textDisable!,
             ),
           ],
         ),

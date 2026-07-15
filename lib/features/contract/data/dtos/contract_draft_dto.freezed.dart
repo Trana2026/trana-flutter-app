@@ -347,7 +347,7 @@ $ContractRiskSignalsDtoCopyWith<$Res>? get riskSignals {
 /// @nodoc
 mixin _$ContractRiskSignalsDto {
 
- bool get guardianNotConsented; bool get hasReportHistory; bool get trustScoreZero; int? get counterpartyTrustScore; String? get counterpartyTrustGrade;
+ bool get hasReportHistory; bool get trustScoreZero; int? get counterpartyTrustScore; String? get counterpartyTrustGrade; bool get counterpartyIsMinor; bool get counterpartyVerified; int get counterpartyTradeCount; int get counterpartyDisputeCount; int get counterpartyConfirmedReportCount;
 /// Create a copy of ContractRiskSignalsDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -360,16 +360,16 @@ $ContractRiskSignalsDtoCopyWith<ContractRiskSignalsDto> get copyWith => _$Contra
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContractRiskSignalsDto&&(identical(other.guardianNotConsented, guardianNotConsented) || other.guardianNotConsented == guardianNotConsented)&&(identical(other.hasReportHistory, hasReportHistory) || other.hasReportHistory == hasReportHistory)&&(identical(other.trustScoreZero, trustScoreZero) || other.trustScoreZero == trustScoreZero)&&(identical(other.counterpartyTrustScore, counterpartyTrustScore) || other.counterpartyTrustScore == counterpartyTrustScore)&&(identical(other.counterpartyTrustGrade, counterpartyTrustGrade) || other.counterpartyTrustGrade == counterpartyTrustGrade));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContractRiskSignalsDto&&(identical(other.hasReportHistory, hasReportHistory) || other.hasReportHistory == hasReportHistory)&&(identical(other.trustScoreZero, trustScoreZero) || other.trustScoreZero == trustScoreZero)&&(identical(other.counterpartyTrustScore, counterpartyTrustScore) || other.counterpartyTrustScore == counterpartyTrustScore)&&(identical(other.counterpartyTrustGrade, counterpartyTrustGrade) || other.counterpartyTrustGrade == counterpartyTrustGrade)&&(identical(other.counterpartyIsMinor, counterpartyIsMinor) || other.counterpartyIsMinor == counterpartyIsMinor)&&(identical(other.counterpartyVerified, counterpartyVerified) || other.counterpartyVerified == counterpartyVerified)&&(identical(other.counterpartyTradeCount, counterpartyTradeCount) || other.counterpartyTradeCount == counterpartyTradeCount)&&(identical(other.counterpartyDisputeCount, counterpartyDisputeCount) || other.counterpartyDisputeCount == counterpartyDisputeCount)&&(identical(other.counterpartyConfirmedReportCount, counterpartyConfirmedReportCount) || other.counterpartyConfirmedReportCount == counterpartyConfirmedReportCount));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,guardianNotConsented,hasReportHistory,trustScoreZero,counterpartyTrustScore,counterpartyTrustGrade);
+int get hashCode => Object.hash(runtimeType,hasReportHistory,trustScoreZero,counterpartyTrustScore,counterpartyTrustGrade,counterpartyIsMinor,counterpartyVerified,counterpartyTradeCount,counterpartyDisputeCount,counterpartyConfirmedReportCount);
 
 @override
 String toString() {
-  return 'ContractRiskSignalsDto(guardianNotConsented: $guardianNotConsented, hasReportHistory: $hasReportHistory, trustScoreZero: $trustScoreZero, counterpartyTrustScore: $counterpartyTrustScore, counterpartyTrustGrade: $counterpartyTrustGrade)';
+  return 'ContractRiskSignalsDto(hasReportHistory: $hasReportHistory, trustScoreZero: $trustScoreZero, counterpartyTrustScore: $counterpartyTrustScore, counterpartyTrustGrade: $counterpartyTrustGrade, counterpartyIsMinor: $counterpartyIsMinor, counterpartyVerified: $counterpartyVerified, counterpartyTradeCount: $counterpartyTradeCount, counterpartyDisputeCount: $counterpartyDisputeCount, counterpartyConfirmedReportCount: $counterpartyConfirmedReportCount)';
 }
 
 
@@ -380,7 +380,7 @@ abstract mixin class $ContractRiskSignalsDtoCopyWith<$Res>  {
   factory $ContractRiskSignalsDtoCopyWith(ContractRiskSignalsDto value, $Res Function(ContractRiskSignalsDto) _then) = _$ContractRiskSignalsDtoCopyWithImpl;
 @useResult
 $Res call({
- bool guardianNotConsented, bool hasReportHistory, bool trustScoreZero, int? counterpartyTrustScore, String? counterpartyTrustGrade
+ bool hasReportHistory, bool trustScoreZero, int? counterpartyTrustScore, String? counterpartyTrustGrade, bool counterpartyIsMinor, bool counterpartyVerified, int counterpartyTradeCount, int counterpartyDisputeCount, int counterpartyConfirmedReportCount
 });
 
 
@@ -397,14 +397,18 @@ class _$ContractRiskSignalsDtoCopyWithImpl<$Res>
 
 /// Create a copy of ContractRiskSignalsDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? guardianNotConsented = null,Object? hasReportHistory = null,Object? trustScoreZero = null,Object? counterpartyTrustScore = freezed,Object? counterpartyTrustGrade = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? hasReportHistory = null,Object? trustScoreZero = null,Object? counterpartyTrustScore = freezed,Object? counterpartyTrustGrade = freezed,Object? counterpartyIsMinor = null,Object? counterpartyVerified = null,Object? counterpartyTradeCount = null,Object? counterpartyDisputeCount = null,Object? counterpartyConfirmedReportCount = null,}) {
   return _then(_self.copyWith(
-guardianNotConsented: null == guardianNotConsented ? _self.guardianNotConsented : guardianNotConsented // ignore: cast_nullable_to_non_nullable
-as bool,hasReportHistory: null == hasReportHistory ? _self.hasReportHistory : hasReportHistory // ignore: cast_nullable_to_non_nullable
+hasReportHistory: null == hasReportHistory ? _self.hasReportHistory : hasReportHistory // ignore: cast_nullable_to_non_nullable
 as bool,trustScoreZero: null == trustScoreZero ? _self.trustScoreZero : trustScoreZero // ignore: cast_nullable_to_non_nullable
 as bool,counterpartyTrustScore: freezed == counterpartyTrustScore ? _self.counterpartyTrustScore : counterpartyTrustScore // ignore: cast_nullable_to_non_nullable
 as int?,counterpartyTrustGrade: freezed == counterpartyTrustGrade ? _self.counterpartyTrustGrade : counterpartyTrustGrade // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,counterpartyIsMinor: null == counterpartyIsMinor ? _self.counterpartyIsMinor : counterpartyIsMinor // ignore: cast_nullable_to_non_nullable
+as bool,counterpartyVerified: null == counterpartyVerified ? _self.counterpartyVerified : counterpartyVerified // ignore: cast_nullable_to_non_nullable
+as bool,counterpartyTradeCount: null == counterpartyTradeCount ? _self.counterpartyTradeCount : counterpartyTradeCount // ignore: cast_nullable_to_non_nullable
+as int,counterpartyDisputeCount: null == counterpartyDisputeCount ? _self.counterpartyDisputeCount : counterpartyDisputeCount // ignore: cast_nullable_to_non_nullable
+as int,counterpartyConfirmedReportCount: null == counterpartyConfirmedReportCount ? _self.counterpartyConfirmedReportCount : counterpartyConfirmedReportCount // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -489,10 +493,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool guardianNotConsented,  bool hasReportHistory,  bool trustScoreZero,  int? counterpartyTrustScore,  String? counterpartyTrustGrade)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool hasReportHistory,  bool trustScoreZero,  int? counterpartyTrustScore,  String? counterpartyTrustGrade,  bool counterpartyIsMinor,  bool counterpartyVerified,  int counterpartyTradeCount,  int counterpartyDisputeCount,  int counterpartyConfirmedReportCount)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ContractRiskSignalsDto() when $default != null:
-return $default(_that.guardianNotConsented,_that.hasReportHistory,_that.trustScoreZero,_that.counterpartyTrustScore,_that.counterpartyTrustGrade);case _:
+return $default(_that.hasReportHistory,_that.trustScoreZero,_that.counterpartyTrustScore,_that.counterpartyTrustGrade,_that.counterpartyIsMinor,_that.counterpartyVerified,_that.counterpartyTradeCount,_that.counterpartyDisputeCount,_that.counterpartyConfirmedReportCount);case _:
   return orElse();
 
 }
@@ -510,10 +514,10 @@ return $default(_that.guardianNotConsented,_that.hasReportHistory,_that.trustSco
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool guardianNotConsented,  bool hasReportHistory,  bool trustScoreZero,  int? counterpartyTrustScore,  String? counterpartyTrustGrade)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool hasReportHistory,  bool trustScoreZero,  int? counterpartyTrustScore,  String? counterpartyTrustGrade,  bool counterpartyIsMinor,  bool counterpartyVerified,  int counterpartyTradeCount,  int counterpartyDisputeCount,  int counterpartyConfirmedReportCount)  $default,) {final _that = this;
 switch (_that) {
 case _ContractRiskSignalsDto():
-return $default(_that.guardianNotConsented,_that.hasReportHistory,_that.trustScoreZero,_that.counterpartyTrustScore,_that.counterpartyTrustGrade);case _:
+return $default(_that.hasReportHistory,_that.trustScoreZero,_that.counterpartyTrustScore,_that.counterpartyTrustGrade,_that.counterpartyIsMinor,_that.counterpartyVerified,_that.counterpartyTradeCount,_that.counterpartyDisputeCount,_that.counterpartyConfirmedReportCount);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -530,10 +534,10 @@ return $default(_that.guardianNotConsented,_that.hasReportHistory,_that.trustSco
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool guardianNotConsented,  bool hasReportHistory,  bool trustScoreZero,  int? counterpartyTrustScore,  String? counterpartyTrustGrade)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool hasReportHistory,  bool trustScoreZero,  int? counterpartyTrustScore,  String? counterpartyTrustGrade,  bool counterpartyIsMinor,  bool counterpartyVerified,  int counterpartyTradeCount,  int counterpartyDisputeCount,  int counterpartyConfirmedReportCount)?  $default,) {final _that = this;
 switch (_that) {
 case _ContractRiskSignalsDto() when $default != null:
-return $default(_that.guardianNotConsented,_that.hasReportHistory,_that.trustScoreZero,_that.counterpartyTrustScore,_that.counterpartyTrustGrade);case _:
+return $default(_that.hasReportHistory,_that.trustScoreZero,_that.counterpartyTrustScore,_that.counterpartyTrustGrade,_that.counterpartyIsMinor,_that.counterpartyVerified,_that.counterpartyTradeCount,_that.counterpartyDisputeCount,_that.counterpartyConfirmedReportCount);case _:
   return null;
 
 }
@@ -545,14 +549,18 @@ return $default(_that.guardianNotConsented,_that.hasReportHistory,_that.trustSco
 @JsonSerializable()
 
 class _ContractRiskSignalsDto implements ContractRiskSignalsDto {
-  const _ContractRiskSignalsDto({this.guardianNotConsented = false, this.hasReportHistory = false, this.trustScoreZero = false, this.counterpartyTrustScore, this.counterpartyTrustGrade});
+  const _ContractRiskSignalsDto({this.hasReportHistory = false, this.trustScoreZero = false, this.counterpartyTrustScore, this.counterpartyTrustGrade, this.counterpartyIsMinor = false, this.counterpartyVerified = false, this.counterpartyTradeCount = 0, this.counterpartyDisputeCount = 0, this.counterpartyConfirmedReportCount = 0});
   factory _ContractRiskSignalsDto.fromJson(Map<String, dynamic> json) => _$ContractRiskSignalsDtoFromJson(json);
 
-@override@JsonKey() final  bool guardianNotConsented;
 @override@JsonKey() final  bool hasReportHistory;
 @override@JsonKey() final  bool trustScoreZero;
 @override final  int? counterpartyTrustScore;
 @override final  String? counterpartyTrustGrade;
+@override@JsonKey() final  bool counterpartyIsMinor;
+@override@JsonKey() final  bool counterpartyVerified;
+@override@JsonKey() final  int counterpartyTradeCount;
+@override@JsonKey() final  int counterpartyDisputeCount;
+@override@JsonKey() final  int counterpartyConfirmedReportCount;
 
 /// Create a copy of ContractRiskSignalsDto
 /// with the given fields replaced by the non-null parameter values.
@@ -567,16 +575,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ContractRiskSignalsDto&&(identical(other.guardianNotConsented, guardianNotConsented) || other.guardianNotConsented == guardianNotConsented)&&(identical(other.hasReportHistory, hasReportHistory) || other.hasReportHistory == hasReportHistory)&&(identical(other.trustScoreZero, trustScoreZero) || other.trustScoreZero == trustScoreZero)&&(identical(other.counterpartyTrustScore, counterpartyTrustScore) || other.counterpartyTrustScore == counterpartyTrustScore)&&(identical(other.counterpartyTrustGrade, counterpartyTrustGrade) || other.counterpartyTrustGrade == counterpartyTrustGrade));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ContractRiskSignalsDto&&(identical(other.hasReportHistory, hasReportHistory) || other.hasReportHistory == hasReportHistory)&&(identical(other.trustScoreZero, trustScoreZero) || other.trustScoreZero == trustScoreZero)&&(identical(other.counterpartyTrustScore, counterpartyTrustScore) || other.counterpartyTrustScore == counterpartyTrustScore)&&(identical(other.counterpartyTrustGrade, counterpartyTrustGrade) || other.counterpartyTrustGrade == counterpartyTrustGrade)&&(identical(other.counterpartyIsMinor, counterpartyIsMinor) || other.counterpartyIsMinor == counterpartyIsMinor)&&(identical(other.counterpartyVerified, counterpartyVerified) || other.counterpartyVerified == counterpartyVerified)&&(identical(other.counterpartyTradeCount, counterpartyTradeCount) || other.counterpartyTradeCount == counterpartyTradeCount)&&(identical(other.counterpartyDisputeCount, counterpartyDisputeCount) || other.counterpartyDisputeCount == counterpartyDisputeCount)&&(identical(other.counterpartyConfirmedReportCount, counterpartyConfirmedReportCount) || other.counterpartyConfirmedReportCount == counterpartyConfirmedReportCount));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,guardianNotConsented,hasReportHistory,trustScoreZero,counterpartyTrustScore,counterpartyTrustGrade);
+int get hashCode => Object.hash(runtimeType,hasReportHistory,trustScoreZero,counterpartyTrustScore,counterpartyTrustGrade,counterpartyIsMinor,counterpartyVerified,counterpartyTradeCount,counterpartyDisputeCount,counterpartyConfirmedReportCount);
 
 @override
 String toString() {
-  return 'ContractRiskSignalsDto(guardianNotConsented: $guardianNotConsented, hasReportHistory: $hasReportHistory, trustScoreZero: $trustScoreZero, counterpartyTrustScore: $counterpartyTrustScore, counterpartyTrustGrade: $counterpartyTrustGrade)';
+  return 'ContractRiskSignalsDto(hasReportHistory: $hasReportHistory, trustScoreZero: $trustScoreZero, counterpartyTrustScore: $counterpartyTrustScore, counterpartyTrustGrade: $counterpartyTrustGrade, counterpartyIsMinor: $counterpartyIsMinor, counterpartyVerified: $counterpartyVerified, counterpartyTradeCount: $counterpartyTradeCount, counterpartyDisputeCount: $counterpartyDisputeCount, counterpartyConfirmedReportCount: $counterpartyConfirmedReportCount)';
 }
 
 
@@ -587,7 +595,7 @@ abstract mixin class _$ContractRiskSignalsDtoCopyWith<$Res> implements $Contract
   factory _$ContractRiskSignalsDtoCopyWith(_ContractRiskSignalsDto value, $Res Function(_ContractRiskSignalsDto) _then) = __$ContractRiskSignalsDtoCopyWithImpl;
 @override @useResult
 $Res call({
- bool guardianNotConsented, bool hasReportHistory, bool trustScoreZero, int? counterpartyTrustScore, String? counterpartyTrustGrade
+ bool hasReportHistory, bool trustScoreZero, int? counterpartyTrustScore, String? counterpartyTrustGrade, bool counterpartyIsMinor, bool counterpartyVerified, int counterpartyTradeCount, int counterpartyDisputeCount, int counterpartyConfirmedReportCount
 });
 
 
@@ -604,14 +612,18 @@ class __$ContractRiskSignalsDtoCopyWithImpl<$Res>
 
 /// Create a copy of ContractRiskSignalsDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? guardianNotConsented = null,Object? hasReportHistory = null,Object? trustScoreZero = null,Object? counterpartyTrustScore = freezed,Object? counterpartyTrustGrade = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? hasReportHistory = null,Object? trustScoreZero = null,Object? counterpartyTrustScore = freezed,Object? counterpartyTrustGrade = freezed,Object? counterpartyIsMinor = null,Object? counterpartyVerified = null,Object? counterpartyTradeCount = null,Object? counterpartyDisputeCount = null,Object? counterpartyConfirmedReportCount = null,}) {
   return _then(_ContractRiskSignalsDto(
-guardianNotConsented: null == guardianNotConsented ? _self.guardianNotConsented : guardianNotConsented // ignore: cast_nullable_to_non_nullable
-as bool,hasReportHistory: null == hasReportHistory ? _self.hasReportHistory : hasReportHistory // ignore: cast_nullable_to_non_nullable
+hasReportHistory: null == hasReportHistory ? _self.hasReportHistory : hasReportHistory // ignore: cast_nullable_to_non_nullable
 as bool,trustScoreZero: null == trustScoreZero ? _self.trustScoreZero : trustScoreZero // ignore: cast_nullable_to_non_nullable
 as bool,counterpartyTrustScore: freezed == counterpartyTrustScore ? _self.counterpartyTrustScore : counterpartyTrustScore // ignore: cast_nullable_to_non_nullable
 as int?,counterpartyTrustGrade: freezed == counterpartyTrustGrade ? _self.counterpartyTrustGrade : counterpartyTrustGrade // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,counterpartyIsMinor: null == counterpartyIsMinor ? _self.counterpartyIsMinor : counterpartyIsMinor // ignore: cast_nullable_to_non_nullable
+as bool,counterpartyVerified: null == counterpartyVerified ? _self.counterpartyVerified : counterpartyVerified // ignore: cast_nullable_to_non_nullable
+as bool,counterpartyTradeCount: null == counterpartyTradeCount ? _self.counterpartyTradeCount : counterpartyTradeCount // ignore: cast_nullable_to_non_nullable
+as int,counterpartyDisputeCount: null == counterpartyDisputeCount ? _self.counterpartyDisputeCount : counterpartyDisputeCount // ignore: cast_nullable_to_non_nullable
+as int,counterpartyConfirmedReportCount: null == counterpartyConfirmedReportCount ? _self.counterpartyConfirmedReportCount : counterpartyConfirmedReportCount // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

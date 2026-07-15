@@ -26,51 +26,49 @@ class ContractCard extends HookConsumerWidget {
     final detailVM = ref.read(detailContractViewModelProvider.notifier);
     final reportVM = ref.read(reportContractViewModelProvider.notifier);
     final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
-    final isPending = useRef(false);
-
-    final cancelState = ref.watch(cancelContractViewModelProvider);
-    final isMyCancel = cancelState.recentCancel?.isMine == true;
-
     final revisionState = ref.watch(revisionRequestViewModelProvider);
-    final revisionDone = revisionState.revisionDone;
+
+    final isPending = useRef(false);
 
     return GestureDetector(
       onTap: () async {
         if (isPending.value) return;
         isPending.value = true;
+        try {
+          final results = await Future.wait([
+            detailVM.loadDetail(c.publicCode),
+            reportVM.readReport(c.publicCode),
+            cancelVM.readCancel(c.publicCode),
+          ]);
 
-        final results = await Future.wait([
-          detailVM.loadDetail(c.publicCode),
-          reportVM.readReport(c.publicCode),
-          cancelVM.readCancel(c.publicCode),
-        ]);
+          if (!context.mounted) return;
 
-        if (!context.mounted) return;
+          if (!results[0]) {
+            final state = ref.read(detailContractViewModelProvider);
+            showErrorToast(context, state.error!);
+            detailVM.clearError();
+            return;
+          } else if (!results[1]) {
+            final state = ref.read(reportContractViewModelProvider);
+            showErrorToast(context, state.error!);
+            reportVM.clearError();
+            return;
+          } else if (!results[2]) {
+            final state = ref.read(cancelContractViewModelProvider);
+            showErrorToast(context, state.error!);
+            cancelVM.clearError();
+            return;
+          }
 
-        if (!results[0]) {
-          final state = ref.read(detailContractViewModelProvider);
-          showErrorToast(context, state.error!);
-          detailVM.clearError();
-          return;
-        } else if (!results[1]) {
-          final state = ref.read(reportContractViewModelProvider);
-          showErrorToast(context, state.error!);
-          reportVM.clearError();
-          return;
-        } else if (!results[2]) {
-          final state = ref.read(cancelContractViewModelProvider);
-          showErrorToast(context, state.error!);
-          cancelVM.clearError();
-          return;
+          if (c.status == ContractStatus.inProgress ||
+              c.status == ContractStatus.draft) {
+            context.push(AppRoutes.contractDetail);
+          } else {
+            context.push(AppRoutes.biometricLock);
+          }
+        } finally {
+          isPending.value = false;
         }
-
-        if (c.status == ContractStatus.inProgress ||
-            c.status == ContractStatus.draft) {
-          context.push(AppRoutes.contractDetail);
-        } else {
-          context.push(AppRoutes.biometricLock);
-        }
-        isPending.value = false;
       },
       child: Container(
         padding: const EdgeInsets.all(14),
@@ -181,9 +179,9 @@ class ContractCard extends HookConsumerWidget {
                           ),
                           child: Text(
                             c.status.statusLabel(
-                              c.isCreator,
-                              isMyCancel,
-                              revisionDone,
+                              isCreator: c.isCreator,
+                              isMyCancel: c.cancelIsMine ?? false,
+                              revisionDone: revisionState.revisionDone,
                             ),
                             style: context.txt(
                               color: c.status.statusColor(context),

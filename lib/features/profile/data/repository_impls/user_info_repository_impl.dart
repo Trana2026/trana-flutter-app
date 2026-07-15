@@ -27,16 +27,16 @@ class UserInfoRepositoryImpl implements UserInfoRepository {
       return Success(dto.toEntity());
     } on DioException catch (e) {
       if (e.response?.statusCode == 400) {
-        return const Failure(ForbiddenFailure('입력값 검증에 실패했습니다.'));
+        return const Failure(ValidationFailure('입력값 검증에 실패했습니다.'));
       }
       if (e.response?.statusCode == 401) {
-        return const Failure(ForbiddenFailure('잘못된 토큰입니다.'));
+        return const Failure(UnauthorizedFailure('잘못된 토큰입니다.'));
       }
       if (e.response?.statusCode == 404) {
-        return const Failure(ForbiddenFailure('사용자를 찾을 수 없습니다.'));
+        return const Failure(NotFoundFailure('사용자를 찾을 수 없습니다.'));
       }
       if (e.response?.statusCode == 409) {
-        return const Failure(ForbiddenFailure('이미 사용 중인 이메일입니다.'));
+        return const Failure(ConflictFailure('이미 사용 중인 이메일입니다.'));
       }
       return Failure(e.toFailure());
     } catch (e) {
@@ -51,10 +51,10 @@ class UserInfoRepositoryImpl implements UserInfoRepository {
       return Success(dto.toEntity());
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
-        return const Failure(ForbiddenFailure('잘못된 토큰입니다.'));
+        return const Failure(UnauthorizedFailure('잘못된 토큰입니다.'));
       }
       if (e.response?.statusCode == 404) {
-        return const Failure(ForbiddenFailure('사용자를 찾을 수 없습니다.'));
+        return const Failure(NotFoundFailure('사용자를 찾을 수 없습니다.'));
       }
       return Failure(e.toFailure());
     } catch (e) {
@@ -69,13 +69,13 @@ class UserInfoRepositoryImpl implements UserInfoRepository {
       return Success(null);
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
-        return const Failure(ForbiddenFailure('잘못된 토큰입니다.'));
+        return const Failure(UnauthorizedFailure('잘못된 토큰입니다.'));
       }
       if (e.response?.statusCode == 404) {
-        return const Failure(ForbiddenFailure('사용자를 찾을 수 없습니다.'));
+        return const Failure(NotFoundFailure('사용자를 찾을 수 없습니다.'));
       }
       if (e.response?.statusCode == 409) {
-        return const Failure(ForbiddenFailure('이미 탈퇴한 사용자입니다.'));
+        return const Failure(ConflictFailure('이미 탈퇴한 사용자입니다.'));
       }
       return Failure(e.toFailure());
     } catch (e) {

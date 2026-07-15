@@ -31,11 +31,15 @@ abstract class ContractDraftDto with _$ContractDraftDto {
 @freezed
 abstract class ContractRiskSignalsDto with _$ContractRiskSignalsDto {
   const factory ContractRiskSignalsDto({
-    @Default(false) bool guardianNotConsented,
     @Default(false) bool hasReportHistory,
     @Default(false) bool trustScoreZero,
     int? counterpartyTrustScore,
     String? counterpartyTrustGrade,
+    @Default(false) bool counterpartyIsMinor,
+    @Default(false) bool counterpartyVerified,
+    @Default(0) int counterpartyTradeCount,
+    @Default(0) int counterpartyDisputeCount,
+    @Default(0) int counterpartyConfirmedReportCount,
   }) = _ContractRiskSignalsDto;
 
   factory ContractRiskSignalsDto.fromJson(Map<String, dynamic> json) =>

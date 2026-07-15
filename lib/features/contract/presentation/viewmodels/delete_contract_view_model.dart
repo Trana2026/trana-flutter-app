@@ -12,7 +12,6 @@ part 'delete_contract_view_model.g.dart';
 @freezed
 abstract class DeleteContractState with _$DeleteContractState {
   const factory DeleteContractState({
-    @Default(false) bool isLoading,
     String? error,
   }) = _DeleteContractState;
 }
@@ -26,19 +25,13 @@ class DeleteContractViewModel extends _$DeleteContractViewModel {
 
   /// Draft 삭제 (성공 여부 반환)
   Future<bool> deleteDraft(String publicCode) async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(contractDraftRepositoryProvider)
         .deleteDraft(publicCode: publicCode);
 
-    state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
+    if (result case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+    }
 
     if (result is Success) {
       await _refreshHome();

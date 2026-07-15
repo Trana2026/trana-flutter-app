@@ -55,14 +55,12 @@ class ReceiverSignDoneBottomSheet extends HookConsumerWidget {
               ),
             ),
             const SizedBox(height: 32),
-            PrimaryButton(
+            PrimaryButton.brand(
               text: "최종 서명 요청하기",
               onTap: () {
                 Navigator.pop(context);
                 context.go(AppRoutes.contractDetail);
               },
-              backgroundColor: fxc(context).brandColor!,
-              foregroundColor: fxc(context).textBrand!,
             ),
           ],
         ),

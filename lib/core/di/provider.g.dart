@@ -1130,6 +1130,58 @@ final class UserPreferenceDataSourceProvider
 String _$userPreferenceDataSourceHash() =>
     r'a8d057446cb7fbe607c5f0275d94ae0d4a1e4297';
 
+@ProviderFor(contractMinorDisclosureDataSource)
+final contractMinorDisclosureDataSourceProvider =
+    ContractMinorDisclosureDataSourceProvider._();
+
+final class ContractMinorDisclosureDataSourceProvider
+    extends
+        $FunctionalProvider<
+          ContractMinorDisclosureDataSource,
+          ContractMinorDisclosureDataSource,
+          ContractMinorDisclosureDataSource
+        >
+    with $Provider<ContractMinorDisclosureDataSource> {
+  ContractMinorDisclosureDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'contractMinorDisclosureDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$contractMinorDisclosureDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<ContractMinorDisclosureDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ContractMinorDisclosureDataSource create(Ref ref) {
+    return contractMinorDisclosureDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ContractMinorDisclosureDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ContractMinorDisclosureDataSource>(
+        value,
+      ),
+    );
+  }
+}
+
+String _$contractMinorDisclosureDataSourceHash() =>
+    r'87942f40dda19513c46748b548c909c386574446';
+
 @ProviderFor(authRepository)
 final authRepositoryProvider = AuthRepositoryProvider._();
 
@@ -2177,6 +2229,58 @@ final class UserPreferenceRepositoryProvider
 
 String _$userPreferenceRepositoryHash() =>
     r'cbc8ea0f80bfca7e5d1e67fea5d5e9ea267cdd33';
+
+@ProviderFor(contractMinorDisclosureRepository)
+final contractMinorDisclosureRepositoryProvider =
+    ContractMinorDisclosureRepositoryProvider._();
+
+final class ContractMinorDisclosureRepositoryProvider
+    extends
+        $FunctionalProvider<
+          ContractMinorDisclosureRepository,
+          ContractMinorDisclosureRepository,
+          ContractMinorDisclosureRepository
+        >
+    with $Provider<ContractMinorDisclosureRepository> {
+  ContractMinorDisclosureRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'contractMinorDisclosureRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$contractMinorDisclosureRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<ContractMinorDisclosureRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ContractMinorDisclosureRepository create(Ref ref) {
+    return contractMinorDisclosureRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ContractMinorDisclosureRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ContractMinorDisclosureRepository>(
+        value,
+      ),
+    );
+  }
+}
+
+String _$contractMinorDisclosureRepositoryHash() =>
+    r'eceaf58c20ac7aed1228b1fdeaeb244281c05c83';
 
 @ProviderFor(socialSignInUseCase)
 final socialSignInUseCaseProvider = SocialSignInUseCaseProvider._();

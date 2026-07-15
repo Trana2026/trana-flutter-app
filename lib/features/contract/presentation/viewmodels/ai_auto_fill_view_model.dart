@@ -23,8 +23,8 @@ abstract class AiAutoFillState with _$AiAutoFillState {
     @Default('') String condition, // 상품 상태 (AI 분석 결과)
     @Default('') String details, // 상품 상세 정보 (AI 분석 결과)
 
-    @Default(false) bool isLoading,
-    @Default(false) bool completed,
+    @Default(false) bool isLoadingAnalysis,
+    @Default(false) bool isCompleted,
     String? error,
   }) = _AiAutoFillState;
 }
@@ -61,7 +61,7 @@ class AiAutoFillViewModel extends _$AiAutoFillViewModel {
       return false;
     }
 
-    state = state.copyWith(isLoading: true, completed: false);
+    state = state.copyWith(isLoadingAnalysis: true, isCompleted: false);
 
     // 1. ImageFilterService 로 AI 분석에 사용할 이미지 필터링
     final xFiles = <XFile>[];
@@ -102,15 +102,15 @@ class AiAutoFillViewModel extends _$AiAutoFillViewModel {
         );
 
     if (result case Failure(:final failure)) {
-      state = state.copyWith(isLoading: false, error: failure.message);
+      state = state.copyWith(isLoadingAnalysis: false, error: failure.message);
       return false;
     }
 
     final entity = (result as Success<ContractAiExtractionEntity>).data;
     final prefill = entity.prefill ?? {};
     state = state.copyWith(
-      isLoading: false,
-      completed: true,
+      isLoadingAnalysis: false,
+      isCompleted: true,
       extractionId: entity.extractionId,
       platform: (prefill['trading_platform'] as String?) ?? '',
       name: (prefill['product_name'] as String?) ?? '',

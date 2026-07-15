@@ -115,14 +115,13 @@ class EditProfilePage extends HookConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: PrimaryButton(
             text: isEditing.value ? "완료" : "수정하기",
+            disabled: !isEnabled,
             onTap: () async {
+              // 수정중 아닐 때
               if (!isEditing.value) {
-                if (!isEnabled) return;
-
                 isEditing.value = true;
+                // 수정중일 때
               } else {
-                if (!isEnabled) return;
-
                 if (emailCtr.text.isNotEmpty &&
                     (mypageState.email != emailCtr.text)) {
                   emailError.value = Validation.email(emailCtr.text);
@@ -131,6 +130,7 @@ class EditProfilePage extends HookConsumerWidget {
                   editProfileVM.updateEmail(emailCtr.text);
                 }
 
+                // 본인 정보 수정
                 final success = await editProfileVM.updateProfile();
                 if (!context.mounted) return;
                 if (!success) {
@@ -143,14 +143,10 @@ class EditProfilePage extends HookConsumerWidget {
                 isEditing.value = false;
               }
             },
-            backgroundColor: !isEnabled
-                ? vrc(context).disableColor!
-                : isEditing.value
+            backgroundColor: isEditing.value
                 ? fxc(context).brandColor!
                 : fxc(context).unchangeableBlack!,
-            foregroundColor: !isEnabled
-                ? vrc(context).textDisable!
-                : fxc(context).unchangeableWhite!,
+            foregroundColor: fxc(context).unchangeableWhite!,
           ),
         ),
       ),

@@ -10,7 +10,8 @@ abstract interface class ContractCancellationRepository {
 
   Future<Result<bool>> confirmCancellation(String publicCode);
 
-  /// 200 = 활성 요청 반환, 204 = null 반환
+  Future<Result<void>> revokeCancellation(String publicCode);
+
   Future<Result<ContractCancellationEntity?>> readActiveCancellation(
     String publicCode,
   );

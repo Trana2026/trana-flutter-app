@@ -16,5 +16,7 @@ abstract class ContractEntity with _$ContractEntity {
     required int attachmentCount,
     String? firstAttachmentUrl,
     required DateTime updatedAt,
+
+    bool? cancelIsMine, // 취소 요청건의 요청 당사자 여부
   }) = _ContractEntity;
 }

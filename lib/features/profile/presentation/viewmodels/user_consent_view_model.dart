@@ -14,7 +14,6 @@ abstract class UserConsentState with _$UserConsentState {
   const factory UserConsentState({
     @Default([]) List<UserConsentEntity> consents, // 본인 약관 동의 목록
 
-    @Default(false) bool isLoading,
     String? error,
   }) = _UserConsentState;
 }
@@ -28,16 +27,11 @@ class UserConsentViewModel extends _$UserConsentViewModel {
 
   /// 본인 약관 동의 내역 조회 (성공 여부 반환)
   Future<bool> readConsents() async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref.read(userConsentRepositoryProvider).readConsents();
 
     state = switch (result) {
-      Success(:final data) => state.copyWith(isLoading: false, consents: data),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
+      Success(:final data) => state.copyWith(consents: data),
+      Failure(:final failure) => state.copyWith(error: failure.message),
     };
 
     return result is Success;

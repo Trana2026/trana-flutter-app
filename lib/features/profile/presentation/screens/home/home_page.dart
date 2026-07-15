@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
-import 'package:go_router/go_router.dart';
-import 'package:trana/core/router/app_router.dart';
 import 'package:trana/features/contract/data/services/deferred_link_service.dart';
 import 'package:trana/features/contract/data/services/pending_contract_code_service.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/viewmodels/cancel_contract_view_model.dart';
-import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/receive_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/report_contract_view_model.dart';
-import 'package:trana/core/dev/test_user_provider.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_identity_verify_dialog.dart';
 import 'package:trana/features/guardian/domain/entities/guardian_verification_state.dart';
 import 'package:trana/features/guardian/presentation/viewmodels/guardian_verification_state_provider.dart';
@@ -113,9 +111,8 @@ class HomePage extends HookConsumerWidget {
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         // 테스트 유저 로그인 (사용 시 주석 해제)
-        // TODO : 비활성화
-        final userVM = ref.read(testUserProvider.notifier);
-        await userVM.getUser();
+        // final userVM = ref.read(testUserProvider.notifier);
+        // await userVM.getUser();
 
         // 플레이스토어 설치 유입 시 Install Referrer에서 초대 토큰 복구
         await DeferredLinkService.restoreInvitationToken();
@@ -129,10 +126,6 @@ class HomePage extends HookConsumerWidget {
           showErrorToast(context, state.error!);
           receiveVM.clearError();
         }
-
-        // 사용자 동의 유형 정의
-        final createVM = ref.read(createContractViewModelProvider.notifier);
-        createVM.setUserConsentType(isMinor);
 
         // 내 계약 목록 조회
         final homeVM = ref.read(homeContractViewModelProvider.notifier);

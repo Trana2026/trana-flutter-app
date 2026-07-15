@@ -19,10 +19,10 @@ class ContractWarrantySection extends HookConsumerWidget {
 
     final isCreator = detailState.isCreator;
 
-    final initialValue = isCreator
+    final initialIsWarranted = isCreator
         ? ref.read(createContractViewModelProvider).warrantyPeriodDays > 0
         : ref.read(detailContractViewModelProvider).warrantyPeriodDays > 0;
-    final isWarranted = useState<bool>(initialValue);
+    final isWarranted = useState(initialIsWarranted);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -50,8 +50,6 @@ class ContractWarrantySection extends HookConsumerWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 4),
-            Icon(CooliconsIcon.info, size: 14, color: vrc(context).iconDisable),
           ],
         ),
         const SizedBox(height: 6),

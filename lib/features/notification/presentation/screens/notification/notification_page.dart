@@ -7,6 +7,7 @@ import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/core/widgets/custom_app_bar.dart';
+import 'package:trana/core/widgets/custom_loading_bar.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/notification/presentation/screens/notification/widgets/notification_item.dart';
 import 'package:trana/features/notification/presentation/viewmodels/notification_view_model.dart';
@@ -21,6 +22,7 @@ class NotificationPage extends HookConsumerWidget {
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
+        // 알림 목록 최초 조회
         final success = await notiVM.loadNotifications();
         if (!context.mounted) return;
         if (!success) {
@@ -28,48 +30,9 @@ class NotificationPage extends HookConsumerWidget {
           showErrorToast(context, state.error!);
           notiVM.clearError();
         }
-        notiVM.loadNotifications();
       });
       return null;
     }, []);
-
-    // TODO : 더미데이터 삭제 > 실제 알림 목록 연결 (백엔드 구현되면)
-    // final notifications = useState<List<NotificationEntity>>([
-    //   NotificationEntity(
-    //     id: -1,
-    //     category: NotificationCategory.contract,
-    //     title: '트라나',
-    //     body: 'Bluemon님 과의 계약서가 생성되었어요. 자세한 계약서를 확인하려면 클릭해주세요.',
-    //     isRead: false,
-    //     createdAt: DateTime.now().subtract(const Duration(minutes: 1)), // 1분 전
-    //   ),
-    //   NotificationEntity(
-    //     id: -2,
-    //     category: NotificationCategory.contract,
-    //     title: '트라나',
-    //     body: 'Bluemon님 과의 계약서가 생성되었어요. 자세한 계약서를 확인하려면 클릭해주세요.',
-    //     isRead: false,
-    //     createdAt: DateTime.now().subtract(const Duration(minutes: 1)), // 1분 전
-    //   ),
-    //   NotificationEntity(
-    //     id: -3,
-    //     category: NotificationCategory.contract,
-    //     title: '하이파이브',
-    //     body: '조안님과의 미팅이 예정되어 있습니다. 자세한 내용을 확인하려면 클릭해주세요.',
-    //     isRead: false,
-    //     createdAt: DateTime.now().subtract(const Duration(minutes: 5)), // 5분 전
-    //   ),
-    //   NotificationEntity(
-    //     id: -4,
-    //     category: NotificationCategory.contract,
-    //     title: '코드리뷰',
-    //     body: '마이크님이 제출한 코드 리뷰 요청이 도착했습니다. 확인 후 피드백을 남겨주세요.',
-    //     isRead: false,
-    //     createdAt: DateTime.now().subtract(
-    //       const Duration(minutes: 10),
-    //     ), // 10분 전
-    //   ),
-    // ]);
 
     return Scaffold(
       backgroundColor: vrc(context).background,
@@ -77,7 +40,9 @@ class NotificationPage extends HookConsumerWidget {
         title: "알림",
         onTapLeading: () => context.pop(),
       ),
-      body: notiState.notifications.isEmpty
+      body: notiState.isLoadingNotis && notiState.notifications.isEmpty
+          ? const Center(child: CustomLoadingBar())
+          : notiState.notifications.isEmpty
           ? Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -100,12 +65,37 @@ class NotificationPage extends HookConsumerWidget {
             )
           : ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 10),
-              itemCount: notiState.notifications.length,
+              itemCount:
+                  notiState.notifications.length + (notiState.hasNext ? 1 : 0),
               itemBuilder: (context, i) {
-                final noti = notiState.notifications[i];
+                if (i == notiState.notifications.length) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Center(
+                      child: notiState.isLoadingMoreNotis
+                          ? const CustomLoadingBar()
+                          : GestureDetector(
+                              onTap: () async {
+                                // 알림 목록 추가 조회
+                                final success = await notiVM.loadMore();
+                                if (!context.mounted) return;
+                                if (!success) {
+                                  final state = ref.read(
+                                    notificationViewModelProvider,
+                                  );
+                                  showErrorToast(context, state.error!);
+                                  notiVM.clearError();
+                                }
+                              },
+                              child: Text("더보기", style: context.txt()),
+                            ),
+                    ),
+                  );
+                }
 
+                final noti = notiState.notifications[i];
                 return Dismissible(
-                  key: UniqueKey(),
+                  key: ValueKey(noti.id),
                   direction: DismissDirection.endToStart,
                   background: Container(
                     alignment: Alignment.centerRight,
@@ -117,6 +107,7 @@ class NotificationPage extends HookConsumerWidget {
                     ),
                   ),
                   onDismissed: (_) async {
+                    // 알림 삭제
                     final success = await notiVM.deleteNotification(noti.id);
                     if (!context.mounted) return;
                     if (!success) {

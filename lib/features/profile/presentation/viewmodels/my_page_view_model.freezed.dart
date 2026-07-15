@@ -31,7 +31,7 @@ mixin _$MyPageState {
  int get warrantyProvidedCount;// 보증 횟수 (판매자 보증 제공 + SIGNED 누적)
  int get fraudReportReceivedCount;// 분쟁 횟수 (본인이 신고 당한 건 중 사기 확인 누적)
  List<DeviceTokenEntity> get devices;// 기기 목록
- bool get isLoading; String? get error;
+ String? get error;
 /// Create a copy of MyPageState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -42,16 +42,16 @@ $MyPageStateCopyWith<MyPageState> get copyWith => _$MyPageStateCopyWithImpl<MyPa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyPageState&&(identical(other.publicCode, publicCode) || other.publicCode == publicCode)&&(identical(other.email, email) || other.email == email)&&(identical(other.status, status) || other.status == status)&&(identical(other.ageGroup, ageGroup) || other.ageGroup == ageGroup)&&(identical(other.guardianVerifiedAt, guardianVerifiedAt) || other.guardianVerifiedAt == guardianVerifiedAt)&&const DeepCollectionEquality().equals(other.name, name)&&(identical(other.birthDate, birthDate) || other.birthDate == birthDate)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.pushEnabled, pushEnabled) || other.pushEnabled == pushEnabled)&&(identical(other.trustScore, trustScore) || other.trustScore == trustScore)&&(identical(other.trustGrade, trustGrade) || other.trustGrade == trustGrade)&&(identical(other.trustGradeLabel, trustGradeLabel) || other.trustGradeLabel == trustGradeLabel)&&(identical(other.completedContractCount, completedContractCount) || other.completedContractCount == completedContractCount)&&(identical(other.warrantyProvidedCount, warrantyProvidedCount) || other.warrantyProvidedCount == warrantyProvidedCount)&&(identical(other.fraudReportReceivedCount, fraudReportReceivedCount) || other.fraudReportReceivedCount == fraudReportReceivedCount)&&const DeepCollectionEquality().equals(other.devices, devices)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MyPageState&&(identical(other.publicCode, publicCode) || other.publicCode == publicCode)&&(identical(other.email, email) || other.email == email)&&(identical(other.status, status) || other.status == status)&&(identical(other.ageGroup, ageGroup) || other.ageGroup == ageGroup)&&(identical(other.guardianVerifiedAt, guardianVerifiedAt) || other.guardianVerifiedAt == guardianVerifiedAt)&&const DeepCollectionEquality().equals(other.name, name)&&(identical(other.birthDate, birthDate) || other.birthDate == birthDate)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.pushEnabled, pushEnabled) || other.pushEnabled == pushEnabled)&&(identical(other.trustScore, trustScore) || other.trustScore == trustScore)&&(identical(other.trustGrade, trustGrade) || other.trustGrade == trustGrade)&&(identical(other.trustGradeLabel, trustGradeLabel) || other.trustGradeLabel == trustGradeLabel)&&(identical(other.completedContractCount, completedContractCount) || other.completedContractCount == completedContractCount)&&(identical(other.warrantyProvidedCount, warrantyProvidedCount) || other.warrantyProvidedCount == warrantyProvidedCount)&&(identical(other.fraudReportReceivedCount, fraudReportReceivedCount) || other.fraudReportReceivedCount == fraudReportReceivedCount)&&const DeepCollectionEquality().equals(other.devices, devices)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,publicCode,email,status,ageGroup,guardianVerifiedAt,const DeepCollectionEquality().hash(name),birthDate,gender,phone,pushEnabled,trustScore,trustGrade,trustGradeLabel,completedContractCount,warrantyProvidedCount,fraudReportReceivedCount,const DeepCollectionEquality().hash(devices),isLoading,error]);
+int get hashCode => Object.hash(runtimeType,publicCode,email,status,ageGroup,guardianVerifiedAt,const DeepCollectionEquality().hash(name),birthDate,gender,phone,pushEnabled,trustScore,trustGrade,trustGradeLabel,completedContractCount,warrantyProvidedCount,fraudReportReceivedCount,const DeepCollectionEquality().hash(devices),error);
 
 @override
 String toString() {
-  return 'MyPageState(publicCode: $publicCode, email: $email, status: $status, ageGroup: $ageGroup, guardianVerifiedAt: $guardianVerifiedAt, name: $name, birthDate: $birthDate, gender: $gender, phone: $phone, pushEnabled: $pushEnabled, trustScore: $trustScore, trustGrade: $trustGrade, trustGradeLabel: $trustGradeLabel, completedContractCount: $completedContractCount, warrantyProvidedCount: $warrantyProvidedCount, fraudReportReceivedCount: $fraudReportReceivedCount, devices: $devices, isLoading: $isLoading, error: $error)';
+  return 'MyPageState(publicCode: $publicCode, email: $email, status: $status, ageGroup: $ageGroup, guardianVerifiedAt: $guardianVerifiedAt, name: $name, birthDate: $birthDate, gender: $gender, phone: $phone, pushEnabled: $pushEnabled, trustScore: $trustScore, trustGrade: $trustGrade, trustGradeLabel: $trustGradeLabel, completedContractCount: $completedContractCount, warrantyProvidedCount: $warrantyProvidedCount, fraudReportReceivedCount: $fraudReportReceivedCount, devices: $devices, error: $error)';
 }
 
 
@@ -62,7 +62,7 @@ abstract mixin class $MyPageStateCopyWith<$Res>  {
   factory $MyPageStateCopyWith(MyPageState value, $Res Function(MyPageState) _then) = _$MyPageStateCopyWithImpl;
 @useResult
 $Res call({
- String? publicCode, String? email, UserStatus? status, AgeGroup? ageGroup, DateTime? guardianVerifiedAt, dynamic name, String? birthDate, Gender? gender, String? phone, bool pushEnabled, int trustScore, TrustGrade trustGrade, String trustGradeLabel, int completedContractCount, int warrantyProvidedCount, int fraudReportReceivedCount, List<DeviceTokenEntity> devices, bool isLoading, String? error
+ String? publicCode, String? email, UserStatus? status, AgeGroup? ageGroup, DateTime? guardianVerifiedAt, dynamic name, String? birthDate, Gender? gender, String? phone, bool pushEnabled, int trustScore, TrustGrade trustGrade, String trustGradeLabel, int completedContractCount, int warrantyProvidedCount, int fraudReportReceivedCount, List<DeviceTokenEntity> devices, String? error
 });
 
 
@@ -79,7 +79,7 @@ class _$MyPageStateCopyWithImpl<$Res>
 
 /// Create a copy of MyPageState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? publicCode = freezed,Object? email = freezed,Object? status = freezed,Object? ageGroup = freezed,Object? guardianVerifiedAt = freezed,Object? name = freezed,Object? birthDate = freezed,Object? gender = freezed,Object? phone = freezed,Object? pushEnabled = null,Object? trustScore = null,Object? trustGrade = null,Object? trustGradeLabel = null,Object? completedContractCount = null,Object? warrantyProvidedCount = null,Object? fraudReportReceivedCount = null,Object? devices = null,Object? isLoading = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? publicCode = freezed,Object? email = freezed,Object? status = freezed,Object? ageGroup = freezed,Object? guardianVerifiedAt = freezed,Object? name = freezed,Object? birthDate = freezed,Object? gender = freezed,Object? phone = freezed,Object? pushEnabled = null,Object? trustScore = null,Object? trustGrade = null,Object? trustGradeLabel = null,Object? completedContractCount = null,Object? warrantyProvidedCount = null,Object? fraudReportReceivedCount = null,Object? devices = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
 publicCode: freezed == publicCode ? _self.publicCode : publicCode // ignore: cast_nullable_to_non_nullable
 as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
@@ -98,8 +98,7 @@ as String,completedContractCount: null == completedContractCount ? _self.complet
 as int,warrantyProvidedCount: null == warrantyProvidedCount ? _self.warrantyProvidedCount : warrantyProvidedCount // ignore: cast_nullable_to_non_nullable
 as int,fraudReportReceivedCount: null == fraudReportReceivedCount ? _self.fraudReportReceivedCount : fraudReportReceivedCount // ignore: cast_nullable_to_non_nullable
 as int,devices: null == devices ? _self.devices : devices // ignore: cast_nullable_to_non_nullable
-as List<DeviceTokenEntity>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as List<DeviceTokenEntity>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -185,10 +184,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? publicCode,  String? email,  UserStatus? status,  AgeGroup? ageGroup,  DateTime? guardianVerifiedAt,  dynamic name,  String? birthDate,  Gender? gender,  String? phone,  bool pushEnabled,  int trustScore,  TrustGrade trustGrade,  String trustGradeLabel,  int completedContractCount,  int warrantyProvidedCount,  int fraudReportReceivedCount,  List<DeviceTokenEntity> devices,  bool isLoading,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? publicCode,  String? email,  UserStatus? status,  AgeGroup? ageGroup,  DateTime? guardianVerifiedAt,  dynamic name,  String? birthDate,  Gender? gender,  String? phone,  bool pushEnabled,  int trustScore,  TrustGrade trustGrade,  String trustGradeLabel,  int completedContractCount,  int warrantyProvidedCount,  int fraudReportReceivedCount,  List<DeviceTokenEntity> devices,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MyPageState() when $default != null:
-return $default(_that.publicCode,_that.email,_that.status,_that.ageGroup,_that.guardianVerifiedAt,_that.name,_that.birthDate,_that.gender,_that.phone,_that.pushEnabled,_that.trustScore,_that.trustGrade,_that.trustGradeLabel,_that.completedContractCount,_that.warrantyProvidedCount,_that.fraudReportReceivedCount,_that.devices,_that.isLoading,_that.error);case _:
+return $default(_that.publicCode,_that.email,_that.status,_that.ageGroup,_that.guardianVerifiedAt,_that.name,_that.birthDate,_that.gender,_that.phone,_that.pushEnabled,_that.trustScore,_that.trustGrade,_that.trustGradeLabel,_that.completedContractCount,_that.warrantyProvidedCount,_that.fraudReportReceivedCount,_that.devices,_that.error);case _:
   return orElse();
 
 }
@@ -206,10 +205,10 @@ return $default(_that.publicCode,_that.email,_that.status,_that.ageGroup,_that.g
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? publicCode,  String? email,  UserStatus? status,  AgeGroup? ageGroup,  DateTime? guardianVerifiedAt,  dynamic name,  String? birthDate,  Gender? gender,  String? phone,  bool pushEnabled,  int trustScore,  TrustGrade trustGrade,  String trustGradeLabel,  int completedContractCount,  int warrantyProvidedCount,  int fraudReportReceivedCount,  List<DeviceTokenEntity> devices,  bool isLoading,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? publicCode,  String? email,  UserStatus? status,  AgeGroup? ageGroup,  DateTime? guardianVerifiedAt,  dynamic name,  String? birthDate,  Gender? gender,  String? phone,  bool pushEnabled,  int trustScore,  TrustGrade trustGrade,  String trustGradeLabel,  int completedContractCount,  int warrantyProvidedCount,  int fraudReportReceivedCount,  List<DeviceTokenEntity> devices,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _MyPageState():
-return $default(_that.publicCode,_that.email,_that.status,_that.ageGroup,_that.guardianVerifiedAt,_that.name,_that.birthDate,_that.gender,_that.phone,_that.pushEnabled,_that.trustScore,_that.trustGrade,_that.trustGradeLabel,_that.completedContractCount,_that.warrantyProvidedCount,_that.fraudReportReceivedCount,_that.devices,_that.isLoading,_that.error);case _:
+return $default(_that.publicCode,_that.email,_that.status,_that.ageGroup,_that.guardianVerifiedAt,_that.name,_that.birthDate,_that.gender,_that.phone,_that.pushEnabled,_that.trustScore,_that.trustGrade,_that.trustGradeLabel,_that.completedContractCount,_that.warrantyProvidedCount,_that.fraudReportReceivedCount,_that.devices,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -226,10 +225,10 @@ return $default(_that.publicCode,_that.email,_that.status,_that.ageGroup,_that.g
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? publicCode,  String? email,  UserStatus? status,  AgeGroup? ageGroup,  DateTime? guardianVerifiedAt,  dynamic name,  String? birthDate,  Gender? gender,  String? phone,  bool pushEnabled,  int trustScore,  TrustGrade trustGrade,  String trustGradeLabel,  int completedContractCount,  int warrantyProvidedCount,  int fraudReportReceivedCount,  List<DeviceTokenEntity> devices,  bool isLoading,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? publicCode,  String? email,  UserStatus? status,  AgeGroup? ageGroup,  DateTime? guardianVerifiedAt,  dynamic name,  String? birthDate,  Gender? gender,  String? phone,  bool pushEnabled,  int trustScore,  TrustGrade trustGrade,  String trustGradeLabel,  int completedContractCount,  int warrantyProvidedCount,  int fraudReportReceivedCount,  List<DeviceTokenEntity> devices,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _MyPageState() when $default != null:
-return $default(_that.publicCode,_that.email,_that.status,_that.ageGroup,_that.guardianVerifiedAt,_that.name,_that.birthDate,_that.gender,_that.phone,_that.pushEnabled,_that.trustScore,_that.trustGrade,_that.trustGradeLabel,_that.completedContractCount,_that.warrantyProvidedCount,_that.fraudReportReceivedCount,_that.devices,_that.isLoading,_that.error);case _:
+return $default(_that.publicCode,_that.email,_that.status,_that.ageGroup,_that.guardianVerifiedAt,_that.name,_that.birthDate,_that.gender,_that.phone,_that.pushEnabled,_that.trustScore,_that.trustGrade,_that.trustGradeLabel,_that.completedContractCount,_that.warrantyProvidedCount,_that.fraudReportReceivedCount,_that.devices,_that.error);case _:
   return null;
 
 }
@@ -241,7 +240,7 @@ return $default(_that.publicCode,_that.email,_that.status,_that.ageGroup,_that.g
 
 
 class _MyPageState extends MyPageState {
-  const _MyPageState({this.publicCode, this.email, this.status, this.ageGroup, this.guardianVerifiedAt, this.name = '트라나', this.birthDate, this.gender, this.phone, this.pushEnabled = true, this.trustScore = 35, this.trustGrade = TrustGrade.normal, this.trustGradeLabel = '일반', this.completedContractCount = 0, this.warrantyProvidedCount = 0, this.fraudReportReceivedCount = 0, final  List<DeviceTokenEntity> devices = const [], this.isLoading = false, this.error}): _devices = devices,super._();
+  const _MyPageState({this.publicCode, this.email, this.status, this.ageGroup, this.guardianVerifiedAt, this.name = '트라나', this.birthDate, this.gender, this.phone, this.pushEnabled = true, this.trustScore = 35, this.trustGrade = TrustGrade.normal, this.trustGradeLabel = '일반', this.completedContractCount = 0, this.warrantyProvidedCount = 0, this.fraudReportReceivedCount = 0, final  List<DeviceTokenEntity> devices = const [], this.error}): _devices = devices,super._();
   
 
 @override final  String? publicCode;
@@ -285,7 +284,6 @@ class _MyPageState extends MyPageState {
 }
 
 // 기기 목록
-@override@JsonKey() final  bool isLoading;
 @override final  String? error;
 
 /// Create a copy of MyPageState
@@ -298,16 +296,16 @@ _$MyPageStateCopyWith<_MyPageState> get copyWith => __$MyPageStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyPageState&&(identical(other.publicCode, publicCode) || other.publicCode == publicCode)&&(identical(other.email, email) || other.email == email)&&(identical(other.status, status) || other.status == status)&&(identical(other.ageGroup, ageGroup) || other.ageGroup == ageGroup)&&(identical(other.guardianVerifiedAt, guardianVerifiedAt) || other.guardianVerifiedAt == guardianVerifiedAt)&&const DeepCollectionEquality().equals(other.name, name)&&(identical(other.birthDate, birthDate) || other.birthDate == birthDate)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.pushEnabled, pushEnabled) || other.pushEnabled == pushEnabled)&&(identical(other.trustScore, trustScore) || other.trustScore == trustScore)&&(identical(other.trustGrade, trustGrade) || other.trustGrade == trustGrade)&&(identical(other.trustGradeLabel, trustGradeLabel) || other.trustGradeLabel == trustGradeLabel)&&(identical(other.completedContractCount, completedContractCount) || other.completedContractCount == completedContractCount)&&(identical(other.warrantyProvidedCount, warrantyProvidedCount) || other.warrantyProvidedCount == warrantyProvidedCount)&&(identical(other.fraudReportReceivedCount, fraudReportReceivedCount) || other.fraudReportReceivedCount == fraudReportReceivedCount)&&const DeepCollectionEquality().equals(other._devices, _devices)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MyPageState&&(identical(other.publicCode, publicCode) || other.publicCode == publicCode)&&(identical(other.email, email) || other.email == email)&&(identical(other.status, status) || other.status == status)&&(identical(other.ageGroup, ageGroup) || other.ageGroup == ageGroup)&&(identical(other.guardianVerifiedAt, guardianVerifiedAt) || other.guardianVerifiedAt == guardianVerifiedAt)&&const DeepCollectionEquality().equals(other.name, name)&&(identical(other.birthDate, birthDate) || other.birthDate == birthDate)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.pushEnabled, pushEnabled) || other.pushEnabled == pushEnabled)&&(identical(other.trustScore, trustScore) || other.trustScore == trustScore)&&(identical(other.trustGrade, trustGrade) || other.trustGrade == trustGrade)&&(identical(other.trustGradeLabel, trustGradeLabel) || other.trustGradeLabel == trustGradeLabel)&&(identical(other.completedContractCount, completedContractCount) || other.completedContractCount == completedContractCount)&&(identical(other.warrantyProvidedCount, warrantyProvidedCount) || other.warrantyProvidedCount == warrantyProvidedCount)&&(identical(other.fraudReportReceivedCount, fraudReportReceivedCount) || other.fraudReportReceivedCount == fraudReportReceivedCount)&&const DeepCollectionEquality().equals(other._devices, _devices)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,publicCode,email,status,ageGroup,guardianVerifiedAt,const DeepCollectionEquality().hash(name),birthDate,gender,phone,pushEnabled,trustScore,trustGrade,trustGradeLabel,completedContractCount,warrantyProvidedCount,fraudReportReceivedCount,const DeepCollectionEquality().hash(_devices),isLoading,error]);
+int get hashCode => Object.hash(runtimeType,publicCode,email,status,ageGroup,guardianVerifiedAt,const DeepCollectionEquality().hash(name),birthDate,gender,phone,pushEnabled,trustScore,trustGrade,trustGradeLabel,completedContractCount,warrantyProvidedCount,fraudReportReceivedCount,const DeepCollectionEquality().hash(_devices),error);
 
 @override
 String toString() {
-  return 'MyPageState(publicCode: $publicCode, email: $email, status: $status, ageGroup: $ageGroup, guardianVerifiedAt: $guardianVerifiedAt, name: $name, birthDate: $birthDate, gender: $gender, phone: $phone, pushEnabled: $pushEnabled, trustScore: $trustScore, trustGrade: $trustGrade, trustGradeLabel: $trustGradeLabel, completedContractCount: $completedContractCount, warrantyProvidedCount: $warrantyProvidedCount, fraudReportReceivedCount: $fraudReportReceivedCount, devices: $devices, isLoading: $isLoading, error: $error)';
+  return 'MyPageState(publicCode: $publicCode, email: $email, status: $status, ageGroup: $ageGroup, guardianVerifiedAt: $guardianVerifiedAt, name: $name, birthDate: $birthDate, gender: $gender, phone: $phone, pushEnabled: $pushEnabled, trustScore: $trustScore, trustGrade: $trustGrade, trustGradeLabel: $trustGradeLabel, completedContractCount: $completedContractCount, warrantyProvidedCount: $warrantyProvidedCount, fraudReportReceivedCount: $fraudReportReceivedCount, devices: $devices, error: $error)';
 }
 
 
@@ -318,7 +316,7 @@ abstract mixin class _$MyPageStateCopyWith<$Res> implements $MyPageStateCopyWith
   factory _$MyPageStateCopyWith(_MyPageState value, $Res Function(_MyPageState) _then) = __$MyPageStateCopyWithImpl;
 @override @useResult
 $Res call({
- String? publicCode, String? email, UserStatus? status, AgeGroup? ageGroup, DateTime? guardianVerifiedAt, dynamic name, String? birthDate, Gender? gender, String? phone, bool pushEnabled, int trustScore, TrustGrade trustGrade, String trustGradeLabel, int completedContractCount, int warrantyProvidedCount, int fraudReportReceivedCount, List<DeviceTokenEntity> devices, bool isLoading, String? error
+ String? publicCode, String? email, UserStatus? status, AgeGroup? ageGroup, DateTime? guardianVerifiedAt, dynamic name, String? birthDate, Gender? gender, String? phone, bool pushEnabled, int trustScore, TrustGrade trustGrade, String trustGradeLabel, int completedContractCount, int warrantyProvidedCount, int fraudReportReceivedCount, List<DeviceTokenEntity> devices, String? error
 });
 
 
@@ -335,7 +333,7 @@ class __$MyPageStateCopyWithImpl<$Res>
 
 /// Create a copy of MyPageState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? publicCode = freezed,Object? email = freezed,Object? status = freezed,Object? ageGroup = freezed,Object? guardianVerifiedAt = freezed,Object? name = freezed,Object? birthDate = freezed,Object? gender = freezed,Object? phone = freezed,Object? pushEnabled = null,Object? trustScore = null,Object? trustGrade = null,Object? trustGradeLabel = null,Object? completedContractCount = null,Object? warrantyProvidedCount = null,Object? fraudReportReceivedCount = null,Object? devices = null,Object? isLoading = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? publicCode = freezed,Object? email = freezed,Object? status = freezed,Object? ageGroup = freezed,Object? guardianVerifiedAt = freezed,Object? name = freezed,Object? birthDate = freezed,Object? gender = freezed,Object? phone = freezed,Object? pushEnabled = null,Object? trustScore = null,Object? trustGrade = null,Object? trustGradeLabel = null,Object? completedContractCount = null,Object? warrantyProvidedCount = null,Object? fraudReportReceivedCount = null,Object? devices = null,Object? error = freezed,}) {
   return _then(_MyPageState(
 publicCode: freezed == publicCode ? _self.publicCode : publicCode // ignore: cast_nullable_to_non_nullable
 as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
@@ -354,8 +352,7 @@ as String,completedContractCount: null == completedContractCount ? _self.complet
 as int,warrantyProvidedCount: null == warrantyProvidedCount ? _self.warrantyProvidedCount : warrantyProvidedCount // ignore: cast_nullable_to_non_nullable
 as int,fraudReportReceivedCount: null == fraudReportReceivedCount ? _self.fraudReportReceivedCount : fraudReportReceivedCount // ignore: cast_nullable_to_non_nullable
 as int,devices: null == devices ? _self._devices : devices // ignore: cast_nullable_to_non_nullable
-as List<DeviceTokenEntity>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as List<DeviceTokenEntity>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

@@ -30,13 +30,13 @@ abstract class TestUserEntity with _$TestUserEntity {
 @Riverpod(keepAlive: true)
 class TestUser extends _$TestUser {
   // 유저
-  // static const adult = 'TST-ADL-A01'; // 성인1
-  static const adult = 'TST-ADL-B01'; // 성인2
+  static const adult = 'TST-ADL-A01'; // 성인1
+  // static const adult = 'TST-ADL-B01'; // 성인2
   static const minor = 'TST-MIN-C01'; // 미성년자1
   // static const minor = 'TST-MIN-D01'; // 미성년자2
 
   // 테스트용 초대 토큰 붙여넣기
-  final invitationToken = "5FQwytQvJQ1gV6Uz7OhLA";
+  final invitationToken = "pcyX9tT65TTtFzqvPTDHd";
 
   @override
   TestUserEntity? build() => null;

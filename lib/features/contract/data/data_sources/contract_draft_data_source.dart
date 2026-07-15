@@ -23,19 +23,8 @@ class ContractDraftDataSource {
   }
 
   /// POST 계약 Draft 생성
-  Future<ContractDraftDto> createDraft({
-    String? deliveryType,
-    String? creatorRole,
-    String? consentType,
-  }) async {
-    final response = await dio.post<Map<String, dynamic>>(
-      '/v1/contracts',
-      data: {
-        'deliveryType': deliveryType,
-        'creatorRole': creatorRole,
-        'consentType': consentType,
-      }..removeWhere((_, value) => value == null),
-    );
+  Future<ContractDraftDto> createDraft() async {
+    final response = await dio.post<Map<String, dynamic>>('/v1/contracts');
     return ContractDraftDto.fromJson(response.data!);
   }
 

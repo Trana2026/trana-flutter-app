@@ -17,7 +17,9 @@ mixin _$NotificationState {
  List<NotificationEntity> get notifications;// 알림 목록
  int get page;// 마지막으로 불러온 페이지
  bool get hasNext;// 다음 페이지 존재 여부
- bool get isLoading; String? get error;
+ bool get isLoadingNotis;// 최초 목록 로드 중 여부
+ bool get isLoadingMoreNotis;// 추가 목록 로드 중 여부
+ String? get error;
 /// Create a copy of NotificationState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +30,16 @@ $NotificationStateCopyWith<NotificationState> get copyWith => _$NotificationStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationState&&const DeepCollectionEquality().equals(other.notifications, notifications)&&(identical(other.page, page) || other.page == page)&&(identical(other.hasNext, hasNext) || other.hasNext == hasNext)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationState&&const DeepCollectionEquality().equals(other.notifications, notifications)&&(identical(other.page, page) || other.page == page)&&(identical(other.hasNext, hasNext) || other.hasNext == hasNext)&&(identical(other.isLoadingNotis, isLoadingNotis) || other.isLoadingNotis == isLoadingNotis)&&(identical(other.isLoadingMoreNotis, isLoadingMoreNotis) || other.isLoadingMoreNotis == isLoadingMoreNotis)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(notifications),page,hasNext,isLoading,error);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(notifications),page,hasNext,isLoadingNotis,isLoadingMoreNotis,error);
 
 @override
 String toString() {
-  return 'NotificationState(notifications: $notifications, page: $page, hasNext: $hasNext, isLoading: $isLoading, error: $error)';
+  return 'NotificationState(notifications: $notifications, page: $page, hasNext: $hasNext, isLoadingNotis: $isLoadingNotis, isLoadingMoreNotis: $isLoadingMoreNotis, error: $error)';
 }
 
 
@@ -48,7 +50,7 @@ abstract mixin class $NotificationStateCopyWith<$Res>  {
   factory $NotificationStateCopyWith(NotificationState value, $Res Function(NotificationState) _then) = _$NotificationStateCopyWithImpl;
 @useResult
 $Res call({
- List<NotificationEntity> notifications, int page, bool hasNext, bool isLoading, String? error
+ List<NotificationEntity> notifications, int page, bool hasNext, bool isLoadingNotis, bool isLoadingMoreNotis, String? error
 });
 
 
@@ -65,12 +67,13 @@ class _$NotificationStateCopyWithImpl<$Res>
 
 /// Create a copy of NotificationState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? notifications = null,Object? page = null,Object? hasNext = null,Object? isLoading = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? notifications = null,Object? page = null,Object? hasNext = null,Object? isLoadingNotis = null,Object? isLoadingMoreNotis = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
 notifications: null == notifications ? _self.notifications : notifications // ignore: cast_nullable_to_non_nullable
 as List<NotificationEntity>,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
 as int,hasNext: null == hasNext ? _self.hasNext : hasNext // ignore: cast_nullable_to_non_nullable
-as bool,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as bool,isLoadingNotis: null == isLoadingNotis ? _self.isLoadingNotis : isLoadingNotis // ignore: cast_nullable_to_non_nullable
+as bool,isLoadingMoreNotis: null == isLoadingMoreNotis ? _self.isLoadingMoreNotis : isLoadingMoreNotis // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -157,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<NotificationEntity> notifications,  int page,  bool hasNext,  bool isLoading,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<NotificationEntity> notifications,  int page,  bool hasNext,  bool isLoadingNotis,  bool isLoadingMoreNotis,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NotificationState() when $default != null:
-return $default(_that.notifications,_that.page,_that.hasNext,_that.isLoading,_that.error);case _:
+return $default(_that.notifications,_that.page,_that.hasNext,_that.isLoadingNotis,_that.isLoadingMoreNotis,_that.error);case _:
   return orElse();
 
 }
@@ -178,10 +181,10 @@ return $default(_that.notifications,_that.page,_that.hasNext,_that.isLoading,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<NotificationEntity> notifications,  int page,  bool hasNext,  bool isLoading,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<NotificationEntity> notifications,  int page,  bool hasNext,  bool isLoadingNotis,  bool isLoadingMoreNotis,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _NotificationState():
-return $default(_that.notifications,_that.page,_that.hasNext,_that.isLoading,_that.error);case _:
+return $default(_that.notifications,_that.page,_that.hasNext,_that.isLoadingNotis,_that.isLoadingMoreNotis,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +201,10 @@ return $default(_that.notifications,_that.page,_that.hasNext,_that.isLoading,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<NotificationEntity> notifications,  int page,  bool hasNext,  bool isLoading,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<NotificationEntity> notifications,  int page,  bool hasNext,  bool isLoadingNotis,  bool isLoadingMoreNotis,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _NotificationState() when $default != null:
-return $default(_that.notifications,_that.page,_that.hasNext,_that.isLoading,_that.error);case _:
+return $default(_that.notifications,_that.page,_that.hasNext,_that.isLoadingNotis,_that.isLoadingMoreNotis,_that.error);case _:
   return null;
 
 }
@@ -212,8 +215,8 @@ return $default(_that.notifications,_that.page,_that.hasNext,_that.isLoading,_th
 /// @nodoc
 
 
-class _NotificationState implements NotificationState {
-  const _NotificationState({final  List<NotificationEntity> notifications = const [], this.page = 0, this.hasNext = true, this.isLoading = false, this.error}): _notifications = notifications;
+class _NotificationState extends NotificationState {
+  const _NotificationState({final  List<NotificationEntity> notifications = const [], this.page = 0, this.hasNext = false, this.isLoadingNotis = false, this.isLoadingMoreNotis = false, this.error}): _notifications = notifications,super._();
   
 
  final  List<NotificationEntity> _notifications;
@@ -228,7 +231,10 @@ class _NotificationState implements NotificationState {
 // 마지막으로 불러온 페이지
 @override@JsonKey() final  bool hasNext;
 // 다음 페이지 존재 여부
-@override@JsonKey() final  bool isLoading;
+@override@JsonKey() final  bool isLoadingNotis;
+// 최초 목록 로드 중 여부
+@override@JsonKey() final  bool isLoadingMoreNotis;
+// 추가 목록 로드 중 여부
 @override final  String? error;
 
 /// Create a copy of NotificationState
@@ -241,16 +247,16 @@ _$NotificationStateCopyWith<_NotificationState> get copyWith => __$NotificationS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NotificationState&&const DeepCollectionEquality().equals(other._notifications, _notifications)&&(identical(other.page, page) || other.page == page)&&(identical(other.hasNext, hasNext) || other.hasNext == hasNext)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NotificationState&&const DeepCollectionEquality().equals(other._notifications, _notifications)&&(identical(other.page, page) || other.page == page)&&(identical(other.hasNext, hasNext) || other.hasNext == hasNext)&&(identical(other.isLoadingNotis, isLoadingNotis) || other.isLoadingNotis == isLoadingNotis)&&(identical(other.isLoadingMoreNotis, isLoadingMoreNotis) || other.isLoadingMoreNotis == isLoadingMoreNotis)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_notifications),page,hasNext,isLoading,error);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_notifications),page,hasNext,isLoadingNotis,isLoadingMoreNotis,error);
 
 @override
 String toString() {
-  return 'NotificationState(notifications: $notifications, page: $page, hasNext: $hasNext, isLoading: $isLoading, error: $error)';
+  return 'NotificationState(notifications: $notifications, page: $page, hasNext: $hasNext, isLoadingNotis: $isLoadingNotis, isLoadingMoreNotis: $isLoadingMoreNotis, error: $error)';
 }
 
 
@@ -261,7 +267,7 @@ abstract mixin class _$NotificationStateCopyWith<$Res> implements $NotificationS
   factory _$NotificationStateCopyWith(_NotificationState value, $Res Function(_NotificationState) _then) = __$NotificationStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<NotificationEntity> notifications, int page, bool hasNext, bool isLoading, String? error
+ List<NotificationEntity> notifications, int page, bool hasNext, bool isLoadingNotis, bool isLoadingMoreNotis, String? error
 });
 
 
@@ -278,12 +284,13 @@ class __$NotificationStateCopyWithImpl<$Res>
 
 /// Create a copy of NotificationState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? notifications = null,Object? page = null,Object? hasNext = null,Object? isLoading = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? notifications = null,Object? page = null,Object? hasNext = null,Object? isLoadingNotis = null,Object? isLoadingMoreNotis = null,Object? error = freezed,}) {
   return _then(_NotificationState(
 notifications: null == notifications ? _self._notifications : notifications // ignore: cast_nullable_to_non_nullable
 as List<NotificationEntity>,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
 as int,hasNext: null == hasNext ? _self.hasNext : hasNext // ignore: cast_nullable_to_non_nullable
-as bool,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as bool,isLoadingNotis: null == isLoadingNotis ? _self.isLoadingNotis : isLoadingNotis // ignore: cast_nullable_to_non_nullable
+as bool,isLoadingMoreNotis: null == isLoadingMoreNotis ? _self.isLoadingMoreNotis : isLoadingMoreNotis // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

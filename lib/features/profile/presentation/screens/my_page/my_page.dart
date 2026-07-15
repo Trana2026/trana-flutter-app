@@ -37,6 +37,7 @@ class MyPage extends HookConsumerWidget {
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
+        // 마이페이지 정보 로드
         final success = await mypageVM.loadData();
         if (!context.mounted) return;
         if (!success) {

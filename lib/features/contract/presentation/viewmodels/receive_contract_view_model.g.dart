@@ -42,7 +42,7 @@ final class ReceiveContractViewModelProvider
 }
 
 String _$receiveContractViewModelHash() =>
-    r'b19ba671cf093537ce8fcc62008513aa29e7d1f4';
+    r'7621e69a23f1d7710a56c29a7a59724c7c0987c4';
 
 abstract class _$ReceiveContractViewModel
     extends $Notifier<ReceiveContractState> {

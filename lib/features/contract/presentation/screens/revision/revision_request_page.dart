@@ -6,6 +6,7 @@ import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/widgets/custom_app_bar.dart';
+import 'package:trana/core/widgets/custom_bottom_sheet.dart';
 import 'package:trana/features/contract/presentation/screens/revision/widgets/contract_pages_view.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/revision_request_bottom_sheet.dart';
 
@@ -46,14 +47,9 @@ class RevisionRequestPage extends HookConsumerWidget {
                   if (isPending.value) return;
                   isPending.value = true;
                   try {
-                    await showModalBottomSheet<void>(
-                      context: context,
-                      barrierColor: const Color(
-                        0xFF000000,
-                      ).withValues(alpha: 0.75),
-                      backgroundColor: Colors.transparent,
-                      isScrollControlled: true,
-                      builder: (_) => const RevisionRequestBottomSheet(),
+                    await showCustomBottomSheet<void>(
+                      context,
+                      const RevisionRequestBottomSheet(),
                     );
                   } finally {
                     isPending.value = false;

@@ -6,7 +6,6 @@ import 'package:trana/core/utils/enum_extensions.dart';
 import 'package:trana/features/contract/data/data_sources/contract_draft_data_source.dart';
 import 'package:trana/features/contract/data/mappers/contract_draft_mapper.dart';
 import 'package:trana/features/contract/domain/entities/contract_draft_entity.dart';
-import 'package:trana/features/contract/domain/enums/consent_type.dart';
 import 'package:trana/features/contract/domain/enums/delivery_type.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/domain/repositories/contract_draft_repository.dart';
@@ -17,17 +16,9 @@ class ContractDraftRepositoryImpl implements ContractDraftRepository {
   final ContractDraftDataSource dataSource;
 
   @override
-  Future<Result<ContractDraftEntity>> createDraft({
-    DeliveryType? deliveryType,
-    Role? creatorRole,
-    ConsentType? consentType,
-  }) async {
+  Future<Result<ContractDraftEntity>> createDraft() async {
     try {
-      final dto = await dataSource.createDraft(
-        deliveryType: deliveryType?.apiString,
-        creatorRole: creatorRole?.apiString,
-        consentType: consentType?.apiString,
-      );
+      final dto = await dataSource.createDraft();
       return Success(dto.toEntity());
     } on DioException catch (e) {
       if (e.response?.statusCode == 403) {

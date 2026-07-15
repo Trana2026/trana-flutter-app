@@ -42,7 +42,7 @@ final class UserConsentViewModelProvider
 }
 
 String _$userConsentViewModelHash() =>
-    r'9d9c2a0fefa422e1b2b4489e49c677cefd6e56d2';
+    r'0be472d653a664477ea730d83d5f16c60a3f727c';
 
 abstract class _$UserConsentViewModel extends $Notifier<UserConsentState> {
   UserConsentState build();

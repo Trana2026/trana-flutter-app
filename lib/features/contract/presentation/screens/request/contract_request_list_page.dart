@@ -22,8 +22,7 @@ class ContractRequestListPage extends HookConsumerWidget {
       body: ListView.builder(
         padding: const EdgeInsets.all(20),
         itemCount: homeState.requestedContracts.length,
-        itemBuilder: (_, index) =>
-            ContractCard(c: homeState.requestedContracts[index]),
+        itemBuilder: (_, i) => ContractCard(c: homeState.requestedContracts[i]),
       ),
     );
   }

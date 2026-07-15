@@ -19,7 +19,6 @@ abstract class InquiryState with _$InquiryState {
     @Default('') String title, // 문의 제목 입력값
     @Default('') String content, // 문의 내용 입력값
 
-    @Default(false) bool isLoading,
     String? error,
   }) = _InquiryState;
 }
@@ -33,18 +32,13 @@ class InquiryViewModel extends _$InquiryViewModel {
 
   /// 문의 전체 조회 (성공 여부 반환)
   Future<bool> readInquiries() async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(userInquiryRepositoryProvider)
         .readInquiries();
 
     state = switch (result) {
-      Success(:final data) => state.copyWith(isLoading: false, inquiries: data),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
+      Success(:final data) => state.copyWith(inquiries: data),
+      Failure(:final failure) => state.copyWith(error: failure.message),
     };
 
     return result is Success;
@@ -52,21 +46,13 @@ class InquiryViewModel extends _$InquiryViewModel {
 
   /// 선택된 문의 상세 조회 (성공 여부 반환)
   Future<bool> readInquiryDetail(String publicCode) async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(userInquiryRepositoryProvider)
         .readInquiryDetail(publicCode);
 
     state = switch (result) {
-      Success(:final data) => state.copyWith(
-        isLoading: false,
-        selectedInquiryDetail: data,
-      ),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
+      Success(:final data) => state.copyWith(selectedInquiryDetail: data),
+      Failure(:final failure) => state.copyWith(error: failure.message),
     };
 
     return result is Success;
@@ -83,8 +69,6 @@ class InquiryViewModel extends _$InquiryViewModel {
 
   /// 문의 작성 (성공 여부 반환)
   Future<bool> createInquiry() async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(userInquiryRepositoryProvider)
         .createInquiry(
@@ -93,13 +77,9 @@ class InquiryViewModel extends _$InquiryViewModel {
           content: state.content,
         );
 
-    state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
+    if (result case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+    }
 
     await readInquiries();
 

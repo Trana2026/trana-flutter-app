@@ -9,9 +9,7 @@ import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 
 class ContractCompletionBottomSheet extends HookConsumerWidget {
-  final BuildContext parentContext;
-
-  const ContractCompletionBottomSheet({super.key, required this.parentContext});
+  const ContractCompletionBottomSheet({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,7 +53,7 @@ class ContractCompletionBottomSheet extends HookConsumerWidget {
           Row(
             children: [
               Expanded(
-                child: PrimaryButton(
+                child: PrimaryButton.mono(
                   text: "홈으로 돌아가기",
                   onTap: () {
                     Navigator.of(context).popUntil(
@@ -65,16 +63,14 @@ class ContractCompletionBottomSheet extends HookConsumerWidget {
                     );
                     context.go(AppRoutes.home);
                   },
-                  backgroundColor: vrc(context).secondaryColor!,
-                  foregroundColor: vrc(context).textPrimary!,
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: PrimaryButton(
+                child: PrimaryButton.brand(
                   text: "요청하기",
                   onTap: () async {
-                    Navigator.of(parentContext).popUntil(
+                    Navigator.of(context).popUntil(
                       (route) =>
                           route is! MaterialPageRoute &&
                           route is! ModalBottomSheetRoute,
@@ -84,8 +80,6 @@ class ContractCompletionBottomSheet extends HookConsumerWidget {
                       extra: createState.publicCode,
                     );
                   },
-                  backgroundColor: fxc(context).brandColor!,
-                  foregroundColor: fxc(context).textBrand!,
                 ),
               ),
             ],

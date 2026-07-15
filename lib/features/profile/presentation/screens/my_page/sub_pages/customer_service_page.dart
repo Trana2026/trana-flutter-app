@@ -114,11 +114,10 @@ class CustomerServicePage extends HookConsumerWidget {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: PrimaryButton(
+          child: PrimaryButton.brand(
             text: "문의하기",
+            disabled: !isEnabled,
             onTap: () async {
-              if (!isEnabled) return;
-
               emailError.value = Validation.email(emailCtr.text);
               if (emailError.value != null) return;
 
@@ -128,6 +127,7 @@ class CustomerServicePage extends HookConsumerWidget {
                 content: contentCtr.text,
               );
 
+              // 문의 작성
               final success = await inquiryVM.createInquiry();
               if (!context.mounted) return;
               if (!success) {
@@ -140,12 +140,6 @@ class CustomerServicePage extends HookConsumerWidget {
               context.pop();
               context.push(AppRoutes.inquiryHistory);
             },
-            backgroundColor: isEnabled
-                ? fxc(context).brandColor!
-                : vrc(context).disableColor!,
-            foregroundColor: isEnabled
-                ? fxc(context).textBrand!
-                : vrc(context).textDisable!,
           ),
         ),
       ),

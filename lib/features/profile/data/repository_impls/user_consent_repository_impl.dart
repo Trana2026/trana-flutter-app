@@ -19,7 +19,7 @@ class UserConsentRepositoryImpl implements UserConsentRepository {
       return Success(dtos.map((dto) => dto.toEntity()).toList());
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
-        return const Failure(ForbiddenFailure('잘못된 토큰입니다.'));
+        return const Failure(UnauthorizedFailure('잘못된 토큰입니다.'));
       }
       return Failure(e.toFailure());
     } catch (e) {

@@ -103,6 +103,7 @@ class _DeviceListItem extends HookConsumerWidget {
           else
             GestureDetector(
               onTap: () async {
+                // 기기 강제 해제
                 final success = await deviceVM.disconnect(device.id);
                 if (!context.mounted) return;
                 if (!success) {

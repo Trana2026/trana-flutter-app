@@ -18,6 +18,7 @@ class InquiryHistoryPage extends HookConsumerWidget {
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
+        // 문의 전체 목록 조회
         final success = await inquiryVM.readInquiries();
         if (!context.mounted) return;
         if (!success) {

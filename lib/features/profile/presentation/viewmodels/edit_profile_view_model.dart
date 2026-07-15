@@ -16,7 +16,6 @@ abstract class EditProfileState with _$EditProfileState {
     Gender? gender, // 성별 선택값
     @Default('') String email, // 이메일 입력값
 
-    @Default(false) bool isLoading,
     String? error,
   }) = _EditProfileState;
 }
@@ -36,22 +35,16 @@ class EditProfileViewModel extends _$EditProfileViewModel {
 
   /// 본인 정보 수정 (성공 여부 반환)
   Future<bool> updateProfile() async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(userInfoRepositoryProvider)
         .updateProfile(email: state.email, gender: state.gender);
 
     state = switch (result) {
       Success(:final data) => state.copyWith(
-        isLoading: false,
         email: data.email ?? '',
         gender: data.gender,
       ),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
+      Failure(:final failure) => state.copyWith(error: failure.message),
     };
 
     await _refresh();

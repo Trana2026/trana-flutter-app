@@ -29,8 +29,8 @@ class PendingContractPage extends HookConsumerWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.zero,
                 itemCount: homeState.pendingContracts.length,
-                itemBuilder: (_, index) =>
-                    ContractCard(c: homeState.pendingContracts[index]),
+                itemBuilder: (_, i) =>
+                    ContractCard(c: homeState.pendingContracts[i]),
               ),
             ),
     );
