@@ -38,9 +38,9 @@ class ContractDetailHeader extends HookConsumerWidget {
                   const SizedBox(height: 4),
                   Text(
                     status.statusLabel(
-                      detailState.isCreator,
-                      isMyCancel,
-                      revisionDone,
+                      isCreator: detailState.isCreator,
+                      isMyCancel: isMyCancel,
+                      revisionDone: revisionDone,
                     ),
                     style: context.txt(
                       color: status.statusColor(context),

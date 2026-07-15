@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_app_bar.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/widgets/inquiry_list_item.dart';
 import 'package:trana/features/profile/presentation/viewmodels/inquiry_view_model.dart';
 
@@ -17,7 +18,14 @@ class InquiryHistoryPage extends HookConsumerWidget {
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        inquiryVM.readInquiries();
+        // 문의 전체 목록 조회
+        final success = await inquiryVM.readInquiries();
+        if (!context.mounted) return;
+        if (!success) {
+          final state = ref.read(inquiryViewModelProvider);
+          showErrorToast(context, state.error!);
+          inquiryVM.clearError();
+        }
       });
       return null;
     }, []);

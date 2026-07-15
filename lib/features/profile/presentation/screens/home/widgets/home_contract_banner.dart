@@ -8,22 +8,16 @@ import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
-import 'package:trana/features/contract/presentation/viewmodels/guardian_link_view_model.dart';
-import 'package:trana/features/contract/presentation/widgets/modals/guardian_consent_sign_dialog.dart';
 import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
-import 'package:trana/features/user/presentation/providers/me_provider.dart';
 
 class HomeContractBanner extends ConsumerWidget {
   const HomeContractBanner({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final me = ref.read(meProvider).value;
-    final isMinor = me?.ageGroup == 'MINOR';
-
     final homeState = ref.watch(homeContractViewModelProvider);
-    final detailState = ref.watch(detailContractViewModelProvider);
     final detailVM = ref.read(detailContractViewModelProvider.notifier);
+
     final count = homeState.requestedContracts.length;
     final status = homeState.requestedContracts.first.status;
 
@@ -50,6 +44,7 @@ class HomeContractBanner extends ConsumerWidget {
           return;
         }
 
+        // 계약 상세 정보 로드
         final success = await detailVM.loadDetail(
           homeState.requestedContracts.first.publicCode,
         );
@@ -62,25 +57,7 @@ class HomeContractBanner extends ConsumerWidget {
         }
 
         if (status == ContractStatus.shared) {
-          if (isMinor) {
-            // 이미 인증 완료이면 바로 페이지 이동
-            final guardianState = ref.read(guardianLinkViewModelProvider);
-            if (guardianState.isConsented) {
-              detailState.isCreator
-                  ? context.go(AppRoutes.selectRole)
-                  : context.go(AppRoutes.requestDetail);
-              return;
-            }
-
-            showDialog(
-              barrierColor: Colors.black.withValues(alpha: 0.75),
-              context: context,
-              builder: (context) =>
-                  const GuardianConsentSignDialog(isCreator: false),
-            );
-          } else {
-            context.push(AppRoutes.requestDetail);
-          }
+          context.push(AppRoutes.requestDetail);
         } else if (status == ContractStatus.revisionRequested ||
             status == ContractStatus.cancelRequested) {
           context.push(AppRoutes.contractDetail);

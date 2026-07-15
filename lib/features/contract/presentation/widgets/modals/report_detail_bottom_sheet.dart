@@ -16,12 +16,11 @@ class ReportDetailBottomSheet extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final reportState = ref.watch(reportContractViewModelProvider);
 
-    final reasonCtr = useTextEditingController(
-      text: reportState.recentReport?.reason,
-    );
-    final detailCtr = useTextEditingController(
-      text: reportState.recentReport?.detail,
-    );
+    final initialReason = reportState.recentReport?.reason;
+    final initialDetail = reportState.recentReport?.detail;
+
+    final reasonCtr = useTextEditingController(text: initialReason);
+    final detailCtr = useTextEditingController(text: initialDetail);
 
     return Container(
       height: 320,
@@ -119,11 +118,9 @@ class ReportDetailBottomSheet extends HookConsumerWidget {
                         ),
                         const SizedBox(height: 20),
                         SafeArea(
-                          child: PrimaryButton(
+                          child: PrimaryButton.mono(
                             text: "확인",
                             onTap: () => context.pop(),
-                            backgroundColor: vrc(context).secondaryColor!,
-                            foregroundColor: vrc(context).textPrimary!,
                           ),
                         ),
                       ],

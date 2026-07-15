@@ -42,7 +42,7 @@ final class DeleteContractViewModelProvider
 }
 
 String _$deleteContractViewModelHash() =>
-    r'5087db01cd1246e51922783f9f7572d991cb3482';
+    r'8267f3078c6b54da03e676b759a108dda372cfef';
 
 abstract class _$DeleteContractViewModel
     extends $Notifier<DeleteContractState> {

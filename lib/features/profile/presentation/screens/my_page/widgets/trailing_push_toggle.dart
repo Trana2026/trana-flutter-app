@@ -20,6 +20,7 @@ class TrailingPushToggle extends HookConsumerWidget {
         child: CupertinoSwitch(
           value: mypageState.pushEnabled,
           onChanged: (v) async {
+            // 푸시 알림 토글
             final success = await mypageVM.togglePushEnagled(v);
             if (!context.mounted) return;
             if (!success) {

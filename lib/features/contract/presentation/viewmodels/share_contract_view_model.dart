@@ -20,7 +20,6 @@ abstract class ShareContractState with _$ShareContractState {
     @Default('') String receiverName, // 수신자 이름 입력값
     @Default('') String receiverPhone, // 수신자 번호 입력값
 
-    @Default(false) bool isLoading,
     String? error,
   }) = _ShareContractState;
 }
@@ -46,8 +45,6 @@ class ShareContractViewModel extends _$ShareContractViewModel {
       return false;
     }
 
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(contractLifecycleRepositoryProvider)
         .share(
@@ -56,13 +53,9 @@ class ShareContractViewModel extends _$ShareContractViewModel {
           receiverPhone: state.receiverPhone,
         );
 
-    state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
+    if (result case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+    }
 
     if (result is Success) {
       await _refresh(publicCode);
@@ -73,19 +66,13 @@ class ShareContractViewModel extends _$ShareContractViewModel {
 
   /// 수정 요청 상태 서명 요청 + 알림톡 발송
   Future<bool> reshare(String publicCode) async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(contractLifecycleRepositoryProvider)
         .reshare(publicCode);
 
-    state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
+    if (result case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+    }
 
     if (result is Success) {
       await _refresh(publicCode);

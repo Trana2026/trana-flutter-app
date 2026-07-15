@@ -26,6 +26,13 @@ class ContractCancellationDataSource {
     );
   }
 
+  /// POST 취소 요청 취소 (204)
+  Future<void> revokeCancellation(String publicCode) async {
+    await dio.post<void>(
+      '/v1/contracts/$publicCode/cancellation-requests/revoke',
+    );
+  }
+
   /// GET 활성 취소 요청 조회 (200 = 존재, 204 = 없음)
   Future<ContractCancellationDto?> readActiveCancellation(
     String publicCode,

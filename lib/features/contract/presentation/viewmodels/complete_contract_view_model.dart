@@ -13,7 +13,6 @@ part 'complete_contract_view_model.g.dart';
 @freezed
 abstract class CompleteContractState with _$CompleteContractState {
   const factory CompleteContractState({
-    @Default(false) bool isLoading,
     String? error,
   }) = _CompleteContractState;
 }
@@ -27,19 +26,13 @@ class CompleteContractViewModel extends _$CompleteContractViewModel {
 
   /// 거래 완료 (성공 여부 반환)
   Future<bool> complete(String publicCode) async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(contractLifecycleRepositoryProvider)
         .confirmCompletion(publicCode);
 
-    state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
+    if (result case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+    }
 
     if (result is Success) {
       await _refresh(publicCode);

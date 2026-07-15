@@ -24,7 +24,21 @@ abstract class ContractDraftEntity with _$ContractDraftEntity {
     required int version,
     required DateTime createdAt,
     required DateTime updatedAt,
-    @Default(false) bool guardianNotConsented,
-    @Default(false) bool hasReportHistory,
+    ContractRiskSignalsEntity? riskSignals,
   }) = _ContractDraftEntity;
+}
+
+@freezed
+abstract class ContractRiskSignalsEntity with _$ContractRiskSignalsEntity {
+  const factory ContractRiskSignalsEntity({
+    @Default(false) bool hasReportHistory,
+    @Default(false) bool trustScoreZero,
+    int? counterpartyTrustScore,
+    String? counterpartyTrustGrade,
+    @Default(false) bool counterpartyIsMinor,
+    @Default(false) bool counterpartyVerified,
+    @Default(0) int counterpartyTradeCount,
+    @Default(0) int counterpartyDisputeCount,
+    @Default(0) int counterpartyConfirmedReportCount,
+  }) = _ContractRiskSignalsEntity;
 }

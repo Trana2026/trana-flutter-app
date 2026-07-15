@@ -29,8 +29,8 @@ class TotalContractPage extends HookConsumerWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.zero,
                 itemCount: homeState.myContracts.length,
-                itemBuilder: (_, index) =>
-                    ContractCard(c: homeState.myContracts[index]),
+                itemBuilder: (_, i) =>
+                    ContractCard(c: homeState.myContracts[i]),
               ),
             ),
     );

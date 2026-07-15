@@ -41,10 +41,8 @@ class _DeviceListItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final deviceState = ref.watch(deviceTokenViewModelProvider);
     final deviceVM = ref.read(deviceTokenViewModelProvider.notifier);
-
-    // TODO: 실제 기기 정보에 맞게 변경 (백엔드 구현되면)
-    final int currentDeviceId = 1;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
@@ -61,7 +59,7 @@ class _DeviceListItem extends HookConsumerWidget {
               borderRadius: BorderRadius.circular(8),
               color: vrc(context).secondaryColor,
             ),
-            child: AppIcon.data(icon: CooliconsIcon.desktop, size: 16),
+            child: AppIcon.data(icon: CooliconsIcon.mobileButton, size: 16),
           ),
           const SizedBox(width: 12),
 
@@ -70,7 +68,7 @@ class _DeviceListItem extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "iPhone 13",
+                  device.deviceModel ?? "알 수 없는 기기",
                   style: context.txt(
                     color: vrc(context).textPrimary,
                     fontWeight: FontWeight.w600,
@@ -78,7 +76,7 @@ class _DeviceListItem extends HookConsumerWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  "Seoul, Korea • ${device.lastUsedAt.timeAgo}",
+                  "${device.osVersion ?? "버전 정보 없음"} • ${device.lastUsedAt.timeAgo}",
                   style: context.txt(
                     color: vrc(context).textTertiary,
                     fontSize: 12,
@@ -90,7 +88,7 @@ class _DeviceListItem extends HookConsumerWidget {
           ),
           const SizedBox(width: 12),
 
-          if (currentDeviceId == device.id)
+          if (deviceState.currentDeviceId == device.id)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
@@ -105,6 +103,7 @@ class _DeviceListItem extends HookConsumerWidget {
           else
             GestureDetector(
               onTap: () async {
+                // 기기 강제 해제
                 final success = await deviceVM.disconnect(device.id);
                 if (!context.mounted) return;
                 if (!success) {

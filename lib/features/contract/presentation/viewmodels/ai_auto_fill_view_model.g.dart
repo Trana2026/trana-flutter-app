@@ -42,7 +42,7 @@ final class AiAutoFillViewModelProvider
 }
 
 String _$aiAutoFillViewModelHash() =>
-    r'7841ddf87fb557d79f18a0860d86ea50d1cf26cc';
+    r'82c25e90c5386e7215358fdc4f11d49b02de12a1';
 
 abstract class _$AiAutoFillViewModel extends $Notifier<AiAutoFillState> {
   AiAutoFillState build();

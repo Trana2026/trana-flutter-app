@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 mixin _$UserConsentState {
 
  List<UserConsentEntity> get consents;// 본인 약관 동의 목록
- bool get isLoading; String? get error;
+ String? get error;
 /// Create a copy of UserConsentState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,16 @@ $UserConsentStateCopyWith<UserConsentState> get copyWith => _$UserConsentStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserConsentState&&const DeepCollectionEquality().equals(other.consents, consents)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserConsentState&&const DeepCollectionEquality().equals(other.consents, consents)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(consents),isLoading,error);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(consents),error);
 
 @override
 String toString() {
-  return 'UserConsentState(consents: $consents, isLoading: $isLoading, error: $error)';
+  return 'UserConsentState(consents: $consents, error: $error)';
 }
 
 
@@ -46,7 +46,7 @@ abstract mixin class $UserConsentStateCopyWith<$Res>  {
   factory $UserConsentStateCopyWith(UserConsentState value, $Res Function(UserConsentState) _then) = _$UserConsentStateCopyWithImpl;
 @useResult
 $Res call({
- List<UserConsentEntity> consents, bool isLoading, String? error
+ List<UserConsentEntity> consents, String? error
 });
 
 
@@ -63,11 +63,10 @@ class _$UserConsentStateCopyWithImpl<$Res>
 
 /// Create a copy of UserConsentState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? consents = null,Object? isLoading = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? consents = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
 consents: null == consents ? _self.consents : consents // ignore: cast_nullable_to_non_nullable
-as List<UserConsentEntity>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as List<UserConsentEntity>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -153,10 +152,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<UserConsentEntity> consents,  bool isLoading,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<UserConsentEntity> consents,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserConsentState() when $default != null:
-return $default(_that.consents,_that.isLoading,_that.error);case _:
+return $default(_that.consents,_that.error);case _:
   return orElse();
 
 }
@@ -174,10 +173,10 @@ return $default(_that.consents,_that.isLoading,_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<UserConsentEntity> consents,  bool isLoading,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<UserConsentEntity> consents,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _UserConsentState():
-return $default(_that.consents,_that.isLoading,_that.error);case _:
+return $default(_that.consents,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +193,10 @@ return $default(_that.consents,_that.isLoading,_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<UserConsentEntity> consents,  bool isLoading,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<UserConsentEntity> consents,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _UserConsentState() when $default != null:
-return $default(_that.consents,_that.isLoading,_that.error);case _:
+return $default(_that.consents,_that.error);case _:
   return null;
 
 }
@@ -209,7 +208,7 @@ return $default(_that.consents,_that.isLoading,_that.error);case _:
 
 
 class _UserConsentState implements UserConsentState {
-  const _UserConsentState({final  List<UserConsentEntity> consents = const [], this.isLoading = false, this.error}): _consents = consents;
+  const _UserConsentState({final  List<UserConsentEntity> consents = const [], this.error}): _consents = consents;
   
 
  final  List<UserConsentEntity> _consents;
@@ -220,7 +219,6 @@ class _UserConsentState implements UserConsentState {
 }
 
 // 본인 약관 동의 목록
-@override@JsonKey() final  bool isLoading;
 @override final  String? error;
 
 /// Create a copy of UserConsentState
@@ -233,16 +231,16 @@ _$UserConsentStateCopyWith<_UserConsentState> get copyWith => __$UserConsentStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserConsentState&&const DeepCollectionEquality().equals(other._consents, _consents)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserConsentState&&const DeepCollectionEquality().equals(other._consents, _consents)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_consents),isLoading,error);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_consents),error);
 
 @override
 String toString() {
-  return 'UserConsentState(consents: $consents, isLoading: $isLoading, error: $error)';
+  return 'UserConsentState(consents: $consents, error: $error)';
 }
 
 
@@ -253,7 +251,7 @@ abstract mixin class _$UserConsentStateCopyWith<$Res> implements $UserConsentSta
   factory _$UserConsentStateCopyWith(_UserConsentState value, $Res Function(_UserConsentState) _then) = __$UserConsentStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<UserConsentEntity> consents, bool isLoading, String? error
+ List<UserConsentEntity> consents, String? error
 });
 
 
@@ -270,11 +268,10 @@ class __$UserConsentStateCopyWithImpl<$Res>
 
 /// Create a copy of UserConsentState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? consents = null,Object? isLoading = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? consents = null,Object? error = freezed,}) {
   return _then(_UserConsentState(
 consents: null == consents ? _self._consents : consents // ignore: cast_nullable_to_non_nullable
-as List<UserConsentEntity>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as List<UserConsentEntity>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

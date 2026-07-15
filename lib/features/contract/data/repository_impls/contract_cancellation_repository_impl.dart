@@ -28,10 +28,14 @@ class ContractCancellationRepositoryImpl
       return Success(dto.toEntity());
     } on DioException catch (e) {
       if (e.response?.statusCode == 403) {
-        return const Failure(ForbiddenFailure('계약 참여자가 아니거나 송신 측이 요청할 수 없습니다.'));
+        return const Failure(
+          ForbiddenFailure('계약 참여자가 아니거나 송신 측이 요청할 수 없습니다.'),
+        );
       }
       if (e.response?.statusCode == 409) {
-        return const Failure(ConflictFailure('취소 요청 가능 상태가 아니거나 이미 활성 요청이 있습니다.'));
+        return const Failure(
+          ConflictFailure('취소 요청 가능 상태가 아니거나 이미 활성 요청이 있습니다.'),
+        );
       }
       return Failure(e.toFailure());
     } catch (e) {
@@ -46,7 +50,27 @@ class ContractCancellationRepositoryImpl
       return const Success(true);
     } on DioException catch (e) {
       if (e.response?.statusCode == 403) {
-        return const Failure(ForbiddenFailure('계약 참여자가 아니거나 요청자 본인은 확정할 수 없습니다.'));
+        return const Failure(
+          ForbiddenFailure('계약 참여자가 아니거나 요청자 본인은 확정할 수 없습니다.'),
+        );
+      }
+      if (e.response?.statusCode == 404) {
+        return const Failure(NotFoundFailure('활성 취소 요청이 없습니다.'));
+      }
+      return Failure(e.toFailure());
+    } catch (e) {
+      return const Failure(UnknownFailure());
+    }
+  }
+
+  @override
+  Future<Result<void>> revokeCancellation(String publicCode) async {
+    try {
+      await dataSource.revokeCancellation(publicCode);
+      return const Success(null);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 403) {
+        return const Failure(ForbiddenFailure('계약 참여자가 아니거나 요청자 본인이 아닙니다.'));
       }
       if (e.response?.statusCode == 404) {
         return const Failure(NotFoundFailure('활성 취소 요청이 없습니다.'));

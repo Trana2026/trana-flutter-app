@@ -56,12 +56,7 @@ class PolicyDetailPage extends HookConsumerWidget {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: PrimaryButton(
-            text: "확인",
-            onTap: () => context.pop(),
-            backgroundColor: fxc(context).brandColor!,
-            foregroundColor: fxc(context).textBrand!,
-          ),
+          child: PrimaryButton.brand(text: "확인", onTap: () => context.pop()),
         ),
       ),
     );

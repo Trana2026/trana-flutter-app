@@ -17,6 +17,7 @@ import 'package:trana/features/contract/data/data_sources/contract_draft_data_so
 import 'package:trana/features/contract/data/data_sources/contract_guardian_consent_data_source.dart';
 import 'package:trana/features/contract/data/data_sources/contract_invitation_data_source.dart';
 import 'package:trana/features/contract/data/data_sources/contract_lifecycle_data_source.dart';
+import 'package:trana/features/contract/data/data_sources/contract_minor_disclosure_data_source.dart';
 import 'package:trana/features/contract/data/data_sources/contract_pdf_data_source.dart';
 import 'package:trana/features/contract/data/data_sources/contract_s3_data_source.dart';
 import 'package:trana/features/contract/data/repository_impls/contract_ai_extraction_repository_impl.dart';
@@ -27,6 +28,7 @@ import 'package:trana/features/contract/data/repository_impls/contract_draft_rep
 import 'package:trana/features/contract/data/repository_impls/contract_guardian_consent_repository_impl.dart';
 import 'package:trana/features/contract/data/repository_impls/contract_invitation_repository_impl.dart';
 import 'package:trana/features/contract/data/repository_impls/contract_lifecycle_repository_impl.dart';
+import 'package:trana/features/contract/data/repository_impls/contract_minor_disclosure_repository_impl.dart';
 import 'package:trana/features/contract/data/repository_impls/contract_pdf_repository_impl.dart';
 import 'package:trana/features/contract/data/repository_impls/contract_repository_impl.dart';
 import 'package:trana/features/contract/domain/repositories/contract_ai_extraction_repository.dart';
@@ -37,6 +39,7 @@ import 'package:trana/features/contract/domain/repositories/contract_draft_repos
 import 'package:trana/features/contract/domain/repositories/contract_guardian_consent_repository.dart';
 import 'package:trana/features/contract/domain/repositories/contract_invitation_repository.dart';
 import 'package:trana/features/contract/domain/repositories/contract_lifecycle_repository.dart';
+import 'package:trana/features/contract/domain/repositories/contract_minor_disclosure_repository.dart';
 import 'package:trana/features/contract/domain/repositories/contract_pdf_repository.dart';
 import 'package:trana/features/contract/domain/repositories/contract_repository.dart';
 import 'package:trana/features/ekyc/data/datasources/dio_ekyc_remote_datasource.dart';
@@ -47,6 +50,9 @@ import 'package:trana/features/guardian/data/datasources/dio_guardian_remote_dat
 import 'package:trana/features/guardian/data/guardian_link_store.dart';
 import 'package:trana/features/guardian/data/repositories/guardian_repository_impl.dart';
 import 'package:trana/features/guardian/domain/repositories/guardian_repository.dart';
+import 'package:trana/features/notification/data/datasources/notification_data_source.dart';
+import 'package:trana/features/notification/data/repository_impls/notification_repository_impl.dart';
+import 'package:trana/features/notification/domain/repositories/notification_repository.dart';
 import 'package:trana/features/profile/data/datasources/device_token_data_source.dart';
 import 'package:trana/features/profile/data/datasources/trust_score_data_source.dart';
 import 'package:trana/features/profile/data/datasources/user_consent_data_source.dart';
@@ -180,6 +186,12 @@ DeviceTokenDataSource deviceTokenDataSource(Ref ref) {
 }
 
 @riverpod
+NotificationDataSource notificationDataSource(Ref ref) {
+  final dio = ref.watch(dioProvider);
+  return NotificationDataSource(dio);
+}
+
+@riverpod
 TrustScoreDataSource trustScoreDataSource(Ref ref) {
   final dio = ref.watch(dioProvider);
   return TrustScoreDataSource(dio);
@@ -207,6 +219,12 @@ UserInquiryDataSource userInquiryDataSource(Ref ref) {
 UserPreferenceDataSource userPreferenceDataSource(Ref ref) {
   final dio = ref.watch(dioProvider);
   return UserPreferenceDataSource(dio);
+}
+
+@riverpod
+ContractMinorDisclosureDataSource contractMinorDisclosureDataSource(Ref ref) {
+  final dio = ref.watch(dioProvider);
+  return ContractMinorDisclosureDataSource(dio);
 }
 
 // ==================== Repository ====================
@@ -311,6 +329,12 @@ DeviceTokenRepository deviceTokenRepository(Ref ref) {
 }
 
 @riverpod
+NotificationRepository notificationRepository(Ref ref) {
+  final dataSource = ref.watch(notificationDataSourceProvider);
+  return NotificationRepositoryImpl(dataSource);
+}
+
+@riverpod
 TrustScoreRepository trustScoreRepository(Ref ref) {
   final dataSource = ref.watch(trustScoreDataSourceProvider);
   return TrustScoreRepositoryImpl(dataSource);
@@ -338,6 +362,12 @@ UserInquiryRepository userInquiryRepository(Ref ref) {
 UserPreferenceRepository userPreferenceRepository(Ref ref) {
   final dataSource = ref.watch(userPreferenceDataSourceProvider);
   return UserPreferenceRepositoryImpl(dataSource);
+}
+
+@riverpod
+ContractMinorDisclosureRepository contractMinorDisclosureRepository(Ref ref) {
+  final dataSource = ref.watch(contractMinorDisclosureDataSourceProvider);
+  return ContractMinorDisclosureRepositoryImpl(dataSource);
 }
 
 // ==================== UseCase ====================

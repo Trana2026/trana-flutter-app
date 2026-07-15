@@ -15,7 +15,7 @@ extension UserInfoMapper on UserInfoDto {
       guardianVerifiedAt: guardianVerifiedAt,
       name: name,
       birthDate: birthDate,
-      gender: Gender.values.fromApiString(gender),
+      gender: gender != null ? Gender.values.fromApiString(gender!) : null,
       phone: phone,
       pushEnabled: pushEnabled,
     );

@@ -13,7 +13,7 @@ abstract class UserInfoDto with _$UserInfoDto {
     DateTime? guardianVerifiedAt,
     String? name,
     String? birthDate,
-    required String gender,
+    String? gender,
     String? phone,
     required bool pushEnabled,
   }) = _UserInfoDto;

@@ -14,10 +14,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CancelContractState {
 
- String get reason;// 취소 사유
+ CancellationReason get reason;// 취소 사유
  String get detail;// 상세 내용
  ContractCancellationEntity? get recentCancel;// 최근 취소 내역
- bool get isLoading; String? get error;
+ String? get error;
 /// Create a copy of CancelContractState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $CancelContractStateCopyWith<CancelContractState> get copyWith => _$CancelContra
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CancelContractState&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.recentCancel, recentCancel) || other.recentCancel == recentCancel)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CancelContractState&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.recentCancel, recentCancel) || other.recentCancel == recentCancel)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reason,detail,recentCancel,isLoading,error);
+int get hashCode => Object.hash(runtimeType,reason,detail,recentCancel,error);
 
 @override
 String toString() {
-  return 'CancelContractState(reason: $reason, detail: $detail, recentCancel: $recentCancel, isLoading: $isLoading, error: $error)';
+  return 'CancelContractState(reason: $reason, detail: $detail, recentCancel: $recentCancel, error: $error)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $CancelContractStateCopyWith<$Res>  {
   factory $CancelContractStateCopyWith(CancelContractState value, $Res Function(CancelContractState) _then) = _$CancelContractStateCopyWithImpl;
 @useResult
 $Res call({
- String reason, String detail, ContractCancellationEntity? recentCancel, bool isLoading, String? error
+ CancellationReason reason, String detail, ContractCancellationEntity? recentCancel, String? error
 });
 
 
@@ -65,13 +65,12 @@ class _$CancelContractStateCopyWithImpl<$Res>
 
 /// Create a copy of CancelContractState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? reason = null,Object? detail = null,Object? recentCancel = freezed,Object? isLoading = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? reason = null,Object? detail = null,Object? recentCancel = freezed,Object? error = freezed,}) {
   return _then(_self.copyWith(
 reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
-as String,detail: null == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
+as CancellationReason,detail: null == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
 as String,recentCancel: freezed == recentCancel ? _self.recentCancel : recentCancel // ignore: cast_nullable_to_non_nullable
-as ContractCancellationEntity?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as ContractCancellationEntity?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -169,10 +168,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String reason,  String detail,  ContractCancellationEntity? recentCancel,  bool isLoading,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CancellationReason reason,  String detail,  ContractCancellationEntity? recentCancel,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CancelContractState() when $default != null:
-return $default(_that.reason,_that.detail,_that.recentCancel,_that.isLoading,_that.error);case _:
+return $default(_that.reason,_that.detail,_that.recentCancel,_that.error);case _:
   return orElse();
 
 }
@@ -190,10 +189,10 @@ return $default(_that.reason,_that.detail,_that.recentCancel,_that.isLoading,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String reason,  String detail,  ContractCancellationEntity? recentCancel,  bool isLoading,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CancellationReason reason,  String detail,  ContractCancellationEntity? recentCancel,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _CancelContractState():
-return $default(_that.reason,_that.detail,_that.recentCancel,_that.isLoading,_that.error);case _:
+return $default(_that.reason,_that.detail,_that.recentCancel,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -210,10 +209,10 @@ return $default(_that.reason,_that.detail,_that.recentCancel,_that.isLoading,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String reason,  String detail,  ContractCancellationEntity? recentCancel,  bool isLoading,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CancellationReason reason,  String detail,  ContractCancellationEntity? recentCancel,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _CancelContractState() when $default != null:
-return $default(_that.reason,_that.detail,_that.recentCancel,_that.isLoading,_that.error);case _:
+return $default(_that.reason,_that.detail,_that.recentCancel,_that.error);case _:
   return null;
 
 }
@@ -225,16 +224,15 @@ return $default(_that.reason,_that.detail,_that.recentCancel,_that.isLoading,_th
 
 
 class _CancelContractState implements CancelContractState {
-  const _CancelContractState({this.reason = '', this.detail = '', this.recentCancel, this.isLoading = false, this.error});
+  const _CancelContractState({this.reason = CancellationReason.reportHistory, this.detail = '', this.recentCancel, this.error});
   
 
-@override@JsonKey() final  String reason;
+@override@JsonKey() final  CancellationReason reason;
 // 취소 사유
 @override@JsonKey() final  String detail;
 // 상세 내용
 @override final  ContractCancellationEntity? recentCancel;
 // 최근 취소 내역
-@override@JsonKey() final  bool isLoading;
 @override final  String? error;
 
 /// Create a copy of CancelContractState
@@ -247,16 +245,16 @@ _$CancelContractStateCopyWith<_CancelContractState> get copyWith => __$CancelCon
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CancelContractState&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.recentCancel, recentCancel) || other.recentCancel == recentCancel)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CancelContractState&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.recentCancel, recentCancel) || other.recentCancel == recentCancel)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reason,detail,recentCancel,isLoading,error);
+int get hashCode => Object.hash(runtimeType,reason,detail,recentCancel,error);
 
 @override
 String toString() {
-  return 'CancelContractState(reason: $reason, detail: $detail, recentCancel: $recentCancel, isLoading: $isLoading, error: $error)';
+  return 'CancelContractState(reason: $reason, detail: $detail, recentCancel: $recentCancel, error: $error)';
 }
 
 
@@ -267,7 +265,7 @@ abstract mixin class _$CancelContractStateCopyWith<$Res> implements $CancelContr
   factory _$CancelContractStateCopyWith(_CancelContractState value, $Res Function(_CancelContractState) _then) = __$CancelContractStateCopyWithImpl;
 @override @useResult
 $Res call({
- String reason, String detail, ContractCancellationEntity? recentCancel, bool isLoading, String? error
+ CancellationReason reason, String detail, ContractCancellationEntity? recentCancel, String? error
 });
 
 
@@ -284,13 +282,12 @@ class __$CancelContractStateCopyWithImpl<$Res>
 
 /// Create a copy of CancelContractState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? reason = null,Object? detail = null,Object? recentCancel = freezed,Object? isLoading = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? reason = null,Object? detail = null,Object? recentCancel = freezed,Object? error = freezed,}) {
   return _then(_CancelContractState(
 reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
-as String,detail: null == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
+as CancellationReason,detail: null == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
 as String,recentCancel: freezed == recentCancel ? _self.recentCancel : recentCancel // ignore: cast_nullable_to_non_nullable
-as ContractCancellationEntity?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as ContractCancellationEntity?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

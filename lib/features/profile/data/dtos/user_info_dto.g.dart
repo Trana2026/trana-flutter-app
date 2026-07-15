@@ -16,7 +16,7 @@ _UserInfoDto _$UserInfoDtoFromJson(Map<String, dynamic> json) => _UserInfoDto(
       : DateTime.parse(json['guardianVerifiedAt'] as String),
   name: json['name'] as String?,
   birthDate: json['birthDate'] as String?,
-  gender: json['gender'] as String,
+  gender: json['gender'] as String?,
   phone: json['phone'] as String?,
   pushEnabled: json['pushEnabled'] as bool,
 );

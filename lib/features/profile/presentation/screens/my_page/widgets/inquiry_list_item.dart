@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/utils/date_time_extensions.dart';
+import 'package:trana/core/widgets/custom_bottom_sheet.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/profile/domain/entities/user_inquiry_entity.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/widgets/modals/inquiry_detail_bottom_sheet.dart';
@@ -19,6 +20,7 @@ class InquiryListItem extends HookConsumerWidget {
 
     return GestureDetector(
       onTap: () async {
+        // 문의 상세 내용 조회
         final success = await inquiryVM.readInquiryDetail(i.publicCode);
         if (!context.mounted) return;
         if (!success) {
@@ -28,13 +30,7 @@ class InquiryListItem extends HookConsumerWidget {
           return;
         }
 
-        showModalBottomSheet(
-          context: context,
-          barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
-          backgroundColor: Colors.transparent,
-          isScrollControlled: true,
-          builder: (_) => InquiryDetailBottomSheet(),
-        );
+        showCustomBottomSheet(context, const InquiryDetailBottomSheet());
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/core/widgets/custom_bottom_sheet.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/extensions/contract_status_ui.dart';
@@ -17,7 +17,9 @@ import 'package:trana/features/contract/presentation/widgets/modals/report_detai
 import 'package:trana/features/contract/presentation/widgets/modals/revision_request_bottom_sheet.dart';
 
 class ContractCounterpartyBanner extends HookConsumerWidget {
-  const ContractCounterpartyBanner({super.key});
+  const ContractCounterpartyBanner({super.key, required this.isPending});
+
+  final ValueNotifier<bool> isPending;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,16 +30,15 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
     final reportVM = ref.read(reportContractViewModelProvider.notifier);
 
     final status = detailState.status;
-    final isPending = useRef(false);
 
     return GestureDetector(
       onTap: () async {
         if (isPending.value) return;
         isPending.value = true;
         try {
-          // 계약서 초안 상태 (계약서 수정하기)
+          // 1. 계약서 초안 상태 (계약서 수정하기)
           if (status == ContractStatus.ready) {
-            final router = GoRouter.of(context);
+            // READY > DRAFT 계약서 상태 되돌림
             final success = await detailVM.revert();
             if (!success) {
               if (context.mounted) {
@@ -48,9 +49,10 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
               return;
             }
 
+            createVM.setRevisionRequestedMode(true);
+
             createVM.loadFromDraft(
               publicCode: detailState.publicCode,
-              consentType: detailState.consentType,
               deliveryType: detailState.deliveryType,
               role: detailState.myRole,
               attachmentIds: detailState.attachmentIds,
@@ -63,10 +65,12 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
               warrantyPeriodDays: detailState.warrantyPeriodDays,
             );
 
-            router.push(AppRoutes.contractCreate);
-            // 수정 요청 상태 (계약서 수정하기)
+            if (!context.mounted) return;
+            context.push(AppRoutes.contractCreate);
+            // 2. 수정 요청 상태 (계약서 수정하기)
           } else if (status == ContractStatus.revisionRequested &&
               detailState.isCreator) {
+            // 최신 수정 요청 내용 불러오기
             final success = await revisionVM.getLatestRevisionReason(
               detailState.publicCode,
             );
@@ -95,15 +99,13 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
             });
 
             if (!context.mounted) return;
-            showModalBottomSheet<void>(
-              context: context,
-              barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
-              backgroundColor: Colors.transparent,
-              isScrollControlled: true,
-              builder: (_) => RevisionRequestBottomSheet(),
+            showCustomBottomSheet<void>(
+              context,
+              const RevisionRequestBottomSheet(),
             );
-            // 신고 접수 상태
+            // 3. 신고 접수 상태
           } else if (status == ContractStatus.reported) {
+            //  최근 신고 내용 조회
             final success = await reportVM.readReport(detailState.publicCode);
             if (!context.mounted) return;
             if (!success) {
@@ -113,13 +115,8 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
               return;
             }
 
-            showModalBottomSheet(
-              context: context,
-              barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
-              backgroundColor: Colors.transparent,
-              isScrollControlled: true,
-              builder: (_) => ReportDetailBottomSheet(),
-            );
+            showCustomBottomSheet(context, const ReportDetailBottomSheet());
+            // 4. 그 외 X
           } else {
             return;
           }

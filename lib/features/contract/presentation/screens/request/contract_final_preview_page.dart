@@ -4,10 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_app_bar.dart';
+import 'package:trana/core/widgets/custom_bottom_sheet.dart';
 import 'package:trana/core/widgets/custom_loading_bar.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
@@ -19,6 +19,7 @@ class ContractFinalPreviewPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailState = ref.watch(detailContractViewModelProvider);
+
     final isPending = useRef(false);
 
     return Scaffold(
@@ -61,33 +62,20 @@ class ContractFinalPreviewPage extends HookConsumerWidget {
         top: false,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: PrimaryButton(
+          child: PrimaryButton.brand(
             text: "서명하기",
             onTap: () async {
               if (isPending.value) return;
               isPending.value = true;
               try {
-                bool signFlowProceeded = false;
-                final router = GoRouter.of(context);
-                await showModalBottomSheet<void>(
-                  context: context,
-                  barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
-                  backgroundColor: Colors.transparent,
-                  isScrollControlled: true,
-                  builder: (_) => SignConfirmBottomSheet(
-                    parentContext: context,
-                    onProceed: () => signFlowProceeded = true,
-                  ),
+                await showCustomBottomSheet<void>(
+                  context,
+                  SignConfirmBottomSheet(parentContext: context),
                 );
-                if (!signFlowProceeded && context.mounted) {
-                  router.go(AppRoutes.home);
-                }
               } finally {
                 isPending.value = false;
               }
             },
-            backgroundColor: fxc(context).brandColor!,
-            foregroundColor: fxc(context).textBrand!,
           ),
         ),
       ),

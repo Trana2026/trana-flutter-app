@@ -13,9 +13,8 @@ part 'sign_contract_view_model.g.dart';
 @freezed
 abstract class SignContractState with _$SignContractState {
   const factory SignContractState({
-    @Default('') String signatureBase64,
+    @Default('') String signatureBase64, // 전자 서명 데이터
     @Default([]) List<int> agreedTermIds, // 동의한 약관 id 목록
-    @Default(false) bool isLoading,
     String? error,
   }) = _SignContractState;
 }
@@ -58,8 +57,6 @@ class SignContractViewModel extends _$SignContractViewModel {
 
   /// 수신자 서명 제출 후 계약 목록 및 상세 정보 갱신
   Future<bool> receiverSign(String publicCode) async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(contractInvitationRepositoryProvider)
         .receiverSign(
@@ -68,13 +65,9 @@ class SignContractViewModel extends _$SignContractViewModel {
           agreedTermIds: state.agreedTermIds,
         );
 
-    state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
+    if (result case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+    }
 
     if (result is Success) {
       await _refresh(publicCode);
@@ -86,8 +79,6 @@ class SignContractViewModel extends _$SignContractViewModel {
 
   /// 생성자 최종 서명 제출 후 계약 목록 및 상세 정보 갱신
   Future<bool> creatorSign(String publicCode) async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(contractLifecycleRepositoryProvider)
         .creatorSign(
@@ -96,13 +87,9 @@ class SignContractViewModel extends _$SignContractViewModel {
           agreedTermIds: state.agreedTermIds,
         );
 
-    state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
+    if (result case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+    }
 
     if (result is Success) {
       await _refresh(publicCode);

@@ -16,7 +16,7 @@ mixin _$EditProfileState {
 
  Gender? get gender;// 성별 선택값
  String get email;// 이메일 입력값
- bool get isLoading; String? get error;
+ String? get error;
 /// Create a copy of EditProfileState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,16 +27,16 @@ $EditProfileStateCopyWith<EditProfileState> get copyWith => _$EditProfileStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditProfileState&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.email, email) || other.email == email)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditProfileState&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.email, email) || other.email == email)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,gender,email,isLoading,error);
+int get hashCode => Object.hash(runtimeType,gender,email,error);
 
 @override
 String toString() {
-  return 'EditProfileState(gender: $gender, email: $email, isLoading: $isLoading, error: $error)';
+  return 'EditProfileState(gender: $gender, email: $email, error: $error)';
 }
 
 
@@ -47,7 +47,7 @@ abstract mixin class $EditProfileStateCopyWith<$Res>  {
   factory $EditProfileStateCopyWith(EditProfileState value, $Res Function(EditProfileState) _then) = _$EditProfileStateCopyWithImpl;
 @useResult
 $Res call({
- Gender? gender, String email, bool isLoading, String? error
+ Gender? gender, String email, String? error
 });
 
 
@@ -64,12 +64,11 @@ class _$EditProfileStateCopyWithImpl<$Res>
 
 /// Create a copy of EditProfileState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? gender = freezed,Object? email = null,Object? isLoading = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? gender = freezed,Object? email = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
 gender: freezed == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
 as Gender?,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as String,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -155,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Gender? gender,  String email,  bool isLoading,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Gender? gender,  String email,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EditProfileState() when $default != null:
-return $default(_that.gender,_that.email,_that.isLoading,_that.error);case _:
+return $default(_that.gender,_that.email,_that.error);case _:
   return orElse();
 
 }
@@ -176,10 +175,10 @@ return $default(_that.gender,_that.email,_that.isLoading,_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Gender? gender,  String email,  bool isLoading,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Gender? gender,  String email,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _EditProfileState():
-return $default(_that.gender,_that.email,_that.isLoading,_that.error);case _:
+return $default(_that.gender,_that.email,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +195,10 @@ return $default(_that.gender,_that.email,_that.isLoading,_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Gender? gender,  String email,  bool isLoading,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Gender? gender,  String email,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _EditProfileState() when $default != null:
-return $default(_that.gender,_that.email,_that.isLoading,_that.error);case _:
+return $default(_that.gender,_that.email,_that.error);case _:
   return null;
 
 }
@@ -211,14 +210,13 @@ return $default(_that.gender,_that.email,_that.isLoading,_that.error);case _:
 
 
 class _EditProfileState implements EditProfileState {
-  const _EditProfileState({this.gender, this.email = '', this.isLoading = false, this.error});
+  const _EditProfileState({this.gender, this.email = '', this.error});
   
 
 @override final  Gender? gender;
 // 성별 선택값
 @override@JsonKey() final  String email;
 // 이메일 입력값
-@override@JsonKey() final  bool isLoading;
 @override final  String? error;
 
 /// Create a copy of EditProfileState
@@ -231,16 +229,16 @@ _$EditProfileStateCopyWith<_EditProfileState> get copyWith => __$EditProfileStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EditProfileState&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.email, email) || other.email == email)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EditProfileState&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.email, email) || other.email == email)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,gender,email,isLoading,error);
+int get hashCode => Object.hash(runtimeType,gender,email,error);
 
 @override
 String toString() {
-  return 'EditProfileState(gender: $gender, email: $email, isLoading: $isLoading, error: $error)';
+  return 'EditProfileState(gender: $gender, email: $email, error: $error)';
 }
 
 
@@ -251,7 +249,7 @@ abstract mixin class _$EditProfileStateCopyWith<$Res> implements $EditProfileSta
   factory _$EditProfileStateCopyWith(_EditProfileState value, $Res Function(_EditProfileState) _then) = __$EditProfileStateCopyWithImpl;
 @override @useResult
 $Res call({
- Gender? gender, String email, bool isLoading, String? error
+ Gender? gender, String email, String? error
 });
 
 
@@ -268,12 +266,11 @@ class __$EditProfileStateCopyWithImpl<$Res>
 
 /// Create a copy of EditProfileState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? gender = freezed,Object? email = null,Object? isLoading = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? gender = freezed,Object? email = null,Object? error = freezed,}) {
   return _then(_EditProfileState(
 gender: freezed == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
 as Gender?,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as String,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

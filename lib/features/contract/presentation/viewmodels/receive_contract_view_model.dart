@@ -18,7 +18,6 @@ abstract class ReceiveContractState with _$ReceiveContractState {
     String? publicCode, // 수신된 계약 publicCode
     @Default(0) int warrantyPeriodDays, // 선택된 보증 제공 여부 (0: 미제공, 3: 제공)
 
-    @Default(false) bool isLoading,
     String? error,
   }) = _ReceiveContractState;
 }
@@ -32,11 +31,8 @@ class ReceiveContractViewModel extends _$ReceiveContractViewModel {
 
   /// 수신자 초대 수락 (성공 여부 반환)
   Future<bool> accept() async {
-    state = state.copyWith(isLoading: true);
-
     final invitationToken = await PendingInvitationTokenService.get();
     if (invitationToken == null) {
-      state = state.copyWith(isLoading: false);
       return true;
     }
 
@@ -45,14 +41,8 @@ class ReceiveContractViewModel extends _$ReceiveContractViewModel {
         .acceptInvitation(invitationToken);
 
     state = switch (result) {
-      Success(:final data) => state.copyWith(
-        isLoading: false,
-        publicCode: data.publicCode,
-      ),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
+      Success(:final data) => state.copyWith(publicCode: data.publicCode),
+      Failure(:final failure) => state.copyWith(error: failure.message),
     };
 
     if (result is Success) {
@@ -74,8 +64,6 @@ class ReceiveContractViewModel extends _$ReceiveContractViewModel {
 
   /// 수신자(판매자) 보증 기간 변경 (성공 여부 반환)
   Future<bool> receiverWarranty(String publicCode) async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(contractInvitationRepositoryProvider)
         .receiverWarranty(
@@ -83,13 +71,9 @@ class ReceiveContractViewModel extends _$ReceiveContractViewModel {
           warrantyPeriodDays: state.warrantyPeriodDays,
         );
 
-    state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
+    if (result case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+    }
 
     if (result is Success) {
       await _refresh(publicCode);

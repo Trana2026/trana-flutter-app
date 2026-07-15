@@ -20,7 +20,6 @@ abstract class ReportContractState with _$ReportContractState {
 
     ContractDisputeEntity? recentReport, // 최근 신고 내역
 
-    @Default(false) bool isLoading,
     String? error,
   }) = _ReportContractState;
 }
@@ -37,8 +36,6 @@ class ReportContractViewModel extends _$ReportContractViewModel {
 
   /// 신고 접수 (성공 여부 반환)
   Future<bool> report(String publicCode) async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(contractDisputeRepositoryProvider)
         .reportDispute(
@@ -47,13 +44,9 @@ class ReportContractViewModel extends _$ReportContractViewModel {
           detail: state.detail,
         );
 
-    state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
+    if (result case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+    }
 
     if (result is Success) {
       await _refresh(publicCode);
@@ -64,23 +57,17 @@ class ReportContractViewModel extends _$ReportContractViewModel {
 
   /// 최근 신고 내용 조회 (성공 여부 반환)
   Future<bool> readReport(String publicCode) async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(contractDisputeRepositoryProvider)
         .readDisputes(publicCode);
 
     state = switch (result) {
       Success(:final data) => state.copyWith(
-        isLoading: false,
         recentReport: data
             .where((d) => d.status == DisputeState.reported)
             .firstOrNull,
       ),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
+      Failure(:final failure) => state.copyWith(error: failure.message),
     };
 
     return result is Success;
@@ -93,8 +80,6 @@ class ReportContractViewModel extends _$ReportContractViewModel {
       return false;
     }
 
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(contractDisputeRepositoryProvider)
         .cancelDispute(
@@ -102,13 +87,9 @@ class ReportContractViewModel extends _$ReportContractViewModel {
           disputeId: state.recentReport!.disputeId,
         );
 
-    state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
+    if (result case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+    }
 
     if (result is Success) {
       await _refresh(publicCode);

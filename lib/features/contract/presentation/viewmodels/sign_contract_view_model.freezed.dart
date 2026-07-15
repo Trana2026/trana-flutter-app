@@ -14,8 +14,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SignContractState {
 
- String get signatureBase64; List<int> get agreedTermIds;// 동의한 약관 id 목록
- bool get isLoading; String? get error;
+ String get signatureBase64;// 전자 서명 데이터
+ List<int> get agreedTermIds;// 동의한 약관 id 목록
+ String? get error;
 /// Create a copy of SignContractState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +27,16 @@ $SignContractStateCopyWith<SignContractState> get copyWith => _$SignContractStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignContractState&&(identical(other.signatureBase64, signatureBase64) || other.signatureBase64 == signatureBase64)&&const DeepCollectionEquality().equals(other.agreedTermIds, agreedTermIds)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignContractState&&(identical(other.signatureBase64, signatureBase64) || other.signatureBase64 == signatureBase64)&&const DeepCollectionEquality().equals(other.agreedTermIds, agreedTermIds)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,signatureBase64,const DeepCollectionEquality().hash(agreedTermIds),isLoading,error);
+int get hashCode => Object.hash(runtimeType,signatureBase64,const DeepCollectionEquality().hash(agreedTermIds),error);
 
 @override
 String toString() {
-  return 'SignContractState(signatureBase64: $signatureBase64, agreedTermIds: $agreedTermIds, isLoading: $isLoading, error: $error)';
+  return 'SignContractState(signatureBase64: $signatureBase64, agreedTermIds: $agreedTermIds, error: $error)';
 }
 
 
@@ -46,7 +47,7 @@ abstract mixin class $SignContractStateCopyWith<$Res>  {
   factory $SignContractStateCopyWith(SignContractState value, $Res Function(SignContractState) _then) = _$SignContractStateCopyWithImpl;
 @useResult
 $Res call({
- String signatureBase64, List<int> agreedTermIds, bool isLoading, String? error
+ String signatureBase64, List<int> agreedTermIds, String? error
 });
 
 
@@ -63,12 +64,11 @@ class _$SignContractStateCopyWithImpl<$Res>
 
 /// Create a copy of SignContractState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? signatureBase64 = null,Object? agreedTermIds = null,Object? isLoading = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? signatureBase64 = null,Object? agreedTermIds = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
 signatureBase64: null == signatureBase64 ? _self.signatureBase64 : signatureBase64 // ignore: cast_nullable_to_non_nullable
 as String,agreedTermIds: null == agreedTermIds ? _self.agreedTermIds : agreedTermIds // ignore: cast_nullable_to_non_nullable
-as List<int>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as List<int>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -154,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String signatureBase64,  List<int> agreedTermIds,  bool isLoading,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String signatureBase64,  List<int> agreedTermIds,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SignContractState() when $default != null:
-return $default(_that.signatureBase64,_that.agreedTermIds,_that.isLoading,_that.error);case _:
+return $default(_that.signatureBase64,_that.agreedTermIds,_that.error);case _:
   return orElse();
 
 }
@@ -175,10 +175,10 @@ return $default(_that.signatureBase64,_that.agreedTermIds,_that.isLoading,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String signatureBase64,  List<int> agreedTermIds,  bool isLoading,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String signatureBase64,  List<int> agreedTermIds,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _SignContractState():
-return $default(_that.signatureBase64,_that.agreedTermIds,_that.isLoading,_that.error);case _:
+return $default(_that.signatureBase64,_that.agreedTermIds,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +195,10 @@ return $default(_that.signatureBase64,_that.agreedTermIds,_that.isLoading,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String signatureBase64,  List<int> agreedTermIds,  bool isLoading,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String signatureBase64,  List<int> agreedTermIds,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _SignContractState() when $default != null:
-return $default(_that.signatureBase64,_that.agreedTermIds,_that.isLoading,_that.error);case _:
+return $default(_that.signatureBase64,_that.agreedTermIds,_that.error);case _:
   return null;
 
 }
@@ -210,11 +210,13 @@ return $default(_that.signatureBase64,_that.agreedTermIds,_that.isLoading,_that.
 
 
 class _SignContractState implements SignContractState {
-  const _SignContractState({this.signatureBase64 = '', final  List<int> agreedTermIds = const [], this.isLoading = false, this.error}): _agreedTermIds = agreedTermIds;
+  const _SignContractState({this.signatureBase64 = '', final  List<int> agreedTermIds = const [], this.error}): _agreedTermIds = agreedTermIds;
   
 
 @override@JsonKey() final  String signatureBase64;
+// 전자 서명 데이터
  final  List<int> _agreedTermIds;
+// 전자 서명 데이터
 @override@JsonKey() List<int> get agreedTermIds {
   if (_agreedTermIds is EqualUnmodifiableListView) return _agreedTermIds;
   // ignore: implicit_dynamic_type
@@ -222,7 +224,6 @@ class _SignContractState implements SignContractState {
 }
 
 // 동의한 약관 id 목록
-@override@JsonKey() final  bool isLoading;
 @override final  String? error;
 
 /// Create a copy of SignContractState
@@ -235,16 +236,16 @@ _$SignContractStateCopyWith<_SignContractState> get copyWith => __$SignContractS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SignContractState&&(identical(other.signatureBase64, signatureBase64) || other.signatureBase64 == signatureBase64)&&const DeepCollectionEquality().equals(other._agreedTermIds, _agreedTermIds)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SignContractState&&(identical(other.signatureBase64, signatureBase64) || other.signatureBase64 == signatureBase64)&&const DeepCollectionEquality().equals(other._agreedTermIds, _agreedTermIds)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,signatureBase64,const DeepCollectionEquality().hash(_agreedTermIds),isLoading,error);
+int get hashCode => Object.hash(runtimeType,signatureBase64,const DeepCollectionEquality().hash(_agreedTermIds),error);
 
 @override
 String toString() {
-  return 'SignContractState(signatureBase64: $signatureBase64, agreedTermIds: $agreedTermIds, isLoading: $isLoading, error: $error)';
+  return 'SignContractState(signatureBase64: $signatureBase64, agreedTermIds: $agreedTermIds, error: $error)';
 }
 
 
@@ -255,7 +256,7 @@ abstract mixin class _$SignContractStateCopyWith<$Res> implements $SignContractS
   factory _$SignContractStateCopyWith(_SignContractState value, $Res Function(_SignContractState) _then) = __$SignContractStateCopyWithImpl;
 @override @useResult
 $Res call({
- String signatureBase64, List<int> agreedTermIds, bool isLoading, String? error
+ String signatureBase64, List<int> agreedTermIds, String? error
 });
 
 
@@ -272,12 +273,11 @@ class __$SignContractStateCopyWithImpl<$Res>
 
 /// Create a copy of SignContractState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? signatureBase64 = null,Object? agreedTermIds = null,Object? isLoading = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? signatureBase64 = null,Object? agreedTermIds = null,Object? error = freezed,}) {
   return _then(_SignContractState(
 signatureBase64: null == signatureBase64 ? _self.signatureBase64 : signatureBase64 // ignore: cast_nullable_to_non_nullable
 as String,agreedTermIds: null == agreedTermIds ? _self._agreedTermIds : agreedTermIds // ignore: cast_nullable_to_non_nullable
-as List<int>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as List<int>,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

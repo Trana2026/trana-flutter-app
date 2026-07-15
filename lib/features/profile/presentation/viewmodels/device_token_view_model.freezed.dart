@@ -15,7 +15,12 @@ T _$identity<T>(T value) => value;
 mixin _$DeviceTokenState {
 
  String get token;// fcm 토큰
- bool get isLoading; String? get error;
+ DevicePlatform? get platform;// 플랫폼
+ String get deviceModel;// 모델명
+ String get osVersion;// os 버전
+ String get appVersion;// 앱 버전
+ int get currentDeviceId;// 현재 사용중인 device id
+ String? get error;
 /// Create a copy of DeviceTokenState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +31,16 @@ $DeviceTokenStateCopyWith<DeviceTokenState> get copyWith => _$DeviceTokenStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DeviceTokenState&&(identical(other.token, token) || other.token == token)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DeviceTokenState&&(identical(other.token, token) || other.token == token)&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.deviceModel, deviceModel) || other.deviceModel == deviceModel)&&(identical(other.osVersion, osVersion) || other.osVersion == osVersion)&&(identical(other.appVersion, appVersion) || other.appVersion == appVersion)&&(identical(other.currentDeviceId, currentDeviceId) || other.currentDeviceId == currentDeviceId)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,token,isLoading,error);
+int get hashCode => Object.hash(runtimeType,token,platform,deviceModel,osVersion,appVersion,currentDeviceId,error);
 
 @override
 String toString() {
-  return 'DeviceTokenState(token: $token, isLoading: $isLoading, error: $error)';
+  return 'DeviceTokenState(token: $token, platform: $platform, deviceModel: $deviceModel, osVersion: $osVersion, appVersion: $appVersion, currentDeviceId: $currentDeviceId, error: $error)';
 }
 
 
@@ -46,7 +51,7 @@ abstract mixin class $DeviceTokenStateCopyWith<$Res>  {
   factory $DeviceTokenStateCopyWith(DeviceTokenState value, $Res Function(DeviceTokenState) _then) = _$DeviceTokenStateCopyWithImpl;
 @useResult
 $Res call({
- String token, bool isLoading, String? error
+ String token, DevicePlatform? platform, String deviceModel, String osVersion, String appVersion, int currentDeviceId, String? error
 });
 
 
@@ -63,11 +68,15 @@ class _$DeviceTokenStateCopyWithImpl<$Res>
 
 /// Create a copy of DeviceTokenState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? token = null,Object? isLoading = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? token = null,Object? platform = freezed,Object? deviceModel = null,Object? osVersion = null,Object? appVersion = null,Object? currentDeviceId = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
 token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
-as String,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as String,platform: freezed == platform ? _self.platform : platform // ignore: cast_nullable_to_non_nullable
+as DevicePlatform?,deviceModel: null == deviceModel ? _self.deviceModel : deviceModel // ignore: cast_nullable_to_non_nullable
+as String,osVersion: null == osVersion ? _self.osVersion : osVersion // ignore: cast_nullable_to_non_nullable
+as String,appVersion: null == appVersion ? _self.appVersion : appVersion // ignore: cast_nullable_to_non_nullable
+as String,currentDeviceId: null == currentDeviceId ? _self.currentDeviceId : currentDeviceId // ignore: cast_nullable_to_non_nullable
+as int,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -153,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String token,  bool isLoading,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String token,  DevicePlatform? platform,  String deviceModel,  String osVersion,  String appVersion,  int currentDeviceId,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DeviceTokenState() when $default != null:
-return $default(_that.token,_that.isLoading,_that.error);case _:
+return $default(_that.token,_that.platform,_that.deviceModel,_that.osVersion,_that.appVersion,_that.currentDeviceId,_that.error);case _:
   return orElse();
 
 }
@@ -174,10 +183,10 @@ return $default(_that.token,_that.isLoading,_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String token,  bool isLoading,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String token,  DevicePlatform? platform,  String deviceModel,  String osVersion,  String appVersion,  int currentDeviceId,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _DeviceTokenState():
-return $default(_that.token,_that.isLoading,_that.error);case _:
+return $default(_that.token,_that.platform,_that.deviceModel,_that.osVersion,_that.appVersion,_that.currentDeviceId,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +203,10 @@ return $default(_that.token,_that.isLoading,_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String token,  bool isLoading,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String token,  DevicePlatform? platform,  String deviceModel,  String osVersion,  String appVersion,  int currentDeviceId,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _DeviceTokenState() when $default != null:
-return $default(_that.token,_that.isLoading,_that.error);case _:
+return $default(_that.token,_that.platform,_that.deviceModel,_that.osVersion,_that.appVersion,_that.currentDeviceId,_that.error);case _:
   return null;
 
 }
@@ -209,12 +218,21 @@ return $default(_that.token,_that.isLoading,_that.error);case _:
 
 
 class _DeviceTokenState implements DeviceTokenState {
-  const _DeviceTokenState({this.token = '', this.isLoading = false, this.error});
+  const _DeviceTokenState({this.token = '', this.platform, this.deviceModel = '', this.osVersion = '', this.appVersion = '', this.currentDeviceId = -1, this.error});
   
 
 @override@JsonKey() final  String token;
 // fcm 토큰
-@override@JsonKey() final  bool isLoading;
+@override final  DevicePlatform? platform;
+// 플랫폼
+@override@JsonKey() final  String deviceModel;
+// 모델명
+@override@JsonKey() final  String osVersion;
+// os 버전
+@override@JsonKey() final  String appVersion;
+// 앱 버전
+@override@JsonKey() final  int currentDeviceId;
+// 현재 사용중인 device id
 @override final  String? error;
 
 /// Create a copy of DeviceTokenState
@@ -227,16 +245,16 @@ _$DeviceTokenStateCopyWith<_DeviceTokenState> get copyWith => __$DeviceTokenStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeviceTokenState&&(identical(other.token, token) || other.token == token)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeviceTokenState&&(identical(other.token, token) || other.token == token)&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.deviceModel, deviceModel) || other.deviceModel == deviceModel)&&(identical(other.osVersion, osVersion) || other.osVersion == osVersion)&&(identical(other.appVersion, appVersion) || other.appVersion == appVersion)&&(identical(other.currentDeviceId, currentDeviceId) || other.currentDeviceId == currentDeviceId)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,token,isLoading,error);
+int get hashCode => Object.hash(runtimeType,token,platform,deviceModel,osVersion,appVersion,currentDeviceId,error);
 
 @override
 String toString() {
-  return 'DeviceTokenState(token: $token, isLoading: $isLoading, error: $error)';
+  return 'DeviceTokenState(token: $token, platform: $platform, deviceModel: $deviceModel, osVersion: $osVersion, appVersion: $appVersion, currentDeviceId: $currentDeviceId, error: $error)';
 }
 
 
@@ -247,7 +265,7 @@ abstract mixin class _$DeviceTokenStateCopyWith<$Res> implements $DeviceTokenSta
   factory _$DeviceTokenStateCopyWith(_DeviceTokenState value, $Res Function(_DeviceTokenState) _then) = __$DeviceTokenStateCopyWithImpl;
 @override @useResult
 $Res call({
- String token, bool isLoading, String? error
+ String token, DevicePlatform? platform, String deviceModel, String osVersion, String appVersion, int currentDeviceId, String? error
 });
 
 
@@ -264,11 +282,15 @@ class __$DeviceTokenStateCopyWithImpl<$Res>
 
 /// Create a copy of DeviceTokenState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? token = null,Object? isLoading = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? token = null,Object? platform = freezed,Object? deviceModel = null,Object? osVersion = null,Object? appVersion = null,Object? currentDeviceId = null,Object? error = freezed,}) {
   return _then(_DeviceTokenState(
 token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
-as String,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as String,platform: freezed == platform ? _self.platform : platform // ignore: cast_nullable_to_non_nullable
+as DevicePlatform?,deviceModel: null == deviceModel ? _self.deviceModel : deviceModel // ignore: cast_nullable_to_non_nullable
+as String,osVersion: null == osVersion ? _self.osVersion : osVersion // ignore: cast_nullable_to_non_nullable
+as String,appVersion: null == appVersion ? _self.appVersion : appVersion // ignore: cast_nullable_to_non_nullable
+as String,currentDeviceId: null == currentDeviceId ? _self.currentDeviceId : currentDeviceId // ignore: cast_nullable_to_non_nullable
+as int,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

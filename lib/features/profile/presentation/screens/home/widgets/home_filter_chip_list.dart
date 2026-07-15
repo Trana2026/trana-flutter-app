@@ -37,7 +37,11 @@ class HomeFilterChipList extends ConsumerWidget {
           final status = _representatives[index];
           final label = status == null
               ? '전체'
-              : status.statusLabel(true, false, false);
+              : status.statusLabel(
+                  isCreator: true,
+                  isMyCancel: false,
+                  revisionDone: false,
+                );
           final isSelected = status == null
               ? homeState.selectedStatus == null
               : homeState.selectedStatus == status;

@@ -8,6 +8,7 @@ import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/utils/date_time_extensions.dart';
 import 'package:trana/core/widgets/custom_app_bar.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/profile/domain/entities/user_consent_entity.dart';
 import 'package:trana/features/profile/presentation/viewmodels/user_consent_view_model.dart';
 
@@ -21,7 +22,14 @@ class PolicyListPage extends HookConsumerWidget {
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        consentVM.readConsents();
+        // 본인 약관 동의 내역 조회
+        final success = await consentVM.readConsents();
+        if (!context.mounted) return;
+        if (!success) {
+          final state = ref.read(userConsentViewModelProvider);
+          showErrorToast(context, state.error!);
+          consentVM.clearError();
+        }
       });
       return null;
     }, []);
@@ -60,10 +68,10 @@ class PolicyListPage extends HookConsumerWidget {
               const SizedBox(height: 12),
 
               consentState.consents.isEmpty
-                  ? Center(
-                      child: Text(
-                        "약관이 없습니다",
-                        style: context.txt(color: vrc(context).textPrimary),
+                  ? SizedBox(
+                      height: 300,
+                      child: Center(
+                        child: Text("약관이 없어요", style: context.txt()),
                       ),
                     )
                   : ListView.builder(
@@ -72,7 +80,7 @@ class PolicyListPage extends HookConsumerWidget {
                       padding: const EdgeInsets.all(20),
                       itemCount: consentState.consents.length,
                       itemBuilder: (_, i) =>
-                          PolicyListItem(consent: consentState.consents[i]),
+                          _PolicyListItem(consent: consentState.consents[i]),
                     ),
             ],
           ),
@@ -82,8 +90,8 @@ class PolicyListPage extends HookConsumerWidget {
   }
 }
 
-class PolicyListItem extends StatelessWidget {
-  const PolicyListItem({super.key, required this.consent});
+class _PolicyListItem extends StatelessWidget {
+  const _PolicyListItem({required this.consent});
 
   final UserConsentEntity consent;
 

@@ -17,12 +17,11 @@ class InquiryDetailBottomSheet extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final inquiryState = ref.watch(inquiryViewModelProvider);
 
-    final titleCtr = useTextEditingController(
-      text: inquiryState.selectedInquiryDetail?.title,
-    );
-    final contentCtr = useTextEditingController(
-      text: inquiryState.selectedInquiryDetail?.content,
-    );
+    final initialTitle = inquiryState.selectedInquiryDetail?.title;
+    final initialContent = inquiryState.selectedInquiryDetail?.content;
+
+    final titleCtr = useTextEditingController(text: initialTitle);
+    final contentCtr = useTextEditingController(text: initialContent);
 
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
@@ -88,12 +87,7 @@ class InquiryDetailBottomSheet extends HookConsumerWidget {
             ),
             const SizedBox(height: 20),
 
-            PrimaryButton(
-              text: "완료",
-              onTap: () => context.pop(),
-              backgroundColor: fxc(context).brandColor!,
-              foregroundColor: fxc(context).textBrand!,
-            ),
+            PrimaryButton.brand(text: "완료", onTap: () => context.pop()),
           ],
         ),
       ),

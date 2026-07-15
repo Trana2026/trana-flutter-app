@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
-import 'package:go_router/go_router.dart';
-import 'package:trana/core/router/app_router.dart';
 import 'package:trana/features/contract/data/services/deferred_link_service.dart';
 import 'package:trana/features/contract/data/services/pending_contract_code_service.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/viewmodels/cancel_contract_view_model.dart';
-import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/receive_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/report_contract_view_model.dart';
-// import 'package:trana/features/profile/presentation/viewmodels/test_user_provider.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_identity_verify_dialog.dart';
 import 'package:trana/features/guardian/domain/entities/guardian_verification_state.dart';
 import 'package:trana/features/guardian/presentation/viewmodels/guardian_verification_state_provider.dart';
@@ -129,10 +127,6 @@ class HomePage extends HookConsumerWidget {
           receiveVM.clearError();
         }
 
-        // 사용자 동의 유형 정의
-        final createVM = ref.read(createContractViewModelProvider.notifier);
-        createVM.setUserConsentType(isMinor);
-
         // 내 계약 목록 조회
         final homeVM = ref.read(homeContractViewModelProvider.notifier);
         final readSuccess = await homeVM.readMyContracts();
@@ -152,8 +146,11 @@ class HomePage extends HookConsumerWidget {
     // ===== 기기/토큰 관련 =====
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        // 기기 정보 + FCM 토큰 저장
+        // FCM 토큰 + 현재 기기 정보 식별
         final deviceVM = ref.read(deviceTokenViewModelProvider.notifier);
+        await deviceVM.getDeviceInfo();
+
+        // FCM 토큰 저장
         final registerSuccess = await deviceVM.registerToken();
         if (!context.mounted) return;
         if (!registerSuccess) {

@@ -29,19 +29,24 @@ abstract class TestUserEntity with _$TestUserEntity {
 
 @Riverpod(keepAlive: true)
 class TestUser extends _$TestUser {
-  static const adult = 'TST-ADL-A01'; // 성인
-  static const minor = 'TST-MIN-C01'; // 미성년자
-  final invitationToken = "5FQwytQvJQ1gV6Uz7OhLA"; // 테스트용 초대 토큰 붙여넣기
+  // 유저
+  static const adult = 'TST-ADL-A01'; // 성인1
+  // static const adult = 'TST-ADL-B01'; // 성인2
+  static const minor = 'TST-MIN-C01'; // 미성년자1
+  // static const minor = 'TST-MIN-D01'; // 미성년자2
+
+  // 테스트용 초대 토큰 붙여넣기
+  final invitationToken = "pcyX9tT65TTtFzqvPTDHd";
 
   @override
   TestUserEntity? build() => null;
 
   Future<void> getUser() async {
     // 사용 안할 때
-    return;
+    // return;
 
     // 테스트 유저1 : 성인 + 요청자
-    // await login(adult);
+    await login(adult);
 
     // 테스트 유저2 : 미성년자 + 수신자
     // await login(minor);
@@ -63,6 +68,8 @@ class TestUser extends _$TestUser {
       final tokenData = tokenResponse.data!;
       final accessToken = (tokenData['accessToken'] as String?) ?? '';
       final refreshToken = (tokenData['refreshToken'] as String?) ?? '';
+
+      debugPrint('accessToken: $accessToken');
 
       /// 본인 정보 조회
       final meResponse = await dio.get<Map<String, dynamic>>(

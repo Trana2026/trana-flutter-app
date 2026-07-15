@@ -15,14 +15,24 @@ class DeviceTokenDataSource {
   }
 
   /// POST FCM 디바이스 토큰 등록
-  Future<void> postDeviceToken({
+  Future<int> postDeviceToken({
     required String token,
     required String platform,
+    String? deviceModel,
+    String? osVersion,
+    String? appVersion,
   }) async {
-    await dio.post<void>(
+    final response = await dio.post<Map<String, dynamic>>(
       '/v1/users/me/device-tokens',
-      data: {'token': token, 'platform': platform},
+      data: {
+        'token': token,
+        'platform': platform,
+        'deviceModel': deviceModel,
+        'osVersion': osVersion,
+        'appVersion': appVersion,
+      },
     );
+    return response.data!['id'] as int;
   }
 
   /// DELETE FCM 디바이스 토큰 해제

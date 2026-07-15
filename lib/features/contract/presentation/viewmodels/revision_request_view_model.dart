@@ -14,6 +14,7 @@ part 'revision_request_view_model.g.dart';
 abstract class RevisionRequestState with _$RevisionRequestState {
   const factory RevisionRequestState({
     @Default(<String>{}) Set<String> selectedFields, // 선택한 영역 이름 목록
+    // 각 영역 수정 요청 내용
     @Default('') String deliveryTypeReason,
     @Default('') String tradingPlatformReason,
     @Default('') String titleReason,
@@ -23,7 +24,6 @@ abstract class RevisionRequestState with _$RevisionRequestState {
 
     @Default(false) bool revisionDone, // 수정 완료 여부
 
-    @Default(false) bool isLoading,
     String? error,
   }) = _RevisionRequestState;
 }
@@ -57,8 +57,6 @@ class RevisionRequestViewModel extends _$RevisionRequestViewModel {
 
   /// 수정 요청 (성공 여부 반환)
   Future<bool> requestRevision(String publicCode) async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(contractInvitationRepositoryProvider)
         .revisions(
@@ -71,13 +69,9 @@ class RevisionRequestViewModel extends _$RevisionRequestViewModel {
           conditionDetailsReason: state.conditionDetailsReason,
         );
 
-    state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
+    if (result case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+    }
 
     if (result is Success) {
       await _refresh(publicCode);
@@ -88,15 +82,12 @@ class RevisionRequestViewModel extends _$RevisionRequestViewModel {
 
   /// 최신 수정 요청 내용 불러오기 (성공 여부 반환)
   Future<bool> getLatestRevisionReason(String publicCode) async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(contractInvitationRepositoryProvider)
         .latest(publicCode: publicCode);
 
     state = switch (result) {
       Success(:final data) => state.copyWith(
-        isLoading: false,
         deliveryTypeReason: data.deliveryTypeReason ?? '',
         tradingPlatformReason: data.tradingPlatformReason ?? '',
         titleReason: data.titleReason ?? '',
@@ -104,10 +95,7 @@ class RevisionRequestViewModel extends _$RevisionRequestViewModel {
         conditionSummaryReason: data.conditionSummaryReason ?? '',
         conditionDetailsReason: data.conditionDetailsReason ?? '',
       ),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
+      Failure(:final failure) => state.copyWith(error: failure.message),
     };
 
     return result is Success;

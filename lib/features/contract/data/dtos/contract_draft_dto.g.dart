@@ -55,19 +55,30 @@ Map<String, dynamic> _$ContractDraftDtoToJson(_ContractDraftDto instance) =>
 _ContractRiskSignalsDto _$ContractRiskSignalsDtoFromJson(
   Map<String, dynamic> json,
 ) => _ContractRiskSignalsDto(
-  guardianNotConsented: json['guardianNotConsented'] as bool? ?? false,
   hasReportHistory: json['hasReportHistory'] as bool? ?? false,
   trustScoreZero: json['trustScoreZero'] as bool? ?? false,
   counterpartyTrustScore: (json['counterpartyTrustScore'] as num?)?.toInt(),
   counterpartyTrustGrade: json['counterpartyTrustGrade'] as String?,
+  counterpartyIsMinor: json['counterpartyIsMinor'] as bool? ?? false,
+  counterpartyVerified: json['counterpartyVerified'] as bool? ?? false,
+  counterpartyTradeCount:
+      (json['counterpartyTradeCount'] as num?)?.toInt() ?? 0,
+  counterpartyDisputeCount:
+      (json['counterpartyDisputeCount'] as num?)?.toInt() ?? 0,
+  counterpartyConfirmedReportCount:
+      (json['counterpartyConfirmedReportCount'] as num?)?.toInt() ?? 0,
 );
 
 Map<String, dynamic> _$ContractRiskSignalsDtoToJson(
   _ContractRiskSignalsDto instance,
 ) => <String, dynamic>{
-  'guardianNotConsented': instance.guardianNotConsented,
   'hasReportHistory': instance.hasReportHistory,
   'trustScoreZero': instance.trustScoreZero,
   'counterpartyTrustScore': instance.counterpartyTrustScore,
   'counterpartyTrustGrade': instance.counterpartyTrustGrade,
+  'counterpartyIsMinor': instance.counterpartyIsMinor,
+  'counterpartyVerified': instance.counterpartyVerified,
+  'counterpartyTradeCount': instance.counterpartyTradeCount,
+  'counterpartyDisputeCount': instance.counterpartyDisputeCount,
+  'counterpartyConfirmedReportCount': instance.counterpartyConfirmedReportCount,
 };

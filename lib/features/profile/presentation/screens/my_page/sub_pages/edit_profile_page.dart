@@ -6,6 +6,7 @@ import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/utils/validation.dart';
 import 'package:trana/core/widgets/contract_form_field.dart';
 import 'package:trana/core/widgets/custom_app_bar.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/domain/utils/string_extensions.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/widgets/gender_dropdown.dart';
@@ -22,7 +23,9 @@ class EditProfilePage extends HookConsumerWidget {
     final isEditing = useState(false);
 
     final nameCtr = useTextEditingController(text: mypageState.name);
-    final genderCtr = useTextEditingController(text: mypageState.gender?.label);
+    final genderCtr = useTextEditingController(
+      text: mypageState.gender == null ? '미등록' : mypageState.gender?.label,
+    );
     final phoneCtr = useTextEditingController(
       text: mypageState.phone?.toPhoneFormat,
     );
@@ -35,6 +38,15 @@ class EditProfilePage extends HookConsumerWidget {
     useListenable(phoneCtr);
     useListenable(birthCtr);
     useListenable(emailCtr);
+
+    ref.listen(editProfileViewModelProvider, (prev, next) {
+      if (next.gender != prev?.gender) {
+        genderCtr.text = next.gender?.label ?? "미등록";
+      }
+      if (next.email != prev?.email) {
+        emailCtr.text = next.email;
+      }
+    });
 
     final isEnabled =
         nameCtr.text.trim().isNotEmpty &&
@@ -103,40 +115,38 @@ class EditProfilePage extends HookConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: PrimaryButton(
             text: isEditing.value ? "완료" : "수정하기",
+            disabled: !isEnabled,
             onTap: () async {
+              // 수정중 아닐 때
               if (!isEditing.value) {
                 isEditing.value = true;
+                // 수정중일 때
               } else {
-                if (!isEnabled) return;
-
-                if (emailCtr.text.isNotEmpty) {
+                if (emailCtr.text.isNotEmpty &&
+                    (mypageState.email != emailCtr.text)) {
                   emailError.value = Validation.email(emailCtr.text);
                   if (emailError.value != null) return;
 
                   editProfileVM.updateEmail(emailCtr.text);
                 }
 
-                // TODO: 프로필 수정 기능 (백엔드 구현되면 연결)
-                // final success = await editProfileVM.updateProfile();
-                // if (!context.mounted) return;
-                // if (!success) {
-                //   final state = ref.read(editProfileViewModelProvider);
-                //   showErrorToast(context, state.error!);
-                //   editProfileVM.clearError();
-                //   return;
-                // }
+                // 본인 정보 수정
+                final success = await editProfileVM.updateProfile();
+                if (!context.mounted) return;
+                if (!success) {
+                  final state = ref.read(editProfileViewModelProvider);
+                  showErrorToast(context, state.error!);
+                  editProfileVM.clearError();
+                  return;
+                }
 
                 isEditing.value = false;
               }
             },
-            backgroundColor: !isEnabled
-                ? vrc(context).disableColor!
-                : isEditing.value
+            backgroundColor: isEditing.value
                 ? fxc(context).brandColor!
                 : fxc(context).unchangeableBlack!,
-            foregroundColor: !isEnabled
-                ? vrc(context).textDisable!
-                : fxc(context).unchangeableWhite!,
+            foregroundColor: fxc(context).unchangeableWhite!,
           ),
         ),
       ),

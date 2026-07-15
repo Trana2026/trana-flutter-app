@@ -24,9 +24,6 @@ class ContractPhotoSection extends HookConsumerWidget {
     final existingUrls = createState.existingAttachmentUrls;
 
     final isEditMode = existingUrls.isNotEmpty;
-    // final revisionRequested = createState.revisionRequested;
-    // final disabled = revisionRequested || isEditMode;
-
     final length = isEditMode
         ? existingUrls.length
         : selectedImages.value.length;
@@ -37,6 +34,7 @@ class ContractPhotoSection extends HookConsumerWidget {
 
         createVM.updateImages(selectedImages.value);
 
+        // 계약 첨부 사진 업로드
         final success = await createVM.updateAttachments();
         if (!context.mounted) return;
         if (!success) {
@@ -66,12 +64,6 @@ class ContractPhotoSection extends HookConsumerWidget {
                   style: context.txt(color: vrc(context).textPrimary),
                 ),
               ),
-              const SizedBox(width: 4),
-              Icon(
-                CooliconsIcon.info,
-                size: 14,
-                color: vrc(context).iconDisable,
-              ),
             ],
           ),
           const SizedBox(height: 20),
@@ -82,7 +74,7 @@ class ContractPhotoSection extends HookConsumerWidget {
               children: [
                 GestureDetector(
                   onTap: () async {
-                    if (aiState.completed) return;
+                    if (aiState.isCompleted) return;
 
                     if (isEditMode) {
                       showErrorToast(context, "거래 사진은 수정할 수 없습니다");
@@ -157,11 +149,14 @@ class ContractPhotoSection extends HookConsumerWidget {
                             height: 68,
                             fit: BoxFit.cover,
                             loadingBuilder: (_, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
+                              if (loadingProgress == null &&
+                                  !createState.isLoadingUpload) {
+                                return child;
+                              }
                               return Container(
                                 width: 68,
                                 height: 68,
-                                color: vrc(context).secondaryColor,
+                                color: vrc(context).tertiaryColor,
                                 child: const CustomLoadingBar(),
                               );
                             },
@@ -197,12 +192,17 @@ class ContractPhotoSection extends HookConsumerWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  if (aiState.completed || isEditMode) return;
+                  if (aiState.isCompleted ||
+                      isEditMode ||
+                      createState.isLoadingUpload) {
+                    return;
+                  }
 
                   if (selectedImages.value.isEmpty) {
                     showErrorToast(context, '분석할 이미지를 선택해주세요');
                     return;
                   }
+
                   showDialog(
                     context: context,
                     barrierColor: Colors.black.withValues(alpha: 0.75),
@@ -216,14 +216,14 @@ class ContractPhotoSection extends HookConsumerWidget {
                   ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: (aiState.completed || isEditMode)
+                    color: (aiState.isCompleted || isEditMode)
                         ? vrc(context).tertiaryColor
                         : fxc(context).brandColor!,
                   ),
                   child: Text(
-                    aiState.completed ? "분석완료" : "분석하기",
+                    aiState.isCompleted ? "분석완료" : "분석하기",
                     style: context.txt(
-                      color: (aiState.completed || isEditMode)
+                      color: (aiState.isCompleted || isEditMode)
                           ? vrc(context).iconSecondary
                           : fxc(context).textBrand!,
                       fontWeight: FontWeight.w600,

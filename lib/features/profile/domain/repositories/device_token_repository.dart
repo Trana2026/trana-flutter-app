@@ -5,9 +5,12 @@ import 'package:trana/features/profile/domain/enums/device_platform.dart';
 abstract interface class DeviceTokenRepository {
   Future<Result<List<DeviceTokenEntity>>> readDevices();
 
-  Future<Result<void>> createDeviceToken({
+  Future<Result<int>> createDeviceToken({
     required String token,
     required DevicePlatform platform,
+    String? deviceModel,
+    String? osVersion,
+    String? appVersion,
   });
 
   Future<Result<void>> deleteDeviceToken(String token);

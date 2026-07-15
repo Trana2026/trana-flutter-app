@@ -36,27 +36,30 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.completed => fxc(context).opacitySuccess!,
   };
 
-  String statusLabel(bool isCreator, bool isMyCancel, bool revisionDone) =>
-      switch (this) {
-        ContractStatus.inProgress ||
-        ContractStatus.draft ||
-        ContractStatus.ready => "계약서 초안",
+  String statusLabel({
+    required bool isCreator,
+    required bool isMyCancel,
+    required bool revisionDone,
+  }) => switch (this) {
+    ContractStatus.inProgress ||
+    ContractStatus.draft ||
+    ContractStatus.ready => "계약서 초안",
 
-        ContractStatus.shared => isCreator ? "서명 요청됨" : "서명 요청",
-        ContractStatus.revisionRequested =>
-          isCreator && revisionDone
-              ? "수정 완료"
-              : isCreator && !revisionDone
-              ? "수정 요청"
-              : "수정 요청됨",
-        ContractStatus.receiverSigned => isCreator ? "최종 서명 요청" : "최종 서명 요청됨",
-        ContractStatus.signed => "서명 완료",
+    ContractStatus.shared => isCreator ? "서명 요청됨" : "서명 요청",
+    ContractStatus.revisionRequested =>
+      isCreator && revisionDone
+          ? "수정 완료"
+          : isCreator && !revisionDone
+          ? "수정 요청"
+          : "수정 요청됨",
+    ContractStatus.receiverSigned => isCreator ? "최종 서명 요청" : "최종 서명 요청됨",
+    ContractStatus.signed => "서명 완료",
 
-        ContractStatus.cancelRequested ||
-        ContractStatus.cancelled => isMyCancel ? "취소 요청됨" : "취소 요청",
-        ContractStatus.reported => "신고 접수",
-        ContractStatus.completed => "거래 완료",
-      };
+    ContractStatus.cancelRequested ||
+    ContractStatus.cancelled => isMyCancel ? "취소 요청됨" : "취소 요청",
+    ContractStatus.reported => "신고 접수",
+    ContractStatus.completed => "거래 완료",
+  };
 
   IconData statusIcon() => switch (this) {
     ContractStatus.inProgress ||

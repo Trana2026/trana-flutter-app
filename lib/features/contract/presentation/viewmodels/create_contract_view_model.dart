@@ -4,7 +4,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
-import 'package:trana/features/contract/domain/enums/consent_type.dart';
 import 'package:trana/features/contract/domain/enums/delivery_type.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
@@ -19,7 +18,6 @@ part 'create_contract_view_model.g.dart';
 @freezed
 abstract class CreateContractState with _$CreateContractState {
   const factory CreateContractState({
-    ConsentType? consentType, // 사용자의 동의 유형
     Role? role, // 선택된 역할
     @Default(DeliveryType.shipping) DeliveryType deliveryType, // 선택된 거래 방식
     String? publicCode, // 생성된 Draft 의 publicCode
@@ -37,6 +35,7 @@ abstract class CreateContractState with _$CreateContractState {
     @Default(false) bool revisionRequested, // 수정 요청 상태일 때
 
     @Default(false) bool isLoading,
+    @Default(false) bool isLoadingUpload, // 사진 업로드 로딩중 여부
     String? error,
   }) = _CreateContractState;
 }
@@ -51,7 +50,6 @@ class CreateContractViewModel extends _$CreateContractViewModel {
   /// 기존 데이터를 상태에 로드 (기존값 불러오기)
   void loadFromDraft({
     required String publicCode,
-    required ConsentType? consentType,
     required DeliveryType? deliveryType,
     required Role? role,
     required List<int> attachmentIds,
@@ -65,7 +63,6 @@ class CreateContractViewModel extends _$CreateContractViewModel {
   }) {
     state = state.copyWith(
       publicCode: publicCode,
-      consentType: consentType,
       deliveryType: deliveryType ?? state.deliveryType,
       role: role,
       attachmentIds: attachmentIds,
@@ -85,31 +82,16 @@ class CreateContractViewModel extends _$CreateContractViewModel {
     state = state.copyWith(revisionRequested: v);
   }
 
-  // 사용자 동의 유형 분류 (성인 = 해당없음, 미성년자 = 보호자 인증 필요)
-  void setUserConsentType(bool isMinor) {
-    state = state.copyWith(
-      consentType: isMinor
-          ? ConsentType.guardianRequired
-          : ConsentType.notApplicable,
-    );
-  }
-
   /// 새 계약 작성 상태 초기화
-  void startNew() {
-    state = CreateContractState(consentType: state.consentType);
-  }
+  void initState() => state = CreateContractState();
 
   /// Draft 생성 (성공 여부 반환)
   Future<bool> createDraft() async {
-    // 새 계약 시작 시 이전 계약 데이터 초기화
-    state = CreateContractState(
-      isLoading: true,
-      consentType: state.consentType,
-    );
+    state = state.copyWith(isLoading: true);
 
     final result = await ref
         .read(contractDraftRepositoryProvider)
-        .createDraft(consentType: state.consentType);
+        .createDraft();
 
     state = switch (result) {
       Success(:final data) => state.copyWith(
@@ -252,7 +234,7 @@ class CreateContractViewModel extends _$CreateContractViewModel {
       return false;
     }
 
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoadingUpload: true);
 
     final repo = ref.read(contractAttachmentRepositoryProvider);
     final publicCode = state.publicCode!;
@@ -261,7 +243,7 @@ class CreateContractViewModel extends _$CreateContractViewModel {
     for (final id in state.attachmentIds) {
       final deleteResult = await repo.deleteAttachment(publicCode, id);
       if (deleteResult case Failure(:final failure)) {
-        state = state.copyWith(isLoading: false, error: failure.message);
+        state = state.copyWith(isLoadingUpload: false, error: failure.message);
         return false;
       }
     }
@@ -288,12 +270,15 @@ class CreateContractViewModel extends _$CreateContractViewModel {
         case Success(:final data):
           uploadedIds.add(data.id);
         case Failure(:final failure):
-          state = state.copyWith(isLoading: false, error: failure.message);
+          state = state.copyWith(
+            isLoadingUpload: false,
+            error: failure.message,
+          );
           return false;
       }
     }
 
-    state = state.copyWith(isLoading: false, attachmentIds: uploadedIds);
+    state = state.copyWith(isLoadingUpload: false, attachmentIds: uploadedIds);
     return true;
   }
 
@@ -317,50 +302,19 @@ class CreateContractViewModel extends _$CreateContractViewModel {
 
     state = state.copyWith(isLoading: true);
 
-    if (state.revisionRequested) {
-      final result = await ref
-          .read(contractPdfRepositoryProvider)
-          .pdf(publicCode: state.publicCode!);
+    final result = await ref
+        .read(contractPdfRepositoryProvider)
+        .preview(publicCode: state.publicCode!);
 
-      if (result case Failure(:final failure)) {
-        state = state.copyWith(isLoading: false, error: failure.message);
-        return false;
-      }
+    state = switch (result) {
+      Success(:final data) => state.copyWith(isLoading: false, pdfBytes: data),
+      Failure(:final failure) => state.copyWith(
+        isLoading: false,
+        error: failure.message,
+      ),
+    };
 
-      final bytesResult = await ref
-          .read(contractPdfRepositoryProvider)
-          .downloadBytes((result as Success).data.downloadUrl);
-
-      state = switch (bytesResult) {
-        Success(:final data) => state.copyWith(
-          isLoading: false,
-          pdfBytes: data,
-        ),
-        Failure(:final failure) => state.copyWith(
-          isLoading: false,
-          error: failure.message,
-        ),
-      };
-
-      return bytesResult is Success;
-    } else {
-      final result = await ref
-          .read(contractPdfRepositoryProvider)
-          .preview(publicCode: state.publicCode!);
-
-      state = switch (result) {
-        Success(:final data) => state.copyWith(
-          isLoading: false,
-          pdfBytes: data,
-        ),
-        Failure(:final failure) => state.copyWith(
-          isLoading: false,
-          error: failure.message,
-        ),
-      };
-
-      return result is Success;
-    }
+    return result is Success;
   }
 
   /// Ready 상태 전이 (성공 여부 반환)

@@ -33,18 +33,24 @@ class MyPage extends HookConsumerWidget {
     final homeState = ref.watch(homeContractViewModelProvider);
     final mypageState = ref.watch(myPageViewModelProvider);
     final mypageVM = ref.read(myPageViewModelProvider.notifier);
+    final deviceState = ref.watch(deviceTokenViewModelProvider);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        mypageVM.loadData();
+        // 마이페이지 정보 로드
+        final success = await mypageVM.loadData();
+        if (!context.mounted) return;
+        if (!success) {
+          final state = ref.read(myPageViewModelProvider);
+          showErrorToast(context, state.error!);
+          mypageVM.clearError();
+        }
       });
       return null;
     }, []);
 
-    // TODO: 실제 기기 정보에 맞게 변경 (백엔드 구현되면)
-    final int currentDeviceId = 1;
     final currentDevice = mypageState.devices
-        .where((d) => d.id == currentDeviceId)
+        .where((d) => d.id == deviceState.currentDeviceId)
         .firstOrNull;
 
     return Scaffold(
@@ -116,7 +122,7 @@ class MyPage extends HookConsumerWidget {
                 MyPageMenuItem(
                   appIcon: AppIcon.data(icon: Icons.access_time),
                   label: "최근 로그인 기록",
-                  trailingText: "${(currentDevice?.lastUsedAt).timeAgo}, Seoul",
+                  trailingText: (currentDevice?.lastUsedAt).timeAgo,
                   showChevron: false,
                 ),
               ],

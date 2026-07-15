@@ -28,8 +28,23 @@ extension ContractDraftMapper on ContractDraftDto {
       version: version,
       createdAt: createdAt,
       updatedAt: updatedAt,
-      guardianNotConsented: riskSignals?.guardianNotConsented ?? false,
-      hasReportHistory: riskSignals?.hasReportHistory ?? false,
+      riskSignals: riskSignals?.toEntity(),
+    );
+  }
+}
+
+extension ContractRiskSignalsMapper on ContractRiskSignalsDto {
+  ContractRiskSignalsEntity toEntity() {
+    return ContractRiskSignalsEntity(
+      hasReportHistory: hasReportHistory,
+      trustScoreZero: trustScoreZero,
+      counterpartyTrustScore: counterpartyTrustScore,
+      counterpartyTrustGrade: counterpartyTrustGrade,
+      counterpartyIsMinor: counterpartyIsMinor,
+      counterpartyVerified: counterpartyVerified,
+      counterpartyTradeCount: counterpartyTradeCount,
+      counterpartyDisputeCount: counterpartyDisputeCount,
+      counterpartyConfirmedReportCount: counterpartyConfirmedReportCount,
     );
   }
 }

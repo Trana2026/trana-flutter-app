@@ -52,11 +52,9 @@ class CustomDialog extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: PrimaryButton(
+                  child: PrimaryButton.mono(
                     text: cancelText ?? '취소',
                     onTap: () => Navigator.pop(context, false),
-                    backgroundColor: vrc(context).secondaryColor!,
-                    foregroundColor: vrc(context).textPrimary!,
                   ),
                 ),
                 const SizedBox(width: 12),

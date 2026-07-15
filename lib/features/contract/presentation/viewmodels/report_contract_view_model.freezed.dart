@@ -17,7 +17,7 @@ mixin _$ReportContractState {
  String get reason;// 신고 사유
  String get detail;// 상세 내용
  ContractDisputeEntity? get recentReport;// 최근 신고 내역
- bool get isLoading; String? get error;
+ String? get error;
 /// Create a copy of ReportContractState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ReportContractStateCopyWith<ReportContractState> get copyWith => _$ReportContra
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportContractState&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.recentReport, recentReport) || other.recentReport == recentReport)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportContractState&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.recentReport, recentReport) || other.recentReport == recentReport)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reason,detail,recentReport,isLoading,error);
+int get hashCode => Object.hash(runtimeType,reason,detail,recentReport,error);
 
 @override
 String toString() {
-  return 'ReportContractState(reason: $reason, detail: $detail, recentReport: $recentReport, isLoading: $isLoading, error: $error)';
+  return 'ReportContractState(reason: $reason, detail: $detail, recentReport: $recentReport, error: $error)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ReportContractStateCopyWith<$Res>  {
   factory $ReportContractStateCopyWith(ReportContractState value, $Res Function(ReportContractState) _then) = _$ReportContractStateCopyWithImpl;
 @useResult
 $Res call({
- String reason, String detail, ContractDisputeEntity? recentReport, bool isLoading, String? error
+ String reason, String detail, ContractDisputeEntity? recentReport, String? error
 });
 
 
@@ -65,13 +65,12 @@ class _$ReportContractStateCopyWithImpl<$Res>
 
 /// Create a copy of ReportContractState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? reason = null,Object? detail = null,Object? recentReport = freezed,Object? isLoading = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? reason = null,Object? detail = null,Object? recentReport = freezed,Object? error = freezed,}) {
   return _then(_self.copyWith(
 reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
 as String,detail: null == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
 as String,recentReport: freezed == recentReport ? _self.recentReport : recentReport // ignore: cast_nullable_to_non_nullable
-as ContractDisputeEntity?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as ContractDisputeEntity?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -169,10 +168,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String reason,  String detail,  ContractDisputeEntity? recentReport,  bool isLoading,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String reason,  String detail,  ContractDisputeEntity? recentReport,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ReportContractState() when $default != null:
-return $default(_that.reason,_that.detail,_that.recentReport,_that.isLoading,_that.error);case _:
+return $default(_that.reason,_that.detail,_that.recentReport,_that.error);case _:
   return orElse();
 
 }
@@ -190,10 +189,10 @@ return $default(_that.reason,_that.detail,_that.recentReport,_that.isLoading,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String reason,  String detail,  ContractDisputeEntity? recentReport,  bool isLoading,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String reason,  String detail,  ContractDisputeEntity? recentReport,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _ReportContractState():
-return $default(_that.reason,_that.detail,_that.recentReport,_that.isLoading,_that.error);case _:
+return $default(_that.reason,_that.detail,_that.recentReport,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -210,10 +209,10 @@ return $default(_that.reason,_that.detail,_that.recentReport,_that.isLoading,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String reason,  String detail,  ContractDisputeEntity? recentReport,  bool isLoading,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String reason,  String detail,  ContractDisputeEntity? recentReport,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _ReportContractState() when $default != null:
-return $default(_that.reason,_that.detail,_that.recentReport,_that.isLoading,_that.error);case _:
+return $default(_that.reason,_that.detail,_that.recentReport,_that.error);case _:
   return null;
 
 }
@@ -225,7 +224,7 @@ return $default(_that.reason,_that.detail,_that.recentReport,_that.isLoading,_th
 
 
 class _ReportContractState implements ReportContractState {
-  const _ReportContractState({this.reason = '', this.detail = '', this.recentReport, this.isLoading = false, this.error});
+  const _ReportContractState({this.reason = '', this.detail = '', this.recentReport, this.error});
   
 
 @override@JsonKey() final  String reason;
@@ -234,7 +233,6 @@ class _ReportContractState implements ReportContractState {
 // 상세 내용
 @override final  ContractDisputeEntity? recentReport;
 // 최근 신고 내역
-@override@JsonKey() final  bool isLoading;
 @override final  String? error;
 
 /// Create a copy of ReportContractState
@@ -247,16 +245,16 @@ _$ReportContractStateCopyWith<_ReportContractState> get copyWith => __$ReportCon
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportContractState&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.recentReport, recentReport) || other.recentReport == recentReport)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportContractState&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.recentReport, recentReport) || other.recentReport == recentReport)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reason,detail,recentReport,isLoading,error);
+int get hashCode => Object.hash(runtimeType,reason,detail,recentReport,error);
 
 @override
 String toString() {
-  return 'ReportContractState(reason: $reason, detail: $detail, recentReport: $recentReport, isLoading: $isLoading, error: $error)';
+  return 'ReportContractState(reason: $reason, detail: $detail, recentReport: $recentReport, error: $error)';
 }
 
 
@@ -267,7 +265,7 @@ abstract mixin class _$ReportContractStateCopyWith<$Res> implements $ReportContr
   factory _$ReportContractStateCopyWith(_ReportContractState value, $Res Function(_ReportContractState) _then) = __$ReportContractStateCopyWithImpl;
 @override @useResult
 $Res call({
- String reason, String detail, ContractDisputeEntity? recentReport, bool isLoading, String? error
+ String reason, String detail, ContractDisputeEntity? recentReport, String? error
 });
 
 
@@ -284,13 +282,12 @@ class __$ReportContractStateCopyWithImpl<$Res>
 
 /// Create a copy of ReportContractState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? reason = null,Object? detail = null,Object? recentReport = freezed,Object? isLoading = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? reason = null,Object? detail = null,Object? recentReport = freezed,Object? error = freezed,}) {
   return _then(_ReportContractState(
 reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
 as String,detail: null == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
 as String,recentReport: freezed == recentReport ? _self.recentReport : recentReport // ignore: cast_nullable_to_non_nullable
-as ContractDisputeEntity?,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as ContractDisputeEntity?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

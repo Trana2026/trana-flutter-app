@@ -6,7 +6,7 @@ class UserPreferenceDataSource {
 
   final Dio dio;
 
-  /// POST 푸시 알림 토글
+  /// PATCH 푸시 알림 토글
   Future<UserPreferenceDto> togglePushEnabled(bool enabled) async {
     final response = await dio.patch<Map<String, dynamic>>(
       '/v1/users/me/push-enabled',

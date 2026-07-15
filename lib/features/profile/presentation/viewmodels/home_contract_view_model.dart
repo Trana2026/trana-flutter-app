@@ -21,7 +21,7 @@ abstract class HomeContractState with _$HomeContractState {
     @Default([]) List<ContractEntity> requestedContracts, // 배너에 표시할 계약 목록
     ContractStatus? selectedStatus, // 상태 필터 선택값
 
-    @Default(false) bool isLoading,
+    @Default(false) bool isLoadingMyContracts, // 사용자의 계약 전체 목록 로딩중 여부
     String? error,
   }) = _HomeContractState;
 
@@ -57,7 +57,7 @@ class HomeContractViewModel extends _$HomeContractViewModel {
 
   /// 사용자의 계약 전체 목록 불러오기 (성공 여부 반환)
   Future<bool> readMyContracts() async {
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoadingMyContracts: true);
 
     final selected = state.selectedStatus;
     final isDraftGroup = selected != null && _draftGroup.contains(selected);
@@ -96,15 +96,19 @@ class HomeContractViewModel extends _$HomeContractViewModel {
     }
 
     if (error != null) {
-      state = state.copyWith(isLoading: false, error: error);
+      state = state.copyWith(isLoadingMyContracts: false, error: error);
       return false;
     }
 
+    // 각 계약의 분쟁 상태 (신고) 조회해 반영
     contracts = await _applyDisputeStatuses(contracts);
-    final requestedContracts = await _computeRequests(contracts);
+    // 각 계약의 취소 상태 (본인 요청 여부) 조회해 반영
+    contracts = await _applyCancelIsMineFlags(contracts);
+    // 배너에 표시될 계약 목록 구분
+    final requestedContracts = _computeRequests(contracts);
 
     state = state.copyWith(
-      isLoading: false,
+      isLoadingMyContracts: false,
       myContracts: contracts,
       requestedContracts: requestedContracts,
     );
@@ -143,23 +147,15 @@ class HomeContractViewModel extends _$HomeContractViewModel {
     }).toList();
   }
 
-  Future<List<ContractEntity>> _computeRequests(
+  Future<List<ContractEntity>> _applyCancelIsMineFlags(
     List<ContractEntity> contracts,
   ) async {
-    final basic = contracts.where(
-      (c) =>
-          (c.status == ContractStatus.shared && !c.isCreator) ||
-          (c.status == ContractStatus.revisionRequested && c.isCreator) ||
-          (c.status == ContractStatus.receiverSigned && c.isCreator),
-    );
-
     final cancelRequested = contracts
         .where((c) => c.status == ContractStatus.cancelRequested)
         .toList();
 
-    if (cancelRequested.isEmpty) return basic.toList();
+    if (cancelRequested.isEmpty) return contracts;
 
-    // cancelRequested 계약마다 취소 상태 병렬 조회
     final cancelRepo = ref.read(contractCancellationRepositoryProvider);
     final cancelResults = await Future.wait(
       cancelRequested.map(
@@ -167,15 +163,36 @@ class HomeContractViewModel extends _$HomeContractViewModel {
       ),
     );
 
-    // isMine == false 인 계약 배너 목록에 추가
-    final respondable = <ContractEntity>[];
+    final isMineByCode = <String, bool>{};
     for (var i = 0; i < cancelRequested.length; i++) {
       if (cancelResults[i] case Success(
         :final ContractCancellationEntity? data,
-      ) when data?.isMine == false) {
-        respondable.add(cancelRequested[i]);
+      ) when data != null) {
+        isMineByCode[cancelRequested[i].publicCode] = data.isMine;
       }
     }
+
+    if (isMineByCode.isEmpty) return contracts;
+
+    return contracts.map((c) {
+      return isMineByCode.containsKey(c.publicCode)
+          ? c.copyWith(cancelIsMine: isMineByCode[c.publicCode])
+          : c;
+    }).toList();
+  }
+
+  List<ContractEntity> _computeRequests(List<ContractEntity> contracts) {
+    final basic = contracts.where(
+      (c) =>
+          (c.status == ContractStatus.shared && !c.isCreator) ||
+          (c.status == ContractStatus.revisionRequested && c.isCreator) ||
+          (c.status == ContractStatus.receiverSigned && c.isCreator),
+    );
+
+    final respondable = contracts.where(
+      (c) =>
+          c.status == ContractStatus.cancelRequested && c.cancelIsMine == false,
+    );
 
     return [...basic, ...respondable];
   }

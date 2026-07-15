@@ -19,7 +19,7 @@ class UserInquiryRepositoryImpl implements UserInquiryRepository {
       return Success(dtos.map((dto) => dto.toEntity()).toList());
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
-        return const Failure(ForbiddenFailure('인증이 필요합니다.'));
+        return const Failure(UnauthorizedFailure('인증이 필요합니다.'));
       }
       return Failure(e.toFailure());
     } catch (e) {
@@ -42,10 +42,10 @@ class UserInquiryRepositoryImpl implements UserInquiryRepository {
       return Success(dto.toEntity());
     } on DioException catch (e) {
       if (e.response?.statusCode == 400) {
-        return const Failure(ForbiddenFailure('입력값 검증에 실패했습니다.'));
+        return const Failure(ValidationFailure('입력값 검증에 실패했습니다.'));
       }
       if (e.response?.statusCode == 401) {
-        return const Failure(ForbiddenFailure('인증이 필요합니다.'));
+        return const Failure(UnauthorizedFailure('인증이 필요합니다.'));
       }
       return Failure(e.toFailure());
     } catch (e) {
@@ -60,10 +60,10 @@ class UserInquiryRepositoryImpl implements UserInquiryRepository {
       return Success(dto.toEntity());
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
-        return const Failure(ForbiddenFailure('인증이 필요합니다.'));
+        return const Failure(UnauthorizedFailure('인증이 필요합니다.'));
       }
       if (e.response?.statusCode == 404) {
-        return const Failure(ForbiddenFailure('문의를 찾을 수 없습니다.'));
+        return const Failure(NotFoundFailure('문의를 찾을 수 없습니다.'));
       }
       return Failure(e.toFailure());
     } catch (e) {

@@ -8,6 +8,7 @@ import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/widgets/custom_loading_bar.dart';
 import 'package:trana/core/widgets/contract_card.dart';
+import 'package:trana/features/notification/presentation/viewmodels/notification_view_model.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_contract_type_selector.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_empty_state.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_filter_button.dart';
@@ -21,6 +22,7 @@ class HomeMainView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final homeState = ref.watch(homeContractViewModelProvider);
+    final notiState = ref.watch(notificationViewModelProvider);
     final isFilterExpanded = useState(false);
     final typeIndex = useState(0);
 
@@ -73,12 +75,29 @@ class HomeMainView extends HookConsumerWidget {
                           borderRadius: BorderRadius.circular(16),
                           color: vrc(context).secondaryColor,
                         ),
-                        child: Center(
-                          child: Icon(
-                            CooliconsIcon.bell,
-                            color: vrc(context).iconPrimary,
-                            size: 20,
-                          ),
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: Icon(
+                                CooliconsIcon.bell,
+                                color: vrc(context).iconPrimary,
+                                size: 20,
+                              ),
+                            ),
+                            if (notiState.unreadNotis.isNotEmpty)
+                              Positioned(
+                                top: 15,
+                                right: 15,
+                                child: Container(
+                                  height: 4,
+                                  width: 4,
+                                  decoration: BoxDecoration(
+                                    color: fxc(context).statusError,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
                     ),
@@ -129,7 +148,7 @@ class HomeMainView extends HookConsumerWidget {
                           const HomeFilterChipList(),
                         ],
                         const SizedBox(height: 16),
-                        homeState.isLoading
+                        homeState.isLoadingMyContracts
                             ? const SizedBox(
                                 height: 200,
                                 child: CustomLoadingBar(),
@@ -141,8 +160,8 @@ class HomeMainView extends HookConsumerWidget {
                                 physics: const NeverScrollableScrollPhysics(),
                                 padding: EdgeInsets.zero,
                                 itemCount: contracts.length,
-                                itemBuilder: (_, index) =>
-                                    ContractCard(c: contracts[index]),
+                                itemBuilder: (_, i) =>
+                                    ContractCard(c: contracts[i]),
                               ),
                       ],
                     ),

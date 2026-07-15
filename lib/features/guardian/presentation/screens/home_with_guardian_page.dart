@@ -11,7 +11,6 @@
 // import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
 
 // /// 홈 + 미성년자 보호자 인증 오버레이 (Stack 래핑 + 상태기반 노출)
-// /// TODO: 홈화면 코드랑 merge시 합쳐져야함. 배너 2개일때도 고려해야함
 // class HomeWithGuardianPage extends HookConsumerWidget {
 //   const HomeWithGuardianPage({super.key});
 

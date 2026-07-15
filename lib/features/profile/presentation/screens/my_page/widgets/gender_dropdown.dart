@@ -16,7 +16,7 @@ class GenderDropdown extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final mypageState = ref.watch(myPageViewModelProvider);
     final editProfileVM = ref.read(editProfileViewModelProvider.notifier);
-    final selectedGender = useState(mypageState.gender);
+    final selectedGender = useState(mypageState.gender ?? Gender.none);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,20 +31,35 @@ class GenderDropdown extends HookConsumerWidget {
             valueListenable: selectedGender,
             isExpanded: false,
             onChanged: (v) {
-              selectedGender.value = v;
+              selectedGender.value = v!;
               editProfileVM.updateGender(v);
             },
-            items: Gender.values.map((value) {
-              return DropdownItem(
-                value: value,
+            items: [
+              DropdownItem(
+                value: Gender.male,
                 height: 53,
                 child: Text(
-                  value.label,
+                  Gender.male.label,
                   style: context.txt(color: vrc(context).textPrimary),
                 ),
-              );
-            }).toList(),
-
+              ),
+              DropdownItem(
+                value: Gender.female,
+                height: 53,
+                child: Text(
+                  Gender.female.label,
+                  style: context.txt(color: vrc(context).textPrimary),
+                ),
+              ),
+              DropdownItem(
+                value: Gender.none,
+                height: 53,
+                child: Text(
+                  Gender.none.label,
+                  style: context.txt(color: vrc(context).textPrimary),
+                ),
+              ),
+            ],
             iconStyleData: IconStyleData(
               icon: Icon(
                 CooliconsIcon.caretDownSm,

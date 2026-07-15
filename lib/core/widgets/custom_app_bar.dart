@@ -4,9 +4,8 @@ import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 
 /// 기본 스타일 적용된 앱바 위젯
-/// 1. leading 없음 : CustomAppBar(title: )
-/// 2. leading (<) 있을 때 : CustomAppBar.leading(title: , onTapLeading: )
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  /// leading 없음 : CustomAppBar(title: )
   const CustomAppBar({
     super.key,
     required this.title,
@@ -15,6 +14,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }) : canPop = false,
        onTapLeading = null;
 
+  /// leading (<) 있음 : CustomAppBar.leading(title: , onTapLeading: )
   const CustomAppBar.leading({
     super.key,
     required this.title,
@@ -61,6 +61,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
+      actions: actions,
+      actionsPadding: const EdgeInsets.only(right: 20),
       bottom: progress > 0
           ? PreferredSize(
               preferredSize: const Size.fromHeight(4),
