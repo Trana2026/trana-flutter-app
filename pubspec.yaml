@@ -2,7 +2,7 @@ name: trana
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -38,7 +38,7 @@ dependencies:
   syncfusion_flutter_signaturepad: ^32.2.9
   dotted_border: ^3.1.0
   camera: ^0.12.0
-  camera_android: ^0.10.9+9  # Camera2 강제 사용 (CameraX AePreCaptureTask Samsung 버그 회피)
+  camera_android: ^0.10.9+9 # Camera2 강제 사용 (CameraX AePreCaptureTask Samsung 버그 회피)
   fluttertoast: ^9.0.0
   hooks_riverpod: ^3.3.1
   flutter_hooks: ^0.21.3+1
@@ -79,6 +79,7 @@ dependencies:
   ios_utsname_ext: ^2.3.0
   dropdown_button2: ^3.1.0
   flutter_local_notifications: ^22.0.1
+  lottie: ^3.3.3
 
 dev_dependencies:
   flutter_test:
@@ -100,7 +101,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -110,7 +110,10 @@ flutter:
   assets:
     - .env
     - assets/images/
+    - assets/images/tutorial_popup/
     - assets/icons/
+    - assets/anim/
+    - assets/anim/tutorial_popup/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -150,7 +153,7 @@ flutter:
           weight: 800
         - asset: assets/fonts/Pretendard-Black.ttf
           weight: 900
-  # Legacy separate font families (used by non-contract code)
+    # Legacy separate font families (used by non-contract code)
     - family: PretendardBlack
       fonts:
         - asset: assets/fonts/Pretendard-Black.ttf

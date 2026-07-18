@@ -10,18 +10,39 @@ import 'package:trana/features/profile/domain/entities/user_consent_entity.dart'
 import 'package:webview_flutter/webview_flutter.dart';
 
 class PolicyDetailPage extends HookConsumerWidget {
-  const PolicyDetailPage({super.key, required this.consent});
+  /// 마이페이지 약관 상세
+  const PolicyDetailPage({super.key, required UserConsentEntity consent})
+    : _consent = consent,
+      _directUrl = null,
+      _directTitle = null;
 
-  final UserConsentEntity consent;
+  /// 온보딩 약관 전문
+  const PolicyDetailPage.url({
+    super.key,
+    required String url,
+    required String title,
+  }) : _directUrl = url,
+       _directTitle = title,
+       _consent = null;
+
+  final UserConsentEntity? _consent;
+  final String? _directUrl;
+  final String? _directTitle;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final termsAsync = ref.watch(termsViewModelProvider);
 
-    final url = termsAsync.value
-        ?.where((t) => t.id == consent.termsId)
-        .firstOrNull
-        ?.contentUrl;
+    final consent = _consent;
+    final title = consent?.title ?? _directTitle ?? '';
+    final url =
+        _directUrl ??
+        (consent == null
+            ? null
+            : termsAsync.value
+                  ?.where((t) => t.id == consent.termsId)
+                  .firstOrNull
+                  ?.contentUrl);
 
     final controller = useMemoized(
       () => WebViewController()..setJavaScriptMode(JavaScriptMode.unrestricted),
@@ -35,7 +56,7 @@ class PolicyDetailPage extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: vrc(context).secondaryColor,
       appBar: CustomAppBar.leading(
-        title: consent.title,
+        title: title,
         onTapLeading: () => context.pop(),
       ),
       body: Container(

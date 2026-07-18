@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 const _androidChannel = AndroidNotificationChannel(
@@ -23,6 +24,15 @@ class NotificationService {
   /// 앱 시작 시 1회 호출.
   /// 알림 권한 요청 (iOS 필수 / Android 13+ 필수) + 포그라운드 표시 설정
   static Future<void> initialize() async {
+    try {
+      await _initialize();
+    } catch (e) {
+      // 알림 초기화 실패 무시 (앱 실행 차단 방지)
+      debugPrint('[NotificationService] initialize failed: $e');
+    }
+  }
+
+  static Future<void> _initialize() async {
     await FirebaseMessaging.instance.requestPermission(
       alert: true,
       badge: true,

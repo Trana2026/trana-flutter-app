@@ -27,6 +27,8 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        // flutter_local_notifications 요구사항
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -71,6 +73,7 @@ flutter {
 }
 
 dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     implementation(files("libs/clovaeyed-android-release.aar"))
     implementation("com.squareup.okhttp3:okhttp:3.12.1")
     implementation("com.squareup.okhttp3:logging-interceptor:3.12.1")
