@@ -42,7 +42,7 @@ final class HomeContractViewModelProvider
 }
 
 String _$homeContractViewModelHash() =>
-    r'0880ad09afce07611619b50bc35491b6f8d22230';
+    r'7507f125a7bd99e948b60044dc4f36ac650f2726';
 
 abstract class _$HomeContractViewModel extends $Notifier<HomeContractState> {
   HomeContractState build();

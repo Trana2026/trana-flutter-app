@@ -113,26 +113,24 @@ class ContractPhotoSection extends HookConsumerWidget {
                 // 1. 수정 시 > url 로 이미지 렌더링
                 if (isEditMode)
                   ...existingUrls.map(
-                    (url) => Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 4),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Image.network(
-                            url,
-                            width: 68,
-                            height: 68,
-                            fit: BoxFit.cover,
-                            loadingBuilder: (_, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Container(
-                                width: 68,
-                                height: 68,
-                                color: vrc(context).secondaryColor,
-                                child: const CustomLoadingBar(size: 20),
-                              );
-                            },
-                          ),
+                    (url) => Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.network(
+                          url,
+                          width: 68,
+                          height: 68,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (_, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Container(
+                              width: 68,
+                              height: 68,
+                              color: vrc(context).secondaryColor,
+                              child: const CustomLoadingBar(size: 20),
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -141,29 +139,27 @@ class ContractPhotoSection extends HookConsumerWidget {
                 // 2. 첫 생성 시 > AssetEntity 로 이미지 렌더링
                 if (!isEditMode)
                   ...selectedImages.value.map(
-                    (image) => Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 4),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: AssetEntityImage(
-                            image,
-                            width: 68,
-                            height: 68,
-                            fit: BoxFit.cover,
-                            loadingBuilder: (_, child, loadingProgress) {
-                              if (loadingProgress == null &&
-                                  !createState.isLoadingUpload) {
-                                return child;
-                              }
-                              return Container(
-                                width: 68,
-                                height: 68,
-                                color: vrc(context).tertiaryColor,
-                                child: const CustomLoadingBar(size: 20),
-                              );
-                            },
-                          ),
+                    (image) => Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: AssetEntityImage(
+                          image,
+                          width: 68,
+                          height: 68,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (_, child, loadingProgress) {
+                            if (loadingProgress == null &&
+                                !createState.isLoadingUpload) {
+                              return child;
+                            }
+                            return Container(
+                              width: 68,
+                              height: 68,
+                              color: vrc(context).tertiaryColor,
+                              child: const CustomLoadingBar(size: 20),
+                            );
+                          },
                         ),
                       ),
                     ),

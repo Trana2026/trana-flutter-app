@@ -3,7 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
-import 'package:trana/features/contract/presentation/extensions/contract_status_ui.dart';
 import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
 
 class HomeFilterChipList extends ConsumerWidget {
@@ -21,6 +20,19 @@ class HomeFilterChipList extends ConsumerWidget {
     ContractStatus.completed, // 거래 완료
   ];
 
+  String _labelFor(ContractStatus? status) => switch (status) {
+    null => '전체',
+    ContractStatus.inProgress || ContractStatus.draft || ContractStatus.ready =>
+      '계약서 초안',
+    ContractStatus.shared => '서명 요청',
+    ContractStatus.revisionRequested => '수정 요청',
+    ContractStatus.receiverSigned => '최종 서명 요청',
+    ContractStatus.signed => '서명 완료',
+    ContractStatus.reported => '신고 접수',
+    ContractStatus.cancelRequested || ContractStatus.cancelled => '취소 요청',
+    ContractStatus.completed => '거래 완료',
+  };
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final homeState = ref.watch(homeContractViewModelProvider);
@@ -35,14 +47,7 @@ class HomeFilterChipList extends ConsumerWidget {
         separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           final status = _representatives[index];
-          final label = status == null
-              ? '전체'
-              : status.statusLabel(
-                  isCreator: true,
-                  isMyCancel: false,
-                  isMyReport: false,
-                  revisionDone: false,
-                );
+          final label = _labelFor(status);
           final isSelected = status == null
               ? homeState.selectedStatus == null
               : homeState.selectedStatus == status;

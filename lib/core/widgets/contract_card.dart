@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
@@ -17,9 +16,10 @@ import 'package:trana/features/contract/presentation/viewmodels/report_contract_
 import 'package:trana/features/contract/presentation/viewmodels/revision_request_view_model.dart';
 
 class ContractCard extends HookConsumerWidget {
-  const ContractCard({super.key, required this.c});
+  const ContractCard({super.key, required this.c, required this.isPending});
 
   final ContractEntity c;
+  final ValueNotifier<bool> isPending;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,8 +27,6 @@ class ContractCard extends HookConsumerWidget {
     final reportVM = ref.read(reportContractViewModelProvider.notifier);
     final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
     final revisionState = ref.watch(revisionRequestViewModelProvider);
-
-    final isPending = useRef(false);
 
     return GestureDetector(
       onTap: () async {
