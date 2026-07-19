@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
+import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/features/contract/data/services/deferred_link_service.dart';
 import 'package:trana/features/contract/data/services/pending_contract_code_service.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
@@ -68,7 +69,12 @@ class HomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = useState<int>(0);
-    final pages = [const HomeMainView(), const HomeMainView(), const MyPage()];
+    final isPending = useState(false);
+    final pages = [
+      HomeMainView(isPending: isPending),
+      HomeMainView(isPending: isPending),
+      const MyPage(),
+    ];
     final isMypage = currentIndex.value == 2;
 
     // ===== 인증 관련 =====
@@ -171,21 +177,24 @@ class HomePage extends HookConsumerWidget {
       return null;
     }, [lifecycle]);
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: isMypage
-          ? vrc(context).secondaryColor
-          : vrc(context).background,
-      body: Stack(
-        children: [
-          IndexedStack(index: currentIndex.value, children: pages),
-          if (!isMypage) const HomeBanner(),
-        ],
-      ),
+    return PendingOverlay(
+      isPending: isPending.value,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: isMypage
+            ? vrc(context).secondaryColor
+            : vrc(context).background,
+        body: Stack(
+          children: [
+            IndexedStack(index: currentIndex.value, children: pages),
+            if (!isMypage) const HomeBanner(),
+          ],
+        ),
 
-      bottomNavigationBar: HomeBottomNav(
-        currentIndex: currentIndex.value,
-        onIndexChanged: (index) => currentIndex.value = index,
+        bottomNavigationBar: HomeBottomNav(
+          currentIndex: currentIndex.value,
+          onIndexChanged: (index) => currentIndex.value = index,
+        ),
       ),
     );
   }

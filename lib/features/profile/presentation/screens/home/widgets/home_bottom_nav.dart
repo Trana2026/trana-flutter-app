@@ -49,7 +49,7 @@ class HomeBottomNav extends HookConsumerWidget {
               label: '계약 작성',
               isActive: currentIndex == 1,
               onTap: () {
-                onIndexChanged(1);
+                onIndexChanged(0);
 
                 // 새 계약 작성 상태 초기화
                 createVM.initState();

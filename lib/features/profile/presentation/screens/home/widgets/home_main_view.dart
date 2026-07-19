@@ -17,7 +17,9 @@ import 'package:trana/features/profile/presentation/screens/home/widgets/home_se
 import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
 
 class HomeMainView extends HookConsumerWidget {
-  const HomeMainView({super.key});
+  const HomeMainView({super.key, required this.isPending});
+
+  final ValueNotifier<bool> isPending;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,145 +34,144 @@ class HomeMainView extends HookConsumerWidget {
       _ => homeState.myContracts,
     };
 
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Container(
-        color: vrc(context).secondaryColor,
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
+    return Container(
+      color: vrc(context).secondaryColor,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
+            decoration: BoxDecoration(
+              color: vrc(context).background,
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),
+            ),
+            child: SafeArea(
+              bottom: false,
+              child: Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "내 계약서",
+                        style: context.txt(
+                          color: vrc(context).textPrimary,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        ),
+                      ),
+                      Text("거래 내역 관리", style: context.txt()),
+                    ],
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () => context.push(AppRoutes.notification),
+                    child: Container(
+                      height: 44,
+                      width: 44,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: vrc(context).secondaryColor,
+                      ),
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: Icon(
+                              CooliconsIcon.bell,
+                              color: vrc(context).iconPrimary,
+                              size: 20,
+                            ),
+                          ),
+                          if (notiState.unreadNotis.isNotEmpty)
+                            Positioned(
+                              top: 15,
+                              right: 15,
+                              child: Container(
+                                height: 4,
+                                width: 4,
+                                decoration: BoxDecoration(
+                                  color: fxc(context).statusError,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
               decoration: BoxDecoration(
                 color: vrc(context).background,
                 borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
                 ),
               ),
               child: SafeArea(
-                bottom: false,
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "내 계약서",
-                          style: context.txt(
-                            color: vrc(context).textPrimary,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 20,
+                top: false,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text("나의 계약", style: context.txt()),
+                          const Spacer(),
+                          HomeContractTypeSelector(
+                            selectedIndex: typeIndex.value,
+                            onSelect: (i) => typeIndex.value = i,
                           ),
-                        ),
-                        Text("거래 내역 관리", style: context.txt()),
-                      ],
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () => context.push(AppRoutes.notification),
-                      child: Container(
-                        height: 44,
-                        width: 44,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: vrc(context).secondaryColor,
-                        ),
-                        child: Stack(
-                          children: [
-                            Center(
-                              child: Icon(
-                                CooliconsIcon.bell,
-                                color: vrc(context).iconPrimary,
-                                size: 20,
-                              ),
-                            ),
-                            if (notiState.unreadNotis.isNotEmpty)
-                              Positioned(
-                                top: 15,
-                                right: 15,
-                                child: Container(
-                                  height: 4,
-                                  width: 4,
-                                  decoration: BoxDecoration(
-                                    color: fxc(context).statusError,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                decoration: BoxDecoration(
-                  color: vrc(context).background,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                ),
-                child: SafeArea(
-                  top: false,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text("나의 계약", style: context.txt()),
-                            const Spacer(),
-                            HomeContractTypeSelector(
-                              selectedIndex: typeIndex.value,
-                              onSelect: (i) => typeIndex.value = i,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 28),
-                        Row(
-                          children: [
-                            Expanded(child: const HomeSearchBar()),
-                            const SizedBox(width: 7),
-                            HomeFilterButton(
-                              isActive: isFilterExpanded.value,
-                              onToggle: () => isFilterExpanded.value =
-                                  !isFilterExpanded.value,
-                            ),
-                          ],
-                        ),
-                        if (isFilterExpanded.value) ...[
-                          const SizedBox(height: 8),
-                          const HomeFilterChipList(),
                         ],
-                        const SizedBox(height: 16),
-                        homeState.isLoadingMyContracts
-                            ? const SizedBox(
-                                height: 200,
-                                child: CustomLoadingBar(),
-                              )
-                            : contracts.isEmpty
-                            ? const HomeEmptyState()
-                            : ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.zero,
-                                itemCount: contracts.length,
-                                itemBuilder: (_, i) =>
-                                    ContractCard(c: contracts[i]),
-                              ),
+                      ),
+                      const SizedBox(height: 28),
+                      Row(
+                        children: [
+                          Expanded(child: const HomeSearchBar()),
+                          const SizedBox(width: 7),
+                          HomeFilterButton(
+                            isActive: isFilterExpanded.value,
+                            onToggle: () => isFilterExpanded.value =
+                                !isFilterExpanded.value,
+                          ),
+                        ],
+                      ),
+                      if (isFilterExpanded.value) ...[
+                        const SizedBox(height: 8),
+                        const HomeFilterChipList(),
                       ],
-                    ),
+                      const SizedBox(height: 16),
+                      homeState.isLoadingMyContracts
+                          ? const SizedBox(
+                              height: 200,
+                              child: CustomLoadingBar(),
+                            )
+                          : contracts.isEmpty
+                          ? const HomeEmptyState()
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              padding: EdgeInsets.zero,
+                              itemCount: contracts.length,
+                              itemBuilder: (_, i) => ContractCard(
+                                c: contracts[i],
+                                isPending: isPending,
+                              ),
+                            ),
+                    ],
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

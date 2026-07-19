@@ -20,6 +20,7 @@ abstract class HomeContractState with _$HomeContractState {
     @Default([]) List<ContractEntity> myContracts, // 사용자의 계약 전체 목록
     @Default([]) List<ContractEntity> requestedContracts, // 배너에 표시할 계약 목록
     ContractStatus? selectedStatus, // 상태 필터 선택값
+    @Default('') String searchQuery, // 물품명 검색어
 
     @Default(false) bool isLoadingMyContracts, // 사용자의 계약 전체 목록 로딩중 여부
     String? error,
@@ -61,6 +62,9 @@ class HomeContractViewModel extends _$HomeContractViewModel {
 
     final selected = state.selectedStatus;
     final isDraftGroup = selected != null && _draftGroup.contains(selected);
+    final query = state.searchQuery.trim().isEmpty
+        ? null
+        : state.searchQuery.trim();
 
     List<ContractEntity> contracts = [];
     String? error;
@@ -70,7 +74,7 @@ class HomeContractViewModel extends _$HomeContractViewModel {
         _draftGroup.map((s) {
           return ref
               .read(contractRepositoryProvider)
-              .readMyContracts(status: s);
+              .readMyContracts(status: s, query: query);
         }),
       );
 
@@ -85,7 +89,7 @@ class HomeContractViewModel extends _$HomeContractViewModel {
     } else {
       final result = await ref
           .read(contractRepositoryProvider)
-          .readMyContracts(status: selected);
+          .readMyContracts(status: selected, query: query);
 
       switch (result) {
         case Success(:final data):
@@ -208,6 +212,12 @@ class HomeContractViewModel extends _$HomeContractViewModel {
   /// 상태별 필터 적용
   Future<void> applyStatus(ContractStatus? status) async {
     state = state.copyWith(selectedStatus: status);
+    await readMyContracts();
+  }
+
+  /// 물품명 검색어 적용
+  Future<void> applyQuery(String query) async {
+    state = state.copyWith(searchQuery: query);
     await readMyContracts();
   }
 

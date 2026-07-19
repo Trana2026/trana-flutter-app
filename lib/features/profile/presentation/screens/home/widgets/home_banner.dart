@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/features/guardian/domain/entities/guardian_verification_state.dart';
 import 'package:trana/features/guardian/presentation/viewmodels/guardian_verification_state_provider.dart';
@@ -26,6 +27,13 @@ class HomeBanner extends HookConsumerWidget {
         (state == GuardianVerificationState.pending ||
             state == GuardianVerificationState.verified);
 
+    // 좌측 스와이프 시 일시적으로 숨김 (홈 화면 재진입 시 초기화)
+    final isContractBannerDismissed = useState(false);
+    final isGuardianBannerDismissed = useState(false);
+
+    final showContractBanner = hasRequest && !isContractBannerDismissed.value;
+    final showGuardianBanner = showBanner && !isGuardianBannerDismissed.value;
+
     return Positioned(
       left: 20,
       right: 20,
@@ -39,9 +47,21 @@ class HomeBanner extends HookConsumerWidget {
           spacing: 8,
           children: [
             // 계약 배너
-            if (hasRequest) const HomeContractBanner(),
+            if (showContractBanner)
+              Dismissible(
+                key: const ValueKey('home_contract_banner'),
+                direction: DismissDirection.endToStart,
+                onDismissed: (_) => isContractBannerDismissed.value = true,
+                child: const HomeContractBanner(),
+              ),
             // 인증 배너
-            if (showBanner) const GuardianVerificationBanner(),
+            if (showGuardianBanner)
+              Dismissible(
+                key: const ValueKey('guardian_verification_banner'),
+                direction: DismissDirection.endToStart,
+                onDismissed: (_) => isGuardianBannerDismissed.value = true,
+                child: const GuardianVerificationBanner(),
+              ),
           ],
         ),
       ),
