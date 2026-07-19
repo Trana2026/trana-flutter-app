@@ -93,6 +93,8 @@ class AiAutoFillViewModel extends _$AiAutoFillViewModel {
       }
     }
 
+    if (!ref.mounted) return false;
+
     final result = await ref
         .read(contractAiExtractionRepositoryProvider)
         .analyzeImages(
@@ -100,6 +102,8 @@ class AiAutoFillViewModel extends _$AiAutoFillViewModel {
           attachmentIds: analysisIds,
           consentedAt: state.autoFillConsentedAt!,
         );
+
+    if (!ref.mounted) return false;
 
     if (result case Failure(:final failure)) {
       state = state.copyWith(isLoadingAnalysis: false, error: failure.message);

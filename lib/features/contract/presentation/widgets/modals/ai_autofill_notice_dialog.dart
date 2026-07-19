@@ -22,123 +22,127 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
 
     final isSelected = useState(false);
 
-    return Dialog(
-      backgroundColor: vrc(context).background,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              height: 40,
-              width: 40,
-              decoration: BoxDecoration(
-                color: fxc(context).subtitleBlue,
-                shape: BoxShape.circle,
+    return PopScope(
+      // AI 분석 진행 중에는 바깥 탭/뒤로가기로 dialog를 닫을 수 없도록 차단
+      canPop: !aiState.isLoadingAnalysis,
+      child: Dialog(
+        backgroundColor: vrc(context).background,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: fxc(context).subtitleBlue,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  CooliconsIcon.info,
+                  color: fxc(context).iconInfo,
+                  size: 24,
+                ),
               ),
-              child: Icon(
-                CooliconsIcon.info,
-                color: fxc(context).iconInfo,
-                size: 24,
+              const SizedBox(height: 12),
+
+              Text(
+                "[AI 자동기입 고지]",
+                style: context.txt(
+                  color: vrc(context).textPrimary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
+              const SizedBox(height: 12),
 
-            Text(
-              "[AI 자동기입 고지]",
-              style: context.txt(
-                color: vrc(context).textPrimary,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  _NoticeCard(
-                    appIcon: AppIcon.data(
-                      icon: CooliconsIcon.info,
-                      color: vrc(context).iconSecondary,
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _NoticeCard(
+                      appIcon: AppIcon.data(
+                        icon: CooliconsIcon.info,
+                        color: vrc(context).iconSecondary,
+                      ),
+                      title: "꼭 확인하세요",
+                      content:
+                          "AI는 계약서 템플릿의 빈칸을 자동으로 입력할 뿐, 법률 판단이나 계약의 적합성 판단은 수행하지 않습니다. 자동기입 결과는 참고용이며, 최종 확인과 책임은 사용자에게 있습니다.",
                     ),
-                    title: "꼭 확인하세요",
-                    content:
-                        "AI는 계약서 템플릿의 빈칸을 자동으로 입력할 뿐, 법률 판단이나 계약의 적합성 판단은 수행하지 않습니다. 자동기입 결과는 참고용이며, 최종 확인과 책임은 사용자에게 있습니다.",
-                  ),
-                  const SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
-                  _NoticeCard(
-                    appIcon: AppIcon.data(
-                      icon: CooliconsIcon.triangleWarning,
-                      color: fxc(context).iconDanger,
+                    _NoticeCard(
+                      appIcon: AppIcon.data(
+                        icon: CooliconsIcon.triangleWarning,
+                        color: fxc(context).iconDanger,
+                      ),
+                      title: "이런 이미지는 올리지 마세요",
+                      content: "신분증, 여권, 운전면허증, 카드번호, 계좌번호가 보이는 이미지",
                     ),
-                    title: "이런 이미지는 올리지 마세요",
-                    content: "신분증, 여권, 운전면허증, 카드번호, 계좌번호가 보이는 이미지",
-                  ),
-                  const SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(18),
-                      color: vrc(context).secondaryColor,
-                    ),
-                    child: Column(
-                      children: [
-                        _ConsentItem(
-                          onSelected: (v) => isSelected.value = v,
-                          isRequired: true,
-                          text: 'AI 자동 기입 기능 국외이전 동의',
-                          onTapChevron: () => context.push(
-                            AppRoutes.policyDetail,
-                            // TODO: 백엔드 구현되면 올바른 타입으로 변경
-                            extra: TermsType.privacy,
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        color: vrc(context).secondaryColor,
+                      ),
+                      child: Column(
+                        children: [
+                          _ConsentItem(
+                            onSelected: (v) => isSelected.value = v,
+                            isRequired: true,
+                            text: 'AI 자동 기입 기능 국외이전 동의',
+                            onTapChevron: () => context.push(
+                              AppRoutes.policyDetail,
+                              // TODO: 백엔드 AI 약관 구현되면 올바른 타입으로 변경
+                              extra: TermsType.privacy,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 12),
-                        _ConsentItem(
-                          text: 'AI 자동 기입 고지 전문 보기',
-                          onTapChevron: () => context.push(
-                            AppRoutes.policyDetail,
-                            // TODO: 백엔드 구현되면 올바른 타입으로 변경
-                            extra: TermsType.service,
+                          const SizedBox(height: 12),
+                          _ConsentItem(
+                            text: 'AI 자동 기입 고지 전문 보기',
+                            onTapChevron: () => context.push(
+                              AppRoutes.policyDetail,
+                              // TODO: 백엔드 AI 약관 구현되면 올바른 타입으로 변경
+                              extra: TermsType.service,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
+              const SizedBox(height: 12),
 
-            PrimaryButton.brand(
-              text: aiState.isLoadingAnalysis ? "이미지를 분석 중이에요..." : "분석하기",
-              disabled: !isSelected.value,
-              onTap: () async {
-                if (aiState.isLoadingAnalysis) return;
+              PrimaryButton.brand(
+                text: aiState.isLoadingAnalysis ? "이미지를 분석 중이에요..." : "분석하기",
+                disabled: !isSelected.value,
+                onTap: () async {
+                  if (aiState.isLoadingAnalysis) return;
 
-                if (aiState.autoFillConsentedAt == null) {
-                  aiVM.consentAutoFill();
-                }
+                  if (aiState.autoFillConsentedAt == null) {
+                    aiVM.consentAutoFill();
+                  }
 
-                // AI 이미지 분석
-                final success = await aiVM.analyzeImages();
-                if (!context.mounted) return;
-                if (!success) {
-                  final state = ref.read(aiAutoFillViewModelProvider);
-                  showErrorToast(context, state.error ?? '이미지 분석에 실패했습니다.');
-                  aiVM.clearError();
-                  return;
-                }
+                  // AI 이미지 분석
+                  final success = await aiVM.analyzeImages();
+                  if (!context.mounted) return;
+                  if (!success) {
+                    final state = ref.read(aiAutoFillViewModelProvider);
+                    showErrorToast(context, state.error ?? '이미지 분석에 실패했습니다.');
+                    aiVM.clearError();
+                    return;
+                  }
 
-                Navigator.pop(context);
-              },
-            ),
-          ],
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
