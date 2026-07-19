@@ -34,8 +34,8 @@ abstract class CreateContractState with _$CreateContractState {
     Uint8List? pdfBytes, // 생성된 Pdf 바이트
     @Default(false) bool revisionRequested, // 수정 요청 상태일 때
 
-    @Default(false) bool isLoading,
     @Default(false) bool isLoadingUpload, // 사진 업로드 로딩중 여부
+    @Default(false) bool isLoadingPdf, // PDF 생성 로딩중 여부
     String? error,
   }) = _CreateContractState;
 }
@@ -87,21 +87,13 @@ class CreateContractViewModel extends _$CreateContractViewModel {
 
   /// Draft 생성 (성공 여부 반환)
   Future<bool> createDraft() async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(contractDraftRepositoryProvider)
         .createDraft();
 
     state = switch (result) {
-      Success(:final data) => state.copyWith(
-        isLoading: false,
-        publicCode: data.publicCode,
-      ),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
+      Success(:final data) => state.copyWith(publicCode: data.publicCode),
+      Failure(:final failure) => state.copyWith(error: failure.message),
     };
 
     await _refreshHome();
@@ -109,15 +101,8 @@ class CreateContractViewModel extends _$CreateContractViewModel {
     return result is Success;
   }
 
-  /// Draft 역할 업데이트 (성공 여부 반환)
-  Future<bool> updateDraftRole(int? index) async {
-    if (state.publicCode == null) {
-      state = state.copyWith(error: '계약 초안 정보가 없습니다.');
-      return false;
-    }
-
-    state = state.copyWith(isLoading: true);
-
+  /// 역할 선택
+  void updateRole(int? index) {
     switch (index) {
       case null:
         state = state.copyWith(role: null);
@@ -126,20 +111,22 @@ class CreateContractViewModel extends _$CreateContractViewModel {
       case 1:
         state = state.copyWith(role: Role.buyer);
     }
+  }
+
+  /// Draft 역할 업데이트 (성공 여부 반환)
+  Future<bool> updateDraftRole() async {
+    if (state.publicCode == null) {
+      state = state.copyWith(error: '계약 초안 정보가 없습니다.');
+      return false;
+    }
 
     final result = await ref
         .read(contractDraftRepositoryProvider)
         .updateDraft(publicCode: state.publicCode!, creatorRole: state.role);
 
     state = switch (result) {
-      Success(:final data) => state.copyWith(
-        isLoading: false,
-        publicCode: data.publicCode,
-      ),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
+      Success(:final data) => state.copyWith(publicCode: data.publicCode),
+      Failure(:final failure) => state.copyWith(error: failure.message),
     };
 
     await _refresh(state.publicCode);
@@ -185,8 +172,6 @@ class CreateContractViewModel extends _$CreateContractViewModel {
       return false;
     }
 
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(contractDraftRepositoryProvider)
         .updateDraft(
@@ -207,14 +192,8 @@ class CreateContractViewModel extends _$CreateContractViewModel {
         );
 
     state = switch (result) {
-      Success(:final data) => state.copyWith(
-        isLoading: false,
-        publicCode: data.publicCode,
-      ),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
+      Success(:final data) => state.copyWith(publicCode: data.publicCode),
+      Failure(:final failure) => state.copyWith(error: failure.message),
     };
 
     await _refresh(state.publicCode);
@@ -223,9 +202,8 @@ class CreateContractViewModel extends _$CreateContractViewModel {
   }
 
   /// 계약 첨부 사진 등록
-  void updateImages(List<AssetEntity> images) {
-    state = state.copyWith(selectedImages: images);
-  }
+  void updateImages(List<AssetEntity> images) =>
+      state = state.copyWith(selectedImages: images);
 
   /// 계약 첨부 사진 업로드 (성공 여부 반환)
   Future<bool> updateAttachments() async {
@@ -249,22 +227,28 @@ class CreateContractViewModel extends _$CreateContractViewModel {
     }
     state = state.copyWith(attachmentIds: []);
 
-    // 2. 새 이미지 업로드 후 id 저장
+    // 2. 새 이미지 업로드 후 id 저장 (병렬 처리)
+    final results = await Future.wait(
+      state.selectedImages.map((asset) async {
+        final file = await asset.file;
+        if (file == null) return null;
+
+        final bytes = await file.readAsBytes();
+        final filename = file.path.split('/').last;
+        final contentType = _mimeType(filename);
+
+        return repo.uploadAttachment(
+          publicCode: publicCode,
+          bytes: bytes,
+          filename: filename,
+          contentType: contentType,
+        );
+      }),
+    );
+
     final uploadedIds = <int>[];
-    for (final asset in state.selectedImages) {
-      final file = await asset.file;
-      if (file == null) continue;
-
-      final bytes = await file.readAsBytes();
-      final filename = file.path.split('/').last;
-      final contentType = _mimeType(filename);
-
-      final result = await repo.uploadAttachment(
-        publicCode: publicCode,
-        bytes: bytes,
-        filename: filename,
-        contentType: contentType,
-      );
+    for (final result in results) {
+      if (result == null) continue;
 
       switch (result) {
         case Success(:final data):
@@ -300,16 +284,19 @@ class CreateContractViewModel extends _$CreateContractViewModel {
       return false;
     }
 
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoadingPdf: true);
 
     final result = await ref
         .read(contractPdfRepositoryProvider)
         .preview(publicCode: state.publicCode!);
 
     state = switch (result) {
-      Success(:final data) => state.copyWith(isLoading: false, pdfBytes: data),
+      Success(:final data) => state.copyWith(
+        isLoadingPdf: false,
+        pdfBytes: data,
+      ),
       Failure(:final failure) => state.copyWith(
-        isLoading: false,
+        isLoadingPdf: false,
         error: failure.message,
       ),
     };
@@ -324,19 +311,13 @@ class CreateContractViewModel extends _$CreateContractViewModel {
       return false;
     }
 
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(contractLifecycleRepositoryProvider)
         .ready(state.publicCode!);
 
-    state = switch (result) {
-      Success() => state.copyWith(isLoading: false),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
-    };
+    if (result case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+    }
 
     if (result is Success) {
       await _refresh(state.publicCode);

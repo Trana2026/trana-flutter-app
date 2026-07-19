@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/widgets/custom_loading_bar.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 
@@ -40,14 +42,14 @@ class ContractImageCarousel extends HookConsumerWidget {
                   margin: const EdgeInsets.symmetric(horizontal: 24),
                   decoration: BoxDecoration(
                     color: Colors.black,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(28),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: SizedBox(
                       height: 560,
                       width: 315,
-                      child: detailState.isLoading || imageUrls.isEmpty
+                      child: detailState.isLoadingData || imageUrls.isEmpty
                           ? const CustomLoadingBar()
                           : PageView.builder(
                               controller: controller,
@@ -75,7 +77,7 @@ class ContractImageCarousel extends HookConsumerWidget {
                   Positioned(
                     left: 5,
                     child: _ArrowButton(
-                      icon: Icons.chevron_left,
+                      icon: CooliconsIcon.chevronLeft,
                       onTap: () => controller.previousPage(
                         duration: const Duration(milliseconds: 250),
                         curve: Curves.easeInOut,
@@ -88,7 +90,7 @@ class ContractImageCarousel extends HookConsumerWidget {
                   Positioned(
                     right: 5,
                     child: _ArrowButton(
-                      icon: Icons.chevron_right,
+                      icon: CooliconsIcon.chevronRight,
                       onTap: () => controller.nextPage(
                         duration: const Duration(milliseconds: 250),
                         curve: Curves.easeInOut,
@@ -98,14 +100,21 @@ class ContractImageCarousel extends HookConsumerWidget {
 
                 Positioned(
                   bottom: 10,
-                  child: Text(
-                    '${currentIndex.value + 1} / ${imageUrls.length}',
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      height: 1.5,
-                      letterSpacing: -0.14,
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: fxc(context).imageCountBg,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '${currentIndex.value + 1}/${imageUrls.length}',
+                      style: TextStyle(
+                        color: fxc(context).unchangeableWhite,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                        height: 1.5,
+                        letterSpacing: 2,
+                      ),
                     ),
                   ),
                 ),
@@ -129,13 +138,13 @@ class _ArrowButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 36,
-        height: 36,
+        width: 40,
+        height: 40,
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.5),
-          shape: BoxShape.circle,
+          color: fxc(context).opacityBg,
+          borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(icon, color: Colors.white, size: 24),
+        child: Icon(icon, color: fxc(context).unchangeableWhite, size: 20),
       ),
     );
   }

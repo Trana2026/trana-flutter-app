@@ -65,7 +65,7 @@ abstract class DetailContractState with _$DetailContractState {
     @Default(0) int counterpartyDisputeCount,
     @Default(0) int counterpartyConfirmedReportCount,
 
-    @Default(false) bool isLoading,
+    @Default(false) bool isLoadingData, // 계약 상세 정보 조회 로딩중 여부
     String? error,
   }) = _DetailContractState;
 
@@ -101,7 +101,7 @@ class DetailContractViewModel extends _$DetailContractViewModel {
     );
 
     state = state.copyWith(
-      isLoading: true,
+      isLoadingData: true,
       myRole: selectedContract.myRole,
       isCreator: selectedContract.isCreator,
       attachmentCount: selectedContract.attachmentCount,
@@ -129,7 +129,7 @@ class DetailContractViewModel extends _$DetailContractViewModel {
     final pdfResult = results[2] as Result<ContractPdfEntity>;
 
     if (draftResult case Failure(:final failure)) {
-      state = state.copyWith(isLoading: false, error: failure.message);
+      state = state.copyWith(isLoadingData: false, error: failure.message);
       return false;
     }
 
@@ -158,7 +158,7 @@ class DetailContractViewModel extends _$DetailContractViewModel {
     }
 
     state = state.copyWith(
-      isLoading: false,
+      isLoadingData: false,
       status: draft.disputeState == DisputeState.reported
           ? ContractStatus.reported
           : draft.status,
@@ -191,21 +191,13 @@ class DetailContractViewModel extends _$DetailContractViewModel {
 
   /// READY > DRAFT 되돌림 (성공 여부 반환)
   Future<bool> revert() async {
-    state = state.copyWith(isLoading: true);
-
     final result = await ref
         .read(contractLifecycleRepositoryProvider)
         .revert(state.publicCode);
 
     state = switch (result) {
-      Success(:final data) => state.copyWith(
-        isLoading: false,
-        status: data.status,
-      ),
-      Failure(:final failure) => state.copyWith(
-        isLoading: false,
-        error: failure.message,
-      ),
+      Success(:final data) => state.copyWith(status: data.status),
+      Failure(:final failure) => state.copyWith(error: failure.message),
     };
 
     return result is Success;

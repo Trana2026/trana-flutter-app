@@ -134,38 +134,33 @@ class ContractCtaButtons extends HookConsumerWidget {
       text: "삭제하기",
       disabled: disabled,
       onTap: () async {
-        await showDialog(
+        await showCustomDialog(
           context: context,
-          builder: (_) => CustomDialog(
-            title: '삭제 안내',
-            content: '삭제하시겠습니까?',
-            confirmText: '삭제하기',
-            onConfirm: () async {
-              if (detailState.status == ContractStatus.ready) {
-                // READY > DRAFT 계약 상태 되돌림
-                final success = await detailVM.revert();
-                if (!context.mounted) return;
-                if (!success) {
-                  final state = ref.read(detailContractViewModelProvider);
-                  showErrorToast(context, state.error!);
-                  detailVM.clearError();
-                  return;
-                }
-              }
-
-              // Draft 삭제
-              final success = await deleteVM.deleteDraft(
-                detailState.publicCode,
-              );
+          title: '삭제하시겠습니까?',
+          confirmText: '삭제하기',
+          onConfirm: () async {
+            if (detailState.status == ContractStatus.ready) {
+              // READY > DRAFT 계약 상태 되돌림
+              final success = await detailVM.revert();
               if (!context.mounted) return;
               if (!success) {
-                final state = ref.read(deleteContractViewModelProvider);
+                final state = ref.read(detailContractViewModelProvider);
                 showErrorToast(context, state.error!);
-                deleteVM.clearError();
+                detailVM.clearError();
                 return;
               }
-            },
-          ),
+            }
+
+            // Draft 삭제
+            final success = await deleteVM.deleteDraft(detailState.publicCode);
+            if (!context.mounted) return;
+            if (!success) {
+              final state = ref.read(deleteContractViewModelProvider);
+              showErrorToast(context, state.error!);
+              deleteVM.clearError();
+              return;
+            }
+          },
         );
 
         if (!context.mounted) return;
@@ -208,14 +203,20 @@ class ContractCtaButtons extends HookConsumerWidget {
       text: "신고 취소하기",
       disabled: disabled,
       onTap: () async {
-        // 신고 취소
-        final success = await reportVM.cancelReport(detailState.publicCode);
-        if (!context.mounted) return;
-        if (!success) {
-          final state = ref.read(reportContractViewModelProvider);
-          showErrorToast(context, state.error!);
-          reportVM.clearError();
-        }
+        await showCustomDialog(
+          context: context,
+          title: '신고를 취소하시겠습니까?',
+          onConfirm: () async {
+            // 신고 취소
+            final success = await reportVM.cancelReport(detailState.publicCode);
+            if (!context.mounted) return;
+            if (!success) {
+              final state = ref.read(reportContractViewModelProvider);
+              showErrorToast(context, state.error!);
+              reportVM.clearError();
+            }
+          },
+        );
       },
     );
   }
@@ -236,14 +237,20 @@ class ContractCtaButtons extends HookConsumerWidget {
       text: "요청 취소하기",
       disabled: disabled,
       onTap: () async {
-        // 취소 요청 취소
-        final success = await cancelVM.revokeCancel(detailState.publicCode);
-        if (!context.mounted) return;
-        if (!success) {
-          final state = ref.read(cancelContractViewModelProvider);
-          showErrorToast(context, state.error!);
-          cancelVM.clearError();
-        }
+        await showCustomDialog(
+          context: context,
+          title: '취소 요청을 취소하시겠습니까?',
+          onConfirm: () async {
+            // 취소 요청 취소
+            final success = await cancelVM.revokeCancel(detailState.publicCode);
+            if (!context.mounted) return;
+            if (!success) {
+              final state = ref.read(cancelContractViewModelProvider);
+              showErrorToast(context, state.error!);
+              cancelVM.clearError();
+            }
+          },
+        );
       },
     );
   }
@@ -296,14 +303,21 @@ class ContractCtaButtons extends HookConsumerWidget {
       onTap: () async {
         // 1. 수정 요청 상태일 때
         if (detailState.status == ContractStatus.revisionRequested) {
-          // 재서명 요청
-          final success = await shareVM.reshare(detailState.publicCode);
-          if (!context.mounted) return;
-          if (!success) {
-            final state = ref.read(shareContractViewModelProvider);
-            showErrorToast(context, state.error!);
-            shareVM.clearError();
-          }
+          await showCustomDialog(
+            context: context,
+            title: '거래 상대방에게\n다시 서명을 요청하시겠습니까?',
+            onConfirm: () async {
+              // 재서명 요청
+              final success = await shareVM.reshare(detailState.publicCode);
+              if (!context.mounted) return;
+              if (!success) {
+                final state = ref.read(shareContractViewModelProvider);
+                showErrorToast(context, state.error!);
+                shareVM.clearError();
+              }
+            },
+          );
+
           // 2. 계약서 초안 상태일 때
         } else {
           context.push(AppRoutes.contractShare, extra: detailState.publicCode);
@@ -327,14 +341,20 @@ class ContractCtaButtons extends HookConsumerWidget {
       text: "거래 완료 확정",
       disabled: disabled,
       onTap: () async {
-        // 거래 완료
-        final success = await completeVM.complete(detailState.publicCode);
-        if (!context.mounted) return;
-        if (!success) {
-          final state = ref.read(completeContractViewModelProvider);
-          showErrorToast(context, state.error!);
-          completeVM.clearError();
-        }
+        await showCustomDialog(
+          context: context,
+          title: '거래 완료를 확정하시겠습니까?',
+          onConfirm: () async {
+            // 거래 완료
+            final success = await completeVM.complete(detailState.publicCode);
+            if (!context.mounted) return;
+            if (!success) {
+              final state = ref.read(completeContractViewModelProvider);
+              showErrorToast(context, state.error!);
+              completeVM.clearError();
+            }
+          },
+        );
       },
     );
   }

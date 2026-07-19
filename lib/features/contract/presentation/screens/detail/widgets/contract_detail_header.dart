@@ -5,6 +5,7 @@ import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/features/contract/presentation/extensions/contract_status_ui.dart';
 import 'package:trana/features/contract/presentation/viewmodels/cancel_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/report_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/revision_request_view_model.dart';
 
 class ContractDetailHeader extends HookConsumerWidget {
@@ -14,10 +15,12 @@ class ContractDetailHeader extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final detailState = ref.watch(detailContractViewModelProvider);
     final cancelState = ref.watch(cancelContractViewModelProvider);
+    final reportState = ref.watch(reportContractViewModelProvider);
     final revisionState = ref.watch(revisionRequestViewModelProvider);
 
     final status = detailState.status;
     final isMyCancel = cancelState.recentCancel?.isMine == true;
+    final isMyReport = reportState.recentReport?.isMine == true;
     final revisionDone = revisionState.revisionDone;
 
     return Column(
@@ -40,6 +43,7 @@ class ContractDetailHeader extends HookConsumerWidget {
                     status.statusLabel(
                       isCreator: detailState.isCreator,
                       isMyCancel: isMyCancel,
+                      isMyReport: isMyReport,
                       revisionDone: revisionDone,
                     ),
                     style: context.txt(

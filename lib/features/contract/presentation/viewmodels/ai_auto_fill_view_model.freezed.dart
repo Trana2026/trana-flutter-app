@@ -21,7 +21,9 @@ mixin _$AiAutoFillState {
  int get amount;// 가격 (AI 분석 결과)
  String get condition;// 상품 상태 (AI 분석 결과)
  String get details;// 상품 상세 정보 (AI 분석 결과)
- bool get isLoadingAnalysis; bool get isCompleted; String? get error;
+ bool get isLoadingAnalysis;// AI 분석 로딩중 여부
+ bool get isCompleted;// AI 분석 완료 여부
+ String? get error;
 /// Create a copy of AiAutoFillState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -240,7 +242,9 @@ class _AiAutoFillState implements AiAutoFillState {
 @override@JsonKey() final  String details;
 // 상품 상세 정보 (AI 분석 결과)
 @override@JsonKey() final  bool isLoadingAnalysis;
+// AI 분석 로딩중 여부
 @override@JsonKey() final  bool isCompleted;
+// AI 분석 완료 여부
 @override final  String? error;
 
 /// Create a copy of AiAutoFillState

@@ -18,6 +18,15 @@ class DeviceManagementPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mypageState = ref.watch(myPageViewModelProvider);
+    final currentDeviceId = ref
+        .watch(deviceTokenViewModelProvider)
+        .currentDeviceId;
+
+    // 현재 기기를 최상단에 배치
+    final devices = [
+      ...mypageState.devices.where((d) => d.id == currentDeviceId),
+      ...mypageState.devices.where((d) => d.id != currentDeviceId),
+    ];
 
     return Scaffold(
       backgroundColor: vrc(context).background,
@@ -27,8 +36,8 @@ class DeviceManagementPage extends HookConsumerWidget {
       ),
       body: ListView.builder(
         padding: EdgeInsets.zero,
-        itemCount: mypageState.devices.length,
-        itemBuilder: (_, i) => _DeviceListItem(device: mypageState.devices[i]),
+        itemCount: devices.length,
+        itemBuilder: (_, i) => _DeviceListItem(device: devices[i]),
       ),
     );
   }

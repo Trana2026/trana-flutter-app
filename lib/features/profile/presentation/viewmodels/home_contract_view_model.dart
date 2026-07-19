@@ -118,31 +118,39 @@ class HomeContractViewModel extends _$HomeContractViewModel {
   Future<List<ContractEntity>> _applyDisputeStatuses(
     List<ContractEntity> contracts,
   ) async {
-    final signed = contracts
-        .where((c) => c.status == ContractStatus.signed)
+    final reportable = contracts
+        .where(
+          (c) =>
+              c.status == ContractStatus.signed ||
+              c.status == ContractStatus.completed,
+        )
         .toList();
 
-    if (signed.isEmpty) return contracts;
+    if (reportable.isEmpty) return contracts;
 
     final disputeRepo = ref.read(contractDisputeRepositoryProvider);
     final disputeResults = await Future.wait(
-      signed.map((c) => disputeRepo.readDisputes(c.publicCode)),
+      reportable.map((c) => disputeRepo.readDisputes(c.publicCode)),
     );
 
-    final reportedCodes = <String>{};
-    for (var i = 0; i < signed.length; i++) {
+    final reportIsMineByCode = <String, bool>{};
+    for (var i = 0; i < reportable.length; i++) {
       if (disputeResults[i] case Success(:final data)) {
-        if (data.any((d) => d.status == DisputeState.reported)) {
-          reportedCodes.add(signed[i].publicCode);
+        final reported = data.where((d) => d.status == DisputeState.reported);
+        if (reported.isNotEmpty) {
+          reportIsMineByCode[reportable[i].publicCode] = reported.first.isMine;
         }
       }
     }
 
-    if (reportedCodes.isEmpty) return contracts;
+    if (reportIsMineByCode.isEmpty) return contracts;
 
     return contracts.map((c) {
-      return reportedCodes.contains(c.publicCode)
-          ? c.copyWith(status: ContractStatus.reported)
+      return reportIsMineByCode.containsKey(c.publicCode)
+          ? c.copyWith(
+              status: ContractStatus.reported,
+              reportIsMine: reportIsMineByCode[c.publicCode],
+            )
           : c;
     }).toList();
   }

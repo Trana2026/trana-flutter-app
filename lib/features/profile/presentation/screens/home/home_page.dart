@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/dev/test_user_provider.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
@@ -111,8 +112,9 @@ class HomePage extends HookConsumerWidget {
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         // 테스트 유저 로그인 (사용 시 주석 해제)
-        // final userVM = ref.read(testUserProvider.notifier);
-        // await userVM.getUser();
+        // TODO: 비활성화
+        final userVM = ref.read(testUserProvider.notifier);
+        await userVM.getUser();
 
         // 플레이스토어 설치 유입 시 Install Referrer에서 초대 토큰 복구
         await DeferredLinkService.restoreInvitationToken();

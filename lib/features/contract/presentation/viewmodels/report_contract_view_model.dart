@@ -50,6 +50,7 @@ class ReportContractViewModel extends _$ReportContractViewModel {
 
     if (result is Success) {
       await _refresh(publicCode);
+      await readReport(publicCode);
     }
 
     return result is Success;

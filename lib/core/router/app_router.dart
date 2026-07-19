@@ -1,7 +1,5 @@
 import 'package:go_router/go_router.dart';
 import 'package:trana/core/network/auth_token_store.dart';
-import 'package:trana/features/contract/data/services/pending_contract_code_service.dart';
-import 'package:trana/features/contract/data/services/pending_invitation_token_service.dart';
 import 'package:trana/features/auth/presentation/screens/auth_complete/auth_complete_page.dart';
 import 'package:trana/features/auth/presentation/screens/face_verify/face_verify_page.dart';
 import 'package:trana/features/auth/presentation/screens/guardian_link/guardian_link_send_page.dart';
@@ -14,28 +12,31 @@ import 'package:trana/features/auth/presentation/screens/select_age/select_user_
 import 'package:trana/features/auth/presentation/screens/social_login/social_login_page.dart';
 import 'package:trana/features/auth/presentation/screens/splash/splash_page.dart';
 import 'package:trana/features/auth/presentation/screens/terms/terms_agreement_page.dart';
+import 'package:trana/features/contract/data/services/pending_contract_code_service.dart';
+import 'package:trana/features/contract/data/services/pending_invitation_token_service.dart';
 import 'package:trana/features/contract/presentation/screens/biometric_lock/biometric_lock_page.dart';
 import 'package:trana/features/contract/presentation/screens/create/create_contract_page.dart';
 import 'package:trana/features/contract/presentation/screens/detail/contract_detail_page.dart';
-import 'package:trana/features/contract/presentation/screens/revision/revision_request_page.dart';
 import 'package:trana/features/contract/presentation/screens/preview/contract_preview_page.dart';
-import 'package:trana/features/contract/presentation/screens/request/contract_final_preview_page.dart';
 import 'package:trana/features/contract/presentation/screens/request/contract_request_detail_page.dart';
-import 'package:trana/features/contract/presentation/screens/request/contract_request_list_page.dart';
+import 'package:trana/features/contract/presentation/screens/request/sub_pages/contract_final_preview_page.dart';
+import 'package:trana/features/contract/presentation/screens/request/sub_pages/contract_request_list_page.dart';
+import 'package:trana/features/contract/presentation/screens/revision/revision_request_page.dart';
 import 'package:trana/features/contract/presentation/screens/select_role/select_user_role_page.dart';
 import 'package:trana/features/contract/presentation/screens/share/contract_share_page.dart';
+import 'package:trana/features/contract/presentation/screens/detail/sub_pages/contract_entire_preview_page.dart';
 import 'package:trana/features/contract/presentation/screens/template/contract_template_page.dart';
 import 'package:trana/features/notification/presentation/screens/notification/notification_page.dart';
-import 'package:trana/features/profile/domain/entities/user_consent_entity.dart';
+import 'package:trana/features/profile/domain/enums/terms_type.dart';
 import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/customer_service_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/device_management_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/dispute_history_contract_page.dart';
+import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/edit_profile_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/inquiry_history_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/pending_contract_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/policy_detail_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/policy_list_page.dart';
-import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/edit_profile_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/total_contract_page.dart';
 
 /// 앱 내 모든 라우트 경로 상수
@@ -75,6 +76,7 @@ abstract class AppRoutes {
   static const requestList = '/contract/request-list';
   static const revisionRequest = '/contract/revision-request';
   static const finalPreview = '/contract/final-preview';
+  static const entirePreview = '/contract/entire-preview';
 
   // MyPage
   static const totalContract = '/my/total-contract';
@@ -220,6 +222,10 @@ GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
       },
     ),
     GoRoute(
+      path: AppRoutes.entirePreview,
+      builder: (context, state) => ContractEntirePreviewPage(),
+    ),
+    GoRoute(
       path: AppRoutes.contractDetail,
       builder: (context, state) => ContractDetailPage(),
     ),
@@ -280,8 +286,8 @@ GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
     GoRoute(
       path: AppRoutes.policyDetail,
       builder: (context, state) {
-        final consent = state.extra as UserConsentEntity;
-        return PolicyDetailPage(consent: consent);
+        final type = state.extra as TermsType;
+        return PolicyDetailPage(type: type);
       },
     ),
     GoRoute(

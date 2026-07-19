@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/utils/validation.dart';
 import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/core/widgets/contract_form_field.dart';
@@ -13,7 +14,6 @@ import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/domain/utils/string_extensions.dart';
-import 'package:trana/features/contract/presentation/screens/share/widgets/contract_draft_preview_card.dart';
 import 'package:trana/features/contract/presentation/viewmodels/share_contract_view_model.dart';
 
 class ContractSharePage extends HookConsumerWidget {
@@ -64,8 +64,43 @@ class ContractSharePage extends HookConsumerWidget {
                   const SizedBox(height: 6),
                   Text("초안에서 계약의 핵심 조건을 확인해주세요.", style: context.txt()),
                   const SizedBox(height: 20),
-                  ContractDraftPreviewCard(publicCode: publicCode),
+
+                  GestureDetector(
+                    onTap: () => context.push(AppRoutes.entirePreview),
+                    behavior: HitTestBehavior.opaque,
+                    child: Container(
+                      height: 60,
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        color: vrc(context).secondaryColor,
+                      ),
+                      child: Row(
+                        children: [
+                          AppIcon.svg(
+                            asset: "assets/icons/file.svg",
+                            color: vrc(context).iconSecondary,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              "계약서 초안",
+                              style: context.txt(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          AppIcon.data(
+                            icon: CooliconsIcon.chevronRight,
+                            color: vrc(context).iconSecondary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 20),
+
                   Text("전송 채널", style: context.txt()),
                   const SizedBox(height: 4),
                   Container(
@@ -95,13 +130,13 @@ class ContractSharePage extends HookConsumerWidget {
                   const SizedBox(height: 20),
                   ContractFormField(
                     label: "이름",
-                    hintText: "이름을 입력해주세요",
+                    hintText: "거래 상대방의 이름을 입력해주세요",
                     controller: nameCtr,
                   ),
                   const SizedBox(height: 20),
                   ContractFormField(
                     label: "연락처",
-                    hintText: "010-0000-0000",
+                    hintText: "거래 상대방의 연락처를 입력해주세요",
                     keyboardType: TextInputType.phone,
                     controller: phoneCtr,
                     errorText: phoneError.value,

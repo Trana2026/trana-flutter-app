@@ -39,6 +39,7 @@ extension ContractStatusMeta on ContractStatus {
   String statusLabel({
     required bool isCreator,
     required bool isMyCancel,
+    required bool isMyReport,
     required bool revisionDone,
   }) => switch (this) {
     ContractStatus.inProgress ||
@@ -57,7 +58,7 @@ extension ContractStatusMeta on ContractStatus {
 
     ContractStatus.cancelRequested ||
     ContractStatus.cancelled => isMyCancel ? "취소 요청됨" : "취소 요청",
-    ContractStatus.reported => "신고 접수",
+    ContractStatus.reported => isMyReport ? "신고 접수됨" : "신고 접수",
     ContractStatus.completed => "거래 완료",
   };
 

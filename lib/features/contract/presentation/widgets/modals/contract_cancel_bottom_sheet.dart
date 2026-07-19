@@ -8,6 +8,7 @@ import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/widgets/contract_form_field.dart';
+import 'package:trana/core/widgets/custom_dialog.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
@@ -125,46 +126,56 @@ class ContractCancelBottomSheet extends HookConsumerWidget {
                 text: notCancelState ? "취소 요청하기" : "계약 취소하기",
                 disabled: !isEnabled,
                 onTap: () async {
-                  if (isPending.value) return;
-                  isPending.value = true;
-                  try {
-                    // 1. 취소 요청 전
-                    if (notCancelState) {
-                      cancelVM.updateDetail(detailCtr.text);
+                  await showCustomDialog(
+                    context: context,
+                    title: notCancelState ? "취소 요청하시겠습니까?" : "계약을 취소하시겠습니까?",
+                    onConfirm: () async {
+                      if (isPending.value) return;
+                      isPending.value = true;
+                      try {
+                        // 1. 취소 요청 전
+                        if (notCancelState) {
+                          cancelVM.updateDetail(detailCtr.text);
 
-                      // 취소 요청 접수
-                      final success = await cancelVM.requestCancel(
-                        detailState.publicCode,
-                      );
-                      if (!context.mounted) return;
-                      if (!success) {
-                        final state = ref.read(cancelContractViewModelProvider);
-                        showErrorToast(context, state.error!);
-                        cancelVM.clearError();
-                        return;
+                          // 취소 요청 접수
+                          final success = await cancelVM.requestCancel(
+                            detailState.publicCode,
+                          );
+                          if (!context.mounted) return;
+                          if (!success) {
+                            final state = ref.read(
+                              cancelContractViewModelProvider,
+                            );
+                            showErrorToast(context, state.error!);
+                            cancelVM.clearError();
+                            return;
+                          }
+
+                          context.pop();
+                          // 2. 취소 요청된 상태
+                        } else {
+                          // 취소 확정
+                          final success = await cancelVM.confirmCancel(
+                            detailState.publicCode,
+                          );
+                          if (!context.mounted) return;
+                          if (!success) {
+                            final state = ref.read(
+                              cancelContractViewModelProvider,
+                            );
+                            showErrorToast(context, state.error!);
+                            cancelVM.clearError();
+                            return;
+                          }
+
+                          context.pop();
+                          context.go(AppRoutes.home);
+                        }
+                      } finally {
+                        isPending.value = false;
                       }
-
-                      context.pop();
-                      // 2. 취소 요청된 상태
-                    } else {
-                      // 취소 확정
-                      final success = await cancelVM.confirmCancel(
-                        detailState.publicCode,
-                      );
-                      if (!context.mounted) return;
-                      if (!success) {
-                        final state = ref.read(cancelContractViewModelProvider);
-                        showErrorToast(context, state.error!);
-                        cancelVM.clearError();
-                        return;
-                      }
-
-                      context.pop();
-                      context.go(AppRoutes.home);
-                    }
-                  } finally {
-                    isPending.value = false;
-                  }
+                    },
+                  );
                 },
                 backgroundColor: fxc(context).opacityError!,
                 foregroundColor: fxc(context).textDanger!,

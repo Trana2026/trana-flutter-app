@@ -54,18 +54,21 @@ import 'package:trana/features/notification/data/datasources/notification_data_s
 import 'package:trana/features/notification/data/repository_impls/notification_repository_impl.dart';
 import 'package:trana/features/notification/domain/repositories/notification_repository.dart';
 import 'package:trana/features/profile/data/datasources/device_token_data_source.dart';
+import 'package:trana/features/profile/data/datasources/term_data_source.dart';
 import 'package:trana/features/profile/data/datasources/trust_score_data_source.dart';
 import 'package:trana/features/profile/data/datasources/user_consent_data_source.dart';
 import 'package:trana/features/profile/data/datasources/user_info_data_source.dart';
 import 'package:trana/features/profile/data/datasources/user_inquiry_data_source.dart';
 import 'package:trana/features/profile/data/datasources/user_preference_data_source.dart';
 import 'package:trana/features/profile/data/repository_impls/device_token_repository_impl.dart';
+import 'package:trana/features/profile/data/repository_impls/term_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/trust_score_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/user_consent_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/user_info_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/user_inquiry_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/user_preference_repository_impl.dart';
 import 'package:trana/features/profile/domain/repositories/device_token_repository.dart';
+import 'package:trana/features/profile/domain/repositories/term_repository.dart';
 import 'package:trana/features/profile/domain/repositories/trust_score_repository.dart';
 import 'package:trana/features/profile/domain/repositories/user_consent_repository.dart';
 import 'package:trana/features/profile/domain/repositories/user_info_repository.dart';
@@ -201,6 +204,12 @@ TrustScoreDataSource trustScoreDataSource(Ref ref) {
 UserConsentDataSource userConsentDataSource(Ref ref) {
   final dio = ref.watch(dioProvider);
   return UserConsentDataSource(dio);
+}
+
+@riverpod
+TermDataSource termsDataSource(Ref ref) {
+  final dio = ref.watch(dioProvider);
+  return TermDataSource(dio);
 }
 
 @riverpod
@@ -344,6 +353,12 @@ TrustScoreRepository trustScoreRepository(Ref ref) {
 UserConsentRepository userConsentRepository(Ref ref) {
   final dataSource = ref.watch(userConsentDataSourceProvider);
   return UserConsentRepositoryImpl(dataSource);
+}
+
+@riverpod
+TermRepository termsRepository(Ref ref) {
+  final dataSource = ref.watch(termsDataSourceProvider);
+  return TermRepositoryImpl(dataSource);
 }
 
 @riverpod

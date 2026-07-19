@@ -15,7 +15,7 @@ abstract class MinorDisclosureState with _$MinorDisclosureState {
     ContractMinorDisclosureEntity? disclosureText, // 위험 고지 문구
     DateTime? confirmedAt, // 확인 완료 시각
 
-    @Default(false) bool isLoadingDisclosureText,
+    @Default(false) bool isLoadingDisclosureText, // 위험 고지 문구 조회 로딩중 여부
     String? error,
   }) = _MinorDisclosureState;
 }

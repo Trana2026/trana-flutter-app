@@ -1,14 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/primary_button.dart';
+
+Future<void> showCustomDialog({
+  required BuildContext context,
+  required String title,
+  String? content,
+  required void Function() onConfirm,
+  String? confirmText,
+  Color? confirmColor,
+  String? cancelText,
+  bool reverseButtons = false,
+}) => showDialog(
+  context: context,
+  builder: (_) => CustomDialog(
+    title: title,
+    content: content,
+    onConfirm: onConfirm,
+    confirmText: confirmText,
+    confirmColor: confirmColor,
+    cancelText: cancelText,
+    reverseButtons: reverseButtons,
+  ),
+);
 
 class CustomDialog extends StatelessWidget {
   const CustomDialog({
     super.key,
     required this.title,
     this.content,
-    required this.confirmText,
     required this.onConfirm,
+    this.confirmText,
     this.confirmColor,
     this.cancelText,
     this.reverseButtons = false,
@@ -16,8 +39,8 @@ class CustomDialog extends StatelessWidget {
 
   final String title;
   final String? content;
-  final String confirmText;
   final void Function() onConfirm;
+  final String? confirmText;
   final Color? confirmColor;
   final String? cancelText;
   final bool reverseButtons;
@@ -30,25 +53,27 @@ class CustomDialog extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: vrc(context).background,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(24),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
-          spacing: 25,
           children: [
-            Column(
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                ),
-                if (content != null) ...[
-                  const SizedBox(height: 12),
-                  Text(content!, style: TextStyle(fontSize: 13, height: 1.5)),
-                ],
-              ],
+            Text(
+              title,
+              style: context.txt(
+                color: vrc(context).textPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+              textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 6),
+
+            if (content != null)
+              Text(content!, style: TextStyle(fontSize: 13, height: 1.5)),
+            const SizedBox(height: 6),
+
             Row(
               children: [
                 Expanded(
@@ -60,7 +85,7 @@ class CustomDialog extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: PrimaryButton(
-                    text: confirmText,
+                    text: confirmText ?? '확인',
                     onTap: () {
                       onConfirm();
                       Navigator.pop(context, true);

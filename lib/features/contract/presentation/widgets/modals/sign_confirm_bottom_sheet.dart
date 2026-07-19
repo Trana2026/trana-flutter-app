@@ -5,6 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
@@ -94,14 +96,11 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _ConfirmTextCard(
-                      title: "거래 상대방",
-                      content:
-                          "✓ 본인확인 ${detailState.counterpartyVerified ? '완료' : '미완료'}\n거래 ${detailState.counterpartyTradeCount}건 · 분쟁 ${detailState.counterpartyDisputeCount}건 · 확인된 신고 ${detailState.counterpartyConfirmedReportCount}건\n신뢰 점수 ${detailState.counterpartyTrustScore}점",
-                    ),
+                    const _ConfirmParty(),
                     const SizedBox(height: 10),
 
-                    _ConfirmTextCard(
+                    _ConfirmWarning(
+                      appIcon: AppIcon.data(icon: CooliconsIcon.circleWarning),
                       title: "꼭 확인하세요",
                       content:
                           "전자서명을 완료하면 이 계약은 법적 효력이 발생하며, 서명 후에는 계약 내용을 수정하거나 삭제할 수 없습니다.",
@@ -110,42 +109,20 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
                     if (isPartyMinor &&
                         disclosureState.disclosureText != null) ...[
                       const SizedBox(height: 10),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: vrc(context).secondaryColor,
-                          borderRadius: BorderRadius.circular(18),
+                      _ConfirmWarning(
+                        appIcon: AppIcon.data(
+                          icon: CooliconsIcon.triangleWarning,
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              disclosureState.disclosureText!.title,
-                              style: context.txt(
-                                color: fxc(context).textDanger,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              disclosureState.disclosureText!.items.join(
-                                '\n\n',
-                              ),
-                              style: context.txt(
-                                color: vrc(context).textPrimary,
-                                fontSize: 12,
-                              ),
-                            ),
-                            const SizedBox(height: 24),
-                            _ConsentCheckRow(
-                              descriptionText: "위 내용을 모두 확인했습니다",
-                              onChanged: (v) {
-                                isChecked.value = v;
-                              },
-                            ),
-                          ],
+                        title: disclosureState.disclosureText!.title,
+                        titleColor: fxc(context).textDanger,
+                        content: disclosureState.disclosureText!.items.join(
+                          '\n\n',
+                        ),
+                        checkbox: _ConsentCheckRow(
+                          descriptionText: "위 내용을 모두 확인했습니다",
+                          onChanged: (v) {
+                            isChecked.value = v;
+                          },
                         ),
                       ),
                     ],
@@ -220,11 +197,146 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
   }
 }
 
-class _ConfirmTextCard extends StatelessWidget {
-  const _ConfirmTextCard({required this.title, required this.content});
+class _ConfirmParty extends HookConsumerWidget {
+  const _ConfirmParty();
 
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final detailState = ref.watch(detailContractViewModelProvider);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: vrc(context).secondaryColor,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                height: 24,
+                width: 24,
+                decoration: BoxDecoration(
+                  color: vrc(context).tertiaryColor,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: AppIcon.data(
+                  icon: CooliconsIcon.user02,
+                  size: 18,
+                  color: vrc(context).iconSecondary,
+                ),
+              ),
+              const SizedBox(width: 7),
+              Text(
+                "거래 상대방",
+                style: context.txt(
+                  color: vrc(context).textPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                decoration: BoxDecoration(
+                  color: fxc(context).opacitySuccess,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  "${detailState.counterpartyTrustScore}점",
+                  style: context.txt(
+                    color: fxc(context).brandColor,
+                    fontSize: 10,
+                  ),
+                ),
+              ),
+              const Spacer(),
+              AppIcon.svg(
+                asset:
+                    "assets/icons/${detailState.counterpartyVerified ? 'shield_check' : 'shield'}.svg",
+                size: 16,
+                color: detailState.counterpartyVerified
+                    ? fxc(context).brandColor
+                    : vrc(context).tertiaryColor,
+              ),
+              const SizedBox(width: 2),
+              Text(
+                "본인 확인 ${detailState.counterpartyVerified ? '완료' : '미완료'}",
+                style: context.txt(
+                  color: fxc(context).brandColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              contractCount(
+                context,
+                label: '거래',
+                count: detailState.counterpartyTradeCount,
+              ),
+              contractCount(
+                context,
+                label: '분쟁',
+                count: detailState.counterpartyDisputeCount,
+              ),
+              contractCount(
+                context,
+                label: '확인된 신고',
+                count: detailState.counterpartyConfirmedReportCount,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget contractCount(
+    BuildContext context, {
+    required String label,
+    required int count,
+  }) {
+    return Row(
+      children: [
+        Text(
+          label,
+          style: context.txt(color: vrc(context).textTertiary, fontSize: 12),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          "$count건",
+          style: context.txt(
+            color: vrc(context).textPrimary,
+            fontSize: 12,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        const SizedBox(width: 12),
+      ],
+    );
+  }
+}
+
+class _ConfirmWarning extends StatelessWidget {
+  const _ConfirmWarning({
+    required this.appIcon,
+    required this.title,
+    this.titleColor,
+    required this.content,
+    this.checkbox,
+  });
+
+  final AppIcon appIcon;
   final String title;
+  final Color? titleColor;
   final String content;
+  final Widget? checkbox;
 
   @override
   Widget build(BuildContext context) {
@@ -238,25 +350,40 @@ class _ConfirmTextCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: context.txt(
-              color: vrc(context).textPrimary,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            children: [
+              Container(
+                height: 24,
+                width: 24,
+                decoration: BoxDecoration(
+                  color: vrc(context).tertiaryColor,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: appIcon.copyWith(
+                  size: 18,
+                  color: titleColor ?? vrc(context).iconSecondary,
+                ),
+              ),
+              const SizedBox(width: 7),
+              Text(
+                title,
+                style: context.txt(
+                  color: titleColor ?? vrc(context).textPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            content,
-            style: context.txt(color: vrc(context).textPrimary, fontSize: 12),
-          ),
+          const SizedBox(height: 8),
+          Text(content, style: context.txt(fontSize: 12)),
+          if (checkbox != null) ...[const SizedBox(height: 24), checkbox!],
         ],
       ),
     );
   }
 }
 
+/// 약관 체크박스
 class _ConsentCheckRow extends HookConsumerWidget {
   final String descriptionText;
   final ValueChanged<bool>? onChanged;
@@ -305,7 +432,15 @@ class _ConsentCheckRow extends HookConsumerWidget {
                   )
                 : null,
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 8),
+          Text(
+            "[필수] ",
+            style: context.txt(
+              color: fxc(context).textInfo,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           Expanded(
             child: Text(
               descriptionText,
