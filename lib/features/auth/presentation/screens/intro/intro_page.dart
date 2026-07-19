@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:trana/core/router/app_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:trana/core/theme/app_theme.dart';
-import 'package:trana/features/auth/presentation/screens/intro/widgets/intro_glow_background.dart';
+import 'package:trana/core/widgets/custom_bottom_sheet.dart';
+import 'package:trana/features/auth/presentation/screens/terms/widgets/terms_agreement_bottom_sheet.dart';
 
 class IntroPage extends HookConsumerWidget {
   const IntroPage({super.key});
@@ -11,8 +11,6 @@ class IntroPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bg = vrc(context).background!;
-    // 피그마 와이어프레임 width(375) 대비 비례 스케일
-    // 글로우 등을 직접구현함에 따라 최대한 동일하게 화면을 구현하기위해 사용
     final scale = MediaQuery.sizeOf(context).width / 375;
 
     return Scaffold(
@@ -20,17 +18,22 @@ class IntroPage extends HookConsumerWidget {
       body: Stack(
         children: [
           // 배경 블러 글로우
-          const IntroGlowBackground(),
-
-          // 에셋 (격자그리드 + 박스 + 원형오브젝트)
+          // const IntroGlowBackground(),
           Positioned(
             left: 0,
             right: 0,
-            top: 118 * scale,
-            child: Image.asset(
-              "assets/images/intro_hero.png",
-              width: double.infinity,
-              fit: BoxFit.fitWidth,
+            top: 0,
+            height: 812 * scale,
+            child: IgnorePointer(
+              child: Lottie.asset(
+                'assets/anim/onboarding.json',
+                width: double.infinity,
+                height: 812 * scale,
+                fit: BoxFit.fitWidth,
+                animate: true,
+                repeat: true,
+                frameRate: FrameRate.max,
+              ),
             ),
           ),
 
@@ -60,18 +63,18 @@ class IntroPage extends HookConsumerWidget {
               TextSpan(
                 style: TextStyle(
                   fontSize: 28 * scale,
-                  fontFamily: "PretendardBold",
+                  fontFamily: 'PretendardBold',
                   height: 1.2,
                   letterSpacing: -0.28 * scale,
                   color: vrc(context).textPrimary,
                 ),
                 children: [
-                  const TextSpan(text: "가장 안전한 중고 거래,\n"),
+                  const TextSpan(text: '가장 안전한 중고 거래,\n'),
                   TextSpan(
-                    text: "트라나",
+                    text: '트라나',
                     style: TextStyle(color: fxc(context).brandColor),
                   ),
-                  const TextSpan(text: "에서 시작하세요!"),
+                  const TextSpan(text: '에서 시작하세요!'),
                 ],
               ),
             ),
@@ -82,10 +85,11 @@ class IntroPage extends HookConsumerWidget {
             left: 20 * scale,
             top: 562 * scale,
             child: Text(
-              "거래 조건을 명확히 기록하고, 본인 인증을 통해\n법적 효력이 있는 계약을 체결하세요",
+              '거래 조건을 명확히 기록하고, 본인 인증을 통해\n'
+              '법적 효력이 있는 계약을 체결하세요',
               style: TextStyle(
                 fontSize: 14 * scale,
-                fontFamily: "PretendardMedium",
+                fontFamily: 'PretendardMedium',
                 height: 1.5,
                 letterSpacing: -0.14 * scale,
                 color: vrc(context).textSecondary,
@@ -119,16 +123,14 @@ class _StartButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(16 * scale),
       child: InkWell(
         borderRadius: BorderRadius.circular(16 * scale),
-        // EKYC 플로우
-        // PASS 전환으로 비활성. 재도입 시 아래 주석 해제
-        // onTap: () => context.push(AppRoutes.selectAge),
-        onTap: () => context.push(AppRoutes.terms),
+        onTap: () =>
+            showCustomBottomSheet(context, const TermsAgreementBottomSheet()),
         child: Center(
           child: Text(
-            "본인 인증하여 시작하기",
+            '본인 인증하여 시작하기',
             style: TextStyle(
               fontSize: 16 * scale,
-              fontFamily: "PretendardSemiBold",
+              fontFamily: 'PretendardSemiBold',
               letterSpacing: -0.16 * scale,
               color: fxc(context).textBrand,
             ),

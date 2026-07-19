@@ -10,12 +10,14 @@ import 'package:trana/core/utils/validation.dart';
 import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/core/widgets/contract_form_field.dart';
 import 'package:trana/core/widgets/custom_app_bar.dart';
+import 'package:trana/core/widgets/custom_bottom_sheet.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/domain/utils/string_extensions.dart';
 import 'package:trana/features/contract/presentation/screens/create/widgets/contract_photo_section.dart';
+import 'package:trana/features/contract/presentation/screens/create/widgets/create_tutorial_bottom_sheet.dart';
 import 'package:trana/features/contract/presentation/screens/create/widgets/trade_type_selector.dart';
 import 'package:trana/features/contract/presentation/viewmodels/ai_auto_fill_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
@@ -46,6 +48,18 @@ class CreateContractPage extends HookConsumerWidget {
     final detailCtr = useTextEditingController(text: detail);
     final priceError = useState<String?>(null);
     final isPending = useState(false);
+
+    // 새 계약 작성 진입 시마다 튜토리얼 안내 노출
+    useEffect(() {
+      // 수정 모드 제외
+      if (!revisionRequested) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!context.mounted) return;
+          showCustomBottomSheet(context, const CreateTutorialBottomSheet());
+        });
+      }
+      return null;
+    }, const []);
 
     useListenable(platformCtr);
     useListenable(nameCtr);
@@ -92,9 +106,10 @@ class CreateContractPage extends HookConsumerWidget {
           onTapLeading: () => context.go(AppRoutes.home),
           actions: [
             GestureDetector(
-              onTap: () {
-                // TODO : 튜토리얼 bottomsheet
-              },
+              onTap: () => showCustomBottomSheet(
+                context,
+                const CreateTutorialBottomSheet(),
+              ),
               child: AppIcon.data(icon: CooliconsIcon.info),
             ),
           ],
@@ -122,7 +137,7 @@ class CreateContractPage extends HookConsumerWidget {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      Text("계약의 핵심 조건을 입력해주세요", style: context.txt()),
+                      Text("계약의 핵심 조건을 입력해주세요.", style: context.txt()),
                       const SizedBox(height: 20),
                       const ContractPhotoSection(),
                     ],
