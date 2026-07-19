@@ -6,6 +6,7 @@ import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/widgets/contract_form_field.dart';
+import 'package:trana/core/widgets/custom_dialog.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
@@ -109,30 +110,38 @@ class ContractReportBottomSheet extends HookConsumerWidget {
                 text: "다음",
                 disabled: !isEnabled,
                 onTap: () async {
-                  if (isPending.value) return;
-                  isPending.value = true;
-                  try {
-                    reportVM.updateInput(
-                      reason: reasonCtr.text,
-                      detail: detailCtr.text,
-                    );
+                  await showCustomDialog(
+                    context: context,
+                    title: '신고하시겠습니까?',
+                    onConfirm: () async {
+                      if (isPending.value) return;
+                      isPending.value = true;
+                      try {
+                        reportVM.updateInput(
+                          reason: reasonCtr.text,
+                          detail: detailCtr.text,
+                        );
 
-                    // 신고 접수
-                    final success = await reportVM.report(
-                      detailState.publicCode,
-                    );
-                    if (!context.mounted) return;
-                    if (!success) {
-                      final state = ref.read(reportContractViewModelProvider);
-                      showErrorToast(context, state.error!);
-                      reportVM.clearError();
-                      return;
-                    }
+                        // 신고 접수
+                        final success = await reportVM.report(
+                          detailState.publicCode,
+                        );
+                        if (!context.mounted) return;
+                        if (!success) {
+                          final state = ref.read(
+                            reportContractViewModelProvider,
+                          );
+                          showErrorToast(context, state.error!);
+                          reportVM.clearError();
+                          return;
+                        }
 
-                    context.pop();
-                  } finally {
-                    isPending.value = false;
-                  }
+                        context.pop();
+                      } finally {
+                        isPending.value = false;
+                      }
+                    },
+                  );
                 },
                 backgroundColor: fxc(context).opacityError!,
                 foregroundColor: fxc(context).textDanger!,

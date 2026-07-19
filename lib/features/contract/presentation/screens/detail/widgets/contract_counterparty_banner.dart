@@ -25,7 +25,6 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final createVM = ref.read(createContractViewModelProvider.notifier);
     final detailState = ref.watch(detailContractViewModelProvider);
-    final detailVM = ref.read(detailContractViewModelProvider.notifier);
     final revisionVM = ref.read(revisionRequestViewModelProvider.notifier);
     final reportVM = ref.read(reportContractViewModelProvider.notifier);
 
@@ -38,17 +37,6 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
         try {
           // 1. 계약서 초안 상태 (계약서 수정하기)
           if (status == ContractStatus.ready) {
-            // READY > DRAFT 계약서 상태 되돌림
-            final success = await detailVM.revert();
-            if (!success) {
-              if (context.mounted) {
-                final state = ref.read(detailContractViewModelProvider);
-                showErrorToast(context, state.error!);
-                detailVM.clearError();
-              }
-              return;
-            }
-
             createVM.setRevisionRequestedMode(true);
 
             createVM.loadFromDraft(

@@ -15,6 +15,7 @@ abstract class SignContractState with _$SignContractState {
   const factory SignContractState({
     @Default('') String signatureBase64, // 전자 서명 데이터
     @Default([]) List<int> agreedTermIds, // 동의한 약관 id 목록
+
     String? error,
   }) = _SignContractState;
 }

@@ -89,6 +89,7 @@ class ContractPhotoSection extends HookConsumerWidget {
                         selectedAssets: selectedImages.value,
                         maxAssets: 7,
                         requestType: RequestType.image,
+                        textDelegate: const KoreanAssetPickerTextDelegate(),
                       ),
                     );
                     if (images != null) selectedImages.value = images;
@@ -109,6 +110,7 @@ class ContractPhotoSection extends HookConsumerWidget {
                   ),
                 ),
 
+                // 1. 수정 시 > url 로 이미지 렌더링
                 if (isEditMode)
                   ...existingUrls.map(
                     (url) => Expanded(
@@ -127,7 +129,7 @@ class ContractPhotoSection extends HookConsumerWidget {
                                 width: 68,
                                 height: 68,
                                 color: vrc(context).secondaryColor,
-                                child: const CustomLoadingBar(),
+                                child: const CustomLoadingBar(size: 20),
                               );
                             },
                           ),
@@ -136,6 +138,7 @@ class ContractPhotoSection extends HookConsumerWidget {
                     ),
                   ),
 
+                // 2. 첫 생성 시 > AssetEntity 로 이미지 렌더링
                 if (!isEditMode)
                   ...selectedImages.value.map(
                     (image) => Expanded(
@@ -157,7 +160,7 @@ class ContractPhotoSection extends HookConsumerWidget {
                                 width: 68,
                                 height: 68,
                                 color: vrc(context).tertiaryColor,
-                                child: const CustomLoadingBar(),
+                                child: const CustomLoadingBar(size: 20),
                               );
                             },
                           ),

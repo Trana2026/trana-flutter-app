@@ -14,6 +14,7 @@ import 'package:trana/core/widgets/custom_bottom_sheet.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
+import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/domain/utils/string_extensions.dart';
 import 'package:trana/features/contract/presentation/screens/create/widgets/contract_photo_section.dart';
@@ -21,6 +22,7 @@ import 'package:trana/features/contract/presentation/screens/create/widgets/crea
 import 'package:trana/features/contract/presentation/screens/create/widgets/trade_type_selector.dart';
 import 'package:trana/features/contract/presentation/viewmodels/ai_auto_fill_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/contract_warranty_section.dart';
 
 class CreateContractPage extends HookConsumerWidget {
@@ -30,6 +32,8 @@ class CreateContractPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final createState = ref.watch(createContractViewModelProvider);
     final createVM = ref.read(createContractViewModelProvider.notifier);
+    final detailState = ref.watch(detailContractViewModelProvider);
+    final detailVM = ref.read(detailContractViewModelProvider.notifier);
 
     final revisionRequested = createState.revisionRequested;
     final platform = createState.tradingPlatform;
@@ -103,7 +107,13 @@ class CreateContractPage extends HookConsumerWidget {
         resizeToAvoidBottomInset: true,
         appBar: CustomAppBar.leading(
           title: revisionRequested ? "계약서 수정" : "새 계약 작성",
-          onTapLeading: () => context.go(AppRoutes.home),
+          onTapLeading: () {
+            if (detailState.status == ContractStatus.ready) {
+              context.pop();
+            } else {
+              context.go(AppRoutes.home);
+            }
+          },
           actions: [
             GestureDetector(
               onTap: () => showCustomBottomSheet(
@@ -217,6 +227,19 @@ class CreateContractPage extends HookConsumerWidget {
                 try {
                   priceError.value = Validation.price(priceCtr.text);
                   if (priceError.value != null) return;
+
+                  if (detailState.status == ContractStatus.ready) {
+                    // READY > DRAFT 계약서 상태 되돌림 (Ready 상태에서 수정 시)
+                    final success = await detailVM.revert();
+                    if (!success) {
+                      if (context.mounted) {
+                        final state = ref.read(detailContractViewModelProvider);
+                        showErrorToast(context, state.error!);
+                        detailVM.clearError();
+                      }
+                      return;
+                    }
+                  }
 
                   createVM.updateEntries(
                     platformText: platformCtr.text,

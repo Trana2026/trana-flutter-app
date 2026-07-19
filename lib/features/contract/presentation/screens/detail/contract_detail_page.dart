@@ -103,12 +103,17 @@ class ContractDetailPage extends HookConsumerWidget {
                                   ),
                                 ),
                                 const Spacer(),
-                                Text(
-                                  "계약서 전문 보기",
-                                  style: context.txt(
-                                    color: vrc(context).textTertiary,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
+                                GestureDetector(
+                                  onTap: () =>
+                                      context.push(AppRoutes.entirePreview),
+                                  behavior: HitTestBehavior.opaque,
+                                  child: Text(
+                                    "계약서 전문 보기",
+                                    style: context.txt(
+                                      color: vrc(context).textTertiary,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                                   ),
                                 ),
                               ],

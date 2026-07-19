@@ -40,6 +40,7 @@ class HomeFilterChipList extends ConsumerWidget {
               : status.statusLabel(
                   isCreator: true,
                   isMyCancel: false,
+                  isMyReport: false,
                   revisionDone: false,
                 );
           final isSelected = status == null

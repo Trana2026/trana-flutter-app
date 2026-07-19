@@ -16,7 +16,8 @@ mixin _$MinorDisclosureState {
 
  ContractMinorDisclosureEntity? get disclosureText;// 위험 고지 문구
  DateTime? get confirmedAt;// 확인 완료 시각
- bool get isLoadingDisclosureText; String? get error;
+ bool get isLoadingDisclosureText;// 위험 고지 문구 조회 로딩중 여부
+ String? get error;
 /// Create a copy of MinorDisclosureState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -231,6 +232,7 @@ class _MinorDisclosureState implements MinorDisclosureState {
 @override final  DateTime? confirmedAt;
 // 확인 완료 시각
 @override@JsonKey() final  bool isLoadingDisclosureText;
+// 위험 고지 문구 조회 로딩중 여부
 @override final  String? error;
 
 /// Create a copy of MinorDisclosureState

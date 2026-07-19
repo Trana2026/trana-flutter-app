@@ -181,6 +181,7 @@ class ContractCard extends HookConsumerWidget {
                             c.status.statusLabel(
                               isCreator: c.isCreator,
                               isMyCancel: c.cancelIsMine ?? false,
+                              isMyReport: c.reportIsMine ?? false,
                               revisionDone: revisionState.revisionDone,
                             ),
                             style: context.txt(

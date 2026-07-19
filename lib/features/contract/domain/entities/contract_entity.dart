@@ -18,5 +18,6 @@ abstract class ContractEntity with _$ContractEntity {
     required DateTime updatedAt,
 
     bool? cancelIsMine, // 취소 요청건의 요청 당사자 여부
+    bool? reportIsMine, // 신고 접수건의 신고 당사자 여부
   }) = _ContractEntity;
 }

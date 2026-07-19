@@ -23,8 +23,8 @@ abstract class AiAutoFillState with _$AiAutoFillState {
     @Default('') String condition, // 상품 상태 (AI 분석 결과)
     @Default('') String details, // 상품 상세 정보 (AI 분석 결과)
 
-    @Default(false) bool isLoadingAnalysis,
-    @Default(false) bool isCompleted,
+    @Default(false) bool isLoadingAnalysis, // AI 분석 로딩중 여부
+    @Default(false) bool isCompleted, // AI 분석 완료 여부
     String? error,
   }) = _AiAutoFillState;
 }
@@ -93,6 +93,8 @@ class AiAutoFillViewModel extends _$AiAutoFillViewModel {
       }
     }
 
+    if (!ref.mounted) return false;
+
     final result = await ref
         .read(contractAiExtractionRepositoryProvider)
         .analyzeImages(
@@ -100,6 +102,8 @@ class AiAutoFillViewModel extends _$AiAutoFillViewModel {
           attachmentIds: analysisIds,
           consentedAt: state.autoFillConsentedAt!,
         );
+
+    if (!ref.mounted) return false;
 
     if (result case Failure(:final failure)) {
       state = state.copyWith(isLoadingAnalysis: false, error: failure.message);

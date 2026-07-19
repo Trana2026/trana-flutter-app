@@ -98,7 +98,7 @@ class _PolicyListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => context.push(AppRoutes.policyDetail, extra: consent),
+      onTap: () => context.push(AppRoutes.policyDetail, extra: consent.type),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 14),
         child: Row(

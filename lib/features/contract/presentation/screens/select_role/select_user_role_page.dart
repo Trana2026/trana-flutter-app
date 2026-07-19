@@ -100,10 +100,10 @@ class SelectUserRolePage extends HookConsumerWidget {
                     }
                   }
 
-                  // 역할 업데이트
-                  final success = await createVM.updateDraftRole(
-                    selectedIndex.value,
-                  );
+                  createVM.updateRole(selectedIndex.value);
+
+                  // Draft 역할 업데이트
+                  final success = await createVM.updateDraftRole();
                   if (!context.mounted) return;
                   if (!success) {
                     final state = ref.read(createContractViewModelProvider);
