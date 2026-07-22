@@ -46,7 +46,7 @@ class HomeSearchBar extends HookConsumerWidget {
               color: vrc(context).iconDisable!,
             ),
           ),
-          hintText: "물품명, 거래자, ID 검색...",
+          hintText: "물품명 검색...",
           hintStyle: context.txt(color: vrc(context).textDisable),
           filled: true,
           fillColor: vrc(context).secondaryColor,

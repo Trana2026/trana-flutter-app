@@ -35,26 +35,10 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
     // 서명하기 버튼 활성화 여부 (거래 상대방이 미성년자이면 배너 체크 시에만 활성화, 아니면 항상 활성화)
     final isEnabled = isPartyMinor ? isChecked.value : true;
 
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        if (isPartyMinor) {
-          // 미성년자 위험 고지 문구 조회 (상대가 미성년자일 때)
-          final success = await disclosureVM.readText();
-          if (!context.mounted) return;
-          if (!success) {
-            final state = ref.read(minorDisclosureViewModelProvider);
-            showErrorToast(context, state.error!);
-            disclosureVM.clearError();
-          }
-        }
-      });
-      return null;
-    }, []);
-
     return PendingOverlay(
       isPending: isPending.value,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
         decoration: BoxDecoration(
           color: vrc(context).background,
           borderRadius: const BorderRadius.only(
@@ -153,23 +137,27 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
                       if (isPending.value) return;
                       isPending.value = true;
                       try {
-                        // 미성년자 위험 고지 확인
-                        final success = await disclosureVM.confirm(
-                          detailState.publicCode,
-                        );
-                        if (!context.mounted) return;
-                        if (!success) {
-                          final state = ref.read(
-                            minorDisclosureViewModelProvider,
+                        if (isPartyMinor) {
+                          // 미성년자 위험 고지 확인 (상대가 미성년자일 때)
+                          final success = await disclosureVM.confirm(
+                            detailState.publicCode,
                           );
-                          showErrorToast(context, state.error!);
-                          disclosureVM.clearError();
+                          if (!context.mounted) return;
+                          if (!success) {
+                            final state = ref.read(
+                              minorDisclosureViewModelProvider,
+                            );
+                            showErrorToast(context, state.error!);
+                            disclosureVM.clearError();
+                            return;
+                          }
                         }
 
+                        // 서명 플로우 시작 전에 이전 시도 초기화
                         signVM.reset();
-                        // 약관 동의
-                        signVM.agreeContractAgreementTerm();
-                        signVM.agreeElectronicSignatureTerm(true);
+
+                        // 전자 서명 약관 동의
+                        signVM.agreeElectronicSignatureTerm();
 
                         Navigator.pop(context);
                         await Future.delayed(const Duration(milliseconds: 200));

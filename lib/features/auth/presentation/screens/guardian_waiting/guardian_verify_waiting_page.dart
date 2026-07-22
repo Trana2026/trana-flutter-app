@@ -5,7 +5,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/primary_button.dart';
+import 'package:trana/features/contract/data/services/one_time_flag_service.dart';
+import 'package:trana/features/guardian/presentation/viewmodels/guardian_verification_state_provider.dart';
 import 'package:trana/features/guardian/presentation/viewmodels/guardian_view_model.dart';
+import 'package:trana/features/user/presentation/providers/me_provider.dart';
 
 /// 대리인 인증 완료를 polling하며 대기하는 화면
 class GuardianVerifyWaitingPage extends HookConsumerWidget {
@@ -15,8 +18,12 @@ class GuardianVerifyWaitingPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(guardianViewModelProvider); // auto-dispose 방지
 
-    final isCompleted = useState(false);
-    final currentStep = useState(2);
+    // 배너에서 이미 인증 완료 상태로 진입했다면(= meProvider 캐시에 반영됨)
+    // "진행 중" 화면을 거치지 않고 바로 완료 상태로 시작
+    final alreadyVerified =
+        ref.read(meProvider).value?.guardianVerifiedAt != null;
+    final isCompleted = useState(alreadyVerified);
+    final currentStep = useState(alreadyVerified ? 3 : 2);
     final lifecycle = useAppLifecycleState();
 
     useEffect(() {
@@ -71,7 +78,7 @@ class GuardianVerifyWaitingPage extends HookConsumerWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -127,17 +134,21 @@ class GuardianVerifyWaitingPage extends HookConsumerWidget {
                       ),
               ),
             ),
-            PrimaryButton(
+            PrimaryButton.brand(
               text: "완료",
-              onTap: isCompleted.value
-                  ? () => context.go(AppRoutes.home)
-                  : null,
-              backgroundColor: isCompleted.value
-                  ? fxc(context).brandColor!
-                  : vrc(context).disableColor!,
-              foregroundColor: isCompleted.value
-                  ? fxc(context).textBrand!
-                  : vrc(context).textDisable!,
+              disabled: !isCompleted.value,
+              onTap: () async {
+                // guardian 플래그 설정
+                final publicCode = ref.read(meProvider).value?.publicCode;
+                if (publicCode != null) {
+                  await OneTimeFlagService.mark(
+                    OneTimeFlag.guardian,
+                    publicCode,
+                  );
+                  ref.invalidate(guardianBannerAckedProvider);
+                }
+                if (context.mounted) context.go(AppRoutes.home);
+              },
             ),
           ],
         ),

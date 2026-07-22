@@ -1,5 +1,3 @@
-import 'package:dio/dio.dart';
-import 'package:trana/core/error/dio_error_mapper.dart';
 import 'package:trana/core/error/failure.dart';
 import 'package:trana/core/error/result.dart';
 import 'package:trana/features/contract/data/data_sources/contract_ai_extraction_data_source.dart';
@@ -20,27 +18,28 @@ class ContractAiExtractionRepositoryImpl
     required DateTime consentedAt,
   }) async {
     // 1. 추출 요청
+    final requestResult = await guardResult(
+      () async {
+        final dto = await dataSource.requestPrefill(
+          publicCode,
+          attachmentIds: attachmentIds,
+          consentedAt: consentedAt,
+        );
+        return dto.toEntity();
+      },
+      onDioException: (e) => switch (e.response?.statusCode) {
+        400 => const ValidationFailure('사진은 1~2장만 AI 분석에 사용할 수 있습니다.'),
+        404 => const NotFoundFailure('첨부파일이 본 계약 소속이 아니거나 존재하지 않습니다.'),
+        409 => const ConflictFailure('DRAFT 상태에서만 AI 추출을 요청할 수 있습니다.'),
+        _ => null,
+      },
+    );
     final ContractAiExtractionEntity extraction;
-    try {
-      final dto = await dataSource.requestPrefill(
-        publicCode,
-        attachmentIds: attachmentIds,
-        consentedAt: consentedAt,
-      );
-      extraction = dto.toEntity();
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        return const Failure(ValidationFailure('사진은 1~2장만 AI 분석에 사용할 수 있습니다.'));
-      }
-      if (e.response?.statusCode == 404) {
-        return const Failure(NotFoundFailure('첨부파일이 본 계약 소속이 아니거나 존재하지 않습니다.'));
-      }
-      if (e.response?.statusCode == 409) {
-        return const Failure(ConflictFailure('DRAFT 상태에서만 AI 추출을 요청할 수 있습니다.'));
-      }
-      return Failure(e.toFailure());
-    } catch (e) {
-      return const Failure(UnknownFailure());
+    switch (requestResult) {
+      case Success(:final data):
+        extraction = data;
+      case Failure(:final failure):
+        return Failure(failure);
     }
 
     // 2. SUCCESS / FAILED 까지 polling (최대 20회, 2초 간격)
@@ -51,16 +50,24 @@ class ContractAiExtractionRepositoryImpl
 
       await Future.delayed(const Duration(seconds: 2));
 
-      try {
-        final dto = await dataSource.polling(publicCode, current.extractionId);
-        current = dto.toEntity();
-      } on DioException catch (e) {
-        if (e.response?.statusCode == 404) {
-          return const Failure(NotFoundFailure('본 계약 소속이 아닌 extractionId입니다.'));
-        }
-        return Failure(e.toFailure());
-      } catch (e) {
-        return const Failure(UnknownFailure());
+      final pollResult = await guardResult(
+        () async {
+          final dto = await dataSource.polling(
+            publicCode,
+            current.extractionId,
+          );
+          return dto.toEntity();
+        },
+        onDioException: (e) => switch (e.response?.statusCode) {
+          404 => const NotFoundFailure('본 계약 소속이 아닌 extractionId입니다.'),
+          _ => null,
+        },
+      );
+      switch (pollResult) {
+        case Success(:final data):
+          current = data;
+        case Failure(:final failure):
+          return Failure(failure);
       }
     }
 
@@ -69,16 +76,14 @@ class ContractAiExtractionRepositoryImpl
     }
 
     // 3. 최종 결과 로드
-    try {
-      final dto = await dataSource.loadPrefill(publicCode);
-      if (dto == null) {
-        return const Failure(NotFoundFailure('AI 분석 결과를 찾을 수 없습니다.'));
-      }
-      return Success(dto.toEntity());
-    } on DioException catch (e) {
-      return Failure(e.toFailure());
-    } catch (e) {
-      return const Failure(UnknownFailure());
-    }
+    final loadResult = await guardResult(() {
+      return dataSource.loadPrefill(publicCode);
+    });
+    return loadResult.fold(
+      onSuccess: (dto) => dto == null
+          ? const Failure(NotFoundFailure('AI 분석 결과를 찾을 수 없습니다.'))
+          : Success(dto.toEntity()),
+      onFailure: (failure) => Failure(failure),
+    );
   }
 }

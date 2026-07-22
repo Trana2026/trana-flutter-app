@@ -44,8 +44,9 @@ class ImageFilterService {
   }
 
   Future<({XFile file, int score})?> _scoreImage(XFile image) async {
-    final recognizer = TextRecognizer();
+    TextRecognizer? recognizer;
     try {
+      recognizer = TextRecognizer();
       final input = InputImage.fromFilePath(image.path);
       final result = await recognizer.processImage(input);
 
@@ -62,7 +63,7 @@ class ImageFilterService {
     } catch (_) {
       return null;
     } finally {
-      recognizer.close();
+      recognizer?.close();
     }
   }
 

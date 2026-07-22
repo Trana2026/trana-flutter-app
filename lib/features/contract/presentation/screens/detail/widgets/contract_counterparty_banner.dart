@@ -9,10 +9,12 @@ import 'package:trana/core/widgets/custom_bottom_sheet.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/extensions/contract_status_ui.dart';
+import 'package:trana/features/contract/presentation/viewmodels/cancel_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/report_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/revision_request_view_model.dart';
+import 'package:trana/features/contract/presentation/widgets/modals/contract_cancel_bottom_sheet.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/report_detail_bottom_sheet.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/revision_request_bottom_sheet.dart';
 
@@ -27,6 +29,7 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
     final detailState = ref.watch(detailContractViewModelProvider);
     final revisionVM = ref.read(revisionRequestViewModelProvider.notifier);
     final reportVM = ref.read(reportContractViewModelProvider.notifier);
+    final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
 
     final status = detailState.status;
 
@@ -104,7 +107,20 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
             }
 
             showCustomBottomSheet(context, const ReportDetailBottomSheet());
-            // 4. 그 외 X
+            // 4. 취소 요청 상태
+          } else if (status == ContractStatus.cancelRequested) {
+            // 취소 요청 내용 조회
+            final success = await cancelVM.readCancel(detailState.publicCode);
+            if (!context.mounted) return;
+            if (!success) {
+              final state = ref.read(cancelContractViewModelProvider);
+              showErrorToast(context, state.error!);
+              cancelVM.clearError();
+              return;
+            }
+
+            showCustomBottomSheet(context, const ContractCancelBottomSheet());
+            // 5. 그 외 X
           } else {
             return;
           }

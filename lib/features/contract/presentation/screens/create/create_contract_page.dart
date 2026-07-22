@@ -18,7 +18,7 @@ import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/domain/utils/string_extensions.dart';
 import 'package:trana/features/contract/presentation/screens/create/widgets/contract_photo_section.dart';
-import 'package:trana/features/contract/presentation/screens/create/widgets/create_tutorial_bottom_sheet.dart';
+import 'package:trana/features/contract/presentation/widgets/modals/create_tutorial_bottom_sheet.dart';
 import 'package:trana/features/contract/presentation/screens/create/widgets/trade_type_selector.dart';
 import 'package:trana/features/contract/presentation/viewmodels/ai_auto_fill_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';

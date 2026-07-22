@@ -16,7 +16,7 @@ class ContractCompletionBottomSheet extends HookConsumerWidget {
     final createState = ref.watch(createContractViewModelProvider);
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 36, 20, 40),
+      padding: const EdgeInsets.fromLTRB(20, 36, 20, 10),
       decoration: BoxDecoration(
         color: vrc(context).background,
         borderRadius: const BorderRadius.only(

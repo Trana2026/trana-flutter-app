@@ -54,3 +54,42 @@ final class GuardianVerificationStateProvider
 
 String _$guardianVerificationStateHash() =>
     r'049c35dc1798a481373659a820173d3af0e5d915';
+
+/// guardian 플래그 설정 여부. 대기 화면에서 '완료' 탭 시 invalidate되어 즉시 갱신됨
+
+@ProviderFor(guardianBannerAcked)
+final guardianBannerAckedProvider = GuardianBannerAckedProvider._();
+
+/// guardian 플래그 설정 여부. 대기 화면에서 '완료' 탭 시 invalidate되어 즉시 갱신됨
+
+final class GuardianBannerAckedProvider
+    extends $FunctionalProvider<AsyncValue<bool>, bool, FutureOr<bool>>
+    with $FutureModifier<bool>, $FutureProvider<bool> {
+  /// guardian 플래그 설정 여부. 대기 화면에서 '완료' 탭 시 invalidate되어 즉시 갱신됨
+  GuardianBannerAckedProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'guardianBannerAckedProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$guardianBannerAckedHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<bool> create(Ref ref) {
+    return guardianBannerAcked(ref);
+  }
+}
+
+String _$guardianBannerAckedHash() =>
+    r'f26809dd01dd5af808649c2598ff9f5b51518cc9';

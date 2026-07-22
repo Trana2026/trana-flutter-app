@@ -1,8 +1,5 @@
-import 'package:dio/dio.dart';
-import 'package:trana/core/error/dio_error_mapper.dart';
-import 'package:trana/core/utils/enum_extensions.dart';
-import 'package:trana/core/error/failure.dart';
 import 'package:trana/core/error/result.dart';
+import 'package:trana/core/utils/enum_extensions.dart';
 import 'package:trana/features/contract/data/data_sources/contract_draft_data_source.dart';
 import 'package:trana/features/contract/data/mappers/contract_mapper.dart';
 import 'package:trana/features/contract/domain/entities/contract_entity.dart';
@@ -18,17 +15,13 @@ class ContractRepositoryImpl implements ContractRepository {
   Future<Result<List<ContractEntity>>> readMyContracts({
     ContractStatus? status,
     String? query,
-  }) async {
-    try {
+  }) {
+    return guardResult(() async {
       final dtos = await dataSource.readMyContracts(
         status: status?.apiString,
         query: query,
       );
-      return Success(dtos.map((dto) => dto.toEntity()).toList());
-    } on DioException catch (e) {
-      return Failure(e.toFailure());
-    } catch (e) {
-      return const Failure(UnknownFailure());
-    }
+      return dtos.map((dto) => dto.toEntity()).toList();
+    });
   }
 }

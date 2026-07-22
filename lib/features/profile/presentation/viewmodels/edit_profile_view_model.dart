@@ -14,7 +14,7 @@ part 'edit_profile_view_model.g.dart';
 abstract class EditProfileState with _$EditProfileState {
   const factory EditProfileState({
     Gender? gender, // 성별 선택값
-    @Default('') String email, // 이메일 입력값
+    String? email, // 이메일 입력값
 
     String? error,
   }) = _EditProfileState;
@@ -31,7 +31,7 @@ class EditProfileViewModel extends _$EditProfileViewModel {
   void updateGender(Gender? v) => state = state.copyWith(gender: v);
 
   /// 이메일 입력값 변경
-  void updateEmail(String v) => state = state.copyWith(email: v);
+  void updateEmail(String? v) => state = state.copyWith(email: v);
 
   /// 본인 정보 수정 (성공 여부 반환)
   Future<bool> updateProfile() async {
@@ -41,7 +41,7 @@ class EditProfileViewModel extends _$EditProfileViewModel {
 
     state = switch (result) {
       Success(:final data) => state.copyWith(
-        email: data.email ?? '',
+        email: data.email,
         gender: data.gender,
       ),
       Failure(:final failure) => state.copyWith(error: failure.message),

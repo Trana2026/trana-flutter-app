@@ -114,6 +114,8 @@ class ContractCtaButtons extends HookConsumerWidget {
         secondary: reportButton(context, ref),
         primary: downloadButton(context, ref),
       ),
+      // 기간 만료
+      ContractStatus.expired => const SizedBox.shrink(),
     };
   }
 

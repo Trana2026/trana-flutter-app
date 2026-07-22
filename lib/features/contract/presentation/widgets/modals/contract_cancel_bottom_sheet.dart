@@ -7,12 +7,14 @@ import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/core/widgets/contract_form_field.dart';
 import 'package:trana/core/widgets/custom_dialog.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/domain/enums/cancellation_reason.dart';
+import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/viewmodels/cancel_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 
@@ -25,15 +27,15 @@ class ContractCancelBottomSheet extends HookConsumerWidget {
     final cancelState = ref.watch(cancelContractViewModelProvider);
     final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
 
-    final notCancelState = cancelState.recentCancel == null;
-    final isCancelReceived = cancelState.recentCancel?.isMine == false;
+    final isRequested = detailState.status == ContractStatus.cancelRequested;
+    final isMyCancel =
+        (isRequested && cancelState.recentCancel?.isMine == true);
+    // final readOnly =
+    //     (cancelState.recentCancel?.isMine == false) ||
+    //     (cancelState.recentCancel != null);
 
-    final initialReason = isCancelReceived
-        ? cancelState.recentCancel?.reason
-        : "";
-    final initialDetail = isCancelReceived
-        ? cancelState.recentCancel?.detail
-        : "";
+    final initialReason = isRequested ? cancelState.recentCancel?.reason : "";
+    final initialDetail = isRequested ? cancelState.recentCancel?.detail : "";
 
     final reasonCtr = useTextEditingController(text: initialReason);
     final detailCtr = useTextEditingController(text: initialDetail);
@@ -41,7 +43,7 @@ class ContractCancelBottomSheet extends HookConsumerWidget {
 
     useListenable(detailCtr);
 
-    final isEnabled = detailCtr.text.trim().isNotEmpty;
+    final isEnabled = (detailCtr.text.trim().isNotEmpty);
 
     return PendingOverlay(
       isPending: isPending.value,
@@ -104,13 +106,13 @@ class ContractCancelBottomSheet extends HookConsumerWidget {
                 ],
               ),
               const SizedBox(height: 20),
-              isCancelReceived
+              isRequested
                   ? ContractFormField(
                       label: "취소 사유",
                       hintText: "취소 사유를 입력해주세요.",
                       controller: reasonCtr,
                       maxLines: 1,
-                      readOnly: !notCancelState,
+                      readOnly: isRequested,
                     )
                   : const _CancelReasonDropdown(),
               const SizedBox(height: 8),
@@ -119,22 +121,22 @@ class ContractCancelBottomSheet extends HookConsumerWidget {
                 hintText: "문제를 자세히 설명해 주세요.",
                 controller: detailCtr,
                 maxLines: 4,
-                readOnly: !notCancelState,
+                readOnly: isRequested,
               ),
               const SizedBox(height: 20),
               PrimaryButton(
-                text: notCancelState ? "취소 요청하기" : "계약 취소하기",
-                disabled: !isEnabled,
+                text: (!isRequested || isMyCancel) ? "취소 요청하기" : "계약 취소하기",
+                disabled: !isEnabled || isMyCancel,
                 onTap: () async {
                   await showCustomDialog(
                     context: context,
-                    title: notCancelState ? "취소 요청하시겠습니까?" : "계약을 취소하시겠습니까?",
+                    title: !isRequested ? "취소 요청하시겠습니까?" : "계약을 취소하시겠습니까?",
                     onConfirm: () async {
                       if (isPending.value) return;
                       isPending.value = true;
                       try {
                         // 1. 취소 요청 전
-                        if (notCancelState) {
+                        if (!isRequested) {
                           cancelVM.updateDetail(detailCtr.text);
 
                           // 취소 요청 접수
@@ -167,6 +169,15 @@ class ContractCancelBottomSheet extends HookConsumerWidget {
                             cancelVM.clearError();
                             return;
                           }
+
+                          showCustomToast(
+                            context,
+                            '계약이 취소되었습니다',
+                            customAppIcon: AppIcon.data(
+                              icon: CooliconsIcon.triangleWarning,
+                              color: fxc(context).statusError,
+                            ),
+                          );
 
                           context.pop();
                           context.go(AppRoutes.home);

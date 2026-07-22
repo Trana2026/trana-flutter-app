@@ -73,7 +73,7 @@ class HomePage extends HookConsumerWidget {
     final pages = [
       HomeMainView(isPending: isPending),
       HomeMainView(isPending: isPending),
-      const MyPage(),
+      MyPage(isPending: isPending),
     ];
     final isMypage = currentIndex.value == 2;
 
@@ -116,10 +116,6 @@ class HomePage extends HookConsumerWidget {
     // ===== 계약 관련 =====
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        // 테스트 유저 로그인 (사용 시 주석 해제)
-        // final userVM = ref.read(testUserProvider.notifier);
-        // await userVM.getUser();
-
         // 플레이스토어 설치 유입 시 Install Referrer에서 초대 토큰 복구
         await DeferredLinkService.restoreInvitationToken();
 

@@ -986,47 +986,6 @@ final class UserConsentDataSourceProvider
 String _$userConsentDataSourceHash() =>
     r'90f523c3429b9652e12301eb8ee607050a72f64e';
 
-@ProviderFor(termsDataSource)
-final termsDataSourceProvider = TermsDataSourceProvider._();
-
-final class TermsDataSourceProvider
-    extends $FunctionalProvider<TermDataSource, TermDataSource, TermDataSource>
-    with $Provider<TermDataSource> {
-  TermsDataSourceProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'termsDataSourceProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$termsDataSourceHash();
-
-  @$internal
-  @override
-  $ProviderElement<TermDataSource> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  TermDataSource create(Ref ref) {
-    return termsDataSource(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(TermDataSource value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<TermDataSource>(value),
-    );
-  }
-}
-
-String _$termsDataSourceHash() => r'47e7af3b68dc8e20b2a9c5fee166c0b0366d78e7';
-
 @ProviderFor(userInfoDataSource)
 final userInfoDataSourceProvider = UserInfoDataSourceProvider._();
 
@@ -2126,47 +2085,6 @@ final class UserConsentRepositoryProvider
 
 String _$userConsentRepositoryHash() =>
     r'9c60f83259de00a947e34c9d15d42e98b0fbf54a';
-
-@ProviderFor(termsRepository)
-final termsRepositoryProvider = TermsRepositoryProvider._();
-
-final class TermsRepositoryProvider
-    extends $FunctionalProvider<TermRepository, TermRepository, TermRepository>
-    with $Provider<TermRepository> {
-  TermsRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'termsRepositoryProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$termsRepositoryHash();
-
-  @$internal
-  @override
-  $ProviderElement<TermRepository> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  TermRepository create(Ref ref) {
-    return termsRepository(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(TermRepository value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<TermRepository>(value),
-    );
-  }
-}
-
-String _$termsRepositoryHash() => r'390bec377f09f87b670d7605e06e465f594e4414';
 
 @ProviderFor(userInfoRepository)
 final userInfoRepositoryProvider = UserInfoRepositoryProvider._();

@@ -15,7 +15,8 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.signed => fxc(context).statusSignRequest!,
 
     ContractStatus.cancelRequested ||
-    ContractStatus.cancelled => fxc(context).statusError!,
+    ContractStatus.cancelled ||
+    ContractStatus.expired => fxc(context).statusError!,
     ContractStatus.reported => fxc(context).statusError!,
     ContractStatus.completed => fxc(context).brandColor!,
   };
@@ -31,7 +32,8 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.signed => fxc(context).subtitleBlue!,
 
     ContractStatus.cancelRequested ||
-    ContractStatus.cancelled => fxc(context).opacityError!,
+    ContractStatus.cancelled ||
+    ContractStatus.expired => fxc(context).opacityError!,
     ContractStatus.reported => fxc(context).opacityError!,
     ContractStatus.completed => fxc(context).opacitySuccess!,
   };
@@ -60,6 +62,7 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.cancelled => isMyCancel ? "취소 요청됨" : "취소 요청",
     ContractStatus.reported => isMyReport ? "신고 접수됨" : "신고 접수",
     ContractStatus.completed => "거래 완료",
+    ContractStatus.expired => "기간 만료",
   };
 
   IconData statusIcon() => switch (this) {
@@ -73,7 +76,8 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.signed => CooliconsIcon.circleCheck,
 
     ContractStatus.cancelRequested ||
-    ContractStatus.cancelled => CooliconsIcon.triangleWarning,
+    ContractStatus.cancelled ||
+    ContractStatus.expired => CooliconsIcon.triangleWarning,
     ContractStatus.reported => CooliconsIcon.triangleWarning,
     ContractStatus.completed => CooliconsIcon.circleCheck,
   };
@@ -89,7 +93,8 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.signed => fxc(context).statusSignRequest!,
 
     ContractStatus.cancelRequested ||
-    ContractStatus.cancelled => fxc(context).statusError!,
+    ContractStatus.cancelled ||
+    ContractStatus.expired => fxc(context).statusError!,
     ContractStatus.reported => fxc(context).statusError!,
     ContractStatus.completed => fxc(context).brandColor!,
   };
@@ -106,6 +111,7 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.reported ||
     ContractStatus.cancelRequested ||
     ContractStatus.cancelled ||
+    ContractStatus.expired ||
     ContractStatus.completed => fxc(context).textBrand!,
   };
 
@@ -120,7 +126,8 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.signed => CooliconsIcon.check,
 
     ContractStatus.cancelRequested ||
-    ContractStatus.cancelled => CooliconsIcon.triangleWarning,
+    ContractStatus.cancelled ||
+    ContractStatus.expired => CooliconsIcon.triangleWarning,
     ContractStatus.reported => CooliconsIcon.triangleWarning,
     ContractStatus.completed => CooliconsIcon.circleCheck,
   };
@@ -138,6 +145,7 @@ extension ContractStatusMeta on ContractStatus {
 
     ContractStatus.cancelRequested ||
     ContractStatus.cancelled ||
+    ContractStatus.expired ||
     ContractStatus.reported => "진행 상황",
 
     ContractStatus.completed => "거래 완료",
@@ -154,6 +162,7 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.signed => "서명 완료",
 
     ContractStatus.cancelRequested || ContractStatus.cancelled => "계약 취소 진행 중",
+    ContractStatus.expired => "기간 만료",
     ContractStatus.reported => "신고 접수 중",
     ContractStatus.completed => "무사히 거래가 완료되었어요!",
   };
@@ -169,6 +178,7 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.signed => false,
 
     ContractStatus.cancelRequested || ContractStatus.cancelled => true,
+    ContractStatus.expired => false,
     ContractStatus.reported => true,
     ContractStatus.completed => false,
   };

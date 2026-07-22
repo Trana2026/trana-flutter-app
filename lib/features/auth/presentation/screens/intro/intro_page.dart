@@ -1,10 +1,15 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
+import 'package:trana/core/dev/test_user_provider.dart';
+import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_bottom_sheet.dart';
+import 'package:trana/core/widgets/custom_dialog.dart';
 import 'package:trana/features/auth/presentation/screens/terms/widgets/terms_agreement_bottom_sheet.dart';
 
 class IntroPage extends HookConsumerWidget {
@@ -19,6 +24,10 @@ class IntroPage extends HookConsumerWidget {
     final contentHeight = 754.0 + 32.0;
     final screenHeight = MediaQuery.sizeOf(context).height;
     final stackHeight = math.max(contentHeight * scale, screenHeight);
+
+    // 테스트 유저 로그인용
+    Timer? timer;
+    final testVM = ref.read(testUserProvider.notifier);
 
     return Scaffold(
       backgroundColor: bg,
@@ -113,7 +122,30 @@ class IntroPage extends HookConsumerWidget {
                 top: 702 * scale,
                 width: 335 * scale,
                 height: 52 * scale,
-                child: _StartButton(scale: scale),
+                child: GestureDetector(
+                  // 10초 이상 Longpress 시 테스트 유저 로그인
+                  onLongPressStart: (_) {
+                    timer = Timer(const Duration(seconds: 10), () {
+                      showCustomDialog(
+                        context: context,
+                        title: '테스트 계정으로 로그인',
+                        confirmText: '성인',
+                        onConfirm: () async {
+                          await testVM.getAdultUser();
+                          if (context.mounted) context.go(AppRoutes.splash);
+                        },
+                        cancelText: '미성년자',
+                        onCancel: () async {
+                          await testVM.getMinorUser();
+                          if (context.mounted) context.go(AppRoutes.splash);
+                        },
+                      );
+                    });
+                  },
+                  onLongPressEnd: (_) => timer?.cancel(),
+                  onLongPressCancel: () => timer?.cancel(),
+                  child: _StartButton(scale: scale),
+                ),
               ),
             ],
           ),

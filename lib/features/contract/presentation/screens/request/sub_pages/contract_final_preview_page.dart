@@ -5,8 +5,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_app_bar.dart';
 import 'package:trana/core/widgets/custom_bottom_sheet.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
+import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/minor_disclosure_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/contract_pdf_preview_card.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/sign_confirm_bottom_sheet.dart';
 
@@ -16,46 +19,61 @@ class ContractFinalPreviewPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailState = ref.watch(detailContractViewModelProvider);
+    final disclosureVM = ref.read(minorDisclosureViewModelProvider.notifier);
 
-    final isPending = useRef(false);
+    final isPending = useState(false);
 
-    return Scaffold(
-      backgroundColor: vrc(context).background,
-      appBar: CustomAppBar.leading(
-        title: "계약서 미리보기",
-        onTapLeading: () => context.pop(),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Expanded(
-              child: ContractPdfPreviewCard(
-                isLoading: detailState.isLoadingData,
-                pdfBytes: detailState.pdfBytes,
-              ),
-            ),
-          ],
+    return PendingOverlay(
+      isPending: isPending.value,
+      child: Scaffold(
+        backgroundColor: vrc(context).background,
+        appBar: CustomAppBar.leading(
+          title: "계약서 미리보기",
+          onTapLeading: () => context.pop(),
         ),
-      ),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: PrimaryButton.brand(
-            text: "서명하기",
-            onTap: () async {
-              if (isPending.value) return;
-              isPending.value = true;
-              try {
-                await showCustomBottomSheet<void>(
-                  context,
-                  SignConfirmBottomSheet(parentContext: context),
-                );
-              } finally {
-                isPending.value = false;
-              }
-            },
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Expanded(
+                child: ContractPdfPreviewCard(
+                  isLoading: detailState.isLoadingData,
+                  pdfBytes: detailState.pdfBytes,
+                ),
+              ),
+            ],
+          ),
+        ),
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: PrimaryButton.brand(
+              text: "서명하기",
+              onTap: () async {
+                if (isPending.value) return;
+                isPending.value = true;
+                try {
+                  if (detailState.counterpartyIsMinor) {
+                    // 미성년자 위험 고지 문구 조회 (상대가 미성년자일 때)
+                    final success = await disclosureVM.readText();
+                    if (!context.mounted) return;
+                    if (!success) {
+                      final state = ref.read(minorDisclosureViewModelProvider);
+                      showErrorToast(context, state.error!);
+                      disclosureVM.clearError();
+                      return;
+                    }
+                  }
+
+                  await showCustomBottomSheet<void>(
+                    context,
+                    SignConfirmBottomSheet(parentContext: context),
+                  );
+                } finally {
+                  isPending.value = false;
+                }
+              },
+            ),
           ),
         ),
       ),

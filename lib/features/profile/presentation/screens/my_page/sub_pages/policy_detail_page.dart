@@ -32,28 +32,6 @@ class PolicyDetailPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: 백엔드 GET /v1/terms/{type} 구현되면 변경
-    // final termsState = ref.watch(termDetailViewModelProvider);
-    // final termsVM = ref.read(termDetailViewModelProvider.notifier);
-
-    // final title = termsState.title;
-    // final url = termsState.contentUrl;
-    // final isLoadingTerm = termsState.isLoadingTerm;
-
-    // useEffect(() {
-    //   WidgetsBinding.instance.addPostFrameCallback((_) async {
-    //     // 타입별 약관 단일 조회
-    //     final success = await termsVM.readTermByType(type);
-    //     if (!context.mounted) return;
-    //     if (!success) {
-    //       final state = ref.read(termDetailViewModelProvider);
-    //       showErrorToast(context, state.error!);
-    //       termsVM.clearError();
-    //     }
-    //   });
-    //   return null;
-    // }, []);
-
     final termsAsync = ref.watch(termsViewModelProvider);
 
     final term = termsAsync.value

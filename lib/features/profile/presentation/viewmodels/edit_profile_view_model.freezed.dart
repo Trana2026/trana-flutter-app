@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 mixin _$EditProfileState {
 
  Gender? get gender;// 성별 선택값
- String get email;// 이메일 입력값
+ String? get email;// 이메일 입력값
  String? get error;
 /// Create a copy of EditProfileState
 /// with the given fields replaced by the non-null parameter values.
@@ -47,7 +47,7 @@ abstract mixin class $EditProfileStateCopyWith<$Res>  {
   factory $EditProfileStateCopyWith(EditProfileState value, $Res Function(EditProfileState) _then) = _$EditProfileStateCopyWithImpl;
 @useResult
 $Res call({
- Gender? gender, String email, String? error
+ Gender? gender, String? email, String? error
 });
 
 
@@ -64,11 +64,11 @@ class _$EditProfileStateCopyWithImpl<$Res>
 
 /// Create a copy of EditProfileState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? gender = freezed,Object? email = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? gender = freezed,Object? email = freezed,Object? error = freezed,}) {
   return _then(_self.copyWith(
 gender: freezed == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
-as Gender?,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as Gender?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -154,7 +154,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Gender? gender,  String email,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Gender? gender,  String? email,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EditProfileState() when $default != null:
 return $default(_that.gender,_that.email,_that.error);case _:
@@ -175,7 +175,7 @@ return $default(_that.gender,_that.email,_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Gender? gender,  String email,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Gender? gender,  String? email,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _EditProfileState():
 return $default(_that.gender,_that.email,_that.error);case _:
@@ -195,7 +195,7 @@ return $default(_that.gender,_that.email,_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Gender? gender,  String email,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Gender? gender,  String? email,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _EditProfileState() when $default != null:
 return $default(_that.gender,_that.email,_that.error);case _:
@@ -210,12 +210,12 @@ return $default(_that.gender,_that.email,_that.error);case _:
 
 
 class _EditProfileState implements EditProfileState {
-  const _EditProfileState({this.gender, this.email = '', this.error});
+  const _EditProfileState({this.gender, this.email, this.error});
   
 
 @override final  Gender? gender;
 // 성별 선택값
-@override@JsonKey() final  String email;
+@override final  String? email;
 // 이메일 입력값
 @override final  String? error;
 
@@ -249,7 +249,7 @@ abstract mixin class _$EditProfileStateCopyWith<$Res> implements $EditProfileSta
   factory _$EditProfileStateCopyWith(_EditProfileState value, $Res Function(_EditProfileState) _then) = __$EditProfileStateCopyWithImpl;
 @override @useResult
 $Res call({
- Gender? gender, String email, String? error
+ Gender? gender, String? email, String? error
 });
 
 
@@ -266,11 +266,11 @@ class __$EditProfileStateCopyWithImpl<$Res>
 
 /// Create a copy of EditProfileState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? gender = freezed,Object? email = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? gender = freezed,Object? email = freezed,Object? error = freezed,}) {
   return _then(_EditProfileState(
 gender: freezed == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
-as Gender?,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as Gender?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

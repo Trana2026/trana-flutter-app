@@ -15,6 +15,7 @@ class GuardianViewModel extends _$GuardianViewModel {
   GuardianRepository get _repository => ref.read(guardianRepositoryProvider);
   UserRepository get _userRepository => ref.read(userRepositoryProvider);
   Timer? _pollingTimer;
+  int _pollingToken = 0;
 
   /// 초기 상태 null (링크 미발급). dispose 시 폴링 타이머 자동 취소
   @override
@@ -39,21 +40,37 @@ class GuardianViewModel extends _$GuardianViewModel {
   }
 
   /// 5초 간격으로 guardianVerifiedAt 폴링. 완료 시 onComplete 호출
+  /// 시작 시 이미 완료된 상태일 수 있으므로 타이머 등록 전 즉시 한 번 확인
+  /// (Timer.periodic은 최초 실행도 간격만큼 지난 뒤에야 발생하기 때문)
   void startPolling({required void Function() onComplete}) {
     _pollingTimer?.cancel();
-    _pollingTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
+    final token = ++_pollingToken;
+
+    Future<bool> checkOnce() async {
       final result = await _userRepository.getMe();
       if (result case Success(:final data)) {
         if (data.guardianVerifiedAt != null) {
-          _pollingTimer?.cancel();
           onComplete();
+          return true;
         }
       }
+      return false;
+    }
+
+    checkOnce().then((completed) {
+      // 대기 중 stopPolling되거나 startPolling이 다시 호출됐다면 타이머를 새로 걸지 않는다
+      if (completed || token != _pollingToken) return;
+      _pollingTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
+        if (await checkOnce()) {
+          _pollingTimer?.cancel();
+        }
+      });
     });
   }
 
   /// 폴링 타이머 취소
   void stopPolling() {
     _pollingTimer?.cancel();
+    _pollingToken++;
   }
 }

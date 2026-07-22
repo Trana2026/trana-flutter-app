@@ -1,3 +1,4 @@
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +9,7 @@ import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/widgets/custom_loading_bar.dart';
 import 'package:trana/core/widgets/contract_card.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/notification/presentation/viewmodels/notification_view_model.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_contract_type_selector.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_empty_state.dart';
@@ -118,54 +120,72 @@ class HomeMainView extends HookConsumerWidget {
               ),
               child: SafeArea(
                 top: false,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Text("나의 계약", style: context.txt()),
-                          const Spacer(),
-                          HomeContractTypeSelector(
-                            selectedIndex: typeIndex.value,
-                            onSelect: (i) => typeIndex.value = i,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 28),
-                      Row(
-                        children: [
-                          Expanded(child: const HomeSearchBar()),
-                          const SizedBox(width: 7),
-                          HomeFilterButton(
-                            isActive: isFilterExpanded.value,
-                            onToggle: () => isFilterExpanded.value =
-                                !isFilterExpanded.value,
-                          ),
-                        ],
-                      ),
-                      if (isFilterExpanded.value) ...[
-                        const SizedBox(height: 8),
-                        const HomeFilterChipList(),
-                      ],
-                      const SizedBox(height: 16),
-                      homeState.isLoadingMyContracts
-                          ? const SizedBox(
-                              height: 200,
-                              child: CustomLoadingBar(),
-                            )
-                          : contracts.isEmpty
-                          ? const HomeEmptyState()
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              padding: EdgeInsets.zero,
-                              itemCount: contracts.length,
-                              itemBuilder: (_, i) => ContractCard(
-                                c: contracts[i],
-                                isPending: isPending,
-                              ),
+                // pull-to-refresh
+                child: CustomRefreshIndicator(
+                  offsetToArmed: 120,
+                  builder: (context, child, controller) => child,
+                  onRefresh: () async {
+                    final homeVM = ref.read(
+                      homeContractViewModelProvider.notifier,
+                    );
+                    final success = await homeVM.readMyContracts();
+                    if (!context.mounted) return;
+                    if (!success) {
+                      final state = ref.read(homeContractViewModelProvider);
+                      showErrorToast(context, state.error!);
+                      homeVM.clearError();
+                    }
+                  },
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text("나의 계약", style: context.txt()),
+                            const Spacer(),
+                            HomeContractTypeSelector(
+                              selectedIndex: typeIndex.value,
+                              onSelect: (i) => typeIndex.value = i,
                             ),
-                    ],
+                          ],
+                        ),
+                        const SizedBox(height: 28),
+                        Row(
+                          children: [
+                            Expanded(child: const HomeSearchBar()),
+                            const SizedBox(width: 7),
+                            HomeFilterButton(
+                              isActive: isFilterExpanded.value,
+                              onToggle: () => isFilterExpanded.value =
+                                  !isFilterExpanded.value,
+                            ),
+                          ],
+                        ),
+                        if (isFilterExpanded.value) ...[
+                          const SizedBox(height: 8),
+                          const HomeFilterChipList(),
+                        ],
+                        const SizedBox(height: 16),
+                        homeState.isLoadingMyContracts
+                            ? const SizedBox(
+                                height: 200,
+                                child: CustomLoadingBar(),
+                              )
+                            : contracts.isEmpty
+                            ? const HomeEmptyState()
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: EdgeInsets.zero,
+                                itemCount: contracts.length,
+                                itemBuilder: (_, i) => ContractCard(
+                                  c: contracts[i],
+                                  isPending: isPending,
+                                ),
+                              ),
+                      ],
+                    ),
                   ),
                 ),
               ),

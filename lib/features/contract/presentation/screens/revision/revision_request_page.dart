@@ -40,7 +40,7 @@ class RevisionRequestPage extends HookConsumerWidget {
             Positioned(
               left: 25,
               right: 25,
-              bottom: 20,
+              bottom: 30,
               child: GestureDetector(
                 onTap: () async {
                   if (selectedLength.value == 0) return;

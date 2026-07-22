@@ -44,7 +44,7 @@ class EditProfilePage extends HookConsumerWidget {
         genderCtr.text = next.gender?.label ?? "미등록";
       }
       if (next.email != prev?.email) {
-        emailCtr.text = next.email;
+        emailCtr.text = next.email ?? '';
       }
     });
 
@@ -126,9 +126,11 @@ class EditProfilePage extends HookConsumerWidget {
                     (mypageState.email != emailCtr.text)) {
                   emailError.value = Validation.email(emailCtr.text);
                   if (emailError.value != null) return;
-
-                  editProfileVM.updateEmail(emailCtr.text);
                 }
+
+                editProfileVM.updateEmail(
+                  emailCtr.text.isEmpty ? null : emailCtr.text,
+                );
 
                 // 본인 정보 수정
                 final success = await editProfileVM.updateProfile();
