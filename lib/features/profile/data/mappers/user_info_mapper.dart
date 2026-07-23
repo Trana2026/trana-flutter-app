@@ -10,12 +10,15 @@ extension UserInfoMapper on UserInfoDto {
     return UserInfoEntity(
       publicCode: publicCode,
       email: email,
-      status: UserStatus.values.fromApiString(status),
-      ageGroup: AgeGroup.values.fromApiString(ageGroup),
+      status: UserStatus.values.fromApiString(
+        status,
+        fallback: UserStatus.active,
+      ),
+      ageGroup: AgeGroup.values.fromApiString(ageGroup, fallback: AgeGroup.adult),
       guardianVerifiedAt: guardianVerifiedAt,
       name: name,
       birthDate: birthDate,
-      gender: gender != null ? Gender.values.fromApiString(gender!) : null,
+      gender: Gender.values.tryFromApiString(gender),
       phone: phone,
       pushEnabled: pushEnabled,
     );

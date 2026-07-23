@@ -42,7 +42,7 @@ final class SignContractViewModelProvider
 }
 
 String _$signContractViewModelHash() =>
-    r'656c5fcaa0d44e5af94bdb83ad87d880f5ac93a6';
+    r'f27a1c5300172dd70bcf007480d70b4f97edfe46';
 
 abstract class _$SignContractViewModel extends $Notifier<SignContractState> {
   SignContractState build();

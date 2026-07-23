@@ -35,7 +35,7 @@ import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/di
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/edit_profile_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/inquiry_history_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/pending_contract_page.dart';
-import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/policy_detail_page.dart';
+import 'package:trana/core/widgets/terms_detail_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/policy_list_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/total_contract_page.dart';
 
@@ -87,7 +87,7 @@ abstract class AppRoutes {
   static const customerService = '/my/customer-service';
   static const inquiryHistory = '/my/inquiry-history';
   static const policyList = '/my/policy-list';
-  static const policyDetail = '/my/policy-detail';
+  static const termsDetail = '/terms-detail';
   static const editProfile = '/my/edit-profile';
 }
 
@@ -284,10 +284,13 @@ GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
       builder: (context, state) => const PolicyListPage(),
     ),
     GoRoute(
-      path: AppRoutes.policyDetail,
+      path: AppRoutes.termsDetail,
       builder: (context, state) {
-        final type = state.extra as TermsType;
-        return PolicyDetailPage(type: type);
+        // 약관 id(int) 또는 타입(TermsType)
+        final extra = state.extra;
+        return extra is TermsType
+            ? TermsDetailPage.type(type: extra)
+            : TermsDetailPage(termsId: extra as int);
       },
     ),
     GoRoute(

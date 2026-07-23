@@ -162,7 +162,7 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.signed => "서명 완료",
 
     ContractStatus.cancelRequested || ContractStatus.cancelled => "계약 취소 진행 중",
-    ContractStatus.expired => "기간 만료",
+    ContractStatus.expired => "기한이 만료되었어요",
     ContractStatus.reported => "신고 접수 중",
     ContractStatus.completed => "무사히 거래가 완료되었어요!",
   };

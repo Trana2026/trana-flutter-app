@@ -10,14 +10,16 @@ extension ContractDraftMapper on ContractDraftDto {
   ContractDraftEntity toEntity() {
     return ContractDraftEntity(
       publicCode: publicCode,
-      status: ContractStatus.values.fromApiString(status),
-      disputeState: DisputeState.values.fromApiString(disputeState),
-      deliveryType: deliveryType != null
-          ? DeliveryType.values.fromApiString(deliveryType!)
-          : null,
-      consentType: consentType != null
-          ? ConsentType.values.fromApiString(consentType!)
-          : null,
+      status: ContractStatus.values.fromApiString(
+        status,
+        fallback: ContractStatus.inProgress,
+      ),
+      disputeState: DisputeState.values.fromApiString(
+        disputeState,
+        fallback: DisputeState.none,
+      ),
+      deliveryType: DeliveryType.values.tryFromApiString(deliveryType),
+      consentType: ConsentType.values.tryFromApiString(consentType),
       tradingPlatform: tradingPlatform,
       title: title,
       price: price,

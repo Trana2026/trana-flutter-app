@@ -85,9 +85,7 @@ class TestUser extends _$TestUser {
         email: (me['email'] as String?) ?? '',
         name: (me['name'] as String?) ?? '',
         status: (me['status'] as String?) ?? '',
-        ageGroup: me['ageGroup'] != null
-            ? AgeGroup.values.fromApiString(me['ageGroup'] as String)
-            : null,
+        ageGroup: AgeGroup.values.tryFromApiString(me['ageGroup'] as String?),
         guardianVerifiedAt: me['guardianVerifiedAt'] == null
             ? null
             : DateTime.parse(me['guardianVerifiedAt'] as String),
