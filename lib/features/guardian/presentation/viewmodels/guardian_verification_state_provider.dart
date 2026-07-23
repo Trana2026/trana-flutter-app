@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trana/core/di/provider.dart';
+import 'package:trana/features/contract/data/services/one_time_flag_service.dart';
 import 'package:trana/features/guardian/domain/entities/guardian_verification_state.dart';
 import 'package:trana/features/user/presentation/providers/me_provider.dart';
 
@@ -24,4 +25,13 @@ Future<GuardianVerificationState> guardianVerificationState(Ref ref) async {
     return GuardianVerificationState.pending;
   }
   return GuardianVerificationState.expired;
+}
+
+/// guardian 플래그 설정 여부. 대기 화면에서 '완료' 탭 시 invalidate되어 즉시 갱신됨
+@riverpod
+Future<bool> guardianBannerAcked(Ref ref) async {
+  final me = await ref.watch(meProvider.future);
+  final publicCode = me?.publicCode;
+  if (publicCode == null) return false;
+  return OneTimeFlagService.check(OneTimeFlag.guardian, publicCode);
 }

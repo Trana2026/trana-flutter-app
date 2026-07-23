@@ -1,5 +1,3 @@
-import 'package:dio/dio.dart';
-import 'package:trana/core/error/dio_error_mapper.dart';
 import 'package:trana/core/error/failure.dart';
 import 'package:trana/core/error/result.dart';
 import 'package:trana/features/profile/data/datasources/user_preference_data_source.dart';
@@ -13,20 +11,17 @@ class UserPreferenceRepositoryImpl implements UserPreferenceRepository {
   final UserPreferenceDataSource dataSource;
 
   @override
-  Future<Result<UserPreferenceEntity>> togglePushEnabled(bool enabled) async {
-    try {
-      final dto = await dataSource.togglePushEnabled(enabled);
-      return Success(dto.toEntity());
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 401) {
-        return const Failure(UnauthorizedFailure('잘못된 토큰입니다.'));
-      }
-      if (e.response?.statusCode == 404) {
-        return const Failure(NotFoundFailure('사용자를 찾을 수 없습니다.'));
-      }
-      return Failure(e.toFailure());
-    } catch (e) {
-      return const Failure(UnknownFailure());
-    }
+  Future<Result<UserPreferenceEntity>> togglePushEnabled(bool enabled) {
+    return guardResult(
+      () async {
+        final dto = await dataSource.togglePushEnabled(enabled);
+        return dto.toEntity();
+      },
+      onDioException: (e) => switch (e.response?.statusCode) {
+        401 => const UnauthorizedFailure('잘못된 토큰입니다.'),
+        404 => const NotFoundFailure('사용자를 찾을 수 없습니다.'),
+        _ => null,
+      },
+    );
   }
 }

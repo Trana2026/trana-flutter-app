@@ -1,5 +1,3 @@
-import 'package:dio/dio.dart';
-import 'package:trana/core/error/dio_error_mapper.dart';
 import 'package:trana/core/error/failure.dart';
 import 'package:trana/core/error/result.dart';
 import 'package:trana/features/contract/data/data_sources/contract_cancellation_data_source.dart';
@@ -18,83 +16,66 @@ class ContractCancellationRepositoryImpl
     required String publicCode,
     required String reason,
     required String detail,
-  }) async {
-    try {
-      final dto = await dataSource.requestCancellation(
-        publicCode,
-        reason: reason,
-        detail: detail,
-      );
-      return Success(dto.toEntity());
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 403) {
-        return const Failure(
-          ForbiddenFailure('계약 참여자가 아니거나 송신 측이 요청할 수 없습니다.'),
+  }) {
+    return guardResult(
+      () async {
+        final dto = await dataSource.requestCancellation(
+          publicCode,
+          reason: reason,
+          detail: detail,
         );
-      }
-      if (e.response?.statusCode == 409) {
-        return const Failure(
-          ConflictFailure('취소 요청 가능 상태가 아니거나 이미 활성 요청이 있습니다.'),
-        );
-      }
-      return Failure(e.toFailure());
-    } catch (e) {
-      return const Failure(UnknownFailure());
-    }
+        return dto.toEntity();
+      },
+      onDioException: (e) => switch (e.response?.statusCode) {
+        403 => const ForbiddenFailure('계약 참여자가 아니거나 송신 측이 요청할 수 없습니다.'),
+        409 => const ConflictFailure('취소 요청 가능 상태가 아니거나 이미 활성 요청이 있습니다.'),
+        _ => null,
+      },
+    );
   }
 
   @override
-  Future<Result<bool>> confirmCancellation(String publicCode) async {
-    try {
-      await dataSource.confirmCancellation(publicCode);
-      return const Success(true);
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 403) {
-        return const Failure(
-          ForbiddenFailure('계약 참여자가 아니거나 요청자 본인은 확정할 수 없습니다.'),
-        );
-      }
-      if (e.response?.statusCode == 404) {
-        return const Failure(NotFoundFailure('활성 취소 요청이 없습니다.'));
-      }
-      return Failure(e.toFailure());
-    } catch (e) {
-      return const Failure(UnknownFailure());
-    }
+  Future<Result<bool>> confirmCancellation(String publicCode) {
+    return guardResult(
+      () async {
+        await dataSource.confirmCancellation(publicCode);
+        return true;
+      },
+      onDioException: (e) => switch (e.response?.statusCode) {
+        403 => const ForbiddenFailure('계약 참여자가 아니거나 요청자 본인은 확정할 수 없습니다.'),
+        404 => const NotFoundFailure('활성 취소 요청이 없습니다.'),
+        _ => null,
+      },
+    );
   }
 
   @override
-  Future<Result<void>> revokeCancellation(String publicCode) async {
-    try {
-      await dataSource.revokeCancellation(publicCode);
-      return const Success(null);
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 403) {
-        return const Failure(ForbiddenFailure('계약 참여자가 아니거나 요청자 본인이 아닙니다.'));
-      }
-      if (e.response?.statusCode == 404) {
-        return const Failure(NotFoundFailure('활성 취소 요청이 없습니다.'));
-      }
-      return Failure(e.toFailure());
-    } catch (e) {
-      return const Failure(UnknownFailure());
-    }
+  Future<Result<void>> revokeCancellation(String publicCode) {
+    return guardResult(
+      () {
+        return dataSource.revokeCancellation(publicCode);
+      },
+      onDioException: (e) => switch (e.response?.statusCode) {
+        403 => const ForbiddenFailure('계약 참여자가 아니거나 요청자 본인이 아닙니다.'),
+        404 => const NotFoundFailure('활성 취소 요청이 없습니다.'),
+        _ => null,
+      },
+    );
   }
 
   @override
   Future<Result<ContractCancellationEntity?>> readActiveCancellation(
     String publicCode,
-  ) async {
-    try {
-      final dto = await dataSource.readActiveCancellation(publicCode);
-      return Success(dto?.toEntity());
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 403) {
-        return const Failure(ForbiddenFailure('이 계약에 접근할 권한이 없습니다.'));
-      }
-      return Failure(e.toFailure());
-    } catch (e) {
-      return const Failure(UnknownFailure());
-    }
+  ) {
+    return guardResult(
+      () async {
+        final dto = await dataSource.readActiveCancellation(publicCode);
+        return dto?.toEntity();
+      },
+      onDioException: (e) => switch (e.response?.statusCode) {
+        403 => const ForbiddenFailure('이 계약에 접근할 권한이 없습니다.'),
+        _ => null,
+      },
+    );
   }
 }

@@ -4,6 +4,7 @@ import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/widgets/app_icon.dart';
+import 'package:trana/core/widgets/thumbnail_placeholder.dart';
 import 'package:trana/features/contract/domain/utils/string_extensions.dart';
 import 'package:trana/features/contract/presentation/screens/detail/widgets/contract_image_carousel.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
@@ -24,8 +25,9 @@ class ContractSummaryCard extends HookConsumerWidget {
 
     return Row(
       children: [
-        detailState.firstAttachmentUrl != null
-            ? Stack(
+        detailState.firstAttachmentUrl == null
+            ? const ThumbnailPlaceholder()
+            : Stack(
                 children: [
                   GestureDetector(
                     onTap: () => ContractImageCarousel.show(context),
@@ -61,9 +63,9 @@ class ContractSummaryCard extends HookConsumerWidget {
                     ),
                   ),
                 ],
-              )
-            : placeholder(context),
+              ),
         const SizedBox(width: 16),
+
         Expanded(
           child: SizedBox(
             height: 100,
@@ -137,22 +139,6 @@ class ContractSummaryCard extends HookConsumerWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget placeholder(BuildContext context) {
-    return Container(
-      width: 100,
-      height: 100,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: vrc(context).tertiaryColor,
-      ),
-      child: Icon(
-        CooliconsIcon.image02,
-        color: vrc(context).textDisable,
-        size: 32,
-      ),
     );
   }
 }

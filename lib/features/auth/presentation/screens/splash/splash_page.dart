@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/features/auth/presentation/screens/splash/widgets/splash_glow_background.dart';
+import 'package:trana/features/user/presentation/providers/me_provider.dart';
 // import 'package:trana/core/dev/test_user_provider.dart';
 
 /// 앱 시작 시 3초 후 인트로 화면으로 자동 이동하는 스플래시 화면
@@ -14,22 +15,28 @@ class SplashPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     useEffect(() {
-      Future.delayed(const Duration(seconds: 3), () async {
-        if (!context.mounted) return;
-
-        // 테스트 유저 자동 로그인 (사용 시 주석 해제)
-        // try {
-        //   await ref.read(testUserProvider.notifier).getUser();
-        // } catch (_) {
-        //   // dev 토큰 발급 실패 시 기존 흐름(intro)으로 진행
-        // }
-        // if (!context.mounted) return;
-
+      () async {
         // 재진입. 저장된 토큰 있으면 홈으로, 없으면 intro로 이동
         final token = ref.read(authTokenStoreProvider).accessToken;
         final loggedIn = token != null && token.isNotEmpty;
+
+        // 홈 화면 진입 전에 로그인(사용자 정보) 조회를 스플래시 대기 시간 동안 미리 끝냄
+        // 서버 콜드스타트 등으로 지연 시에는 무한정 기다리지 않도록 타임아웃 설정
+        final prefetchMe = loggedIn
+            ? ref
+                  .read(meProvider.future)
+                  .timeout(const Duration(seconds: 8))
+                  .catchError((_) => null)
+            : Future<void>.value();
+
+        await Future.wait<Object?>([
+          Future.delayed(const Duration(seconds: 3)),
+          prefetchMe,
+        ]);
+
+        if (!context.mounted) return;
         context.go(loggedIn ? AppRoutes.home : AppRoutes.intro);
-      });
+      }();
 
       return null;
     }, const []);

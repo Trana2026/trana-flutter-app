@@ -21,11 +21,15 @@ class HomeBanner extends HookConsumerWidget {
     final me = ref.read(meProvider).value;
     final isMinor = me?.ageGroup == 'MINOR';
     final state = ref.watch(guardianVerificationStateProvider).value;
-    // 진행중(pending) / 완료(verified) 일 때만 하단 고정 배너
+
+    // guardian 플래그 설정 여부 확인 (대기 화면에서 invalidate되어 즉시 갱신됨)
+    final guardianAcked = ref.watch(guardianBannerAckedProvider).value ?? false;
+
+    // 진행중(pending)이면 항상, 완료(verified)면 guardian 플래그 미설정일 때만 하단 고정 배너
     final showBanner =
         isMinor &&
         (state == GuardianVerificationState.pending ||
-            state == GuardianVerificationState.verified);
+            (state == GuardianVerificationState.verified && !guardianAcked));
 
     // 좌측 스와이프 시 일시적으로 숨김 (홈 화면 재진입 시 초기화)
     final isContractBannerDismissed = useState(false);

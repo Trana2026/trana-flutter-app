@@ -92,13 +92,15 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
                       child: Column(
                         children: [
                           _ConsentItem(
-                            onSelected: (v) => isSelected.value = v,
+                            onSelected: (v) {
+                              isSelected.value = v;
+                              // TODO : AI 약관 동의 처리
+                            },
                             isRequired: true,
                             text: 'AI 자동 기입 기능 국외이전 동의',
                             onTapChevron: () => context.push(
                               AppRoutes.policyDetail,
-                              // TODO: 백엔드 AI 약관 구현되면 올바른 타입으로 변경
-                              extra: TermsType.privacy,
+                              extra: TermsType.aiCrossBorder,
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -106,8 +108,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
                             text: 'AI 자동 기입 고지 전문 보기',
                             onTapChevron: () => context.push(
                               AppRoutes.policyDetail,
-                              // TODO: 백엔드 AI 약관 구현되면 올바른 타입으로 변경
-                              extra: TermsType.service,
+                              extra: TermsType.aiAutofillNotice,
                             ),
                           ),
                         ],

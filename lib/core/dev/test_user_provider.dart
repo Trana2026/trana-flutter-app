@@ -32,17 +32,26 @@ class TestUser extends _$TestUser {
   @override
   TestUserEntity? build() => null;
 
-  Future<void> getUser() async {
-    // 테스트 유저 로그인
+  /// 성인 유저
+  Future<void> getAdultUser() async {
     await login(
-      // 'TST-ADL-A01' // 성인1
-      // 'TST-ADL-B01' // 성인2
-      'TST-MIN-C01', // 미성년자1
-      // 'TST-MIN-D01', // 미성년자2
+      'TST-ADL-A01',
+      // 'TST-ADL-B01'
     );
 
     // 계약 초대 토큰 수신 (수신자 수동 테스트용)
-    // await saveToken("WeJ08hwaAH4jCvv571DV5");
+    // await saveToken("IG2zAKieroWDB6PSfUK95");
+  }
+
+  /// 미성년자 유저
+  Future<void> getMinorUser() async {
+    await login(
+      'TST-MIN-C01',
+      // 'TST-MIN-D01',
+    );
+
+    // 계약 초대 토큰 수신 (수신자 수동 테스트용)
+    // await saveToken("9GzJ4c7iAC9Y7z4xso6VL");
   }
 
   Future<void> login(String userPublicCode) async {

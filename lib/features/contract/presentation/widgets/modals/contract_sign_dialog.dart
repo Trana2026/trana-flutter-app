@@ -49,13 +49,33 @@ class ContractSignDialog extends HookConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  "전자 서명 및 최종확인",
-                  style: context.txt(
-                    color: vrc(context).textPrimary,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // 다시 그리기 버튼
+                    // 서명이 있을 때만 출력
+                    hasSignature.value
+                        ? InkWell(
+                            onTap: () {
+                              signatureKey.currentState?.clear();
+                              hasSignature.value = false;
+                            },
+                            child: Icon(
+                              CooliconsIcon.redo,
+                              color: vrc(context).iconDisable,
+                            ),
+                          )
+                        : const SizedBox(width: 24),
+                    Text(
+                      "전자 서명 및 최종확인",
+                      style: context.txt(
+                        color: vrc(context).textPrimary,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(width: 24),
+                  ],
                 ),
                 const SizedBox(height: 12),
 
@@ -102,37 +122,6 @@ class ContractSignDialog extends HookConsumerWidget {
                                       fontSize: 14,
                                     ),
                                   ),
-                                ),
-                              ),
-                            ),
-                          // 다시 그리기 버튼
-                          // 서명이 있을 때만 출력
-                          if (hasSignature.value)
-                            Positioned(
-                              top: 8,
-                              right: 8,
-                              child: GestureDetector(
-                                onTap: () {
-                                  signatureKey.currentState?.clear();
-                                  hasSignature.value = false;
-                                },
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      CooliconsIcon.redo,
-                                      size: 14,
-                                      color: vrc(context).textTertiary,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      "다시 그리기",
-                                      style: context.txt(
-                                        color: vrc(context).textTertiary,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
                                 ),
                               ),
                             ),

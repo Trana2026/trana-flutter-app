@@ -12,6 +12,7 @@ import 'package:trana/core/utils/date_time_extensions.dart';
 import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/core/widgets/confirm_action_dialog.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
+import 'package:trana/features/contract/data/services/one_time_flag_service.dart';
 import 'package:trana/features/contract/domain/enums/age_group.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/widgets/my_page_menu_item.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/widgets/profile_score_card.dart';
@@ -26,7 +27,9 @@ import 'package:trana/features/profile/presentation/viewmodels/my_page_view_mode
 import 'package:trana/features/user/presentation/providers/me_provider.dart';
 
 class MyPage extends HookConsumerWidget {
-  const MyPage({super.key});
+  const MyPage({super.key, required this.isPending});
+
+  final ValueNotifier<bool> isPending;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -175,12 +178,12 @@ class MyPage extends HookConsumerWidget {
                 MyPageMenuItem(
                   appIcon: AppIcon.data(icon: Icons.logout),
                   label: "로그아웃",
-                  onTap: () => _onLogout(context, ref),
+                  onTap: () => _onLogout(context, ref, isPending),
                 ),
                 MyPageMenuItem(
                   appIcon: AppIcon.data(icon: CooliconsIcon.trashFull),
                   label: "탈퇴하기",
-                  onTap: () => _onWithdraw(context, ref),
+                  onTap: () => _onWithdraw(context, ref, isPending),
                 ),
               ],
             ),
@@ -191,7 +194,11 @@ class MyPage extends HookConsumerWidget {
   }
 
   /// 로그아웃. 토큰/보호자링크 정리 후 intro로 이동
-  Future<void> _onLogout(BuildContext context, WidgetRef ref) async {
+  Future<void> _onLogout(
+    BuildContext context,
+    WidgetRef ref,
+    ValueNotifier<bool> isPending,
+  ) async {
     final ok = await showDialog<bool>(
       context: context,
       barrierColor: Colors.black.withValues(alpha: 0.6),
@@ -202,25 +209,34 @@ class MyPage extends HookConsumerWidget {
       ),
     );
     if (ok != true) return;
+    if (isPending.value) return;
+    isPending.value = true;
+    try {
+      // 로그아웃 시 FCM 디바이스 토큰 해제
+      final deviceVM = ref.read(deviceTokenViewModelProvider.notifier);
+      final success = await deviceVM.deleteToken();
+      if (!context.mounted) return;
+      if (!success) {
+        final state = ref.read(deviceTokenViewModelProvider);
+        showErrorToast(context, state.error!);
+        deviceVM.clearError();
+      }
 
-    // 로그아웃 시 FCM 디바이스 토큰 해제
-    final deviceVM = ref.read(deviceTokenViewModelProvider.notifier);
-    final success = await deviceVM.deleteToken();
-    if (!context.mounted) return;
-    if (!success) {
-      final state = ref.read(deviceTokenViewModelProvider);
-      showErrorToast(context, state.error!);
-      deviceVM.clearError();
+      await ref.read(authRepositoryProvider).signOut();
+      await ref.read(guardianLinkStoreProvider).clear();
+      ref.invalidate(meProvider);
+      if (context.mounted) context.go(AppRoutes.intro);
+    } finally {
+      isPending.value = false;
     }
-
-    await ref.read(authRepositoryProvider).signOut();
-    await ref.read(guardianLinkStoreProvider).clear();
-    ref.invalidate(meProvider);
-    if (context.mounted) context.go(AppRoutes.intro);
   }
 
   /// 회원탈퇴 (DELETE /v1/users/me). 토큰/보호자링크 정리 후 intro로 이동
-  Future<void> _onWithdraw(BuildContext context, WidgetRef ref) async {
+  Future<void> _onWithdraw(
+    BuildContext context,
+    WidgetRef ref,
+    ValueNotifier<bool> isPending,
+  ) async {
     final ok = await showDialog<bool>(
       context: context,
       barrierColor: Colors.black.withValues(alpha: 0.6),
@@ -231,20 +247,32 @@ class MyPage extends HookConsumerWidget {
       ),
     );
     if (ok != true) return;
-    final result = await ref.read(authRepositoryProvider).deleteAccount();
-    if (!context.mounted) return;
-    if (result.isSuccess) {
-      await ref.read(guardianLinkStoreProvider).clear();
-      ref.invalidate(meProvider);
-      if (context.mounted) context.go(AppRoutes.intro);
-    } else {
-      Fluttertoast.showToast(
-        msg: result.failureOrNull?.message ?? "탈퇴에 실패했습니다. 잠시 후 다시 시도해 주세요.",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: vrc(context).secondaryColor!,
-        textColor: vrc(context).textPrimary!,
-      );
+    if (isPending.value) return;
+    isPending.value = true;
+    try {
+      final result = await ref.read(authRepositoryProvider).deleteAccount();
+      if (!context.mounted) return;
+      if (result.isSuccess) {
+        // 탈퇴 시 플래그 삭제
+        final publicCode = ref.read(meProvider).value?.publicCode;
+        if (publicCode != null) {
+          await OneTimeFlagService.clearForUser(publicCode);
+        }
+
+        await ref.read(guardianLinkStoreProvider).clear();
+        ref.invalidate(meProvider);
+        if (context.mounted) context.go(AppRoutes.intro);
+      } else {
+        Fluttertoast.showToast(
+          msg: result.failureOrNull?.message ?? "탈퇴에 실패했습니다. 잠시 후 다시 시도해 주세요.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: vrc(context).secondaryColor!,
+          textColor: vrc(context).textPrimary!,
+        );
+      }
+    } finally {
+      isPending.value = false;
     }
   }
 }

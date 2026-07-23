@@ -34,7 +34,8 @@ abstract class HomeContractState with _$HomeContractState {
             (c.status != ContractStatus.completed) &&
             (c.status != ContractStatus.reported) &&
             (c.status != ContractStatus.cancelRequested) &&
-            (c.status != ContractStatus.cancelled),
+            (c.status != ContractStatus.cancelled) &&
+            (c.status != ContractStatus.expired),
       )
       .toList();
 

@@ -11,6 +11,7 @@ import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/minor_disclosure_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/receive_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/contract_pdf_preview_card.dart';
 import 'package:trana/features/contract/presentation/widgets/contract_warranty_section.dart';
@@ -23,6 +24,7 @@ class ContractRequestDetailPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final detailState = ref.watch(detailContractViewModelProvider);
     final receiveVM = ref.read(receiveContractViewModelProvider.notifier);
+    final disclosureVM = ref.read(minorDisclosureViewModelProvider.notifier);
 
     final isPending = useState(false);
 
@@ -85,6 +87,20 @@ class ContractRequestDetailPage extends HookConsumerWidget {
                             );
                             showErrorToast(context, state.error!);
                             receiveVM.clearError();
+                            return;
+                          }
+                        }
+
+                        if (detailState.counterpartyIsMinor) {
+                          // 미성년자 위험 고지 문구 조회 (상대가 미성년자일 때)
+                          final success = await disclosureVM.readText();
+                          if (!context.mounted) return;
+                          if (!success) {
+                            final state = ref.read(
+                              minorDisclosureViewModelProvider,
+                            );
+                            showErrorToast(context, state.error!);
+                            disclosureVM.clearError();
                             return;
                           }
                         }

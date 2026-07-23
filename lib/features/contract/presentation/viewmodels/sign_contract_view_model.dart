@@ -32,23 +32,10 @@ class SignContractViewModel extends _$SignContractViewModel {
     state = const SignContractState();
   }
 
-  /// 거래 계약 약관 동의
-  void agreeContractAgreementTerm() {
-    // 약관 정확히 2개 아니면 예외 터짐
-    // keepAlive 상태라 재시도 시 중복 누적될 수 있어서 {}(set) 사용
-    final updated = {...state.agreedTermIds, 5}.toList();
-    state = state.copyWith(agreedTermIds: updated);
-  }
-
   /// 전자서명 약관 동의
-  void agreeElectronicSignatureTerm(bool v) {
-    final updated = {...state.agreedTermIds};
-    if (v) {
-      updated.add(6);
-    } else {
-      updated.remove(6);
-    }
-    state = state.copyWith(agreedTermIds: updated.toList());
+  void agreeElectronicSignatureTerm() {
+    final updated = {...state.agreedTermIds, 6}.toList();
+    state = state.copyWith(agreedTermIds: updated);
   }
 
   /// 전자 서명 데이터

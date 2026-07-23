@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// 딥링크 초대 토큰 임시 저장 서비스
 class PendingInvitationTokenService {
   static const _key = 'pending_invitation_token';
 

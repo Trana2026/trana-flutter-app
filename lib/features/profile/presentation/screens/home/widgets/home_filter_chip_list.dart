@@ -8,6 +8,7 @@ import 'package:trana/features/profile/presentation/viewmodels/home_contract_vie
 class HomeFilterChipList extends ConsumerWidget {
   const HomeFilterChipList({super.key});
 
+  /// 필터에 보일 상태 목록
   static const _representatives = <ContractStatus?>[
     null, // 전체
     ContractStatus.ready, // 계약서 초안 (inProgress, draft, ready)
@@ -20,17 +21,20 @@ class HomeFilterChipList extends ConsumerWidget {
     ContractStatus.completed, // 거래 완료
   ];
 
+  /// 필터에 보일 상태 상태별 라벨
   String _labelFor(ContractStatus? status) => switch (status) {
     null => '전체',
-    ContractStatus.inProgress || ContractStatus.draft || ContractStatus.ready =>
-      '계약서 초안',
+    ContractStatus.inProgress ||
+    ContractStatus.draft ||
+    ContractStatus.ready => '계약서 초안',
     ContractStatus.shared => '서명 요청',
     ContractStatus.revisionRequested => '수정 요청',
     ContractStatus.receiverSigned => '최종 서명 요청',
     ContractStatus.signed => '서명 완료',
     ContractStatus.reported => '신고 접수',
-    ContractStatus.cancelRequested || ContractStatus.cancelled => '취소 요청',
+    ContractStatus.cancelRequested => '취소 요청',
     ContractStatus.completed => '거래 완료',
+    ContractStatus.cancelled || ContractStatus.expired => '',
   };
 
   @override

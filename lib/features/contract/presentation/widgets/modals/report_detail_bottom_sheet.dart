@@ -50,7 +50,7 @@ class ReportDetailBottomSheet extends HookConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 47, 20, 20),
+                    padding: const EdgeInsets.fromLTRB(20, 47, 20, 10),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,

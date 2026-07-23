@@ -31,8 +31,6 @@ class DisputeHistoryContractPage extends HookConsumerWidget {
             : Padding(
                 padding: const EdgeInsets.all(20),
                 child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.zero,
                   itemCount: homeState.disputingContracts.length,
                   itemBuilder: (_, i) => ContractCard(

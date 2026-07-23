@@ -5,6 +5,7 @@ import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/core/widgets/thumbnail_placeholder.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/domain/utils/string_extensions.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
@@ -79,18 +80,20 @@ class ContractCard extends HookConsumerWidget {
           children: [
             Stack(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: c.firstAttachmentUrl != null
-                      ? Image.network(
+                c.firstAttachmentUrl == null
+                    ? const ThumbnailPlaceholder()
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.network(
                           c.firstAttachmentUrl!,
                           width: 100,
                           height: 100,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) => placeholder(context),
-                        )
-                      : placeholder(context),
-                ),
+                          errorBuilder: (_, _, _) =>
+                              const ThumbnailPlaceholder(),
+                        ),
+                      ),
+
                 if (c.attachmentCount > 0)
                   Positioned(
                     bottom: 6,
@@ -196,19 +199,6 @@ class ContractCard extends HookConsumerWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget placeholder(BuildContext context) {
-    return Container(
-      width: 100,
-      height: 100,
-      color: vrc(context).tertiaryColor,
-      child: Icon(
-        CooliconsIcon.image02,
-        color: vrc(context).textDisable,
-        size: 32,
       ),
     );
   }

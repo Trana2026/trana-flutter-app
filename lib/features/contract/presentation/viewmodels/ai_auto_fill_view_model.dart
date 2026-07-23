@@ -63,34 +63,42 @@ class AiAutoFillViewModel extends _$AiAutoFillViewModel {
 
     state = state.copyWith(isLoadingAnalysis: true, isCompleted: false);
 
-    // 1. ImageFilterService 로 AI 분석에 사용할 이미지 필터링
-    final xFiles = <XFile>[];
-    for (final asset in createState.selectedImages) {
-      final file = await asset.file;
-      if (file != null) xFiles.add(XFile(file.path));
-    }
-
     List<int> analysisIds = createState.attachmentIds;
-    if (xFiles.isNotEmpty) {
-      final filterService = ImageFilterService();
-      try {
-        final filtered = await filterService.extractBestImages(xFiles);
-        // compressed path: originalPath + '_compressed.jpg' 이므로 역추적 가능
-        final filteredOriginalPaths = filtered
-            .map((f) => f.path.replaceFirst(RegExp(r'_compressed\.jpg$'), ''))
-            .toSet();
-
-        final filteredIds = <int>[];
-        for (var i = 0; i < xFiles.length; i++) {
-          if (filteredOriginalPaths.contains(xFiles[i].path) &&
-              i < createState.attachmentIds.length) {
-            filteredIds.add(createState.attachmentIds[i]);
-          }
-        }
-        if (filteredIds.isNotEmpty) analysisIds = filteredIds;
-      } finally {
-        filterService.dispose();
+    try {
+      // 1. ImageFilterService 로 AI 분석에 사용할 이미지 필터링
+      final xFiles = <XFile>[];
+      for (final asset in createState.selectedImages) {
+        final file = await asset.file;
+        if (file != null) xFiles.add(XFile(file.path));
       }
+
+      if (xFiles.isNotEmpty) {
+        final filterService = ImageFilterService();
+        try {
+          final filtered = await filterService.extractBestImages(xFiles);
+          // compressed path: originalPath + '_compressed.jpg' 이므로 역추적 가능
+          final filteredOriginalPaths = filtered
+              .map((f) => f.path.replaceFirst(RegExp(r'_compressed\.jpg$'), ''))
+              .toSet();
+
+          final filteredIds = <int>[];
+          for (var i = 0; i < xFiles.length; i++) {
+            if (filteredOriginalPaths.contains(xFiles[i].path) &&
+                i < createState.attachmentIds.length) {
+              filteredIds.add(createState.attachmentIds[i]);
+            }
+          }
+          if (filteredIds.isNotEmpty) analysisIds = filteredIds;
+        } finally {
+          filterService.dispose();
+        }
+      }
+    } catch (e) {
+      state = state.copyWith(
+        isLoadingAnalysis: false,
+        error: '이미지를 처리하는 중 오류가 발생했습니다.',
+      );
+      return false;
     }
 
     if (!ref.mounted) return false;
