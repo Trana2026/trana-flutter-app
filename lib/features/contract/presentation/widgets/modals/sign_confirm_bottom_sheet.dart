@@ -156,8 +156,15 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
                         // 서명 플로우 시작 전에 이전 시도 초기화
                         signVM.reset();
 
-                        // 전자 서명 약관 동의
-                        signVM.agreeElectronicSignatureTerm();
+                        // 서명 필수 약관 조회 후 동의
+                        final termsLoaded = await signVM.loadRequiredTerms();
+                        if (!context.mounted) return;
+                        if (!termsLoaded) {
+                          final state = ref.read(signContractViewModelProvider);
+                          showErrorToast(context, state.error!);
+                          signVM.clearError();
+                          return;
+                        }
 
                         Navigator.pop(context);
                         await Future.delayed(const Duration(milliseconds: 200));

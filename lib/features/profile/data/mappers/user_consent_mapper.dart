@@ -7,7 +7,7 @@ extension UserConsentMapper on UserConsentDto {
   UserConsentEntity toEntity() {
     return UserConsentEntity(
       termsId: termsId,
-      type: TermsType.values.fromApiString(type),
+      type: TermsType.values.fromApiString(type, fallback: TermsType.service),
       version: version,
       title: title,
       agreedAt: agreedAt,

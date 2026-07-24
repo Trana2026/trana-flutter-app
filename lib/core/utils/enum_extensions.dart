@@ -6,9 +6,16 @@ extension EnumApiString on Enum {
 }
 
 extension EnumFromApiString<T extends Enum> on List<T> {
-  /// API 응답 문자열 > enum 상수 변환
-  T fromApiString(String value) => firstWhere(
-    (e) => e.apiString == value,
-    orElse: () => throw ArgumentError('Unknown value "$value" for $T'),
-  );
+  /// API 응답 문자열 > enum 상수 변환 (없는 값이면 null)
+  T? tryFromApiString(String? value) {
+    if (value == null) return null;
+    for (final e in this) {
+      if (e.apiString == value) return e;
+    }
+    return null;
+  }
+
+  /// API 응답 문자열 > enum 상수 변환 (없는 값이면 fallback)
+  T fromApiString(String value, {required T fallback}) =>
+      tryFromApiString(value) ?? fallback;
 }

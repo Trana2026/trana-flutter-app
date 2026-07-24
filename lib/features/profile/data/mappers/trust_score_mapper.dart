@@ -7,7 +7,7 @@ extension TrustScoreMapper on TrustScoreDto {
   TrustScoreEntity toEntity() {
     return TrustScoreEntity(
       trustScore: trustScore,
-      trustGrade: TrustGrade.values.fromApiString(trustGrade),
+      trustGrade: TrustGrade.values.fromApiString(trustGrade, fallback: TrustGrade.newbie),
       trustGradeLabel: trustGradeLabel,
       completedContractCount: completedContractCount,
       warrantyProvidedCount: warrantyProvidedCount,

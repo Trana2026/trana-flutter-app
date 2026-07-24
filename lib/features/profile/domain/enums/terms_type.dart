@@ -13,4 +13,8 @@ enum TermsType {
   // AI 자동기입
   aiAutofillNotice, // AI 자동기입 면책 고지 (readonly 열람)
   aiCrossBorder, // AI 자동기입 국외이전 동의 (필수 체크, 개인정보보호법 §28-8)
+  // 법정대리인
+  guardianWarranty, // 본인확인·친권관계 보증 (필수 동의)
+  guardianPrivacy, // 개인정보 수집·이용 동의 (보호자용, 필수 동의)
+  guardianLegalRep, // 법정대리인 확인 선언 (필수 동의)
 }

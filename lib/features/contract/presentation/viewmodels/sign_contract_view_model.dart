@@ -32,10 +32,18 @@ class SignContractViewModel extends _$SignContractViewModel {
     state = const SignContractState();
   }
 
-  /// 전자서명 약관 동의
-  void agreeElectronicSignatureTerm() {
-    final updated = {...state.agreedTermIds, 6}.toList();
-    state = state.copyWith(agreedTermIds: updated);
+  /// 서명 필수 약관 조회 후 동의 약관 id 설정 (성공 여부 반환)
+  Future<bool> loadRequiredTerms() async {
+    final result = await ref.read(termsRepositoryProvider).readContractTerms();
+
+    switch (result) {
+      case Success(:final data):
+        state = state.copyWith(agreedTermIds: data.map((e) => e.id).toList());
+        return true;
+      case Failure(:final failure):
+        state = state.copyWith(error: failure.message);
+        return false;
+    }
   }
 
   /// 전자 서명 데이터

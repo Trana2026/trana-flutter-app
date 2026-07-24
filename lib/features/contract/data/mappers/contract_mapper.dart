@@ -8,11 +8,14 @@ extension ContractMapper on ContractDto {
   ContractEntity toEntity() {
     return ContractEntity(
       publicCode: publicCode,
-      status: ContractStatus.values.fromApiString(status),
+      status: ContractStatus.values.fromApiString(
+        status,
+        fallback: ContractStatus.inProgress,
+      ),
       title: title,
       price: price,
       isCreator: isCreator,
-      myRole: myRole != null ? Role.values.fromApiString(myRole!) : null,
+      myRole: Role.values.tryFromApiString(myRole),
       attachmentCount: attachmentCount,
       firstAttachmentUrl: firstAttachmentUrl,
       updatedAt: updatedAt,

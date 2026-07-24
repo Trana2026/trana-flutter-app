@@ -7,7 +7,7 @@ extension NotificationMapper on NotificationDto {
   NotificationEntity toEntity() {
     return NotificationEntity(
       id: id,
-      category: NotificationCategory.values.fromApiString(category),
+      category: NotificationCategory.values.fromApiString(category, fallback: NotificationCategory.contract),
       title: title,
       body: body,
       deepLink: deepLink,

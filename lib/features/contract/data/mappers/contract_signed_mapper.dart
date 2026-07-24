@@ -7,7 +7,7 @@ extension ContractSignedMapper on ContractSignedDto {
   ContractSignedEntity toEntity() {
     return ContractSignedEntity(
       publicCode: publicCode,
-      status: ContractStatus.values.fromApiString(status),
+      status: ContractStatus.values.fromApiString(status, fallback: ContractStatus.inProgress),
       pdfVersion: pdfVersion,
       creatorSignedAt: creatorSignedAt,
     );

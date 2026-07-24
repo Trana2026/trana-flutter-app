@@ -98,7 +98,7 @@ class _PolicyListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => context.push(AppRoutes.policyDetail, extra: consent.type),
+      onTap: () => context.push(AppRoutes.termsDetail, extra: consent.termsId),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 14),
         child: Row(
@@ -113,7 +113,7 @@ class _PolicyListItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    consent.agreedAt.toDotFormat,
+                    "최근 동의: ${consent.agreedAt.toDotFormat}",
                     style: context.txt(
                       color: vrc(context).textTertiary,
                       fontSize: 12,

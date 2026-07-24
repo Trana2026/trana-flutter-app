@@ -99,7 +99,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
                             isRequired: true,
                             text: 'AI 자동 기입 기능 국외이전 동의',
                             onTapChevron: () => context.push(
-                              AppRoutes.policyDetail,
+                              AppRoutes.termsDetail,
                               extra: TermsType.aiCrossBorder,
                             ),
                           ),
@@ -107,7 +107,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
                           _ConsentItem(
                             text: 'AI 자동 기입 고지 전문 보기',
                             onTapChevron: () => context.push(
-                              AppRoutes.policyDetail,
+                              AppRoutes.termsDetail,
                               extra: TermsType.aiAutofillNotice,
                             ),
                           ),

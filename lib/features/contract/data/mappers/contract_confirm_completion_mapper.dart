@@ -7,7 +7,7 @@ extension ContractConfirmCompletionMapper on ContractConfirmCompletionDto {
   ContractConfirmCompletionEntity toEntity() {
     return ContractConfirmCompletionEntity(
       publicCode: publicCode,
-      status: ContractStatus.values.fromApiString(status),
+      status: ContractStatus.values.fromApiString(status, fallback: ContractStatus.inProgress),
       sellerCompletedAt: sellerCompletedAt,
       buyerCompletedAt: buyerCompletedAt,
       completedAt: completedAt,

@@ -7,7 +7,6 @@ import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/features/ekyc/domain/entities/terms_entity.dart';
 import 'package:trana/features/ekyc/presentation/viewmodels/terms_view_model.dart';
-import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/policy_detail_page.dart';
 
 /// 약관 동의 항목
 enum _ConsentItem {
@@ -58,12 +57,7 @@ class TermsAgreementBottomSheet extends HookConsumerWidget {
 
     void openDetail(TermsEntity? term) {
       if (term == null) return;
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) =>
-              PolicyDetailPage.url(url: term.contentUrl, title: term.title),
-        ),
-      );
+      context.push(AppRoutes.termsDetail, extra: term.id);
     }
 
     Future<void> submit() async {

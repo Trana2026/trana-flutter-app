@@ -9,7 +9,7 @@ extension ContractDisputeMapper on ContractDisputeDto {
       disputeId: disputeId,
       reason: reason,
       detail: detail,
-      status: DisputeState.values.fromApiString(status),
+      status: DisputeState.values.fromApiString(status, fallback: DisputeState.none),
       reportedAt: reportedAt,
       cancelledAt: cancelledAt,
       isMine: isMine,
