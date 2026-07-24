@@ -12,10 +12,13 @@ List<({String title, String body})> buildContractContents({
   required DeliveryType deliveryType,
 }) {
   final amountText = price.toString().toPriceFormat;
-  final methodText = deliveryType == DeliveryType.shipping
-      ? '[✓] 택배거래 / [ ] 직거래'
-      : '[ ] 택배거래 / [✓] 직거래';
   final isWarranted = warrantyPeriodDays > 0;
+  final isShipping = deliveryType == DeliveryType.shipping;
+
+  final shippingMark = isShipping ? '[✓]' : '[ ]';
+  final directMark = isShipping ? '[ ]' : '[✓]';
+  final providedMark = isWarranted ? '[✓]' : '[ ]';
+  final notProvidedMark = isWarranted ? '[ ]' : '[✓]';
   final warrantyDaysText = isWarranted ? '$warrantyPeriodDays' : '3';
 
   return [
@@ -29,9 +32,9 @@ List<({String title, String body})> buildContractContents({
       body:
           '당사자는 다음 각 호의 거래 조건을 개별적으로 확인하고 본 계약을 체결한다.\n'
           '1. 거래 플랫폼: $tradingPlatform\n'
-          '2. 거래 방식: $methodText\n'
+          '2. 거래 방식: $shippingMark 택배거래  $directMark 직거래\n'
           '3. 거래 물품명: $title\n'
-          '4. 거래 금액: 금 $amountText 원정 (₩ $amountText)\n'
+          '4. 거래 금액: 금 $amountText원정 (₩$amountText)\n'
           '5. 거래 이행 기한: 본 계약 서명 완료 후 24시간 이내',
     ),
     (
@@ -40,14 +43,15 @@ List<({String title, String body})> buildContractContents({
           '① 판매자는 구매자에게 물품의 상태를 성실하게 고지하여야 하며, 구매자는 이를 확인하고 거래에 동의한다.\n'
           '1. 상품 상태: $conditionSummary\n'
           '2. 상품 상세 설명: $conditionDetails\n'
-          '② 판매자가 제1항에 따라 고지한 물품 상태 및 상세 설명은 본 계약의 일부를 구성하며, 판매자는 이를 사실대로 기재하였음을 보장한다. 판매자가 제1항의 기재 내용과 다른 물품을 인도하거나 중대한 하자를 고지하지 아니한 경우, 이는 제5조 제3호의 위반으로 간주된다.',
+          '② 판매자가 제1항에 따라 고지한 물품 상태 및 상세 설명은 본 계약의 일부를 구성하며, 판매자는 이를 사실대로 기재하였음을 보장한다. '
+          '판매자가 제1항의 기재 내용과 다른 물품을 인도하거나 중대한 하자를 고지하지 아니한 경우, 이는 제5조 제3호의 위반으로 간주된다.',
     ),
     (
       title: '제4조 (판매자 보증 제공 여부)',
       body:
           '판매자는 제3조에 기재된 물품 상태 외의 중대한 하자가 발생할 경우에 대비하여, 다음과 같이 사후 보증(A/S 및 환불) 여부를 선택하여 구매자에게 제공한다.\n\n'
-          '${isWarranted ? '[✓]' : '[ ]'} 보증 제공함: 물품 인도 후 $warrantyDaysText일 이내에 판매자가 고지하지 않은 기능적 하자가 발견될 경우, 판매자는 구매자의 요청에 따라 즉시 100% 환불 또는 수리·교환에 갈음하는 배상을 할 의무를 진다.\n\n'
-          '${!isWarranted ? '[✓]' : '[ ]'} 보증 제공하지 않음 (현 상태 인도): 판매자는 사전에 고지한 물품 상태를 기준으로 양도하며, 구매자의 단순 변심이나 사전에 합의된 하자를 이유로 한 환불 의무를 지지 않는다. 단, 제5조의 필수 진술 및 보장을 위반한 사기 행위는 본 항으로 면책되지 아니한다.',
+          '$providedMark 보증 제공함: 물품 인도 후 $warrantyDaysText일 이내에 판매자가 고지하지 않은 기능적 하자가 발견될 경우, 판매자는 구매자의 요청에 따라 즉시 100% 환불 또는 수리·교환에 갈음하는 배상을 할 의무를 진다.\n\n'
+          '$notProvidedMark 보증 제공하지 않음 (현 상태 인도): 판매자는 사전에 고지한 물품 상태를 기준으로 양도하며, 구매자의 단순 변심이나 사전에 합의된 하자를 이유로 한 환불 의무를 지지 않는다. 단, 제5조의 필수 진술 및 보장을 위반한 사기 행위는 본 항으로 면책되지 아니한다.',
     ),
     (
       title: '제5조 (판매자의 필수 진술 및 보장)',
