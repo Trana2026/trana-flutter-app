@@ -31,106 +31,108 @@ class ReportDetailBottomSheet extends HookConsumerWidget {
           topRight: Radius.circular(24),
         ),
       ),
-      child: Column(
-        children: [
-          Center(
-            child: Container(
-              width: 145,
-              height: 4,
-              margin: const EdgeInsets.symmetric(vertical: 20),
-              decoration: BoxDecoration(
-                color: vrc(context).disableColor,
-                borderRadius: BorderRadius.circular(4),
+      child: SafeArea(
+        child: Column(
+          children: [
+            Center(
+              child: Container(
+                width: 145,
+                height: 4,
+                margin: const EdgeInsets.symmetric(vertical: 20),
+                decoration: BoxDecoration(
+                  color: vrc(context).disableColor,
+                  borderRadius: BorderRadius.circular(4),
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 47, 20, 10),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _Step(selected: true, label: "신고 접수됨"),
-                        const SizedBox(height: 8),
-                        Container(
-                          height: 20,
-                          margin: const EdgeInsets.only(left: 19),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              left: BorderSide(
-                                color: fxc(context).opacityBg!,
-                                width: 2,
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 47, 20, 10),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _Step(selected: true, label: "신고 접수됨"),
+                          const SizedBox(height: 8),
+                          Container(
+                            height: 20,
+                            margin: const EdgeInsets.only(left: 19),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                left: BorderSide(
+                                  color: fxc(context).opacityBg!,
+                                  width: 2,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        _Step(selected: false, label: "택배 발송"),
-                        const SizedBox(height: 8),
-                        Container(
-                          height: 42,
-                          margin: const EdgeInsets.only(left: 19),
-                          padding: const EdgeInsets.only(left: 34),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              left: BorderSide(
-                                color: fxc(context).opacityBg!,
-                                width: 2,
+                          const SizedBox(height: 8),
+                          _Step(selected: false, label: "택배 발송"),
+                          const SizedBox(height: 8),
+                          Container(
+                            height: 42,
+                            margin: const EdgeInsets.only(left: 19),
+                            padding: const EdgeInsets.only(left: 34),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                left: BorderSide(
+                                  color: fxc(context).opacityBg!,
+                                  width: 2,
+                                ),
+                              ),
+                            ),
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "보내주신 문제 물품을 수령하기 전이에요.",
+                              style: context.txt(
+                                color: vrc(context).textPrimary,
                               ),
                             ),
                           ),
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "보내주신 문제 물품을 수령하기 전이에요.",
-                            style: context.txt(color: vrc(context).textPrimary),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        _Step(selected: false, label: "제품 검수"),
-                      ],
+                          const SizedBox(height: 8),
+                          _Step(selected: false, label: "제품 검수"),
+                        ],
+                      ),
                     ),
-                  ),
-                  Container(height: 8, color: vrc(context).secondaryColor),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ContractFormField(
-                          label: "신고 사유",
-                          hintText: "신고 사유를 입력해주세요.",
-                          controller: reasonCtr,
-                          readOnly: true,
-                        ),
-                        const SizedBox(height: 8),
-                        ContractFormField(
-                          label: "상세 내용",
-                          hintText: "문제를 자세히 설명해 주세요.",
-                          controller: detailCtr,
-                          maxLines: 4,
-                          readOnly: true,
-                        ),
-                        const SizedBox(height: 20),
-                        SafeArea(
-                          child: PrimaryButton.mono(
+                    Container(height: 8, color: vrc(context).secondaryColor),
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ContractFormField(
+                            label: "신고 사유",
+                            hintText: "신고 사유를 입력해주세요.",
+                            controller: reasonCtr,
+                            readOnly: true,
+                          ),
+                          const SizedBox(height: 8),
+                          ContractFormField(
+                            label: "상세 내용",
+                            hintText: "문제를 자세히 설명해 주세요.",
+                            controller: detailCtr,
+                            maxLines: 4,
+                            readOnly: true,
+                          ),
+                          const SizedBox(height: 20),
+                          PrimaryButton.mono(
                             text: "확인",
                             onTap: () => context.pop(),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
