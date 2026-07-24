@@ -134,23 +134,25 @@ class GuardianVerifyWaitingPage extends HookConsumerWidget {
                       ),
               ),
             ),
-            PrimaryButton.brand(
-              text: "완료",
-              disabled: !isCompleted.value,
-              onTap: () async {
-                // guardian 플래그 설정
-                final publicCode = ref.read(meProvider).value?.publicCode;
-                if (publicCode != null) {
-                  await OneTimeFlagService.mark(
-                    OneTimeFlag.guardian,
-                    publicCode,
-                  );
-                  ref.invalidate(guardianBannerAckedProvider);
-                }
-                if (context.mounted) context.go(AppRoutes.home);
-              },
-            ),
           ],
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: PrimaryButton.brand(
+            text: "완료",
+            disabled: !isCompleted.value,
+            onTap: () async {
+              // guardian 플래그 설정
+              final publicCode = ref.read(meProvider).value?.publicCode;
+              if (publicCode != null) {
+                await OneTimeFlagService.mark(OneTimeFlag.guardian, publicCode);
+                ref.invalidate(guardianBannerAckedProvider);
+              }
+              if (context.mounted) context.go(AppRoutes.home);
+            },
+          ),
         ),
       ),
     );

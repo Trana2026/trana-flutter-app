@@ -46,146 +46,155 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
             topRight: Radius.circular(24),
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Center(
-              child: Container(
-                width: 145,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: vrc(context).disableColor,
-                  borderRadius: BorderRadius.circular(4),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Container(
+                  width: 145,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: vrc(context).disableColor,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            Text(
-              "확인 사항",
-              style: context.txt(
-                color: vrc(context).textPrimary,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+              Text(
+                "확인 사항",
+                style: context.txt(
+                  color: vrc(context).textPrimary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.sizeOf(context).height * 0.6,
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const _ConfirmParty(),
-                    const SizedBox(height: 10),
-
-                    _ConfirmWarning(
-                      appIcon: AppIcon.data(icon: CooliconsIcon.circleWarning),
-                      title: "꼭 확인하세요",
-                      content:
-                          "전자서명을 완료하면 이 계약은 법적 효력이 발생하며, 서명 후에는 계약 내용을 수정하거나 삭제할 수 없습니다.",
-                    ),
-
-                    if (isPartyMinor &&
-                        disclosureState.disclosureText != null) ...[
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.sizeOf(context).height * 0.6,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const _ConfirmParty(),
                       const SizedBox(height: 10),
+
                       _ConfirmWarning(
                         appIcon: AppIcon.data(
-                          icon: CooliconsIcon.triangleWarning,
+                          icon: CooliconsIcon.circleWarning,
                         ),
-                        title: disclosureState.disclosureText!.title,
-                        titleColor: fxc(context).textDanger,
-                        content: disclosureState.disclosureText!.items.join(
-                          '\n\n',
-                        ),
-                        checkbox: _ConsentCheckRow(
-                          descriptionText: "위 내용을 모두 확인했습니다",
-                          onChanged: (v) {
-                            isChecked.value = v;
-                          },
-                        ),
+                        title: "꼭 확인하세요",
+                        content:
+                            "전자서명을 완료하면 이 계약은 법적 효력이 발생하며, 서명 후에는 계약 내용을 수정하거나 삭제할 수 없습니다.",
                       ),
+
+                      if (isPartyMinor &&
+                          disclosureState.disclosureText != null) ...[
+                        const SizedBox(height: 10),
+                        _ConfirmWarning(
+                          appIcon: AppIcon.data(
+                            icon: CooliconsIcon.triangleWarning,
+                          ),
+                          title: disclosureState.disclosureText!.title,
+                          titleColor: fxc(context).textDanger,
+                          content: disclosureState.disclosureText!.items.join(
+                            '\n\n',
+                          ),
+                          checkbox: _ConsentCheckRow(
+                            descriptionText: "위 내용을 모두 확인했습니다",
+                            onChanged: (v) {
+                              isChecked.value = v;
+                            },
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            Row(
-              children: [
-                Expanded(
-                  child: PrimaryButton.mono(
-                    text: '계약 취소하기',
-                    disabled: !detailState.canCancel,
-                    onTap: () {
-                      Navigator.pop(context);
-                      context.go(AppRoutes.contractDetail);
-                    },
+              Row(
+                children: [
+                  Expanded(
+                    child: PrimaryButton.mono(
+                      text: '계약 취소하기',
+                      disabled: !detailState.canCancel,
+                      onTap: () {
+                        Navigator.pop(context);
+                        context.go(AppRoutes.contractDetail);
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: PrimaryButton.brand(
-                    text: "사인하기",
-                    disabled: !isEnabled,
-                    onTap: () async {
-                      if (isPending.value) return;
-                      isPending.value = true;
-                      try {
-                        if (isPartyMinor) {
-                          // 미성년자 위험 고지 확인 (상대가 미성년자일 때)
-                          final success = await disclosureVM.confirm(
-                            detailState.publicCode,
-                          );
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: PrimaryButton.brand(
+                      text: "사인하기",
+                      disabled: !isEnabled,
+                      onTap: () async {
+                        if (isPending.value) return;
+                        isPending.value = true;
+                        try {
+                          if (isPartyMinor) {
+                            // 미성년자 위험 고지 확인 (상대가 미성년자일 때)
+                            final success = await disclosureVM.confirm(
+                              detailState.publicCode,
+                            );
+                            if (!context.mounted) return;
+                            if (!success) {
+                              final state = ref.read(
+                                minorDisclosureViewModelProvider,
+                              );
+                              showErrorToast(context, state.error!);
+                              disclosureVM.clearError();
+                              return;
+                            }
+                          }
+
+                          // 서명 플로우 시작 전에 이전 시도 초기화
+                          signVM.reset();
+
+                          // 서명 필수 약관 조회 후 동의
+                          final termsLoaded = await signVM.loadRequiredTerms();
                           if (!context.mounted) return;
-                          if (!success) {
+                          if (!termsLoaded) {
                             final state = ref.read(
-                              minorDisclosureViewModelProvider,
+                              signContractViewModelProvider,
                             );
                             showErrorToast(context, state.error!);
-                            disclosureVM.clearError();
+                            signVM.clearError();
                             return;
                           }
+
+                          Navigator.pop(context);
+                          await Future.delayed(
+                            const Duration(milliseconds: 200),
+                          );
+                          if (!parentContext.mounted) return;
+                          await showDialog<void>(
+                            barrierColor: const Color(
+                              0xFF000000,
+                            ).withValues(alpha: 0.85),
+                            context: parentContext,
+                            builder: (context) => ContractSignDialog(
+                              parentContext: parentContext,
+                            ),
+                          );
+                        } finally {
+                          if (context.mounted) isPending.value = false;
                         }
-
-                        // 서명 플로우 시작 전에 이전 시도 초기화
-                        signVM.reset();
-
-                        // 서명 필수 약관 조회 후 동의
-                        final termsLoaded = await signVM.loadRequiredTerms();
-                        if (!context.mounted) return;
-                        if (!termsLoaded) {
-                          final state = ref.read(signContractViewModelProvider);
-                          showErrorToast(context, state.error!);
-                          signVM.clearError();
-                          return;
-                        }
-
-                        Navigator.pop(context);
-                        await Future.delayed(const Duration(milliseconds: 200));
-                        if (!parentContext.mounted) return;
-                        await showDialog<void>(
-                          barrierColor: const Color(
-                            0xFF000000,
-                          ).withValues(alpha: 0.85),
-                          context: parentContext,
-                          builder: (context) =>
-                              ContractSignDialog(parentContext: parentContext),
-                        );
-                      } finally {
-                        if (context.mounted) isPending.value = false;
-                      }
-                    },
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -48,7 +48,12 @@ class ContractPagesView extends HookConsumerWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            '본 계약서는 안전 거래 플랫폼 Trana를 통하여, 사전에 신분증 OCR 및 안면인식(Face Liveness)을 통한 신원인증을 완료한 당사자 간에 체결되는 법적 구속력을 가진 전자계약서입니다.',
+            '[전문] 본 계약서는 안전 거래 플랫폼 Trana를 통하여, 사전에 PASS 앱을 통한 통신사 본인확인을 완료한 당사자 간에 체결되는 법적 구속력을 가진 전자계약서입니다. 본 계약의 각 조건은 당사자 간 개별 협의에 의해 확정되었으며, 당사자는 아래 각 조항을 개별적으로 확인하고 이에 동의합니다. 특히 제6조(위약벌) 및 제8조(플랫폼 면책)는 중요 조항으로서 당사자가 별도로 확인하고 동의한 사항입니다.',
+            style: context.txt(fontSize: 10, color: vrc(context).textPrimary),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            '[위약벌 고지] 본 계약 제6조 제2항은 판매자가 고의적 기망 또는 사기 행위를 한 경우 거래금액의 2배를 위약벌로 지급하여야 하는 조항입니다. 이는 손해배상액의 예정이 아닌 위약벌로서, 구매자는 위약벌과 별도로 실손해에 대한 배상을 청구할 수 있습니다. 본 위약벌은 C2C 거래에서 사기 행위를 억지하고, 피해자가 사기 피해를 입은 후 실손해 회복이 어려운 현실을 반영하여 당사자 간 합의로 설정된 것입니다.',
             style: context.txt(fontSize: 10, color: vrc(context).textPrimary),
           ),
           const SizedBox(height: 20),
@@ -58,45 +63,13 @@ class ContractPagesView extends HookConsumerWidget {
               onToggle: (field, selected) => onToggle(field, selected),
             ),
           ),
-          Text(
-            '본 계약의 체결을 증명하기 위하여, 당사자는 플랫폼 Trana의 본인인증 절차를 거쳐 각자 전자서명함으로써 본 계약을 발효한다.',
-            style: context.txt(fontSize: 10),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            '[ 판매자 (양도인) ]',
-            style: context.txt(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              color: vrc(context).textPrimary,
-            ),
-          ),
-          const SizedBox(height: 10),
-          const _SignatureField(label: '성명'),
-          const _SignatureField(label: '생년월일'),
-          const _SignatureField(label: '연락처'),
-          const _SignatureStampField(),
-          const SizedBox(height: 24),
-          Text(
-            '[ 구매자 (양수인) ]',
-            style: context.txt(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              color: vrc(context).textPrimary,
-            ),
-          ),
-          const SizedBox(height: 10),
-          const _SignatureField(label: '성명'),
-          const _SignatureField(label: '생년월일'),
-          const _SignatureField(label: '연락처'),
-          const _SignatureStampField(),
         ],
       ),
     );
   }
 }
 
-// ==================== Section & Signature Widgets ====================
+// ==================== Section Widgets ====================
 
 class _SectionItem extends StatelessWidget {
   const _SectionItem({required this.section, required this.onToggle});
@@ -224,68 +197,6 @@ class _TappableFieldRow extends HookConsumerWidget {
                 ),
               ),
             ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SignatureField extends StatelessWidget {
-  const _SignatureField({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 56,
-            child: Text('$label:', style: context.txt(fontSize: 11)),
-          ),
-          Expanded(
-            child: Container(
-              height: 10,
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: vrc(context).borderPrimary!),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SignatureStampField extends StatelessWidget {
-  const _SignatureStampField();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 56,
-            child: Text('서명:', style: context.txt(fontSize: 11)),
-          ),
-          Container(
-            width: 80,
-            height: 22,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: vrc(context).textSecondary!,
-                width: 0.5,
-              ),
-            ),
-            alignment: Alignment.center,
-            child: Text('(인)', style: context.txt(fontSize: 11)),
-          ),
         ],
       ),
     );

@@ -55,7 +55,7 @@ class CreateTutorialBottomSheet extends HookConsumerWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

@@ -75,7 +75,11 @@ class CustomDialog extends StatelessWidget {
             const SizedBox(height: 6),
 
             if (content != null)
-              Text(content!, style: TextStyle(fontSize: 13, height: 1.5)),
+              Text(
+                content!,
+                style: TextStyle(fontSize: 13, height: 1.5),
+                textAlign: TextAlign.center,
+              ),
             const SizedBox(height: 6),
 
             Row(

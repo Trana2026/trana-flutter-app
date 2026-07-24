@@ -55,8 +55,9 @@ class CreateContractPage extends HookConsumerWidget {
 
     // 새 계약 작성 진입 시마다 튜토리얼 안내 노출
     useEffect(() {
-      // 수정 모드 제외
-      if (!revisionRequested) {
+      // 수정 모드, 초안 이어서 작성할 때 제외
+      if (!revisionRequested &&
+          detailState.status != ContractStatus.inProgress) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!context.mounted) return;
           showCustomBottomSheet(context, const CreateTutorialBottomSheet());

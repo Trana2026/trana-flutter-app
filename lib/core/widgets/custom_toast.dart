@@ -63,7 +63,7 @@ void _showOverlayToast(
 
   final entry = OverlayEntry(
     builder: (ctx) => Positioned(
-      bottom: 80,
+      bottom: MediaQuery.of(ctx).padding.bottom + 80,
       left: 20,
       right: 20,
       child: Material(

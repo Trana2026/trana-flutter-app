@@ -30,9 +30,6 @@ class ContractCancelBottomSheet extends HookConsumerWidget {
     final isRequested = detailState.status == ContractStatus.cancelRequested;
     final isMyCancel =
         (isRequested && cancelState.recentCancel?.isMine == true);
-    // final readOnly =
-    //     (cancelState.recentCancel?.isMine == false) ||
-    //     (cancelState.recentCancel != null);
 
     final initialReason = isRequested ? cancelState.recentCancel?.reason : "";
     final initialDetail = isRequested ? cancelState.recentCancel?.detail : "";
