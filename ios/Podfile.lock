@@ -213,9 +213,6 @@ PODS:
   - video_player_avfoundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - webview_flutter_wkwebview (0.0.1):
-    - Flutter
-    - FlutterMacOS
 
 DEPENDENCIES:
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
@@ -244,7 +241,6 @@ DEPENDENCIES:
   - syncfusion_flutter_pdfviewer (from `.symlinks/plugins/syncfusion_flutter_pdfviewer/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
-  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
 
 SPEC REPOS:
   trunk:
@@ -330,8 +326,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
   video_player_avfoundation:
     :path: ".symlinks/plugins/video_player_avfoundation/darwin"
-  webview_flutter_wkwebview:
-    :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
   AppAuth: ef4da5a3fc2e10b90c09a0a94a9baeaedc0341d5
@@ -388,7 +382,6 @@ SPEC CHECKSUMS:
   syncfusion_flutter_pdfviewer: 90dc48305d2e33d4aa20681d1e98ddeda891bc14
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
   video_player_avfoundation: 3453f792138786248960ca029747fcd9f318ef52
-  webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
 
 PODFILE CHECKSUM: b8ac938d6afcd506f651f879ea4211653f73b8d8
 
