@@ -16,13 +16,6 @@ List<({String title, String body})> buildContractContents({
       ? '[✓] 택배거래 / [ ] 직거래'
       : '[ ] 택배거래 / [✓] 직거래';
   final isWarranted = warrantyPeriodDays > 0;
-  final isShipping = deliveryType == DeliveryType.shipping;
-
-  final shippingMark = isShipping ? '[✓]' : '[ ]';
-  final directMark = isShipping ? '[ ]' : '[✓]';
-  final providedMark = isWarranted ? '[✓]' : '[ ]';
-  final notProvidedMark = isWarranted ? '[ ]' : '[✓]';
-  final warrantyDaysText = isWarranted ? '$warrantyPeriodDays' : '3';
 
   return [
     (
@@ -35,7 +28,7 @@ List<({String title, String body})> buildContractContents({
       body:
           '당사자는 다음 각 호의 거래 조건을 개별적으로 확인하고 본 계약을 체결한다.\n'
           '1. 거래 플랫폼: $tradingPlatform\n'
-          '2. 거래 방식: $shippingMark 택배거래  $directMark 직거래\n'
+          '2. 거래 방식: $methodText\n'
           '3. 거래 물품명: $title\n'
           '4. 거래 금액: 금 $amountText 원정 (₩ $amountText)\n'
           '5. 거래 이행 기한: 본 계약 서명 완료 후_____시간 이내 (미기재 시 24시간 적용)',
