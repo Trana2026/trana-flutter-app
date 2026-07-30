@@ -18,7 +18,8 @@ mixin _$UserMeEntity {
  String? get phone;// 휴대폰 번호 (PASS 인증 유저)
  String get status;// ACTIVE | WITHDRAWN
  String? get ageGroup;// ADULT | MINOR | null(미완료)
- DateTime? get guardianVerifiedAt;
+ DateTime? get guardianVerifiedAt;// null일경우 미완료
+ String get shareCode;
 /// Create a copy of UserMeEntity
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +30,16 @@ $UserMeEntityCopyWith<UserMeEntity> get copyWith => _$UserMeEntityCopyWithImpl<U
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserMeEntity&&(identical(other.publicCode, publicCode) || other.publicCode == publicCode)&&(identical(other.email, email) || other.email == email)&&(identical(other.name, name) || other.name == name)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.status, status) || other.status == status)&&(identical(other.ageGroup, ageGroup) || other.ageGroup == ageGroup)&&(identical(other.guardianVerifiedAt, guardianVerifiedAt) || other.guardianVerifiedAt == guardianVerifiedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserMeEntity&&(identical(other.publicCode, publicCode) || other.publicCode == publicCode)&&(identical(other.email, email) || other.email == email)&&(identical(other.name, name) || other.name == name)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.status, status) || other.status == status)&&(identical(other.ageGroup, ageGroup) || other.ageGroup == ageGroup)&&(identical(other.guardianVerifiedAt, guardianVerifiedAt) || other.guardianVerifiedAt == guardianVerifiedAt)&&(identical(other.shareCode, shareCode) || other.shareCode == shareCode));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,publicCode,email,name,phone,status,ageGroup,guardianVerifiedAt);
+int get hashCode => Object.hash(runtimeType,publicCode,email,name,phone,status,ageGroup,guardianVerifiedAt,shareCode);
 
 @override
 String toString() {
-  return 'UserMeEntity(publicCode: $publicCode, email: $email, name: $name, phone: $phone, status: $status, ageGroup: $ageGroup, guardianVerifiedAt: $guardianVerifiedAt)';
+  return 'UserMeEntity(publicCode: $publicCode, email: $email, name: $name, phone: $phone, status: $status, ageGroup: $ageGroup, guardianVerifiedAt: $guardianVerifiedAt, shareCode: $shareCode)';
 }
 
 
@@ -49,7 +50,7 @@ abstract mixin class $UserMeEntityCopyWith<$Res>  {
   factory $UserMeEntityCopyWith(UserMeEntity value, $Res Function(UserMeEntity) _then) = _$UserMeEntityCopyWithImpl;
 @useResult
 $Res call({
- String publicCode, String? email, String? name, String? phone, String status, String? ageGroup, DateTime? guardianVerifiedAt
+ String publicCode, String? email, String? name, String? phone, String status, String? ageGroup, DateTime? guardianVerifiedAt, String shareCode
 });
 
 
@@ -66,7 +67,7 @@ class _$UserMeEntityCopyWithImpl<$Res>
 
 /// Create a copy of UserMeEntity
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? publicCode = null,Object? email = freezed,Object? name = freezed,Object? phone = freezed,Object? status = null,Object? ageGroup = freezed,Object? guardianVerifiedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? publicCode = null,Object? email = freezed,Object? name = freezed,Object? phone = freezed,Object? status = null,Object? ageGroup = freezed,Object? guardianVerifiedAt = freezed,Object? shareCode = null,}) {
   return _then(_self.copyWith(
 publicCode: null == publicCode ? _self.publicCode : publicCode // ignore: cast_nullable_to_non_nullable
 as String,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
@@ -75,7 +76,8 @@ as String?,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullabl
 as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,ageGroup: freezed == ageGroup ? _self.ageGroup : ageGroup // ignore: cast_nullable_to_non_nullable
 as String?,guardianVerifiedAt: freezed == guardianVerifiedAt ? _self.guardianVerifiedAt : guardianVerifiedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,shareCode: null == shareCode ? _self.shareCode : shareCode // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -160,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String publicCode,  String? email,  String? name,  String? phone,  String status,  String? ageGroup,  DateTime? guardianVerifiedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String publicCode,  String? email,  String? name,  String? phone,  String status,  String? ageGroup,  DateTime? guardianVerifiedAt,  String shareCode)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserMeEntity() when $default != null:
-return $default(_that.publicCode,_that.email,_that.name,_that.phone,_that.status,_that.ageGroup,_that.guardianVerifiedAt);case _:
+return $default(_that.publicCode,_that.email,_that.name,_that.phone,_that.status,_that.ageGroup,_that.guardianVerifiedAt,_that.shareCode);case _:
   return orElse();
 
 }
@@ -181,10 +183,10 @@ return $default(_that.publicCode,_that.email,_that.name,_that.phone,_that.status
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String publicCode,  String? email,  String? name,  String? phone,  String status,  String? ageGroup,  DateTime? guardianVerifiedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String publicCode,  String? email,  String? name,  String? phone,  String status,  String? ageGroup,  DateTime? guardianVerifiedAt,  String shareCode)  $default,) {final _that = this;
 switch (_that) {
 case _UserMeEntity():
-return $default(_that.publicCode,_that.email,_that.name,_that.phone,_that.status,_that.ageGroup,_that.guardianVerifiedAt);case _:
+return $default(_that.publicCode,_that.email,_that.name,_that.phone,_that.status,_that.ageGroup,_that.guardianVerifiedAt,_that.shareCode);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +203,10 @@ return $default(_that.publicCode,_that.email,_that.name,_that.phone,_that.status
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String publicCode,  String? email,  String? name,  String? phone,  String status,  String? ageGroup,  DateTime? guardianVerifiedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String publicCode,  String? email,  String? name,  String? phone,  String status,  String? ageGroup,  DateTime? guardianVerifiedAt,  String shareCode)?  $default,) {final _that = this;
 switch (_that) {
 case _UserMeEntity() when $default != null:
-return $default(_that.publicCode,_that.email,_that.name,_that.phone,_that.status,_that.ageGroup,_that.guardianVerifiedAt);case _:
+return $default(_that.publicCode,_that.email,_that.name,_that.phone,_that.status,_that.ageGroup,_that.guardianVerifiedAt,_that.shareCode);case _:
   return null;
 
 }
@@ -216,7 +218,7 @@ return $default(_that.publicCode,_that.email,_that.name,_that.phone,_that.status
 
 
 class _UserMeEntity implements UserMeEntity {
-  const _UserMeEntity({required this.publicCode, this.email, this.name, this.phone, required this.status, this.ageGroup, this.guardianVerifiedAt});
+  const _UserMeEntity({required this.publicCode, this.email, this.name, this.phone, required this.status, this.ageGroup, this.guardianVerifiedAt, required this.shareCode});
   
 
 @override final  String publicCode;
@@ -230,6 +232,8 @@ class _UserMeEntity implements UserMeEntity {
 @override final  String? ageGroup;
 // ADULT | MINOR | null(미완료)
 @override final  DateTime? guardianVerifiedAt;
+// null일경우 미완료
+@override final  String shareCode;
 
 /// Create a copy of UserMeEntity
 /// with the given fields replaced by the non-null parameter values.
@@ -241,16 +245,16 @@ _$UserMeEntityCopyWith<_UserMeEntity> get copyWith => __$UserMeEntityCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserMeEntity&&(identical(other.publicCode, publicCode) || other.publicCode == publicCode)&&(identical(other.email, email) || other.email == email)&&(identical(other.name, name) || other.name == name)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.status, status) || other.status == status)&&(identical(other.ageGroup, ageGroup) || other.ageGroup == ageGroup)&&(identical(other.guardianVerifiedAt, guardianVerifiedAt) || other.guardianVerifiedAt == guardianVerifiedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserMeEntity&&(identical(other.publicCode, publicCode) || other.publicCode == publicCode)&&(identical(other.email, email) || other.email == email)&&(identical(other.name, name) || other.name == name)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.status, status) || other.status == status)&&(identical(other.ageGroup, ageGroup) || other.ageGroup == ageGroup)&&(identical(other.guardianVerifiedAt, guardianVerifiedAt) || other.guardianVerifiedAt == guardianVerifiedAt)&&(identical(other.shareCode, shareCode) || other.shareCode == shareCode));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,publicCode,email,name,phone,status,ageGroup,guardianVerifiedAt);
+int get hashCode => Object.hash(runtimeType,publicCode,email,name,phone,status,ageGroup,guardianVerifiedAt,shareCode);
 
 @override
 String toString() {
-  return 'UserMeEntity(publicCode: $publicCode, email: $email, name: $name, phone: $phone, status: $status, ageGroup: $ageGroup, guardianVerifiedAt: $guardianVerifiedAt)';
+  return 'UserMeEntity(publicCode: $publicCode, email: $email, name: $name, phone: $phone, status: $status, ageGroup: $ageGroup, guardianVerifiedAt: $guardianVerifiedAt, shareCode: $shareCode)';
 }
 
 
@@ -261,7 +265,7 @@ abstract mixin class _$UserMeEntityCopyWith<$Res> implements $UserMeEntityCopyWi
   factory _$UserMeEntityCopyWith(_UserMeEntity value, $Res Function(_UserMeEntity) _then) = __$UserMeEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String publicCode, String? email, String? name, String? phone, String status, String? ageGroup, DateTime? guardianVerifiedAt
+ String publicCode, String? email, String? name, String? phone, String status, String? ageGroup, DateTime? guardianVerifiedAt, String shareCode
 });
 
 
@@ -278,7 +282,7 @@ class __$UserMeEntityCopyWithImpl<$Res>
 
 /// Create a copy of UserMeEntity
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? publicCode = null,Object? email = freezed,Object? name = freezed,Object? phone = freezed,Object? status = null,Object? ageGroup = freezed,Object? guardianVerifiedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? publicCode = null,Object? email = freezed,Object? name = freezed,Object? phone = freezed,Object? status = null,Object? ageGroup = freezed,Object? guardianVerifiedAt = freezed,Object? shareCode = null,}) {
   return _then(_UserMeEntity(
 publicCode: null == publicCode ? _self.publicCode : publicCode // ignore: cast_nullable_to_non_nullable
 as String,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
@@ -287,7 +291,8 @@ as String?,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullabl
 as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,ageGroup: freezed == ageGroup ? _self.ageGroup : ageGroup // ignore: cast_nullable_to_non_nullable
 as String?,guardianVerifiedAt: freezed == guardianVerifiedAt ? _self.guardianVerifiedAt : guardianVerifiedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,shareCode: null == shareCode ? _self.shareCode : shareCode // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

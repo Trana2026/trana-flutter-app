@@ -60,6 +60,7 @@ import 'package:trana/features/profile/data/datasources/user_consent_data_source
 import 'package:trana/features/profile/data/datasources/user_info_data_source.dart';
 import 'package:trana/features/profile/data/datasources/user_inquiry_data_source.dart';
 import 'package:trana/features/profile/data/datasources/user_preference_data_source.dart';
+import 'package:trana/features/profile/data/services/device_info_service.dart';
 import 'package:trana/features/profile/data/repository_impls/device_token_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/term_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/trust_score_repository_impl.dart';
@@ -104,7 +105,10 @@ GuardianLinkStore guardianLinkStore(Ref ref) {
 @riverpod
 Dio dio(Ref ref) {
   final authTokenStore = ref.read(authTokenStoreProvider);
-  return createDio(authTokenStore);
+  return createDio(
+    authTokenStore,
+    userAgentBuilder: DeviceInfoService.getUserAgent,
+  );
 }
 
 /// S3 업로드 전용 Dio

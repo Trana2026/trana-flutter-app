@@ -11,12 +11,11 @@ class ContractLifecycleDataSource {
   /// POST READY → SHARED 전이 + 카카오톡 알림톡 발송
   Future<ContractDraftDto> share(
     String publicCode, {
-    required String receiverName,
-    required String receiverPhone,
+    required String receiverCode,
   }) async {
     final response = await dio.post<Map<String, dynamic>>(
       '/v1/contracts/$publicCode/share',
-      data: {'receiverName': receiverName, 'receiverPhone': receiverPhone},
+      data: {'receiverCode': receiverCode},
     );
     return ContractDraftDto.fromJson(response.data!);
   }

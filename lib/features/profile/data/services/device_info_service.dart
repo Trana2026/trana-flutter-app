@@ -73,4 +73,15 @@ class DeviceInfoService {
     final info = await PackageInfo.fromPlatform();
     return '${info.version}+${info.buildNumber}';
   }
+
+  /// 서버 기록용 기기 식별 User-Agent
+  /// ex. iPhone 15 Pro; iOS 18.2 (Trana/1.0.0+1)
+  static Future<String> getUserAgent() async {
+    final (appVersion, osVersion, deviceModel) = await (
+      getAppVersion(),
+      getOsVersion(),
+      getDeviceModel(),
+    ).wait;
+    return '$deviceModel; $osVersion (Trana/$appVersion)';
+  }
 }

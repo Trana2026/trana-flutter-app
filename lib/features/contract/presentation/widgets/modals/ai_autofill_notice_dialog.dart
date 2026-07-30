@@ -92,10 +92,7 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
                       child: Column(
                         children: [
                           _ConsentItem(
-                            onSelected: (v) {
-                              isSelected.value = v;
-                              // TODO : AI 약관 동의 처리
-                            },
+                            onSelected: (v) => isSelected.value = v,
                             isRequired: true,
                             text: 'AI 자동 기입 기능 국외이전 동의',
                             onTapChevron: () => context.push(

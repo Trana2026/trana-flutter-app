@@ -13,5 +13,6 @@ abstract class UserMeEntity with _$UserMeEntity {
     required String status, // ACTIVE | WITHDRAWN
     String? ageGroup, // ADULT | MINOR | null(미완료)
     DateTime? guardianVerifiedAt, // null일경우 미완료
+    required String shareCode, // 계약 요청용 고유코드
   }) = _UserMeEntity;
 }

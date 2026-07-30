@@ -14,6 +14,7 @@ _UserMeDto _$UserMeDtoFromJson(Map<String, dynamic> json) => _UserMeDto(
   status: json['status'] as String,
   ageGroup: json['ageGroup'] as String?,
   guardianVerifiedAt: json['guardianVerifiedAt'] as String?,
+  shareCode: json['shareCode'] as String,
 );
 
 Map<String, dynamic> _$UserMeDtoToJson(_UserMeDto instance) =>
@@ -25,4 +26,5 @@ Map<String, dynamic> _$UserMeDtoToJson(_UserMeDto instance) =>
       'status': instance.status,
       'ageGroup': instance.ageGroup,
       'guardianVerifiedAt': instance.guardianVerifiedAt,
+      'shareCode': instance.shareCode,
     };

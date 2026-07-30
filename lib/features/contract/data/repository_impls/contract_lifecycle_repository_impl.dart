@@ -17,20 +17,19 @@ class ContractLifecycleRepositoryImpl implements ContractLifecycleRepository {
   @override
   Future<Result<ContractDraftEntity>> share({
     required String publicCode,
-    required String receiverName,
-    required String receiverPhone,
+    required String receiverCode,
   }) {
     return guardResult(
       () async {
         final dto = await dataSource.share(
           publicCode,
-          receiverName: receiverName,
-          receiverPhone: receiverPhone,
+          receiverCode: receiverCode,
         );
         return dto.toEntity();
       },
       onDioException: (e) => switch (e.response?.statusCode) {
-        400 => const ValidationFailure('이름 또는 전화번호 형식이 올바르지 않습니다.'),
+        400 => const ValidationFailure('고유코드를 확인해주세요.'),
+        404 => const NotFoundFailure('해당 고유코드의 사용자를 찾을 수 없습니다.'),
         409 => const ConflictFailure('READY 상태에서만 공유할 수 있습니다.'),
         _ => null,
       },

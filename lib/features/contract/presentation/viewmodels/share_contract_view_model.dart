@@ -2,7 +2,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
-import 'package:trana/core/utils/validation.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
 import 'package:trana/features/user/presentation/providers/me_provider.dart';
@@ -17,8 +16,7 @@ abstract class ShareContractState with _$ShareContractState {
   const ShareContractState._();
 
   const factory ShareContractState({
-    @Default('') String receiverName, // 수신자 이름 입력값
-    @Default('') String receiverPhone, // 수신자 번호 입력값
+    @Default('') String receiverCode, // 수신자 고유코드 입력값
 
     String? error,
   }) = _ShareContractState;
@@ -31,17 +29,17 @@ class ShareContractViewModel extends _$ShareContractViewModel {
   @override
   ShareContractState build() => const ShareContractState();
 
-  void updateInput({required String name, required String phone}) =>
-      state = state.copyWith(receiverName: name, receiverPhone: phone);
+  void updateInput({required String code}) =>
+      state = state.copyWith(receiverCode: code.toUpperCase());
 
   /// 계약서 초안 상태 서명 요청 + 알림톡 발송
   Future<bool> share(String publicCode) async {
-    // 본인 번호로의 서명 요청 방지
-    final myPhone = ref.read(meProvider).value?.phone;
-    if (myPhone != null &&
-        Validation.normalizePhone(myPhone) ==
-            Validation.normalizePhone(state.receiverPhone)) {
-      state = state.copyWith(error: '본인 번호로는 서명 요청을 보낼 수 없습니다.');
+    final receiverCode = state.receiverCode.trim().toUpperCase();
+
+    // 본인 고유코드로의 서명 요청 방지
+    final myShareCode = ref.read(meProvider).value?.shareCode;
+    if (myShareCode != null && myShareCode == receiverCode) {
+      state = state.copyWith(error: '본인에게는 서명 요청을 보낼 수 없습니다.');
       return false;
     }
 
@@ -49,8 +47,7 @@ class ShareContractViewModel extends _$ShareContractViewModel {
         .read(contractLifecycleRepositoryProvider)
         .share(
           publicCode: publicCode,
-          receiverName: state.receiverName,
-          receiverPhone: state.receiverPhone,
+          receiverCode: receiverCode,
         );
 
     if (result case Failure(:final failure)) {

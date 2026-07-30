@@ -6,8 +6,7 @@ import 'package:trana/features/contract/domain/entities/contract_signed_entity.d
 abstract interface class ContractLifecycleRepository {
   Future<Result<ContractDraftEntity>> share({
     required String publicCode,
-    required String receiverName,
-    required String receiverPhone,
+    required String receiverCode,
   });
 
   Future<Result<ContractDraftEntity>> revert(String publicCode);
