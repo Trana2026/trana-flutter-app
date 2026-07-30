@@ -15,6 +15,7 @@ abstract class UserMeDto with _$UserMeDto {
     required String status,
     String? ageGroup,
     String? guardianVerifiedAt,
+    required String shareCode,
   }) = _UserMeDto;
 
   factory UserMeDto.fromJson(Map<String, dynamic> json) =>
@@ -33,5 +34,6 @@ extension UserMeDtoMapper on UserMeDto {
     guardianVerifiedAt: guardianVerifiedAt != null
         ? DateTime.parse(guardianVerifiedAt!)
         : null,
+    shareCode: shareCode,
   );
 }

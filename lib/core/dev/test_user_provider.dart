@@ -35,12 +35,12 @@ class TestUser extends _$TestUser {
   /// 성인 유저
   Future<void> getAdultUser() async {
     await login(
-      'TST-ADL-A01',
-      // 'TST-ADL-B01'
+      //'TST-ADL-A01',
+      'TST-ADL-B01',
     );
 
     // 계약 초대 토큰 수신 (수신자 수동 테스트용)
-    // await saveToken("IG2zAKieroWDB6PSfUK95");
+    // await saveToken("sOgeQfiKRzblIiGOUOiup");
   }
 
   /// 미성년자 유저
@@ -51,7 +51,7 @@ class TestUser extends _$TestUser {
     );
 
     // 계약 초대 토큰 수신 (수신자 수동 테스트용)
-    // await saveToken("9GzJ4c7iAC9Y7z4xso6VL");
+    await saveToken("qHquJEQtq25zh4HjPDPMz");
   }
 
   Future<void> login(String userPublicCode) async {

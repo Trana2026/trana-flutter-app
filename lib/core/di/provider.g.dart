@@ -201,7 +201,7 @@ final class DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
   }
 }
 
-String _$dioHash() => r'0c4b161246e27dfaad7d85f794fa0f4f45464ffc';
+String _$dioHash() => r'2dda1dd36b4db781c7376452959da09205ea19a1';
 
 /// S3 업로드 전용 Dio
 

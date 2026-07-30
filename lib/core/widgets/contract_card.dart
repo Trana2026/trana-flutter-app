@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -84,13 +85,13 @@ class ContractCard extends HookConsumerWidget {
                     ? const ThumbnailPlaceholder()
                     : ClipRRect(
                         borderRadius: BorderRadius.circular(16),
-                        child: Image.network(
-                          c.firstAttachmentUrl!,
+                        child: CachedNetworkImage(
+                          imageUrl: c.firstAttachmentUrl!,
+                          cacheKey: '${c.publicCode}-first',
                           width: 100,
                           height: 100,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) =>
-                              const ThumbnailPlaceholder(),
+                          errorWidget: (_, _, _) => const ThumbnailPlaceholder(),
                         ),
                       ),
 

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_text_style.dart';
@@ -33,11 +34,13 @@ class ContractSummaryCard extends HookConsumerWidget {
                     onTap: () => ContractImageCarousel.show(context),
                     child: ClipRRect(
                       borderRadius: BorderRadiusGeometry.circular(16),
-                      child: Image.network(
-                        detailState.firstAttachmentUrl!,
+                      child: CachedNetworkImage(
+                        imageUrl: detailState.firstAttachmentUrl!,
+                        cacheKey: '${detailState.publicCode}-first',
                         height: 100,
                         width: 100,
                         fit: BoxFit.cover,
+                        errorWidget: (_, _, _) => const ThumbnailPlaceholder(),
                       ),
                     ),
                   ),

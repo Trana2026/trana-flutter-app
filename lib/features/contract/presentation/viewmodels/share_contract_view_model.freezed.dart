@@ -14,8 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ShareContractState {
 
- String get receiverName;// 수신자 이름 입력값
- String get receiverPhone;// 수신자 번호 입력값
+ String get receiverCode;// 수신자 고유코드 입력값
  String? get error;
 /// Create a copy of ShareContractState
 /// with the given fields replaced by the non-null parameter values.
@@ -27,16 +26,16 @@ $ShareContractStateCopyWith<ShareContractState> get copyWith => _$ShareContractS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShareContractState&&(identical(other.receiverName, receiverName) || other.receiverName == receiverName)&&(identical(other.receiverPhone, receiverPhone) || other.receiverPhone == receiverPhone)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShareContractState&&(identical(other.receiverCode, receiverCode) || other.receiverCode == receiverCode)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,receiverName,receiverPhone,error);
+int get hashCode => Object.hash(runtimeType,receiverCode,error);
 
 @override
 String toString() {
-  return 'ShareContractState(receiverName: $receiverName, receiverPhone: $receiverPhone, error: $error)';
+  return 'ShareContractState(receiverCode: $receiverCode, error: $error)';
 }
 
 
@@ -47,7 +46,7 @@ abstract mixin class $ShareContractStateCopyWith<$Res>  {
   factory $ShareContractStateCopyWith(ShareContractState value, $Res Function(ShareContractState) _then) = _$ShareContractStateCopyWithImpl;
 @useResult
 $Res call({
- String receiverName, String receiverPhone, String? error
+ String receiverCode, String? error
 });
 
 
@@ -64,10 +63,9 @@ class _$ShareContractStateCopyWithImpl<$Res>
 
 /// Create a copy of ShareContractState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? receiverName = null,Object? receiverPhone = null,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? receiverCode = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
-receiverName: null == receiverName ? _self.receiverName : receiverName // ignore: cast_nullable_to_non_nullable
-as String,receiverPhone: null == receiverPhone ? _self.receiverPhone : receiverPhone // ignore: cast_nullable_to_non_nullable
+receiverCode: null == receiverCode ? _self.receiverCode : receiverCode // ignore: cast_nullable_to_non_nullable
 as String,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -154,10 +152,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String receiverName,  String receiverPhone,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String receiverCode,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ShareContractState() when $default != null:
-return $default(_that.receiverName,_that.receiverPhone,_that.error);case _:
+return $default(_that.receiverCode,_that.error);case _:
   return orElse();
 
 }
@@ -175,10 +173,10 @@ return $default(_that.receiverName,_that.receiverPhone,_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String receiverName,  String receiverPhone,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String receiverCode,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _ShareContractState():
-return $default(_that.receiverName,_that.receiverPhone,_that.error);case _:
+return $default(_that.receiverCode,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +193,10 @@ return $default(_that.receiverName,_that.receiverPhone,_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String receiverName,  String receiverPhone,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String receiverCode,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _ShareContractState() when $default != null:
-return $default(_that.receiverName,_that.receiverPhone,_that.error);case _:
+return $default(_that.receiverCode,_that.error);case _:
   return null;
 
 }
@@ -210,13 +208,11 @@ return $default(_that.receiverName,_that.receiverPhone,_that.error);case _:
 
 
 class _ShareContractState extends ShareContractState {
-  const _ShareContractState({this.receiverName = '', this.receiverPhone = '', this.error}): super._();
+  const _ShareContractState({this.receiverCode = '', this.error}): super._();
   
 
-@override@JsonKey() final  String receiverName;
-// 수신자 이름 입력값
-@override@JsonKey() final  String receiverPhone;
-// 수신자 번호 입력값
+@override@JsonKey() final  String receiverCode;
+// 수신자 고유코드 입력값
 @override final  String? error;
 
 /// Create a copy of ShareContractState
@@ -229,16 +225,16 @@ _$ShareContractStateCopyWith<_ShareContractState> get copyWith => __$ShareContra
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShareContractState&&(identical(other.receiverName, receiverName) || other.receiverName == receiverName)&&(identical(other.receiverPhone, receiverPhone) || other.receiverPhone == receiverPhone)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShareContractState&&(identical(other.receiverCode, receiverCode) || other.receiverCode == receiverCode)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,receiverName,receiverPhone,error);
+int get hashCode => Object.hash(runtimeType,receiverCode,error);
 
 @override
 String toString() {
-  return 'ShareContractState(receiverName: $receiverName, receiverPhone: $receiverPhone, error: $error)';
+  return 'ShareContractState(receiverCode: $receiverCode, error: $error)';
 }
 
 
@@ -249,7 +245,7 @@ abstract mixin class _$ShareContractStateCopyWith<$Res> implements $ShareContrac
   factory _$ShareContractStateCopyWith(_ShareContractState value, $Res Function(_ShareContractState) _then) = __$ShareContractStateCopyWithImpl;
 @override @useResult
 $Res call({
- String receiverName, String receiverPhone, String? error
+ String receiverCode, String? error
 });
 
 
@@ -266,10 +262,9 @@ class __$ShareContractStateCopyWithImpl<$Res>
 
 /// Create a copy of ShareContractState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? receiverName = null,Object? receiverPhone = null,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? receiverCode = null,Object? error = freezed,}) {
   return _then(_ShareContractState(
-receiverName: null == receiverName ? _self.receiverName : receiverName // ignore: cast_nullable_to_non_nullable
-as String,receiverPhone: null == receiverPhone ? _self.receiverPhone : receiverPhone // ignore: cast_nullable_to_non_nullable
+receiverCode: null == receiverCode ? _self.receiverCode : receiverCode // ignore: cast_nullable_to_non_nullable
 as String,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

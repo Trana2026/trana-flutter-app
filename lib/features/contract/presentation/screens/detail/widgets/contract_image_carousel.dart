@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -55,14 +56,12 @@ class ContractImageCarousel extends HookConsumerWidget {
                               controller: controller,
                               itemCount: imageUrls.length,
                               onPageChanged: (i) => currentIndex.value = i,
-                              itemBuilder: (_, i) => Image.network(
-                                imageUrls[i],
+                              itemBuilder: (_, i) => CachedNetworkImage(
+                                imageUrl: imageUrls[i],
+                                cacheKey: '${detailState.publicCode}-img-$i',
                                 fit: BoxFit.contain,
-                                loadingBuilder: (_, child, loadingProgress) {
-                                  if (loadingProgress == null) return child;
-                                  return const CustomLoadingBar();
-                                },
-                                errorBuilder: (_, _, _) => const Icon(
+                                placeholder: (_, _) => const CustomLoadingBar(),
+                                errorWidget: (_, _, _) => const Icon(
                                   Icons.broken_image_outlined,
                                   color: Colors.white30,
                                   size: 48,

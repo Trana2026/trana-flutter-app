@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -22,9 +23,7 @@ Future<void> main() async {
   await dotenv.load(fileName: '.env');
 
   // 카카오 SDK 초기화
-  KakaoSdk.init(
-    nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY'] ?? '',
-  );
+  KakaoSdk.init(nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY'] ?? '');
 
   // 구글 로그인 초기화 (serverClientId=백엔드 검증용 웹 클라ID, clientId=iOS 클라ID)
   final googleServerClientId = dotenv.env['GOOGLE_SERVER_CLIENT_ID'] ?? '';
@@ -63,6 +62,25 @@ class TranaApp extends StatelessWidget {
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,
       routerConfig: router,
+      // 상태바, 네비게이션바 색상을 테마 배경색과 일치
+      builder: (context, child) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final background = vrc(context).background!;
+        final iconBrightness = isDark ? Brightness.light : Brightness.dark;
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(
+            // 상태바: Scaffold 배경 노출
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: iconBrightness,
+            statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+            // 네비게이션바: 배경색과 동일
+            systemNavigationBarColor: background,
+            systemNavigationBarIconBrightness: iconBrightness,
+            systemNavigationBarDividerColor: background,
+          ),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
   }
 }

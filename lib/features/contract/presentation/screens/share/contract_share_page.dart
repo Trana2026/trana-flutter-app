@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -6,14 +7,12 @@ import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
-import 'package:trana/core/utils/validation.dart';
 import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/core/widgets/contract_form_field.dart';
 import 'package:trana/core/widgets/custom_app_bar.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
-import 'package:trana/features/contract/domain/utils/string_extensions.dart';
 import 'package:trana/features/contract/presentation/viewmodels/share_contract_view_model.dart';
 
 class ContractSharePage extends HookConsumerWidget {
@@ -25,16 +24,12 @@ class ContractSharePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final shareVM = ref.read(shareContractViewModelProvider.notifier);
 
-    final nameCtr = useTextEditingController();
-    final phoneCtr = useTextEditingController();
-    final phoneError = useState<String?>(null);
+    final codeCtr = useTextEditingController();
     final isPending = useState(false);
 
-    useListenable(nameCtr);
-    useListenable(phoneCtr);
+    useListenable(codeCtr);
 
-    final isEnabled =
-        nameCtr.text.trim().isNotEmpty && phoneCtr.text.trim().isNotEmpty;
+    final isEnabled = codeCtr.text.trim().isNotEmpty;
 
     return PendingOverlay(
       isPending: isPending.value,
@@ -129,27 +124,17 @@ class ContractSharePage extends HookConsumerWidget {
                   ),
                   const SizedBox(height: 20),
                   ContractFormField(
-                    label: "이름",
-                    hintText: "거래 상대방의 이름을 입력해주세요",
-                    controller: nameCtr,
-                  ),
-                  const SizedBox(height: 20),
-                  ContractFormField(
-                    label: "연락처",
-                    hintText: "거래 상대방의 연락처를 입력해주세요",
-                    keyboardType: TextInputType.phone,
-                    controller: phoneCtr,
-                    errorText: phoneError.value,
-                    onChanged: (v) {
-                      phoneError.value = null;
-                      final formatted = v.toPhoneFormat;
-                      phoneCtr.value = TextEditingValue(
-                        text: formatted,
-                        selection: TextSelection.collapsed(
-                          offset: formatted.length,
+                    label: "상대방 고유코드",
+                    hintText: "거래 상대방의 고유코드를 입력해주세요",
+                    keyboardType: TextInputType.visiblePassword,
+                    controller: codeCtr,
+                    inputFormatters: [
+                      TextInputFormatter.withFunction(
+                        (oldValue, newValue) => newValue.copyWith(
+                          text: newValue.text.toUpperCase(),
                         ),
-                      );
-                    },
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -179,13 +164,7 @@ class ContractSharePage extends HookConsumerWidget {
                       if (isPending.value) return;
                       isPending.value = true;
                       try {
-                        phoneError.value = Validation.phone(phoneCtr.text);
-                        if (phoneError.value != null) return;
-
-                        shareVM.updateInput(
-                          name: nameCtr.text.trim(),
-                          phone: phoneCtr.text.trim(),
-                        );
+                        shareVM.updateInput(code: codeCtr.text.trim());
 
                         // 서명 요청
                         final success = await shareVM.share(publicCode);

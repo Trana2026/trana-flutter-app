@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/features/profile/presentation/viewmodels/my_page_view_model.dart';
+import 'package:trana/features/user/presentation/providers/me_provider.dart';
 
 class ProfileScoreCard extends HookConsumerWidget {
   const ProfileScoreCard({super.key});
@@ -10,6 +11,8 @@ class ProfileScoreCard extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mypageState = ref.watch(myPageViewModelProvider);
+    final shareCode = ref.watch(meProvider).value?.shareCode;
+    // meProvider 로딩 전이면 null이므로 이 경우에만 배지 미표시
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -20,13 +23,42 @@ class ProfileScoreCard extends HookConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            mypageState.name,
-            style: context.txt(
-              color: vrc(context).textPrimary,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Text(
+                  mypageState.name,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.txt(
+                    color: vrc(context).textPrimary,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              if (shareCode != null) ...[
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: vrc(context).secondaryColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    shareCode,
+                    style: context.txt(
+                      color: vrc(context).textSecondary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ],
           ),
           Row(
             children: [

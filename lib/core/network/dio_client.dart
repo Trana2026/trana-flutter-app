@@ -43,9 +43,31 @@ class _ApiLogInterceptor extends Interceptor {
   }
 }
 
+/// 기기 식별 User-Agent를 요청 헤더에 주입 (최초 1회 계산 후 캐시)
+class _UserAgentInterceptor extends Interceptor {
+  _UserAgentInterceptor(this._builder);
+
+  final Future<String> Function() _builder;
+  String? _cached;
+
+  @override
+  Future<void> onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    _cached ??= await _builder();
+    options.headers['User-Agent'] = _cached;
+    handler.next(options);
+  }
+}
+
 /// Dio 인스턴스 생성.
 /// base URL, timeout, 인증 인터셉터 적용
-Dio createDio(AuthTokenStore tokenStore) {
+/// [userAgentBuilder] 지정 시 기기 식별 User-Agent를 요청에 주입
+Dio createDio(
+  AuthTokenStore tokenStore, {
+  Future<String> Function()? userAgentBuilder,
+}) {
   final options = BaseOptions(
     baseUrl: _baseUrl,
     connectTimeout: const Duration(seconds: 10),
@@ -60,6 +82,12 @@ Dio createDio(AuthTokenStore tokenStore) {
   final dio = Dio(options)
     ..interceptors.add(AuthInterceptor(tokenStore, bareDio))
     ..interceptors.add(_ApiLogInterceptor());
+
+  if (userAgentBuilder != null) {
+    final uaInterceptor = _UserAgentInterceptor(userAgentBuilder);
+    dio.interceptors.add(uaInterceptor);
+    bareDio.interceptors.add(uaInterceptor);
+  }
 
   return dio;
 }
