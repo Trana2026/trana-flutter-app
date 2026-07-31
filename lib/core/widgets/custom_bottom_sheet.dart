@@ -7,6 +7,7 @@ Future<T?> showCustomBottomSheet<T>(BuildContext context, Widget child) {
     barrierColor: const Color(0xFF000000).withValues(alpha: 0.75),
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
+    useSafeArea: true,
     builder: (_) => child,
   );
 }

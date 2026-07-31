@@ -6,6 +6,7 @@ import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/screens/detail/widgets/contract_counterparty_banner.dart';
@@ -15,6 +16,7 @@ import 'package:trana/features/contract/presentation/screens/detail/widgets/cont
 import 'package:trana/features/contract/presentation/screens/detail/widgets/contract_preview_card.dart';
 import 'package:trana/features/contract/presentation/screens/detail/widgets/contract_summary_card.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
+import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
 
 class ContractDetailPage extends HookConsumerWidget {
   const ContractDetailPage({super.key});
@@ -27,6 +29,21 @@ class ContractDetailPage extends HookConsumerWidget {
     final isDraft =
         status == ContractStatus.inProgress || status == ContractStatus.draft;
     final isPending = useState(false);
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        // 사용자의 계약 전체 목록 불러오기 (상세 페이지와 홈 목록 상태 동기화 위해)
+        final homeVM = ref.read(homeContractViewModelProvider.notifier);
+        final success = await homeVM.readMyContracts();
+        if (!context.mounted) return;
+        if (!success) {
+          final state = ref.read(homeContractViewModelProvider);
+          showErrorToast(context, state.error!);
+          homeVM.clearError();
+        }
+      });
+      return null;
+    }, const []);
 
     return PendingOverlay(
       isPending: isPending.value,
