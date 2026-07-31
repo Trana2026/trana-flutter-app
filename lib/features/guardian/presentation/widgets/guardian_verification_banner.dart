@@ -5,6 +5,7 @@ import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/core/widgets/blurred_container.dart';
 import 'package:trana/features/guardian/domain/entities/guardian_verification_state.dart';
 import 'package:trana/features/guardian/presentation/viewmodels/guardian_verification_state_provider.dart';
 
@@ -25,12 +26,7 @@ class GuardianVerificationBanner extends HookConsumerWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: () => context.push(AppRoutes.guardianWaiting),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: fxc(context).opacityBg,
-            borderRadius: BorderRadius.circular(16),
-          ),
+        child: BlurredContainer(
           child: Row(
             children: [
               _leading(context, verified),
@@ -41,13 +37,13 @@ class GuardianVerificationBanner extends HookConsumerWidget {
                   children: [
                     Text(
                       title,
-                      style: context.txt(color: fxc(context).textBrand),
+                      style: context.txt(color: fxc(context).unchangeableWhite),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       subtitle,
                       style: context.txt(
-                        color: fxc(context).textBrand,
+                        color: fxc(context).unchangeableWhite,
                         fontWeight: FontWeight.w400,
                         fontSize: 12,
                       ),

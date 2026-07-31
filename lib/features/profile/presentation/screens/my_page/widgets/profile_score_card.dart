@@ -10,9 +10,12 @@ class ProfileScoreCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mypageState = ref.watch(myPageViewModelProvider);
     final shareCode = ref.watch(meProvider).value?.shareCode;
-    // meProvider 로딩 전이면 null이므로 이 경우에만 배지 미표시
+    final (name, userVerified, trustScore) = ref.watch(
+      myPageViewModelProvider.select(
+        (s) => (s.name, s.userVerified, s.trustScore),
+      ),
+    );
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -28,7 +31,7 @@ class ProfileScoreCard extends HookConsumerWidget {
             children: [
               Flexible(
                 child: Text(
-                  mypageState.name,
+                  name,
                   overflow: TextOverflow.ellipsis,
                   style: context.txt(
                     color: vrc(context).textPrimary,
@@ -37,6 +40,8 @@ class ProfileScoreCard extends HookConsumerWidget {
                   ),
                 ),
               ),
+
+              // meProvider 로딩 전이면 null이므로 이 경우에만 배지 미표시
               if (shareCode != null) ...[
                 const SizedBox(width: 8),
                 Container(
@@ -65,15 +70,15 @@ class ProfileScoreCard extends HookConsumerWidget {
               Icon(
                 Icons.shield_rounded,
                 size: 16,
-                color: mypageState.userVerified
+                color: userVerified
                     ? fxc(context).brandColor
                     : vrc(context).textTertiary,
               ),
               const SizedBox(width: 4),
               Text(
-                mypageState.userVerified ? "신원 인증 완료" : "신원 인증 미완료",
+                userVerified ? "신원 인증 완료" : "신원 인증 미완료",
                 style: context.txt(
-                  color: mypageState.userVerified
+                  color: userVerified
                       ? fxc(context).brandColor
                       : vrc(context).textTertiary,
                 ),
@@ -91,7 +96,7 @@ class ProfileScoreCard extends HookConsumerWidget {
               ),
               const Spacer(),
               Text(
-                mypageState.trustScore.toString(),
+                trustScore.toString(),
                 style: context.txt(
                   color: vrc(context).textPrimary,
                   fontSize: 18,
@@ -124,7 +129,7 @@ class ProfileScoreCard extends HookConsumerWidget {
                     ],
                   ).createShader(bounds),
                   child: LinearProgressIndicator(
-                    value: mypageState.trustScore / 100,
+                    value: trustScore / 100,
                     minHeight: 8,
                     backgroundColor: Colors.transparent,
                   ),

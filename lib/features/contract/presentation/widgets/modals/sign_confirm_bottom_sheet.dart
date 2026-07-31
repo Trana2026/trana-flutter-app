@@ -22,18 +22,18 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final signVM = ref.read(signContractViewModelProvider.notifier);
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final disclosureState = ref.watch(minorDisclosureViewModelProvider);
-    final disclosureVM = ref.read(minorDisclosureViewModelProvider.notifier);
-
+    final (counterpartyIsMinor, canCancel) = ref.watch(
+      detailContractViewModelProvider.select(
+        (s) => (s.counterpartyIsMinor, s.canCancel),
+      ),
+    );
+    final disclosureText = ref.watch(
+      minorDisclosureViewModelProvider.select((s) => s.disclosureText),
+    );
     final isChecked = useState<bool>(false);
     final isPending = useState(false);
 
-    // 거래 상대방이 미성년자인지 여부
-    final isPartyMinor = detailState.counterpartyIsMinor;
-    // 서명하기 버튼 활성화 여부 (거래 상대방이 미성년자이면 배너 체크 시에만 활성화, 아니면 항상 활성화)
-    final isEnabled = isPartyMinor ? isChecked.value : true;
+    final isEnabled = counterpartyIsMinor ? isChecked.value : true;
 
     return PendingOverlay(
       isPending: isPending.value,
@@ -93,18 +93,15 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
                             "전자서명을 완료하면 이 계약은 법적 효력이 발생하며, 서명 후에는 계약 내용을 수정하거나 삭제할 수 없습니다.",
                       ),
 
-                      if (isPartyMinor &&
-                          disclosureState.disclosureText != null) ...[
+                      if (counterpartyIsMinor && disclosureText != null) ...[
                         const SizedBox(height: 10),
                         _ConfirmWarning(
                           appIcon: AppIcon.data(
                             icon: CooliconsIcon.triangleWarning,
                           ),
-                          title: disclosureState.disclosureText!.title,
+                          title: disclosureText.title,
                           titleColor: fxc(context).textDanger,
-                          content: disclosureState.disclosureText!.items.join(
-                            '\n\n',
-                          ),
+                          content: disclosureText.items.join('\n\n'),
                           checkbox: _ConsentCheckRow(
                             descriptionText: "위 내용을 모두 확인했습니다",
                             onChanged: (v) {
@@ -124,7 +121,7 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
                   Expanded(
                     child: PrimaryButton.mono(
                       text: '계약 취소하기',
-                      disabled: !detailState.canCancel,
+                      disabled: !canCancel,
                       onTap: () {
                         Navigator.pop(context);
                         context.go(AppRoutes.contractDetail);
@@ -140,10 +137,15 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
                         if (isPending.value) return;
                         isPending.value = true;
                         try {
-                          if (isPartyMinor) {
+                          if (counterpartyIsMinor) {
                             // 미성년자 위험 고지 확인 (상대가 미성년자일 때)
+                            final disclosureVM = ref.read(
+                              minorDisclosureViewModelProvider.notifier,
+                            );
                             final success = await disclosureVM.confirm(
-                              detailState.publicCode,
+                              ref
+                                  .read(detailContractViewModelProvider)
+                                  .publicCode,
                             );
                             if (!context.mounted) return;
                             if (!success) {
@@ -157,6 +159,9 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
                           }
 
                           // 서명 플로우 시작 전에 이전 시도 초기화
+                          final signVM = ref.read(
+                            signContractViewModelProvider.notifier,
+                          );
                           signVM.reset();
 
                           // 서명 필수 약관 조회 후 동의
@@ -206,7 +211,23 @@ class _ConfirmParty extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(detailContractViewModelProvider);
+    final (
+      counterpartyTrustScore,
+      counterpartyVerified,
+      counterpartyTradeCount,
+      counterpartyDisputeCount,
+      counterpartyConfirmedReportCount,
+    ) = ref.watch(
+      detailContractViewModelProvider.select(
+        (s) => (
+          s.counterpartyTrustScore,
+          s.counterpartyVerified,
+          s.counterpartyTradeCount,
+          s.counterpartyDisputeCount,
+          s.counterpartyConfirmedReportCount,
+        ),
+      ),
+    );
 
     return Container(
       width: double.infinity,
@@ -249,7 +270,7 @@ class _ConfirmParty extends HookConsumerWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  "${detailState.counterpartyTrustScore}점",
+                  "$counterpartyTrustScore점",
                   style: context.txt(
                     color: fxc(context).brandColor,
                     fontSize: 10,
@@ -259,15 +280,15 @@ class _ConfirmParty extends HookConsumerWidget {
               const Spacer(),
               AppIcon.svg(
                 asset:
-                    "assets/icons/${detailState.counterpartyVerified ? 'shield_check' : 'shield'}.svg",
+                    "assets/icons/${counterpartyVerified ? 'shield_check' : 'shield'}.svg",
                 size: 16,
-                color: detailState.counterpartyVerified
+                color: counterpartyVerified
                     ? fxc(context).brandColor
                     : vrc(context).tertiaryColor,
               ),
               const SizedBox(width: 2),
               Text(
-                "본인 확인 ${detailState.counterpartyVerified ? '완료' : '미완료'}",
+                "본인 확인 ${counterpartyVerified ? '완료' : '미완료'}",
                 style: context.txt(
                   color: fxc(context).brandColor,
                   fontSize: 12,
@@ -282,17 +303,17 @@ class _ConfirmParty extends HookConsumerWidget {
               contractCount(
                 context,
                 label: '거래',
-                count: detailState.counterpartyTradeCount,
+                count: counterpartyTradeCount,
               ),
               contractCount(
                 context,
                 label: '분쟁',
-                count: detailState.counterpartyDisputeCount,
+                count: counterpartyDisputeCount,
               ),
               contractCount(
                 context,
                 label: '확인된 신고',
-                count: detailState.counterpartyConfirmedReportCount,
+                count: counterpartyConfirmedReportCount,
               ),
             ],
           ),

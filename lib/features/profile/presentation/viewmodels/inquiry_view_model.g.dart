@@ -41,7 +41,7 @@ final class InquiryViewModelProvider
   }
 }
 
-String _$inquiryViewModelHash() => r'5c344b20eab4cb370a5c7694f8b1eadb26e8bab2';
+String _$inquiryViewModelHash() => r'114e009b87a67c7e61249f98c265143d46719304';
 
 abstract class _$InquiryViewModel extends $Notifier<InquiryState> {
   InquiryState build();

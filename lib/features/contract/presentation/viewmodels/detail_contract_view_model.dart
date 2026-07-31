@@ -82,6 +82,9 @@ abstract class DetailContractState with _$DetailContractState {
 
   // 계약 취소 가능 여부 (상대방이 미성년자이거나 분쟁 이력 존재)
   bool get canCancel => counterpartyIsMinor || counterpartyDisputeCount > 0;
+
+  // 사용자가 구매자인지 여부
+  bool get isSeller => (myRole != null) && (myRole == Role.seller);
 }
 
 // ==================== ViewModel ====================

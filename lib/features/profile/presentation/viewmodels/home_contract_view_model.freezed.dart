@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 mixin _$HomeContractState {
 
  List<ContractEntity> get myContracts;// 사용자의 계약 전체 목록
- List<ContractEntity> get requestedContracts;// 배너에 표시할 계약 목록
+ List<ContractEntity> get requestedContracts;// 요청된 (배너에 표시할) 계약 목록
  ContractStatus? get selectedStatus;// 상태 필터 선택값
  String get searchQuery;// 물품명 검색어
  bool get isLoadingMyContracts;// 사용자의 계약 전체 목록 로딩중 여부
@@ -235,7 +235,7 @@ class _HomeContractState extends HomeContractState {
   return EqualUnmodifiableListView(_requestedContracts);
 }
 
-// 배너에 표시할 계약 목록
+// 요청된 (배너에 표시할) 계약 목록
 @override final  ContractStatus? selectedStatus;
 // 상태 필터 선택값
 @override@JsonKey() final  String searchQuery;

@@ -6,6 +6,7 @@ import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_app_bar.dart';
 import 'package:trana/core/widgets/custom_bottom_sheet.dart';
+import 'package:trana/core/widgets/custom_dialog.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
@@ -21,17 +22,18 @@ class ContractPreviewPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final createState = ref.watch(createContractViewModelProvider);
-    final createVM = ref.read(createContractViewModelProvider.notifier);
-    final revisionVM = ref.read(revisionRequestViewModelProvider.notifier);
-    final detailState = ref.watch(detailContractViewModelProvider);
-
-    final revisionRequested = createState.revisionRequested;
+    final (isLoadingPdf, pdfBytes, isEditMode) = ref.watch(
+      createContractViewModelProvider.select(
+        (s) => (s.isLoadingPdf, s.pdfBytes, s.isEditMode),
+      ),
+    );
+    final status = ref.read(detailContractViewModelProvider).status;
     final isPending = useState(false);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         // PDF 생성
+        final createVM = ref.read(createContractViewModelProvider.notifier);
         final success = await createVM.readPdfPreview();
         if (!context.mounted) return;
         if (!success) {
@@ -59,8 +61,8 @@ class ContractPreviewPage extends HookConsumerWidget {
         body: Padding(
           padding: const EdgeInsets.all(20),
           child: ContractPdfPreviewCard(
-            isLoading: createState.isLoadingPdf,
-            pdfBytes: createState.pdfBytes,
+            isLoading: isLoadingPdf,
+            pdfBytes: pdfBytes,
           ),
         ),
         bottomNavigationBar: SafeArea(
@@ -78,17 +80,23 @@ class ContractPreviewPage extends HookConsumerWidget {
                 const SizedBox(width: 9),
                 Expanded(
                   child: PrimaryButton.brand(
-                    text: revisionRequested ? "수정 완료" : "생성하기",
+                    text: isEditMode ? "수정 완료" : "생성하기",
                     onTap: () async {
                       if (isPending.value) return;
                       isPending.value = true;
                       try {
                         // 1. 수정 모드
-                        if (revisionRequested) {
+                        if (isEditMode) {
+                          final revisionVM = ref.read(
+                            revisionRequestViewModelProvider.notifier,
+                          );
                           revisionVM.revisionDone();
 
-                          if (detailState.status == ContractStatus.draft) {
+                          if (status == ContractStatus.draft) {
                             // DRAFT > Ready 상태 전이 (Draft 상태에서 수정 했을 때)
+                            final createVM = ref.read(
+                              createContractViewModelProvider.notifier,
+                            );
                             final success = await createVM.ready();
                             if (!context.mounted) return;
                             if (!success) {
@@ -104,21 +112,32 @@ class ContractPreviewPage extends HookConsumerWidget {
                           context.go(AppRoutes.contractDetail);
                           // 2. 생성 모드
                         } else {
-                          // DRAFT > Ready 상태 전이
-                          final success = await createVM.ready();
-                          if (!context.mounted) return;
-                          if (!success) {
-                            final state = ref.read(
-                              createContractViewModelProvider,
-                            );
-                            showErrorToast(context, state.error!);
-                            createVM.clearError();
-                            return;
-                          }
+                          await showCustomDialog(
+                            context: context,
+                            title: "계약 확인 안내",
+                            content: "입력하신 내용이 실제 거래 상품과\n일치하는지 다시 한 번 확인해주세요",
+                            onConfirm: () async {
+                              // DRAFT > Ready 상태 전이
+                              final createVM = ref.read(
+                                createContractViewModelProvider.notifier,
+                              );
+                              final success = await createVM.ready();
+                              if (!context.mounted) return;
+                              if (!success) {
+                                final state = ref.read(
+                                  createContractViewModelProvider,
+                                );
+                                showErrorToast(context, state.error!);
+                                createVM.clearError();
+                                return;
+                              }
 
-                          showCustomBottomSheet(
-                            context,
-                            const ContractCompletionBottomSheet(),
+                              Navigator.pop(context);
+                              await showCustomBottomSheet(
+                                context,
+                                const ContractCompletionBottomSheet(),
+                              );
+                            },
                           );
                         }
                       } finally {

@@ -18,12 +18,11 @@ class ContractReportBottomSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final reportVM = ref.read(reportContractViewModelProvider.notifier);
+    final publicCode = ref.read(detailContractViewModelProvider).publicCode;
+    final isPending = useRef(false);
 
     final reasonCtr = useTextEditingController();
     final detailCtr = useTextEditingController();
-    final isPending = useRef(false);
 
     useListenable(reasonCtr);
     useListenable(detailCtr);
@@ -112,20 +111,22 @@ class ContractReportBottomSheet extends HookConsumerWidget {
                 onTap: () async {
                   await showCustomDialog(
                     context: context,
-                    title: '신고하시겠습니까?',
+                    title: '신고 안내',
+                    content: '신고를 접수하시겠어요?\n확인 시 신고가 접수됩니다',
                     onConfirm: () async {
                       if (isPending.value) return;
                       isPending.value = true;
                       try {
+                        final reportVM = ref.read(
+                          reportContractViewModelProvider.notifier,
+                        );
                         reportVM.updateInput(
                           reason: reasonCtr.text,
                           detail: detailCtr.text,
                         );
 
                         // 신고 접수
-                        final success = await reportVM.report(
-                          detailState.publicCode,
-                        );
+                        final success = await reportVM.report(publicCode);
                         if (!context.mounted) return;
                         if (!success) {
                           final state = ref.read(

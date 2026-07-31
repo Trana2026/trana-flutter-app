@@ -11,7 +11,11 @@ class ContractEntirePreviewPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(detailContractViewModelProvider);
+    final (isLoadingData, pdfBytes) = ref.watch(
+      detailContractViewModelProvider.select(
+        (s) => (s.isLoadingData, s.pdfBytes),
+      ),
+    );
 
     return Scaffold(
       backgroundColor: vrc(context).background,
@@ -22,8 +26,8 @@ class ContractEntirePreviewPage extends HookConsumerWidget {
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: ContractPdfPreviewCard(
-          isLoading: detailState.isLoadingData,
-          pdfBytes: detailState.pdfBytes,
+          isLoading: isLoadingData,
+          pdfBytes: pdfBytes,
         ),
       ),
     );

@@ -20,8 +20,6 @@ class HomeBottomNav extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final createVM = ref.read(createContractViewModelProvider.notifier);
-
     return Container(
       padding: const EdgeInsets.only(top: 12, bottom: 10),
       decoration: BoxDecoration(
@@ -52,6 +50,9 @@ class HomeBottomNav extends HookConsumerWidget {
                 onIndexChanged(0);
 
                 // 새 계약 작성 상태 초기화
+                final createVM = ref.read(
+                  createContractViewModelProvider.notifier,
+                );
                 createVM.initState();
 
                 context.push(AppRoutes.selectRole);

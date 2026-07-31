@@ -6,7 +6,8 @@ import 'package:trana/core/theme/variable_colors.dart';
 
 /// 앱 라이트/다크 테마 정의
 class AppTheme {
-  static const _fontFamily = 'Pretendard'; // 앱 전역 폰트 적용
+  // 앱 전역 폰트 적용
+  static const _fontFamily = 'Pretendard';
 
   /// AppBar 상태바 오버레이 (투명 → AppBar 배경색 노출, 아이콘 명암만 테마별 지정)
   static const _statusLight = SystemUiOverlayStyle(
@@ -29,6 +30,9 @@ class AppTheme {
     brightness: Brightness.light,
     fontFamily: _fontFamily,
     extensions: const [VariableColors.light, FixedColors.constant],
+    // pressed 색상
+    highlightColor: const Color(0x1a000000),
+    splashColor: const Color(0x1affffff),
   );
 
   /// 다크 모드 테마
@@ -40,6 +44,9 @@ class AppTheme {
     brightness: Brightness.dark,
     fontFamily: _fontFamily,
     extensions: const [VariableColors.dark, FixedColors.constant],
+    // pressed 색상
+    highlightColor: const Color(0x1a000000),
+    splashColor: const Color(0x1affffff),
   );
 }
 

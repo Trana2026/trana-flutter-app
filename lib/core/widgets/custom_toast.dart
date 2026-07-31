@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/providers/toast_visibility_provider.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/app_icon.dart';
+import 'package:trana/core/widgets/blurred_container.dart';
 
 OverlayEntry? _currentEntry;
 
@@ -56,10 +59,10 @@ void _showOverlayToast(
   _currentEntry?.remove();
   _currentEntry = null;
 
-  // context 가 deactivate 되기 전에 theme 값 미리 추출
-  final opacityBg = fxc(context).opacityBg!;
+  // context 가 deactivate 되기 전에 theme 값과 provider container 미리 추출
   final textColor = fxc(context).unchangeableWhite!;
   final overlayState = Overlay.of(context);
+  final container = ProviderScope.containerOf(context);
 
   final entry = OverlayEntry(
     builder: (ctx) => Positioned(
@@ -68,13 +71,8 @@ void _showOverlayToast(
       right: 20,
       child: Material(
         color: Colors.transparent,
-        child: Container(
+        child: BlurredContainer(
           height: 63,
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: opacityBg,
-          ),
           child: Row(
             children: [
               customIcon ??
@@ -131,9 +129,11 @@ void _showOverlayToast(
 
   _currentEntry = entry;
   overlayState.insert(entry);
+  container.read(toastVisibilityProvider.notifier).show();
 
   Future.delayed(const Duration(seconds: 2), () {
     _currentEntry?.remove();
     _currentEntry = null;
+    container.read(toastVisibilityProvider.notifier).hide();
   });
 }

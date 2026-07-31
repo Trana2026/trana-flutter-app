@@ -13,7 +13,9 @@ part 'inquiry_view_model.g.dart';
 abstract class InquiryState with _$InquiryState {
   const factory InquiryState({
     @Default([]) List<UserInquiryEntity> inquiries, // 문의 전체 목록
-    UserInquiryEntity? selectedInquiryDetail, // 선택된 문의 상세 내용
+
+    String? selectedTitle, // 선택된 문의의 제목
+    String? selectedContent, // 선택된 문의의 상세 내용
 
     @Default('') String email, // 이메일 입력값
     @Default('') String title, // 문의 제목 입력값
@@ -51,7 +53,10 @@ class InquiryViewModel extends _$InquiryViewModel {
         .readInquiryDetail(publicCode);
 
     state = switch (result) {
-      Success(:final data) => state.copyWith(selectedInquiryDetail: data),
+      Success(:final data) => state.copyWith(
+        selectedTitle: data.title,
+        selectedContent: data.content,
+      ),
       Failure(:final failure) => state.copyWith(error: failure.message),
     };
 

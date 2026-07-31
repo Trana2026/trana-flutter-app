@@ -16,11 +16,10 @@ class InquiryListItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final inquiryVM = ref.read(inquiryViewModelProvider.notifier);
-
     return GestureDetector(
       onTap: () async {
         // 문의 상세 내용 조회
+        final inquiryVM = ref.read(inquiryViewModelProvider.notifier);
         final success = await inquiryVM.readInquiryDetail(i.publicCode);
         if (!context.mounted) return;
         if (!success) {

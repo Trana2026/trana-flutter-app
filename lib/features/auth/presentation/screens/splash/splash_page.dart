@@ -21,12 +21,9 @@ class SplashPage extends HookConsumerWidget {
         final loggedIn = token != null && token.isNotEmpty;
 
         // 홈 화면 진입 전에 로그인(사용자 정보) 조회를 스플래시 대기 시간 동안 미리 끝냄
-        // 서버 콜드스타트 등으로 지연 시에는 무한정 기다리지 않도록 타임아웃 설정
+        // 서버 콜드스타트 등으로 로그인 지연 시에도, 홈 페이지로 진입되지 않고 스플래시 페이지에서 대기
         final prefetchMe = loggedIn
-            ? ref
-                  .read(meProvider.future)
-                  .timeout(const Duration(seconds: 8))
-                  .catchError((_) => null)
+            ? ref.read(meProvider.future).catchError((_) => null)
             : Future<void>.value();
 
         await Future.wait<Object?>([

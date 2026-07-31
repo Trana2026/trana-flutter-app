@@ -12,6 +12,7 @@ import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/core/widgets/select_role_card.dart';
+import 'package:trana/features/contract/domain/enums/create_page_mode.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 
 class SelectUserRolePage extends HookConsumerWidget {
@@ -19,9 +20,7 @@ class SelectUserRolePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final createState = ref.watch(createContractViewModelProvider);
-    final createVM = ref.read(createContractViewModelProvider.notifier);
-
+    final publicCode = ref.read(createContractViewModelProvider).publicCode;
     final selectedIndex = useState<int?>(null);
     final isEnabled = selectedIndex.value != null;
     final isPending = useState(false);
@@ -88,8 +87,13 @@ class SelectUserRolePage extends HookConsumerWidget {
                 if (isPending.value) return;
                 isPending.value = true;
                 try {
+                  final createVM = ref.read(
+                    createContractViewModelProvider.notifier,
+                  );
+                  createVM.setCreatePageMode(CreatePageMode.createMode);
+
                   // 계약 생성
-                  if (createState.publicCode == null) {
+                  if (publicCode == null) {
                     final success = await createVM.createDraft();
                     if (!context.mounted) return;
                     if (!success) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
+import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 
 extension ContractStatusMeta on ContractStatus {
@@ -112,24 +113,30 @@ extension ContractStatusMeta on ContractStatus {
     ContractStatus.cancelRequested ||
     ContractStatus.cancelled ||
     ContractStatus.expired ||
-    ContractStatus.completed => fxc(context).textBrand!,
+    ContractStatus.completed => fxc(context).unchangeableWhite!,
   };
 
-  IconData bannerIcon(bool isCreator) => switch (this) {
+  AppIcon bannerIcon(bool isCreator) => switch (this) {
     ContractStatus.inProgress ||
     ContractStatus.draft ||
-    ContractStatus.ready => CooliconsIcon.editPencilLine02,
+    ContractStatus.ready => AppIcon.data(icon: CooliconsIcon.editPencilLine02),
 
-    ContractStatus.shared => CooliconsIcon.help,
-    ContractStatus.revisionRequested => CooliconsIcon.editPencilLine02,
-    ContractStatus.receiverSigned => CooliconsIcon.help,
-    ContractStatus.signed => CooliconsIcon.check,
+    ContractStatus.shared => AppIcon.svg(asset: "assets/icons/question.svg"),
+    ContractStatus.revisionRequested => AppIcon.data(
+      icon: CooliconsIcon.editPencilLine02,
+    ),
+    ContractStatus.receiverSigned => AppIcon.svg(
+      asset: "assets/icons/question.svg",
+    ),
+    ContractStatus.signed => AppIcon.data(icon: CooliconsIcon.check),
 
     ContractStatus.cancelRequested ||
     ContractStatus.cancelled ||
-    ContractStatus.expired => CooliconsIcon.triangleWarning,
-    ContractStatus.reported => CooliconsIcon.triangleWarning,
-    ContractStatus.completed => CooliconsIcon.circleCheck,
+    ContractStatus.expired => AppIcon.data(icon: CooliconsIcon.triangleWarning),
+    ContractStatus.reported => AppIcon.data(
+      icon: CooliconsIcon.triangleWarning,
+    ),
+    ContractStatus.completed => AppIcon.data(icon: CooliconsIcon.circleCheck),
   };
 
   String bannerTopLabel(bool isCreator) => switch (this) {

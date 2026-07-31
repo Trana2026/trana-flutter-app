@@ -17,12 +17,14 @@ class PolicyListPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final consentState = ref.watch(userConsentViewModelProvider);
-    final consentVM = ref.read(userConsentViewModelProvider.notifier);
+    final consents = ref.watch(
+      userConsentViewModelProvider.select((s) => s.consents),
+    );
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         // 본인 약관 동의 내역 조회
+        final consentVM = ref.read(userConsentViewModelProvider.notifier);
         final success = await consentVM.readConsents();
         if (!context.mounted) return;
         if (!success) {
@@ -41,49 +43,51 @@ class PolicyListPage extends HookConsumerWidget {
         onTapLeading: () => context.pop(),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("트라나", style: context.txt(fontWeight: FontWeight.w600)),
-              const SizedBox(height: 4),
-              Text(
-                "약관 및 개인정보 처리 동의",
-                style: context.txt(
-                  color: vrc(context).textPrimary,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 40),
-              Text(
-                "회원 필수 동의서",
-                style: context.txt(
-                  color: vrc(context).textPrimary,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              consentState.consents.isEmpty
-                  ? SizedBox(
-                      height: 300,
-                      child: Center(
-                        child: Text("약관이 없어요", style: context.txt()),
-                      ),
-                    )
-                  : ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(20),
-                      itemCount: consentState.consents.length,
-                      itemBuilder: (_, i) =>
-                          _PolicyListItem(consent: consentState.consents[i]),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("트라나", style: context.txt(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 4),
+                  Text(
+                    "약관 및 개인정보 처리 동의",
+                    style: context.txt(
+                      color: vrc(context).textPrimary,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
                     ),
-            ],
-          ),
+                  ),
+                  const SizedBox(height: 40),
+                  Text(
+                    "회원 필수 동의서",
+                    style: context.txt(
+                      color: vrc(context).textPrimary,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+              ),
+            ),
+            consents.isEmpty
+                ? SizedBox(
+                    height: 300,
+                    child: Center(child: Text("약관이 없어요", style: context.txt())),
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    itemCount: consents.length,
+                    itemBuilder: (_, i) =>
+                        _PolicyListItem(consent: consents[i]),
+                  ),
+          ],
         ),
       ),
     );
@@ -100,7 +104,7 @@ class _PolicyListItem extends StatelessWidget {
     return InkWell(
       onTap: () => context.push(AppRoutes.termsDetail, extra: consent.termsId),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
         child: Row(
           children: [
             Expanded(
@@ -125,7 +129,7 @@ class _PolicyListItem extends StatelessWidget {
             const SizedBox(width: 8),
             Icon(
               CooliconsIcon.caretRightSm,
-              size: 20,
+              size: 30,
               color: vrc(context).iconDisable,
             ),
           ],

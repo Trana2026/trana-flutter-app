@@ -25,16 +25,19 @@ class ContractCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailVM = ref.read(detailContractViewModelProvider.notifier);
-    final reportVM = ref.read(reportContractViewModelProvider.notifier);
-    final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
-    final revisionState = ref.watch(revisionRequestViewModelProvider);
+    final revisionDone = ref.watch(
+      revisionRequestViewModelProvider.select((s) => s.revisionDone),
+    );
 
     return GestureDetector(
       onTap: () async {
         if (isPending.value) return;
         isPending.value = true;
         try {
+          final detailVM = ref.read(detailContractViewModelProvider.notifier);
+          final reportVM = ref.read(reportContractViewModelProvider.notifier);
+          final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
+
           final results = await Future.wait([
             detailVM.loadDetail(c.publicCode),
             reportVM.readReport(c.publicCode),
@@ -184,7 +187,7 @@ class ContractCard extends HookConsumerWidget {
                               isCreator: c.isCreator,
                               isMyCancel: c.cancelIsMine ?? false,
                               isMyReport: c.reportIsMine ?? false,
-                              revisionDone: revisionState.revisionDone,
+                              revisionDone: revisionDone,
                             ),
                             style: context.txt(
                               color: c.status.statusColor(context),

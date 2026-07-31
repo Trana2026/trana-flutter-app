@@ -9,8 +9,9 @@ class TrailingPushToggle extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mypageState = ref.watch(myPageViewModelProvider);
-    final mypageVM = ref.read(myPageViewModelProvider.notifier);
+    final pushEnabled = ref.watch(
+      myPageViewModelProvider.select((s) => s.pushEnabled),
+    );
 
     return SizedBox(
       height: 18,
@@ -18,9 +19,10 @@ class TrailingPushToggle extends HookConsumerWidget {
         scale: 0.7,
         alignment: Alignment.centerRight,
         child: CupertinoSwitch(
-          value: mypageState.pushEnabled,
+          value: pushEnabled,
           onChanged: (v) async {
             // 푸시 알림 토글
+            final mypageVM = ref.read(myPageViewModelProvider.notifier);
             final success = await mypageVM.togglePushEnagled(v);
             if (!context.mounted) return;
             if (!success) {

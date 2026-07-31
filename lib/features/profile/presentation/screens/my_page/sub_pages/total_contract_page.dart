@@ -14,8 +14,9 @@ class TotalContractPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeState = ref.watch(homeContractViewModelProvider);
-
+    final myContracts = ref.watch(
+      homeContractViewModelProvider.select((s) => s.myContracts),
+    );
     final isPending = useState(false);
 
     return PendingOverlay(
@@ -26,17 +27,15 @@ class TotalContractPage extends HookConsumerWidget {
           title: "총 계약 내역",
           onTapLeading: () => context.pop(),
         ),
-        body: homeState.myContracts.isEmpty
+        body: myContracts.isEmpty
             ? EmptyContractView(emptyText: "생성된 계약이 없어요")
             : Padding(
                 padding: const EdgeInsets.all(20),
                 child: ListView.builder(
                   padding: EdgeInsets.zero,
-                  itemCount: homeState.myContracts.length,
-                  itemBuilder: (_, i) => ContractCard(
-                    c: homeState.myContracts[i],
-                    isPending: isPending,
-                  ),
+                  itemCount: myContracts.length,
+                  itemBuilder: (_, i) =>
+                      ContractCard(c: myContracts[i], isPending: isPending),
                 ),
               ),
       ),

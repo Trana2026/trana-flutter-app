@@ -17,15 +17,17 @@ class DeviceManagementPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mypageState = ref.watch(myPageViewModelProvider);
-    final currentDeviceId = ref
-        .watch(deviceTokenViewModelProvider)
-        .currentDeviceId;
+    final mypageDevices = ref.watch(
+      myPageViewModelProvider.select((s) => s.devices),
+    );
+    final currentDeviceId = ref.watch(
+      deviceTokenViewModelProvider.select((s) => s.currentDeviceId),
+    );
 
     // 현재 기기를 최상단에 배치
     final devices = [
-      ...mypageState.devices.where((d) => d.id == currentDeviceId),
-      ...mypageState.devices.where((d) => d.id != currentDeviceId),
+      ...mypageDevices.where((d) => d.id == currentDeviceId),
+      ...mypageDevices.where((d) => d.id != currentDeviceId),
     ];
 
     return Scaffold(
@@ -50,8 +52,9 @@ class _DeviceListItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final deviceState = ref.watch(deviceTokenViewModelProvider);
-    final deviceVM = ref.read(deviceTokenViewModelProvider.notifier);
+    final currentDeviceId = ref.watch(
+      deviceTokenViewModelProvider.select((s) => s.currentDeviceId),
+    );
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
@@ -97,7 +100,7 @@ class _DeviceListItem extends HookConsumerWidget {
           ),
           const SizedBox(width: 12),
 
-          if (deviceState.currentDeviceId == device.id)
+          if (currentDeviceId == device.id)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
@@ -113,6 +116,9 @@ class _DeviceListItem extends HookConsumerWidget {
             GestureDetector(
               onTap: () async {
                 // 기기 강제 해제
+                final deviceVM = ref.read(
+                  deviceTokenViewModelProvider.notifier,
+                );
                 final success = await deviceVM.disconnect(device.id);
                 if (!context.mounted) return;
                 if (!success) {

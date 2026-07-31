@@ -23,16 +23,26 @@ class ContractCancelBottomSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final cancelState = ref.watch(cancelContractViewModelProvider);
-    final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
+    final status = ref.watch(
+      detailContractViewModelProvider.select((s) => s.status),
+    );
+    final (
+      recentCancelReason,
+      recentCancelDetail,
+      recentCancelIsMine,
+    ) = ref.watch(
+      cancelContractViewModelProvider.select(
+        (s) =>
+            (s.recentCancelReason, s.recentCancelDetail, s.recentCancelIsMine),
+      ),
+    );
+    final publicCode = ref.read(detailContractViewModelProvider).publicCode;
 
-    final isRequested = detailState.status == ContractStatus.cancelRequested;
-    final isMyCancel =
-        (isRequested && cancelState.recentCancel?.isMine == true);
+    final isRequested = status == ContractStatus.cancelRequested;
+    final isMyCancel = (isRequested && recentCancelIsMine);
 
-    final initialReason = isRequested ? cancelState.recentCancel?.reason : "";
-    final initialDetail = isRequested ? cancelState.recentCancel?.detail : "";
+    final initialReason = isRequested ? recentCancelReason : "";
+    final initialDetail = isRequested ? recentCancelDetail : "";
 
     final reasonCtr = useTextEditingController(text: initialReason);
     final detailCtr = useTextEditingController(text: initialDetail);
@@ -127,18 +137,24 @@ class ContractCancelBottomSheet extends HookConsumerWidget {
                 onTap: () async {
                   await showCustomDialog(
                     context: context,
-                    title: !isRequested ? "취소 요청하시겠습니까?" : "계약을 취소하시겠습니까?",
+                    title: !isRequested ? "취소 요청 안내" : "계약을 취소하시겠습니까?",
+                    content: !isRequested
+                        ? "취소 요청을 진행하시겠어요?\n확인 시 상대방에게 전달됩니다"
+                        : null,
                     onConfirm: () async {
                       if (isPending.value) return;
                       isPending.value = true;
                       try {
                         // 1. 취소 요청 전
+                        final cancelVM = ref.read(
+                          cancelContractViewModelProvider.notifier,
+                        );
                         if (!isRequested) {
                           cancelVM.updateDetail(detailCtr.text);
 
                           // 취소 요청 접수
                           final success = await cancelVM.requestCancel(
-                            detailState.publicCode,
+                            publicCode,
                           );
                           if (!context.mounted) return;
                           if (!success) {
@@ -155,7 +171,7 @@ class ContractCancelBottomSheet extends HookConsumerWidget {
                         } else {
                           // 취소 확정
                           final success = await cancelVM.confirmCancel(
-                            detailState.publicCode,
+                            publicCode,
                           );
                           if (!context.mounted) return;
                           if (!success) {

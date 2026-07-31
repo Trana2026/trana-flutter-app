@@ -15,6 +15,7 @@ class HomeEmptyState extends HookConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            const SizedBox(height: 12),
             Container(
               decoration: BoxDecoration(
                 color: vrc(context).secondaryColor,

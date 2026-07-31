@@ -10,20 +10,23 @@ import 'package:trana/features/contract/presentation/viewmodels/detail_contract_
 class ContractImageCarousel extends HookConsumerWidget {
   const ContractImageCarousel({super.key});
 
-  static void show(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierColor: Colors.black.withValues(alpha: 0.85),
-      builder: (_) => const ContractImageCarousel(),
-    );
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-
-    final imageUrls = detailState.attachmentImageUrls;
-
+    final (
+      isLoadingData,
+      attachmentImageUrls,
+      attachmentCount,
+      publicCode,
+    ) = ref.watch(
+      detailContractViewModelProvider.select(
+        (s) => (
+          s.isLoadingData,
+          s.attachmentImageUrls,
+          s.attachmentCount,
+          s.publicCode,
+        ),
+      ),
+    );
     final controller = usePageController();
     final currentIndex = useState(0);
 
@@ -50,15 +53,15 @@ class ContractImageCarousel extends HookConsumerWidget {
                     child: SizedBox(
                       height: 560,
                       width: 315,
-                      child: detailState.isLoadingData || imageUrls.isEmpty
+                      child: isLoadingData || attachmentImageUrls.isEmpty
                           ? const CustomLoadingBar()
                           : PageView.builder(
                               controller: controller,
-                              itemCount: imageUrls.length,
+                              itemCount: attachmentCount,
                               onPageChanged: (i) => currentIndex.value = i,
                               itemBuilder: (_, i) => CachedNetworkImage(
-                                imageUrl: imageUrls[i],
-                                cacheKey: '${detailState.publicCode}-img-$i',
+                                imageUrl: attachmentImageUrls[i],
+                                cacheKey: '$publicCode-img-$i',
                                 fit: BoxFit.contain,
                                 placeholder: (_, _) => const CustomLoadingBar(),
                                 errorWidget: (_, _, _) => const Icon(
@@ -72,7 +75,7 @@ class ContractImageCarousel extends HookConsumerWidget {
                   ),
                 ),
 
-                if (imageUrls.length > 1 && currentIndex.value > 0)
+                if (attachmentCount > 1 && currentIndex.value > 0)
                   Positioned(
                     left: 5,
                     child: _ArrowButton(
@@ -84,8 +87,8 @@ class ContractImageCarousel extends HookConsumerWidget {
                     ),
                   ),
 
-                if (imageUrls.length > 1 &&
-                    currentIndex.value < imageUrls.length - 1)
+                if (attachmentCount > 1 &&
+                    currentIndex.value < attachmentCount - 1)
                   Positioned(
                     right: 5,
                     child: _ArrowButton(
@@ -106,7 +109,7 @@ class ContractImageCarousel extends HookConsumerWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      '${currentIndex.value + 1}/${imageUrls.length}',
+                      '${currentIndex.value + 1}/$attachmentCount',
                       style: TextStyle(
                         color: fxc(context).unchangeableWhite,
                         fontSize: 10,
@@ -122,6 +125,14 @@ class ContractImageCarousel extends HookConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  static void show(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.85),
+      builder: (_) => const ContractImageCarousel(),
     );
   }
 }

@@ -18,46 +18,51 @@ import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/domain/utils/string_extensions.dart';
 import 'package:trana/features/contract/presentation/screens/create/widgets/contract_photo_section.dart';
-import 'package:trana/features/contract/presentation/widgets/modals/create_tutorial_bottom_sheet.dart';
-import 'package:trana/features/contract/presentation/screens/create/widgets/trade_type_selector.dart';
+import 'package:trana/features/contract/presentation/screens/create/widgets/delivery_type_selector.dart';
 import 'package:trana/features/contract/presentation/viewmodels/ai_auto_fill_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/contract_warranty_section.dart';
+import 'package:trana/features/contract/presentation/widgets/modals/cost_notice_bottom_sheet.dart';
+import 'package:trana/features/contract/presentation/widgets/modals/create_tutorial_bottom_sheet.dart';
 
 class CreateContractPage extends HookConsumerWidget {
   const CreateContractPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final createState = ref.watch(createContractViewModelProvider);
-    final createVM = ref.read(createContractViewModelProvider.notifier);
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final detailVM = ref.read(detailContractViewModelProvider.notifier);
+    final (mode, role, isEditMode, isContinueMode) = ref.watch(
+      createContractViewModelProvider.select(
+        (s) => (s.mode, s.role, s.isEditMode, s.isContinueMode),
+      ),
+    );
+    final status = ref.watch(
+      detailContractViewModelProvider.select((s) => s.status),
+    );
+    final CreateContractState(
+      :tradingPlatform,
+      :title,
+      :price,
+      :conditionSummary,
+      :conditionDetails,
+    ) = ref.read(
+      createContractViewModelProvider,
+    );
 
-    final revisionRequested = createState.revisionRequested;
-    final platform = createState.tradingPlatform;
-    final title = createState.title;
-    final price = createState.price;
-    final summary = createState.conditionSummary;
-    final detail = createState.conditionDetails;
-    final role = createState.role;
-
-    final platformCtr = useTextEditingController(text: platform);
+    final platformCtr = useTextEditingController(text: tradingPlatform);
     final nameCtr = useTextEditingController(text: title);
     final priceCtr = useTextEditingController(
       text: price != 0 ? price.toString().toPriceFormat : '',
     );
-    final conditionCtr = useTextEditingController(text: summary);
-    final detailCtr = useTextEditingController(text: detail);
+    final conditionCtr = useTextEditingController(text: conditionSummary);
+    final detailCtr = useTextEditingController(text: conditionDetails);
     final priceError = useState<String?>(null);
     final isPending = useState(false);
 
     // 새 계약 작성 진입 시마다 튜토리얼 안내 노출
     useEffect(() {
-      // 수정 모드, 초안 이어서 작성할 때 제외
-      if (!revisionRequested &&
-          detailState.status != ContractStatus.inProgress) {
+      // 수정 모드, 이어서 작성 모드일 때 제외
+      if (!isEditMode && !isContinueMode) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!context.mounted) return;
           showCustomBottomSheet(context, const CreateTutorialBottomSheet());
@@ -101,15 +106,24 @@ class CreateContractPage extends HookConsumerWidget {
     const int totalStep = 3;
     final double progress = currentStep / totalStep;
 
+    // TODO: 시안 1
+    final priceValue = int.tryParse(priceCtr.text.replaceAll(',', '')) ?? 0;
+    final cost = switch (priceValue) {
+      <= 30000 => 2900,
+      <= 100000 => 4900,
+      <= 1000000 => 7900,
+      _ => 9900,
+    };
+
     return PendingOverlay(
       isPending: isPending.value,
       child: Scaffold(
         backgroundColor: vrc(context).background,
         resizeToAvoidBottomInset: true,
         appBar: CustomAppBar.leading(
-          title: revisionRequested ? "계약서 수정" : "새 계약 작성",
+          title: isEditMode ? "계약서 수정" : "새 계약 작성",
           onTapLeading: () {
-            if (detailState.status == ContractStatus.ready) {
+            if (status == ContractStatus.ready) {
               context.pop();
             } else {
               context.go(AppRoutes.home);
@@ -137,7 +151,7 @@ class CreateContractPage extends HookConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const TradeTypeSelector(),
+                      const DeliveryTypeSelector(),
                       const SizedBox(height: 20),
                       Text(
                         "계약 상세 내용",
@@ -219,52 +233,91 @@ class CreateContractPage extends HookConsumerWidget {
           top: false,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: PrimaryButton.brand(
-              text: revisionRequested ? "수정 완료" : "생성하기",
-              disabled: !isEnabled,
-              onTap: () async {
-                if (isPending.value) return;
-                isPending.value = true;
-                try {
-                  priceError.value = Validation.price(priceCtr.text);
-                  if (priceError.value != null) return;
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // TODO: 시안 1
+                Row(
+                  children: [
+                    Text(
+                      "계약서 생성 비용",
+                      style: context.txt(color: vrc(context).textDisable),
+                    ),
+                    const Spacer(),
+                    Text(
+                      "${cost.toString().toPriceFormat}₩",
+                      style: context.txt(
+                        color: vrc(context).textPrimary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
 
-                  if (detailState.status == ContractStatus.ready) {
-                    // READY > DRAFT 계약서 상태 되돌림 (Ready 상태에서 수정 시)
-                    final success = await detailVM.revert();
-                    if (!success) {
-                      if (context.mounted) {
-                        final state = ref.read(detailContractViewModelProvider);
-                        showErrorToast(context, state.error!);
-                        detailVM.clearError();
-                      }
-                      return;
+                PrimaryButton.brand(
+                  text: isEditMode ? "수정 완료" : "생성하기",
+                  disabled: !isEnabled,
+                  onTap: () async {
+                    if (isPending.value) return;
+                    isPending.value = true;
+                    try {
+                      priceError.value = Validation.price(priceCtr.text);
+                      if (priceError.value != null) return;
+
+                      final createVM = ref.read(
+                        createContractViewModelProvider.notifier,
+                      );
+                      createVM.updateEntries(
+                        platformText: platformCtr.text,
+                        nameText: nameCtr.text,
+                        priceText: priceCtr.text,
+                        conditionText: conditionCtr.text,
+                        detailText: detailCtr.text,
+                      );
+
+                      // TODO: 시안 1
+                      // if (status == ContractStatus.ready) {
+                      //   // READY > DRAFT 계약서 상태 되돌림 (Ready 상태에서 수정 시)
+                      //   final detailVM = ref.read(
+                      //     detailContractViewModelProvider.notifier,
+                      //   );
+                      //   final success = await detailVM.revert();
+                      //   if (!success) {
+                      //     if (context.mounted) {
+                      //       final state = ref.read(detailContractViewModelProvider);
+                      //       showErrorToast(context, state.error!);
+                      //       detailVM.clearError();
+                      //     }
+                      //     return;
+                      //   }
+                      // }
+
+                      // // Draft 항목 업데이트
+                      // final success = await createVM.updateDraftEntries();
+                      // if (!context.mounted) return;
+                      // if (!success) {
+                      //   final state = ref.read(createContractViewModelProvider);
+                      //   showErrorToast(context, state.error!);
+                      //   createVM.clearError();
+                      //   return;
+                      // }
+
+                      // context.push(AppRoutes.contractPreview);
+
+                      // TODO: 시안 2
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      showCustomBottomSheet(
+                        context,
+                        const CostNoticeBottomSheet(),
+                      );
+                    } finally {
+                      isPending.value = false;
                     }
-                  }
-
-                  createVM.updateEntries(
-                    platformText: platformCtr.text,
-                    nameText: nameCtr.text,
-                    priceText: priceCtr.text,
-                    conditionText: conditionCtr.text,
-                    detailText: detailCtr.text,
-                  );
-
-                  // Draft 항목 업데이트
-                  final success = await createVM.updateDraftEntries();
-                  if (!context.mounted) return;
-                  if (!success) {
-                    final state = ref.read(createContractViewModelProvider);
-                    showErrorToast(context, state.error!);
-                    createVM.clearError();
-                    return;
-                  }
-
-                  context.push(AppRoutes.contractPreview);
-                } finally {
-                  isPending.value = false;
-                }
-              },
+                  },
+                ),
+              ],
             ),
           ),
         ),

@@ -13,11 +13,7 @@ class ContractWarrantySection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final createVM = ref.read(createContractViewModelProvider.notifier);
-    final receiveVM = ref.read(receiveContractViewModelProvider.notifier);
-
-    final isCreator = detailState.isCreator;
+    final isCreator = ref.read(detailContractViewModelProvider).isCreator;
 
     final initialIsWarranted = isCreator
         ? ref.read(createContractViewModelProvider).warrantyPeriodDays > 0
@@ -28,8 +24,10 @@ class ContractWarrantySection extends HookConsumerWidget {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final days = isWarranted.value ? 3 : 0;
         if (isCreator) {
+          final createVM = ref.read(createContractViewModelProvider.notifier);
           createVM.updateWarrantyPeriod(days);
         } else {
+          final receiveVM = ref.read(receiveContractViewModelProvider.notifier);
           receiveVM.updateWarrantyPeriod(days);
         }
       });

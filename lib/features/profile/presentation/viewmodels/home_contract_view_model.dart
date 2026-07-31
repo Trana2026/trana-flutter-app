@@ -10,6 +10,13 @@ import 'package:trana/features/contract/domain/enums/dispute_state.dart';
 part 'home_contract_view_model.freezed.dart';
 part 'home_contract_view_model.g.dart';
 
+// 필터칩 "계약서 초안" 하나가 대표하는 상태 묶음
+const _draftGroupStatuses = [
+  ContractStatus.inProgress,
+  ContractStatus.draft,
+  ContractStatus.ready,
+];
+
 // ==================== State ====================
 
 @freezed
@@ -18,7 +25,7 @@ abstract class HomeContractState with _$HomeContractState {
 
   const factory HomeContractState({
     @Default([]) List<ContractEntity> myContracts, // 사용자의 계약 전체 목록
-    @Default([]) List<ContractEntity> requestedContracts, // 배너에 표시할 계약 목록
+    @Default([]) List<ContractEntity> requestedContracts, // 요청된 (배너에 표시할) 계약 목록
     ContractStatus? selectedStatus, // 상태 필터 선택값
     @Default('') String searchQuery, // 물품명 검색어
 
@@ -42,18 +49,26 @@ abstract class HomeContractState with _$HomeContractState {
   // 분쟁 계약 목록 (신고 상태)
   List<ContractEntity> get disputingContracts =>
       myContracts.where((c) => c.status == ContractStatus.reported).toList();
+
+  // 필터칩(selectedStatus) + 검색어가 적용된 계약 목록 (서버 재조회X, 클라이언트 필터링)
+  List<ContractEntity> get filteredContracts {
+    final selected = selectedStatus;
+    if (selected == null) return myContracts;
+
+    if (_draftGroupStatuses.contains(selected)) {
+      return myContracts
+          .where((c) => _draftGroupStatuses.contains(c.status))
+          .toList();
+    }
+
+    return myContracts.where((c) => c.status == selected).toList();
+  }
 }
 
 // ==================== ViewModel ====================
 
 @Riverpod(keepAlive: true)
 class HomeContractViewModel extends _$HomeContractViewModel {
-  static const _draftGroup = [
-    ContractStatus.inProgress,
-    ContractStatus.draft,
-    ContractStatus.ready,
-  ];
-
   @override
   HomeContractState build() => const HomeContractState();
 
@@ -61,48 +76,25 @@ class HomeContractViewModel extends _$HomeContractViewModel {
   Future<bool> readMyContracts() async {
     state = state.copyWith(isLoadingMyContracts: true);
 
-    final selected = state.selectedStatus;
-    final isDraftGroup = selected != null && _draftGroup.contains(selected);
     final query = state.searchQuery.trim().isEmpty
         ? null
         : state.searchQuery.trim();
 
-    List<ContractEntity> contracts = [];
-    String? error;
+    List<ContractEntity> contracts;
 
-    if (isDraftGroup) {
-      final results = await Future.wait(
-        _draftGroup.map((s) {
-          return ref
-              .read(contractRepositoryProvider)
-              .readMyContracts(status: s, query: query);
-        }),
-      );
+    final result = await ref
+        .read(contractRepositoryProvider)
+        .readMyContracts(query: query);
 
-      for (final result in results) {
-        switch (result) {
-          case Success(:final data):
-            contracts.addAll(data);
-          case Failure(:final failure):
-            error = failure.message;
-        }
-      }
-    } else {
-      final result = await ref
-          .read(contractRepositoryProvider)
-          .readMyContracts(status: selected, query: query);
-
-      switch (result) {
-        case Success(:final data):
-          contracts = data;
-        case Failure(:final failure):
-          error = failure.message;
-      }
-    }
-
-    if (error != null) {
-      state = state.copyWith(isLoadingMyContracts: false, error: error);
-      return false;
+    switch (result) {
+      case Success(:final data):
+        contracts = data;
+      case Failure(:final failure):
+        state = state.copyWith(
+          isLoadingMyContracts: false,
+          error: failure.message,
+        );
+        return false;
     }
 
     // 각 계약의 분쟁 상태 (신고) 조회해 반영
@@ -210,11 +202,9 @@ class HomeContractViewModel extends _$HomeContractViewModel {
     return [...basic, ...respondable];
   }
 
-  /// 상태별 필터 적용
-  Future<void> applyStatus(ContractStatus? status) async {
-    state = state.copyWith(selectedStatus: status);
-    await readMyContracts();
-  }
+  /// 상태별 필터 적용 (서버 재조회 없이 클라이언트에서 필터링)
+  void applyStatus(ContractStatus? status) =>
+      state = state.copyWith(selectedStatus: status);
 
   /// 물품명 검색어 적용
   Future<void> applyQuery(String query) async {

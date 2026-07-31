@@ -16,14 +16,12 @@ import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/presentation/viewmodels/share_contract_view_model.dart';
 
 class ContractSharePage extends HookConsumerWidget {
-  final String publicCode;
-
   const ContractSharePage({super.key, required this.publicCode});
+
+  final String publicCode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final shareVM = ref.read(shareContractViewModelProvider.notifier);
-
     final codeCtr = useTextEditingController();
     final isPending = useState(false);
 
@@ -164,6 +162,9 @@ class ContractSharePage extends HookConsumerWidget {
                       if (isPending.value) return;
                       isPending.value = true;
                       try {
+                        final shareVM = ref.read(
+                          shareContractViewModelProvider.notifier,
+                        );
                         shareVM.updateInput(code: codeCtr.text.trim());
 
                         // 서명 요청

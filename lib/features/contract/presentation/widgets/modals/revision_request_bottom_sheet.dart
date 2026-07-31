@@ -8,6 +8,7 @@ import 'package:trana/core/widgets/contract_form_field.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
+import 'package:trana/features/contract/domain/enums/create_page_mode.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/revision_request_view_model.dart';
@@ -15,57 +16,38 @@ import 'package:trana/features/contract/presentation/viewmodels/revision_request
 class RevisionRequestBottomSheet extends HookConsumerWidget {
   const RevisionRequestBottomSheet({super.key});
 
-  static const _allFields = [
-    '거래 플랫폼',
-    '거래 방식',
-    '거래 물품명',
-    '거래 금액',
-    '상품 상태',
-    '상품 상세 설명',
-  ];
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final createVM = ref.read(createContractViewModelProvider.notifier);
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final revisionState = ref.watch(revisionRequestViewModelProvider);
-    final revisionVM = ref.read(revisionRequestViewModelProvider.notifier);
+    final isCreator = ref.watch(
+      detailContractViewModelProvider.select((s) => s.isCreator),
+    );
+    final selectedFields = ref.watch(
+      revisionRequestViewModelProvider.select((s) => s.selectedFields),
+    );
+    final detailState = ref.read(detailContractViewModelProvider);
+    final isPending = useRef(false);
 
-    final selectedFields = revisionState.selectedFields;
     final visibleFields = _allFields
         .where((f) => selectedFields.contains(f))
         .toList();
 
-    final isPending = useRef(false);
-
     final controllers = useMemoized(
       () => {for (final f in _allFields) f: TextEditingController()},
     );
-
     final focusNodes = useMemoized(
       () => {for (final f in _allFields) f: FocusNode()},
     );
-
     final fieldKeys = useMemoized(
       () => {for (final f in _allFields) f: GlobalKey()},
     );
 
     useEffect(() {
-      if (detailState.isCreator) {
-        // selectedFields 확장 및 값 주입은 배너에서 바텀시트 띄우기 전에 완료
-        // 여기서는 이미 세팅된 state를 읽어 컨트롤러에만 주입
-        final s = ref.read(revisionRequestViewModelProvider);
-        final reasonByField = {
-          '거래 방식': s.deliveryTypeReason,
-          '거래 플랫폼': s.tradingPlatformReason,
-          '거래 물품명': s.titleReason,
-          '거래 금액': s.priceReason,
-          '상품 상태': s.conditionSummaryReason,
-          '상품 상세 설명': s.conditionDetailsReason,
-        };
-        for (final e in reasonByField.entries) {
-          if (e.value.isNotEmpty) {
-            controllers[e.key]?.text = e.value;
+      if (isCreator) {
+        final revisionState = ref.read(revisionRequestViewModelProvider);
+        for (final (label, reasonOf) in _fields) {
+          final reason = reasonOf(revisionState);
+          if (reason.isNotEmpty) {
+            controllers[label]?.text = reason;
           }
         }
       }
@@ -130,25 +112,29 @@ class RevisionRequestBottomSheet extends HookConsumerWidget {
                       mainAxisSize: MainAxisSize.min,
                       spacing: 16,
                       children: [
-                        for (int i = 0; i < visibleFields.length; i++) ...[
+                        for (final field in visibleFields)
                           ContractFormField(
-                            key: fieldKeys[visibleFields[i]],
-                            focusNode: focusNodes[visibleFields[i]],
-                            label: visibleFields[i],
+                            key: fieldKeys[field],
+                            focusNode: focusNodes[field],
+                            label: field,
                             hintText: '수정을 원하시는 이유를 작성해주세요',
                             maxLines: 2,
-                            controller: controllers[visibleFields[i]],
+                            controller: controllers[field],
                           ),
-                        ],
                         PrimaryButton.brand(
-                          text: detailState.isCreator ? "확인" : "수정 요청하기",
+                          text: isCreator ? "확인" : "수정 요청하기",
                           onTap: () async {
                             if (isPending.value) return;
                             isPending.value = true;
                             try {
                               // 1. 요청자일 때
-                              if (detailState.isCreator) {
-                                createVM.setRevisionRequestedMode(true);
+                              if (isCreator) {
+                                final createVM = ref.read(
+                                  createContractViewModelProvider.notifier,
+                                );
+                                createVM.setCreatePageMode(
+                                  CreatePageMode.editMode,
+                                );
 
                                 createVM.loadFromDraft(
                                   publicCode: detailState.publicCode,
@@ -157,14 +143,13 @@ class RevisionRequestBottomSheet extends HookConsumerWidget {
                                   attachmentIds: detailState.attachmentIds,
                                   existingAttachmentUrls:
                                       detailState.attachmentImageUrls,
-                                  tradingPlatform:
-                                      detailState.tradingPlatform ?? '',
-                                  title: detailState.title ?? '',
-                                  price: detailState.price ?? 0,
+                                  tradingPlatform: detailState.tradingPlatform,
+                                  title: detailState.title,
+                                  price: detailState.price,
                                   conditionSummary:
-                                      detailState.conditionSummary ?? '',
+                                      detailState.conditionSummary,
                                   conditionDetails:
-                                      detailState.conditionDetails ?? '',
+                                      detailState.conditionDetails,
                                   warrantyPeriodDays:
                                       detailState.warrantyPeriodDays,
                                 );
@@ -172,6 +157,9 @@ class RevisionRequestBottomSheet extends HookConsumerWidget {
                                 context.go(AppRoutes.contractCreate);
                                 // 2. 수신자일 때
                               } else {
+                                final revisionVM = ref.read(
+                                  revisionRequestViewModelProvider.notifier,
+                                );
                                 revisionVM.submitReasons({
                                   for (final entry in controllers.entries)
                                     entry.key: entry.value.text,
@@ -209,4 +197,17 @@ class RevisionRequestBottomSheet extends HookConsumerWidget {
       ),
     );
   }
+
+  static final List<
+    (String label, String Function(RevisionRequestState) reason)
+  >
+  _fields = [
+    ('거래 플랫폼', (s) => s.tradingPlatformReason),
+    ('거래 방식', (s) => s.deliveryTypeReason),
+    ('거래 물품명', (s) => s.titleReason),
+    ('거래 금액', (s) => s.priceReason),
+    ('상품 상태', (s) => s.conditionSummaryReason),
+    ('상품 상세 설명', (s) => s.conditionDetailsReason),
+  ];
+  static final _allFields = [for (final (label, _) in _fields) label];
 }

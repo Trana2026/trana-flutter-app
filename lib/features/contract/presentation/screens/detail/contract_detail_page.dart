@@ -21,12 +21,11 @@ class ContractDetailPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-
-    final status = detailState.status;
-    final bool isDraft =
+    final status = ref.watch(
+      detailContractViewModelProvider.select((s) => s.status),
+    );
+    final isDraft =
         status == ContractStatus.inProgress || status == ContractStatus.draft;
-
     final isPending = useState(false);
 
     return PendingOverlay(

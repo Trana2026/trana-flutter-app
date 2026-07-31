@@ -9,32 +9,43 @@ class ContractPreviewCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-
-    final contents = detailState.contents;
+    final contents = ref.watch(
+      detailContractViewModelProvider.select((s) => s.contents),
+    );
 
     return Container(
       width: double.infinity,
       height: 215,
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.symmetric(horizontal: 18),
       decoration: BoxDecoration(
         color: vrc(context).secondaryColor,
         borderRadius: BorderRadius.circular(24),
       ),
-      child: ListView.separated(
-        itemCount: contents.length,
-        separatorBuilder: (_, _) => const SizedBox(height: 16),
-        itemBuilder: (_, i) =>
-            _clause(context, title: contents[i].title, body: contents[i].body),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 18),
+          child: ListView.separated(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: contents.length,
+            separatorBuilder: (_, _) => const SizedBox(height: 16),
+            itemBuilder: (_, i) =>
+                _Clause(title: contents[i].title, body: contents[i].body),
+          ),
+        ),
       ),
     );
   }
+}
 
-  Widget _clause(
-    BuildContext context, {
-    required String title,
-    required String body,
-  }) {
+class _Clause extends StatelessWidget {
+  const _Clause({required this.title, required this.body});
+
+  final String title;
+  final String body;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

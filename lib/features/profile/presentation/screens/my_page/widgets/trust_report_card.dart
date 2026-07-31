@@ -9,12 +9,19 @@ class TrustReportCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mypageState = ref.watch(myPageViewModelProvider);
-
+    final (completed, warranted, reported) = ref.watch(
+      myPageViewModelProvider.select(
+        (s) => (
+          s.completedContractCount,
+          s.warrantyProvidedCount,
+          s.fraudReportReceivedCount,
+        ),
+      ),
+    );
     final items = [
-      (label: "누적 계약 건수", length: mypageState.completedContractCount),
-      (label: "보증 횟수", length: mypageState.warrantyProvidedCount),
-      (label: "분쟁 여부", length: mypageState.fraudReportReceivedCount),
+      (label: "누적 계약 건수", length: completed),
+      (label: "보증 횟수", length: warranted),
+      (label: "분쟁 여부", length: reported),
     ];
 
     return Container(

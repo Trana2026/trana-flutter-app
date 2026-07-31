@@ -42,7 +42,7 @@ final class CancelContractViewModelProvider
 }
 
 String _$cancelContractViewModelHash() =>
-    r'317d2be61e52152f6252b69fbd6be2c4160e6b08';
+    r'15530d984d54f678b2b90921e5bccf9de3113d23';
 
 abstract class _$CancelContractViewModel
     extends $Notifier<CancelContractState> {

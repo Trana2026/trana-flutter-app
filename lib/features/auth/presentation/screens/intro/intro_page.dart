@@ -123,9 +123,9 @@ class IntroPage extends HookConsumerWidget {
                 width: 335 * scale,
                 height: 52 * scale,
                 child: GestureDetector(
-                  // 10초 이상 Longpress 시 테스트 유저 로그인
+                  // 7초 이상 Longpress 시 테스트 유저 로그인
                   onLongPressStart: (_) {
-                    timer = Timer(const Duration(seconds: 2), () {
+                    timer = Timer(const Duration(seconds: 7), () {
                       showCustomDialog(
                         context: context,
                         title: '테스트 계정으로 로그인',

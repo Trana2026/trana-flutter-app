@@ -28,44 +28,6 @@ class HomePage extends HookConsumerWidget {
   final bool showGuardianDialog;
   const HomePage({super.key, this.showGuardianDialog = false});
 
-  /// 딥링크로 저장된 계약코드 사용 후 상세로 이동
-  Future<void> _consumePendingContractCode(
-    BuildContext context,
-    WidgetRef ref,
-  ) async {
-    final publicCode = await PendingContractCodeService.get();
-    if (publicCode == null) return;
-    await PendingContractCodeService.clear();
-
-    final detailVM = ref.read(detailContractViewModelProvider.notifier);
-    final reportVM = ref.read(reportContractViewModelProvider.notifier);
-    final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
-
-    final results = await Future.wait([
-      detailVM.loadDetail(publicCode),
-      reportVM.readReport(publicCode),
-      cancelVM.readCancel(publicCode),
-    ]);
-    if (!context.mounted) return;
-
-    // 본인 계약이 아니거나(403) 없는 계약(404)일 경우
-    if (results.contains(false)) {
-      final state = ref.read(detailContractViewModelProvider);
-      showErrorToast(context, state.error ?? '계약을 불러오지 못했습니다.');
-      detailVM.clearError();
-      reportVM.clearError();
-      cancelVM.clearError();
-      return;
-    }
-
-    final status = ref.read(detailContractViewModelProvider).status;
-    if (status == ContractStatus.inProgress || status == ContractStatus.draft) {
-      context.push(AppRoutes.contractDetail);
-    } else {
-      context.push(AppRoutes.biometricLock);
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = useState<int>(0);
@@ -193,5 +155,44 @@ class HomePage extends HookConsumerWidget {
         ),
       ),
     );
+  }
+
+  /// 딥링크로 저장된 계약코드 사용 후 상세로 이동
+  Future<void> _consumePendingContractCode(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final publicCode = await PendingContractCodeService.get();
+    if (publicCode == null) return;
+    await PendingContractCodeService.clear();
+
+    final detailVM = ref.read(detailContractViewModelProvider.notifier);
+    final reportVM = ref.read(reportContractViewModelProvider.notifier);
+    final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
+
+    final results = await Future.wait([
+      detailVM.loadDetail(publicCode),
+      reportVM.readReport(publicCode),
+      cancelVM.readCancel(publicCode),
+    ]);
+    if (!context.mounted) return;
+
+    // 본인 계약이 아니거나(403) 없는 계약(404)일 경우
+    if (results.contains(false)) {
+      final detailState = ref.read(detailContractViewModelProvider);
+      showErrorToast(context, detailState.error ?? '계약을 불러오지 못했습니다.');
+      detailVM.clearError();
+      reportVM.clearError();
+      cancelVM.clearError();
+      return;
+    }
+
+    final detailState = ref.read(detailContractViewModelProvider);
+    if (detailState.status == ContractStatus.inProgress ||
+        detailState.status == ContractStatus.draft) {
+      context.push(AppRoutes.contractDetail);
+    } else {
+      context.push(AppRoutes.biometricLock);
+    }
   }
 }

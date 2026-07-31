@@ -11,6 +11,7 @@ import 'package:trana/core/widgets/custom_loading_bar.dart';
 import 'package:trana/core/widgets/contract_card.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/notification/presentation/viewmodels/notification_view_model.dart';
+import 'package:trana/features/profile/presentation/providers/banner_occupied_height_provider.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_contract_type_selector.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_empty_state.dart';
 import 'package:trana/features/profile/presentation/screens/home/widgets/home_filter_button.dart';
@@ -25,16 +26,25 @@ class HomeMainView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeState = ref.watch(homeContractViewModelProvider);
-    final notiState = ref.watch(notificationViewModelProvider);
+    final (filteredContracts, isLoadingMyContracts) = ref.watch(
+      homeContractViewModelProvider.select(
+        (s) => (s.filteredContracts, s.isLoadingMyContracts),
+      ),
+    );
+    final hasUnreadNotis = ref.watch(
+      notificationViewModelProvider.select((s) => s.unreadNotis.isNotEmpty),
+    );
     final isFilterExpanded = useState(false);
     final typeIndex = useState(0);
 
     final contracts = switch (typeIndex.value) {
-      1 => homeState.myContracts.where((c) => c.isCreator).toList(),
-      2 => homeState.myContracts.where((c) => !c.isCreator).toList(),
-      _ => homeState.myContracts,
+      1 => filteredContracts.where((c) => c.isCreator).toList(),
+      2 => filteredContracts.where((c) => !c.isCreator).toList(),
+      _ => filteredContracts,
     };
+
+    // 배너(+토스트)가 떠 있는 동안, 계약서 목록을 그 위까지 스크롤 되게 하기 위한 하단 오프셋
+    final bannerAvoidanceBottom = ref.watch(bannerOccupiedHeightProvider);
 
     return Container(
       color: vrc(context).secondaryColor,
@@ -86,7 +96,7 @@ class HomeMainView extends HookConsumerWidget {
                               size: 20,
                             ),
                           ),
-                          if (notiState.unreadNotis.isNotEmpty)
+                          if (hasUnreadNotis)
                             Positioned(
                               top: 15,
                               right: 15,
@@ -108,9 +118,9 @@ class HomeMainView extends HookConsumerWidget {
             ),
           ),
           const SizedBox(height: 8),
+
           Expanded(
             child: Container(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
               decoration: BoxDecoration(
                 color: vrc(context).background,
                 borderRadius: const BorderRadius.only(
@@ -125,6 +135,7 @@ class HomeMainView extends HookConsumerWidget {
                   offsetToArmed: 120,
                   builder: (context, child, controller) => child,
                   onRefresh: () async {
+                    // 사용자의 계약 전체 목록 불러오기
                     final homeVM = ref.read(
                       homeContractViewModelProvider.notifier,
                     );
@@ -138,53 +149,70 @@ class HomeMainView extends HookConsumerWidget {
                   },
                   child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text("나의 계약", style: context.txt()),
-                            const Spacer(),
-                            HomeContractTypeSelector(
-                              selectedIndex: typeIndex.value,
-                              onSelect: (i) => typeIndex.value = i,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 28),
-                        Row(
-                          children: [
-                            Expanded(child: const HomeSearchBar()),
-                            const SizedBox(width: 7),
-                            HomeFilterButton(
-                              isActive: isFilterExpanded.value,
-                              onToggle: () => isFilterExpanded.value =
-                                  !isFilterExpanded.value,
-                            ),
-                          ],
-                        ),
-                        if (isFilterExpanded.value) ...[
-                          const SizedBox(height: 8),
-                          const HomeFilterChipList(),
-                        ],
-                        const SizedBox(height: 16),
-                        homeState.isLoadingMyContracts
-                            ? const SizedBox(
-                                height: 200,
-                                child: CustomLoadingBar(),
-                              )
-                            : contracts.isEmpty
-                            ? const HomeEmptyState()
-                            : ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.zero,
-                                itemCount: contracts.length,
-                                itemBuilder: (_, i) => ContractCard(
-                                  c: contracts[i],
-                                  isPending: isPending,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        top: 20,
+                        bottom: bannerAvoidanceBottom,
+                      ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              children: [
+                                Text("나의 계약", style: context.txt()),
+                                const Spacer(),
+                                HomeContractTypeSelector(
+                                  selectedIndex: typeIndex.value,
+                                  onSelect: (i) => typeIndex.value = i,
                                 ),
-                              ),
-                      ],
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 28),
+
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              children: [
+                                Expanded(child: const HomeSearchBar()),
+                                const SizedBox(width: 7),
+                                HomeFilterButton(
+                                  isActive: isFilterExpanded.value,
+                                  onToggle: () => isFilterExpanded.value =
+                                      !isFilterExpanded.value,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          if (isFilterExpanded.value) ...[
+                            const SizedBox(height: 8),
+                            const HomeFilterChipList(),
+                          ],
+                          const SizedBox(height: 16),
+
+                          isLoadingMyContracts
+                              ? const SizedBox(
+                                  height: 200,
+                                  child: CustomLoadingBar(),
+                                )
+                              : contracts.isEmpty
+                              ? const HomeEmptyState()
+                              : ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                  ),
+                                  itemCount: contracts.length,
+                                  itemBuilder: (_, i) => ContractCard(
+                                    c: contracts[i],
+                                    isPending: isPending,
+                                  ),
+                                ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

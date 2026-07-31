@@ -13,12 +13,14 @@ class InquiryHistoryPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final inquiryState = ref.watch(inquiryViewModelProvider);
-    final inquiryVM = ref.read(inquiryViewModelProvider.notifier);
+    final inquiries = ref.watch(
+      inquiryViewModelProvider.select((s) => s.inquiries),
+    );
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         // 문의 전체 목록 조회
+        final inquiryVM = ref.read(inquiryViewModelProvider.notifier);
         final success = await inquiryVM.readInquiries();
         if (!context.mounted) return;
         if (!success) {
@@ -36,13 +38,12 @@ class InquiryHistoryPage extends HookConsumerWidget {
         title: "문의 내역 관리",
         onTapLeading: () => context.pop(),
       ),
-      body: inquiryState.inquiries.isEmpty
+      body: inquiries.isEmpty
           ? Center(child: Text("문의 내역이 없어요"))
           : ListView.builder(
               padding: const EdgeInsets.all(20),
-              itemCount: inquiryState.inquiries.length,
-              itemBuilder: (_, i) =>
-                  InquiryListItem(i: inquiryState.inquiries[i]),
+              itemCount: inquiries.length,
+              itemBuilder: (_, i) => InquiryListItem(i: inquiries[i]),
             ),
     );
   }
