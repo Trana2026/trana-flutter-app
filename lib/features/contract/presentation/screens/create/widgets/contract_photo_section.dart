@@ -103,6 +103,7 @@ class ContractPhotoSection extends HookConsumerWidget {
                         context,
                         "사진첩 접근 권한이 필요해요",
                         detail: "거래 사진을 등록하려면 설정에서 권한을 허용해주세요.",
+                        onTap: PhotoManager.openSetting,
                       );
                     }
                   },
