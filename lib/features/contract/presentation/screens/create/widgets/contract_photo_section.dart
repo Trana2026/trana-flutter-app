@@ -16,22 +16,25 @@ class ContractPhotoSection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final aiState = ref.watch(aiAutoFillViewModelProvider);
-    final createState = ref.watch(createContractViewModelProvider);
-    final createVM = ref.read(createContractViewModelProvider.notifier);
-
+    final aiIsCompleted = ref.watch(
+      aiAutoFillViewModelProvider.select((s) => s.isCompleted),
+    );
+    final (existingAttachmentUrls, isLoadingUpload) = ref.watch(
+      createContractViewModelProvider.select(
+        (s) => (s.existingAttachmentUrls, s.isLoadingUpload),
+      ),
+    );
     final selectedImages = useState<List<AssetEntity>>([]);
-    final existingUrls = createState.existingAttachmentUrls;
-
-    final isEditMode = existingUrls.isNotEmpty;
-    final length = isEditMode
-        ? existingUrls.length
+    final isEditMode = existingAttachmentUrls.isNotEmpty;
+    final count = isEditMode
+        ? existingAttachmentUrls.length
         : selectedImages.value.length;
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (isEditMode) return;
 
+        final createVM = ref.read(createContractViewModelProvider.notifier);
         createVM.updateImages(selectedImages.value);
 
         // 계약 첨부 사진 업로드
@@ -74,7 +77,7 @@ class ContractPhotoSection extends HookConsumerWidget {
               children: [
                 GestureDetector(
                   onTap: () async {
-                    if (aiState.isCompleted) return;
+                    if (aiIsCompleted) return;
 
                     if (isEditMode) {
                       showErrorToast(context, "거래 사진은 수정할 수 없습니다");
@@ -83,16 +86,26 @@ class ContractPhotoSection extends HookConsumerWidget {
 
                     // 갤러리에서 사진 선택
                     // 선택 시에만 개수 제한 위해 wechat_assets_picker 적용 (type: AssetEntity)
-                    final images = await AssetPicker.pickAssets(
-                      context,
-                      pickerConfig: AssetPickerConfig(
-                        selectedAssets: selectedImages.value,
-                        maxAssets: 7,
-                        requestType: RequestType.image,
-                        textDelegate: const KoreanAssetPickerTextDelegate(),
-                      ),
-                    );
-                    if (images != null) selectedImages.value = images;
+                    try {
+                      final images = await AssetPicker.pickAssets(
+                        context,
+                        pickerConfig: AssetPickerConfig(
+                          selectedAssets: selectedImages.value,
+                          maxAssets: 7,
+                          requestType: RequestType.image,
+                          textDelegate: const KoreanAssetPickerTextDelegate(),
+                        ),
+                      );
+                      if (images != null) selectedImages.value = images;
+                    } on StateError catch (_) {
+                      if (!context.mounted) return;
+                      showErrorToast(
+                        context,
+                        "사진첩 접근 권한이 필요해요",
+                        detail: "거래 사진을 등록하려면 설정에서 권한을 허용해주세요.",
+                        onTap: PhotoManager.openSetting,
+                      );
+                    }
                   },
                   child: Container(
                     width: 68,
@@ -112,7 +125,7 @@ class ContractPhotoSection extends HookConsumerWidget {
 
                 // 1. 수정 시 > url 로 이미지 렌더링
                 if (isEditMode)
-                  ...existingUrls.map(
+                  ...existingAttachmentUrls.map(
                     (url) => Padding(
                       padding: const EdgeInsets.only(left: 4),
                       child: ClipRRect(
@@ -149,8 +162,7 @@ class ContractPhotoSection extends HookConsumerWidget {
                           height: 68,
                           fit: BoxFit.cover,
                           loadingBuilder: (_, child, loadingProgress) {
-                            if (loadingProgress == null &&
-                                !createState.isLoadingUpload) {
+                            if (loadingProgress == null && !isLoadingUpload) {
                               return child;
                             }
                             return Container(
@@ -175,12 +187,12 @@ class ContractPhotoSection extends HookConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '$length개의 이미지 추가됨',
+                      '$count개의 이미지 추가됨',
                       style: context.txt(color: vrc(context).textPrimary),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '($length/7)',
+                      '($count/7)',
                       style: context.txt(
                         color: vrc(context).textTertiary,
                         fontSize: 12,
@@ -191,9 +203,7 @@ class ContractPhotoSection extends HookConsumerWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  if (aiState.isCompleted ||
-                      isEditMode ||
-                      createState.isLoadingUpload) {
+                  if (aiIsCompleted || isEditMode || isLoadingUpload) {
                     return;
                   }
 
@@ -215,14 +225,14 @@ class ContractPhotoSection extends HookConsumerWidget {
                   ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: (aiState.isCompleted || isEditMode)
+                    color: (aiIsCompleted || isEditMode)
                         ? vrc(context).tertiaryColor
                         : fxc(context).brandColor!,
                   ),
                   child: Text(
-                    aiState.isCompleted ? "분석완료" : "분석하기",
+                    aiIsCompleted ? "분석완료" : "분석하기",
                     style: context.txt(
-                      color: (aiState.isCompleted || isEditMode)
+                      color: (aiIsCompleted || isEditMode)
                           ? vrc(context).iconSecondary
                           : fxc(context).textBrand!,
                       fontWeight: FontWeight.w600,

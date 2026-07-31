@@ -17,14 +17,17 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final aiState = ref.watch(aiAutoFillViewModelProvider);
-    final aiVM = ref.read(aiAutoFillViewModelProvider.notifier);
-
+    final isLoadingAnalysis = ref.watch(
+      aiAutoFillViewModelProvider.select((s) => s.isLoadingAnalysis),
+    );
+    final autoFillConsentedAt = ref
+        .read(aiAutoFillViewModelProvider)
+        .autoFillConsentedAt;
     final isSelected = useState(false);
 
     return PopScope(
       // AI 분석 진행 중에는 바깥 탭/뒤로가기로 dialog를 닫을 수 없도록 차단
-      canPop: !aiState.isLoadingAnalysis,
+      canPop: !isLoadingAnalysis,
       child: Dialog(
         backgroundColor: vrc(context).background,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -117,12 +120,13 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
               const SizedBox(height: 12),
 
               PrimaryButton.brand(
-                text: aiState.isLoadingAnalysis ? "이미지를 분석 중이에요..." : "분석하기",
+                text: isLoadingAnalysis ? "이미지를 분석 중이에요..." : "분석하기",
                 disabled: !isSelected.value,
                 onTap: () async {
-                  if (aiState.isLoadingAnalysis) return;
+                  if (isLoadingAnalysis) return;
 
-                  if (aiState.autoFillConsentedAt == null) {
+                  final aiVM = ref.read(aiAutoFillViewModelProvider.notifier);
+                  if (autoFillConsentedAt == null) {
                     aiVM.consentAutoFill();
                   }
 

@@ -33,14 +33,31 @@ class MyPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeState = ref.watch(homeContractViewModelProvider);
-    final mypageState = ref.watch(myPageViewModelProvider);
-    final mypageVM = ref.read(myPageViewModelProvider.notifier);
-    final deviceState = ref.watch(deviceTokenViewModelProvider);
+    final (totalCount, pendingCount, disputingCount) = ref.watch(
+      homeContractViewModelProvider.select(
+        (s) => (
+          s.myContracts.length,
+          s.pendingContracts.length,
+          s.disputingContracts.length,
+        ),
+      ),
+    );
+    final (ageGroup, userVerified, guardianVerifiedAt, devices) = ref.watch(
+      myPageViewModelProvider.select(
+        (s) => (s.ageGroup, s.userVerified, s.guardianVerifiedAt, s.devices),
+      ),
+    );
+    final currentDeviceId = ref.watch(
+      deviceTokenViewModelProvider.select((s) => s.currentDeviceId),
+    );
+    final currentDevice = devices
+        .where((d) => d.id == currentDeviceId)
+        .firstOrNull;
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         // 마이페이지 정보 로드
+        final mypageVM = ref.read(myPageViewModelProvider.notifier);
         final success = await mypageVM.loadData();
         if (!context.mounted) return;
         if (!success) {
@@ -51,10 +68,6 @@ class MyPage extends HookConsumerWidget {
       });
       return null;
     }, []);
-
-    final currentDevice = mypageState.devices
-        .where((d) => d.id == deviceState.currentDeviceId)
-        .firstOrNull;
 
     return Scaffold(
       backgroundColor: vrc(context).secondaryColor,
@@ -72,19 +85,19 @@ class MyPage extends HookConsumerWidget {
                 MyPageMenuItem(
                   appIcon: AppIcon.data(icon: CooliconsIcon.fileBlank),
                   label: "총 계약 내역",
-                  trailingText: "${homeState.myContracts.length}건",
+                  trailingText: "$totalCount건",
                   onTap: () => context.push(AppRoutes.totalContract),
                 ),
                 MyPageMenuItem(
                   appIcon: AppIcon.svg(asset: 'assets/icons/file_warning.svg'),
                   label: "미체결 계약",
-                  trailingText: "${homeState.pendingContracts.length}건",
+                  trailingText: "$pendingCount건",
                   onTap: () => context.push(AppRoutes.pendingContract),
                 ),
                 MyPageMenuItem(
                   appIcon: AppIcon.data(icon: CooliconsIcon.triangleWarning),
                   label: "신고 / 분쟁 내역",
-                  trailingText: "${homeState.disputingContracts.length}건",
+                  trailingText: "$disputingCount건",
                   onTap: () => context.push(AppRoutes.disputeContract),
                 ),
               ],
@@ -96,18 +109,16 @@ class MyPage extends HookConsumerWidget {
                 MyPageMenuItem(
                   appIcon: AppIcon.data(icon: CooliconsIcon.circleCheck),
                   label: "본인 인증",
-                  customTrailing: TrailingVerifyStatus(
-                    verified: mypageState.userVerified,
-                  ),
+                  customTrailing: TrailingVerifyStatus(verified: userVerified),
                 ),
-                if (mypageState.ageGroup == AgeGroup.minor)
+                if (ageGroup == AgeGroup.minor)
                   MyPageMenuItem(
                     appIcon: AppIcon.svg(
                       asset: 'assets/icons/shield_warning.svg',
                     ),
                     label: "법정대리인 인증",
                     customTrailing: TrailingVerifyStatus(
-                      verified: mypageState.guardianVerifiedAt != null,
+                      verified: guardianVerifiedAt != null,
                     ),
                   ),
               ],
@@ -119,7 +130,7 @@ class MyPage extends HookConsumerWidget {
                 MyPageMenuItem(
                   appIcon: AppIcon.data(icon: CooliconsIcon.mobileButton),
                   label: "로그인 기기 관리",
-                  trailingText: "${mypageState.devices.length}대",
+                  trailingText: "${devices.length}대",
                   onTap: () => context.push(AppRoutes.deviceManage),
                 ),
                 MyPageMenuItem(
@@ -204,7 +215,7 @@ class MyPage extends HookConsumerWidget {
       barrierColor: Colors.black.withValues(alpha: 0.6),
       builder: (_) => const ConfirmActionDialog(
         title: "로그아웃하면",
-        message: "로그인이 필요한 기능들을 사용할 수 없어요.\n그래도 로그아웃하시겠어요?",
+        message: "로그아웃하면 계약서 작성을 할 수 없어요.\n그래도 로그아웃하시겠어요?",
         confirmText: "로그아웃",
       ),
     );
@@ -242,7 +253,7 @@ class MyPage extends HookConsumerWidget {
       barrierColor: Colors.black.withValues(alpha: 0.6),
       builder: (_) => const ConfirmActionDialog(
         title: "탈퇴하면",
-        message: "탈퇴 시 모든 정보가 삭제되며 복구할 수 없어요.\n그래도 정말 탈퇴하시겠어요?",
+        message: "탈퇴 후에도 신고된 거래 기록은 삭제되지 않아요.\n그래도 정말 탈퇴하시겠어요?",
         confirmText: "탈퇴하기",
       ),
     );

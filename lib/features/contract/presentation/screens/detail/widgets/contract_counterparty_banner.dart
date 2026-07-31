@@ -8,6 +8,7 @@ import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/widgets/custom_bottom_sheet.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
+import 'package:trana/features/contract/domain/enums/create_page_mode.dart';
 import 'package:trana/features/contract/presentation/extensions/contract_status_ui.dart';
 import 'package:trana/features/contract/presentation/viewmodels/cancel_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
@@ -25,22 +26,22 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final createVM = ref.read(createContractViewModelProvider.notifier);
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final revisionVM = ref.read(revisionRequestViewModelProvider.notifier);
-    final reportVM = ref.read(reportContractViewModelProvider.notifier);
-    final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
-
-    final status = detailState.status;
+    final (status, isCreator) = ref.watch(
+      detailContractViewModelProvider.select((s) => (s.status, s.isCreator)),
+    );
 
     return GestureDetector(
       onTap: () async {
         if (isPending.value) return;
         isPending.value = true;
         try {
+          // 콜백 내부에서만 쓰이는 필드는 탭 시점에 최신값을 읽음
+          final detailState = ref.read(detailContractViewModelProvider);
+
           // 1. 계약서 초안 상태 (계약서 수정하기)
           if (status == ContractStatus.ready) {
-            createVM.setRevisionRequestedMode(true);
+            final createVM = ref.read(createContractViewModelProvider.notifier);
+            createVM.setCreatePageMode(CreatePageMode.editMode);
 
             createVM.loadFromDraft(
               publicCode: detailState.publicCode,
@@ -48,11 +49,11 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
               role: detailState.myRole,
               attachmentIds: detailState.attachmentIds,
               existingAttachmentUrls: detailState.attachmentImageUrls,
-              tradingPlatform: detailState.tradingPlatform ?? '',
-              title: detailState.title ?? '',
-              price: detailState.price ?? 0,
-              conditionSummary: detailState.conditionSummary ?? '',
-              conditionDetails: detailState.conditionDetails ?? '',
+              tradingPlatform: detailState.tradingPlatform,
+              title: detailState.title,
+              price: detailState.price,
+              conditionSummary: detailState.conditionSummary,
+              conditionDetails: detailState.conditionDetails,
               warrantyPeriodDays: detailState.warrantyPeriodDays,
             );
 
@@ -62,6 +63,9 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
           } else if (status == ContractStatus.revisionRequested &&
               detailState.isCreator) {
             // 최신 수정 요청 내용 불러오기
+            final revisionVM = ref.read(
+              revisionRequestViewModelProvider.notifier,
+            );
             final success = await revisionVM.getLatestRevisionReason(
               detailState.publicCode,
             );
@@ -97,6 +101,7 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
             // 3. 신고 접수 상태
           } else if (status == ContractStatus.reported) {
             //  최근 신고 내용 조회
+            final reportVM = ref.read(reportContractViewModelProvider.notifier);
             final success = await reportVM.readReport(detailState.publicCode);
             if (!context.mounted) return;
             if (!success) {
@@ -110,6 +115,7 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
             // 4. 취소 요청 상태
           } else if (status == ContractStatus.cancelRequested) {
             // 취소 요청 내용 조회
+            final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
             final success = await cancelVM.readCancel(detailState.publicCode);
             if (!context.mounted) return;
             if (!success) {
@@ -145,11 +151,9 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               alignment: Alignment.center,
-              child: Icon(
-                status.bannerIcon(detailState.isCreator),
-                color: status.bannerIconColor(context),
-                size: 24,
-              ),
+              child: status
+                  .bannerIcon(isCreator)
+                  .copyWith(color: status.bannerIconColor(context)),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -157,11 +161,9 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (status
-                      .bannerTopLabel(detailState.isCreator)
-                      .isNotEmpty) ...[
+                  if (status.bannerTopLabel(isCreator).isNotEmpty) ...[
                     Text(
-                      status.bannerTopLabel(detailState.isCreator),
+                      status.bannerTopLabel(isCreator),
                       style: context.txt(
                         color: vrc(context).textTertiary,
                         fontSize: 12,
@@ -170,7 +172,7 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
                     const SizedBox(height: 2),
                   ],
                   Text(
-                    status.bannerBottomLabel(detailState.isCreator),
+                    status.bannerBottomLabel(isCreator),
                     style: context.txt(
                       color: vrc(context).textPrimary,
                       fontWeight: FontWeight.w700,

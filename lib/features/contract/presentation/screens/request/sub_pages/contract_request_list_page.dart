@@ -13,8 +13,9 @@ class ContractRequestListPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeState = ref.watch(homeContractViewModelProvider);
-
+    final requestedContracts = ref.watch(
+      homeContractViewModelProvider.select((s) => s.requestedContracts),
+    );
     final isPending = useState(false);
 
     return PendingOverlay(
@@ -27,11 +28,9 @@ class ContractRequestListPage extends HookConsumerWidget {
         ),
         body: ListView.builder(
           padding: const EdgeInsets.all(20),
-          itemCount: homeState.requestedContracts.length,
-          itemBuilder: (_, i) => ContractCard(
-            c: homeState.requestedContracts[i],
-            isPending: isPending,
-          ),
+          itemCount: requestedContracts.length,
+          itemBuilder: (_, i) =>
+              ContractCard(c: requestedContracts[i], isPending: isPending),
         ),
       ),
     );

@@ -11,17 +11,6 @@ import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/profile/domain/enums/terms_type.dart';
 import 'package:trana/features/profile/presentation/viewmodels/term_detail_view_model.dart';
 
-/// <br> 태그를 줄바꿈으로 변환 (표 셀 내 줄바꿈 지원)
-class _BrInlineSyntax extends md.InlineSyntax {
-  _BrInlineSyntax() : super(r'<br\s*/?>', caseSensitive: false);
-
-  @override
-  bool onMatch(md.InlineParser parser, Match match) {
-    parser.addNode(md.Element.empty('br'));
-    return true;
-  }
-}
-
 /// 약관 전문 마크다운 렌더 화면
 class TermsDetailPage extends HookConsumerWidget {
   /// 약관 id로 조회
@@ -106,9 +95,9 @@ class TermsDetailPage extends HookConsumerWidget {
 
     return MarkdownConfig(
       configs: [
-        H1Config(style: heading(22)),
-        H2Config(style: heading(19)),
-        H3Config(style: heading(16)),
+        _H1DividerConfig(style: heading(22), dividerColor: border),
+        _H2DividerConfig(style: heading(19), dividerColor: border),
+        _H3DividerConfig(style: heading(16), dividerColor: border),
         H4Config(style: heading(15)),
         PConfig(
           textStyle: TextStyle(
@@ -138,4 +127,61 @@ class TermsDetailPage extends HookConsumerWidget {
       ],
     );
   }
+}
+
+/// <br> 태그를 줄바꿈으로 변환 (표 셀 내 줄바꿈 지원)
+class _BrInlineSyntax extends md.InlineSyntax {
+  _BrInlineSyntax() : super(r'<br\s*/?>', caseSensitive: false);
+
+  @override
+  bool onMatch(md.InlineParser parser, Match match) {
+    parser.addNode(md.Element.empty('br'));
+    return true;
+  }
+}
+
+/// 제목-밑줄(divider) 간 간격
+const _dividerSpace = 6.0;
+
+/// 밑줄(divider)-본문 간 간격 (기본값 top: 8, bottom: 4)
+const _headingPadding = EdgeInsets.only(top: 14, bottom: 0);
+
+/// 제목 밑줄(divider) 색상/간격을 지정할 수 있도록 오버라이드한 H1/H2/H3Config
+class _H1DividerConfig extends H1Config {
+  const _H1DividerConfig({required this.dividerColor, required super.style});
+
+  final Color dividerColor;
+
+  @override
+  HeadingDivider? get divider =>
+      HeadingDivider.h1.copy(color: dividerColor, space: _dividerSpace);
+
+  @override
+  EdgeInsets get padding => _headingPadding;
+}
+
+class _H2DividerConfig extends H2Config {
+  const _H2DividerConfig({required this.dividerColor, required super.style});
+
+  final Color dividerColor;
+
+  @override
+  HeadingDivider? get divider =>
+      HeadingDivider.h2.copy(color: dividerColor, space: _dividerSpace);
+
+  @override
+  EdgeInsets get padding => _headingPadding;
+}
+
+class _H3DividerConfig extends H3Config {
+  const _H3DividerConfig({required this.dividerColor, required super.style});
+
+  final Color dividerColor;
+
+  @override
+  HeadingDivider? get divider =>
+      HeadingDivider.h3.copy(color: dividerColor, space: _dividerSpace);
+
+  @override
+  EdgeInsets get padding => _headingPadding;
 }

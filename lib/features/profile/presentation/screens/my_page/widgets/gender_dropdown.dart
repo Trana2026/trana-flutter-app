@@ -14,9 +14,8 @@ class GenderDropdown extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mypageState = ref.watch(myPageViewModelProvider);
-    final editProfileVM = ref.read(editProfileViewModelProvider.notifier);
-    final selectedGender = useState(mypageState.gender ?? Gender.none);
+    final gender = ref.read(myPageViewModelProvider).gender;
+    final selectedGender = useState(gender ?? Gender.none);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,6 +31,10 @@ class GenderDropdown extends HookConsumerWidget {
             isExpanded: false,
             onChanged: (v) {
               selectedGender.value = v!;
+
+              final editProfileVM = ref.read(
+                editProfileViewModelProvider.notifier,
+              );
               editProfileVM.updateGender(v);
             },
             items: [

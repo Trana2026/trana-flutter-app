@@ -13,15 +13,20 @@ class ContractDetailHeader extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final cancelState = ref.watch(cancelContractViewModelProvider);
-    final reportState = ref.watch(reportContractViewModelProvider);
-    final revisionState = ref.watch(revisionRequestViewModelProvider);
-
-    final status = detailState.status;
-    final isMyCancel = cancelState.recentCancel?.isMine == true;
-    final isMyReport = reportState.recentReport?.isMine == true;
-    final revisionDone = revisionState.revisionDone;
+    final (status, isCreator) = ref.watch(
+      detailContractViewModelProvider.select(
+        (s) => (s.status, s.isCreator),
+      ),
+    );
+    final isMyCancel = ref.watch(
+      cancelContractViewModelProvider.select((s) => s.recentCancelIsMine),
+    );
+    final isMyReport = ref.watch(
+      reportContractViewModelProvider.select((s) => s.recentReportIsMine),
+    );
+    final revisionDone = ref.watch(
+      revisionRequestViewModelProvider.select((s) => s.revisionDone),
+    );
 
     return Column(
       children: [
@@ -41,7 +46,7 @@ class ContractDetailHeader extends HookConsumerWidget {
                   const SizedBox(height: 4),
                   Text(
                     status.statusLabel(
-                      isCreator: detailState.isCreator,
+                      isCreator: isCreator,
                       isMyCancel: isMyCancel,
                       isMyReport: isMyReport,
                       revisionDone: revisionDone,

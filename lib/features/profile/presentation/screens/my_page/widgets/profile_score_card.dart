@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
+import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/profile/presentation/viewmodels/my_page_view_model.dart';
 import 'package:trana/features/user/presentation/providers/me_provider.dart';
 
@@ -10,9 +12,12 @@ class ProfileScoreCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mypageState = ref.watch(myPageViewModelProvider);
     final shareCode = ref.watch(meProvider).value?.shareCode;
-    // meProvider 로딩 전이면 null이므로 이 경우에만 배지 미표시
+    final (name, userVerified, trustScore) = ref.watch(
+      myPageViewModelProvider.select(
+        (s) => (s.name, s.userVerified, s.trustScore),
+      ),
+    );
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -28,7 +33,7 @@ class ProfileScoreCard extends HookConsumerWidget {
             children: [
               Flexible(
                 child: Text(
-                  mypageState.name,
+                  name,
                   overflow: TextOverflow.ellipsis,
                   style: context.txt(
                     color: vrc(context).textPrimary,
@@ -37,23 +42,31 @@ class ProfileScoreCard extends HookConsumerWidget {
                   ),
                 ),
               ),
+
+              // meProvider 로딩 전이면 null이므로 이 경우에만 배지 미표시
               if (shareCode != null) ...[
                 const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
-                  ),
-                  decoration: BoxDecoration(
-                    color: vrc(context).secondaryColor,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    shareCode,
-                    style: context.txt(
-                      color: vrc(context).textSecondary,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
+                InkWell(
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: shareCode));
+                    showNormalToast(context, "고유코드가 복사되었습니다");
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: vrc(context).secondaryColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      shareCode,
+                      style: context.txt(
+                        color: vrc(context).textSecondary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
@@ -65,15 +78,15 @@ class ProfileScoreCard extends HookConsumerWidget {
               Icon(
                 Icons.shield_rounded,
                 size: 16,
-                color: mypageState.userVerified
+                color: userVerified
                     ? fxc(context).brandColor
                     : vrc(context).textTertiary,
               ),
               const SizedBox(width: 4),
               Text(
-                mypageState.userVerified ? "신원 인증 완료" : "신원 인증 미완료",
+                userVerified ? "신원 인증 완료" : "신원 인증 미완료",
                 style: context.txt(
-                  color: mypageState.userVerified
+                  color: userVerified
                       ? fxc(context).brandColor
                       : vrc(context).textTertiary,
                 ),
@@ -91,7 +104,7 @@ class ProfileScoreCard extends HookConsumerWidget {
               ),
               const Spacer(),
               Text(
-                mypageState.trustScore.toString(),
+                trustScore.toString(),
                 style: context.txt(
                   color: vrc(context).textPrimary,
                   fontSize: 18,
@@ -124,7 +137,7 @@ class ProfileScoreCard extends HookConsumerWidget {
                     ],
                   ).createShader(bounds),
                   child: LinearProgressIndicator(
-                    value: mypageState.trustScore / 100,
+                    value: trustScore / 100,
                     minHeight: 8,
                     backgroundColor: Colors.transparent,
                   ),

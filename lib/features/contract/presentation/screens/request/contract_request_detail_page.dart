@@ -9,7 +9,6 @@ import 'package:trana/core/widgets/custom_bottom_sheet.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
-import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/minor_disclosure_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/receive_contract_view_model.dart';
@@ -22,10 +21,14 @@ class ContractRequestDetailPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final receiveVM = ref.read(receiveContractViewModelProvider.notifier);
-    final disclosureVM = ref.read(minorDisclosureViewModelProvider.notifier);
-
+    final (isLoadingData, pdfBytes, isSeller) = ref.watch(
+      detailContractViewModelProvider.select(
+        (s) => (s.isLoadingData, s.pdfBytes, s.isSeller),
+      ),
+    );
+    final DetailContractState(:publicCode, :counterpartyIsMinor) = ref.read(
+      detailContractViewModelProvider,
+    );
     final isPending = useState(false);
 
     return PendingOverlay(
@@ -42,13 +45,13 @@ class ContractRequestDetailPage extends HookConsumerWidget {
             children: [
               Expanded(
                 child: ContractPdfPreviewCard(
-                  isLoading: detailState.isLoadingData,
-                  pdfBytes: detailState.pdfBytes,
+                  isLoading: isLoadingData,
+                  pdfBytes: pdfBytes,
                 ),
               ),
 
               // 판매자일 때만 보증 기간 선택 영역 노출
-              if (detailState.myRole == Role.seller) ...[
+              if (isSeller) ...[
                 const SizedBox(height: 12),
                 const ContractWarrantySection(),
               ],
@@ -75,10 +78,13 @@ class ContractRequestDetailPage extends HookConsumerWidget {
                       if (isPending.value) return;
                       isPending.value = true;
                       try {
-                        if (detailState.myRole == Role.seller) {
+                        if (isSeller) {
                           // 수신자(판매자) 보증 기간 변경 (판매자일 때)
+                          final receiveVM = ref.read(
+                            receiveContractViewModelProvider.notifier,
+                          );
                           final success = await receiveVM.receiverWarranty(
-                            detailState.publicCode,
+                            publicCode,
                           );
                           if (!context.mounted) return;
                           if (!success) {
@@ -91,8 +97,11 @@ class ContractRequestDetailPage extends HookConsumerWidget {
                           }
                         }
 
-                        if (detailState.counterpartyIsMinor) {
+                        if (counterpartyIsMinor) {
                           // 미성년자 위험 고지 문구 조회 (상대가 미성년자일 때)
+                          final disclosureVM = ref.read(
+                            minorDisclosureViewModelProvider.notifier,
+                          );
                           final success = await disclosureVM.readText();
                           if (!context.mounted) return;
                           if (!success) {

@@ -18,20 +18,19 @@ class EditProfilePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mypageState = ref.watch(myPageViewModelProvider);
-    final editProfileVM = ref.read(editProfileViewModelProvider.notifier);
-    final isEditing = useState(false);
+    final MyPageState(:name, :gender, :phone, :birthDate, :email) = ref.read(
+      myPageViewModelProvider,
+    );
 
-    final nameCtr = useTextEditingController(text: mypageState.name);
+    final nameCtr = useTextEditingController(text: name);
     final genderCtr = useTextEditingController(
-      text: mypageState.gender == null ? '미등록' : mypageState.gender?.label,
+      text: gender == null ? '미등록' : gender.label,
     );
-    final phoneCtr = useTextEditingController(
-      text: mypageState.phone?.toPhoneFormat,
-    );
-    final birthCtr = useTextEditingController(text: mypageState.birthDate);
-    final emailCtr = useTextEditingController(text: mypageState.email);
+    final phoneCtr = useTextEditingController(text: phone?.toPhoneFormat);
+    final birthCtr = useTextEditingController(text: birthDate);
+    final emailCtr = useTextEditingController(text: email);
     final emailError = useState<String?>(null);
+    final isEditing = useState(false);
 
     useListenable(nameCtr);
     useListenable(genderCtr);
@@ -123,11 +122,15 @@ class EditProfilePage extends HookConsumerWidget {
                 // 수정중일 때
               } else {
                 if (emailCtr.text.isNotEmpty &&
-                    (mypageState.email != emailCtr.text)) {
+                    (ref.read(myPageViewModelProvider).email !=
+                        emailCtr.text)) {
                   emailError.value = Validation.email(emailCtr.text);
                   if (emailError.value != null) return;
                 }
 
+                final editProfileVM = ref.read(
+                  editProfileViewModelProvider.notifier,
+                );
                 editProfileVM.updateEmail(
                   emailCtr.text.isEmpty ? null : emailCtr.text,
                 );

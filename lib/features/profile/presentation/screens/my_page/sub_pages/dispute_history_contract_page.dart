@@ -14,8 +14,9 @@ class DisputeHistoryContractPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeState = ref.watch(homeContractViewModelProvider);
-
+    final disputingContracts = ref.watch(
+      homeContractViewModelProvider.select((s) => s.disputingContracts),
+    );
     final isPending = useState(false);
 
     return PendingOverlay(
@@ -26,15 +27,15 @@ class DisputeHistoryContractPage extends HookConsumerWidget {
           title: "신고/분쟁 내역",
           onTapLeading: () => context.pop(),
         ),
-        body: homeState.disputingContracts.isEmpty
+        body: disputingContracts.isEmpty
             ? EmptyContractView(emptyText: "분쟁 중인 계약이 없어요")
             : Padding(
                 padding: const EdgeInsets.all(20),
                 child: ListView.builder(
                   padding: EdgeInsets.zero,
-                  itemCount: homeState.disputingContracts.length,
+                  itemCount: disputingContracts.length,
                   itemBuilder: (_, i) => ContractCard(
-                    c: homeState.disputingContracts[i],
+                    c: disputingContracts[i],
                     isPending: isPending,
                   ),
                 ),

@@ -14,10 +14,9 @@ class ContractPagesView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final revisionVM = ref.read(revisionRequestViewModelProvider.notifier);
-
-    final contents = detailState.contents;
+    final contents = ref.watch(
+      detailContractViewModelProvider.select((s) => s.contents),
+    );
     final selectedFields = useState<Set<String>>({});
 
     void onToggle(String field, bool selected) {
@@ -28,7 +27,10 @@ class ContractPagesView extends HookConsumerWidget {
         updated.remove(field);
       }
       selectedFields.value = updated;
+
+      final revisionVM = ref.read(revisionRequestViewModelProvider.notifier);
       revisionVM.updateSelectedFields(updated);
+
       onSelectedCountChanged(updated.length);
     }
 

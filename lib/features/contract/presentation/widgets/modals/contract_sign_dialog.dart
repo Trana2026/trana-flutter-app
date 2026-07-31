@@ -25,12 +25,15 @@ class ContractSignDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final signVM = ref.read(signContractViewModelProvider.notifier);
-
+    final canCancel = ref.watch(
+      detailContractViewModelProvider.select((s) => s.canCancel),
+    );
+    final DetailContractState(:publicCode, :isCreator) = ref.read(
+      detailContractViewModelProvider,
+    );
     final hasSignature = useState(false);
-    final signatureKey = useMemoized(() => GlobalKey<SfSignaturePadState>());
     final canSubmit = hasSignature.value;
+    final signatureKey = useMemoized(() => GlobalKey<SfSignaturePadState>());
     final isPending = useState(false);
 
     final me = ref.read(meProvider).value;
@@ -65,7 +68,7 @@ class ContractSignDialog extends HookConsumerWidget {
                               color: vrc(context).iconDisable,
                             ),
                           )
-                        : const SizedBox(width: 24),
+                        : const SizedBox(width: 24, height: 24),
                     Text(
                       "전자 서명 및 최종확인",
                       style: context.txt(
@@ -74,7 +77,7 @@ class ContractSignDialog extends HookConsumerWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(width: 24),
+                    const SizedBox(width: 24, height: 24),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -152,7 +155,7 @@ class ContractSignDialog extends HookConsumerWidget {
                     Expanded(
                       child: PrimaryButton.mono(
                         text: "취소",
-                        disabled: !detailState.canCancel,
+                        disabled: !canCancel,
                         onTap: () => context.pop(),
                       ),
                     ),
@@ -177,17 +180,16 @@ class ContractSignDialog extends HookConsumerWidget {
                               );
                               return;
                             }
+                            final signVM = ref.read(
+                              signContractViewModelProvider.notifier,
+                            );
                             signVM.getSignature(signature);
 
-                            final success = detailState.isCreator
+                            final success = isCreator
                                 // 요청자일 때 > 최종 서명
-                                ? await signVM.creatorSign(
-                                    detailState.publicCode,
-                                  )
+                                ? await signVM.creatorSign(publicCode)
                                 // 수신자일 때 > 수신자 서명
-                                : await signVM.receiverSign(
-                                    detailState.publicCode,
-                                  );
+                                : await signVM.receiverSign(publicCode);
                             if (!context.mounted) return;
                             if (!success) {
                               final state = ref.read(
@@ -198,12 +200,13 @@ class ContractSignDialog extends HookConsumerWidget {
                               return;
                             }
 
-                            Navigator.of(context).pop();
+                            Navigator.pop(context);
+
                             if (parentContext != null &&
                                 parentContext!.mounted) {
                               showCustomBottomSheet(
                                 parentContext!,
-                                detailState.isCreator
+                                isCreator
                                     // 요청자일 때
                                     ? const ContractDoneBottomSheet()
                                     // 수신자일 때
@@ -226,53 +229,3 @@ class ContractSignDialog extends HookConsumerWidget {
     );
   }
 }
-
-// class _Warning extends StatelessWidget {
-//   const _Warning({required this.title, required this.content});
-
-//   final String title;
-//   final String content;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       width: double.infinity,
-//       decoration: BoxDecoration(
-//         color: fxc(context).opacityError,
-//         borderRadius: BorderRadius.circular(18),
-//       ),
-//       child: Padding(
-//         padding: const EdgeInsets.all(16),
-//         child: Row(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Icon(CooliconsIcon.triangleWarning, color: fxc(context).iconDanger),
-//             const SizedBox(width: 12),
-//             Expanded(
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Text(
-//                     title,
-//                     style: context.txt(
-//                       color: fxc(context).textDanger,
-//                       fontSize: 12,
-//                       fontWeight: FontWeight.w700,
-//                     ),
-//                   ),
-//                   Text(
-//                     content,
-//                     style: context.txt(
-//                       color: fxc(context).textDanger,
-//                       fontSize: 12,
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

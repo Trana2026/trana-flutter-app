@@ -19,7 +19,9 @@ abstract class CancelContractState with _$CancelContractState {
     CancellationReason reason, // 취소 사유
     @Default('') String detail, // 상세 내용
 
-    ContractCancellationEntity? recentCancel, // 최근 취소 내역
+    String? recentCancelReason, // 최근 취소 사유
+    String? recentCancelDetail, // 최근 취소 상세 내용
+    @Default(false) bool recentCancelIsMine, // 최근 취소가 본인 요청인지 여부
 
     String? error,
   }) = _CancelContractState;
@@ -45,12 +47,19 @@ class CancelContractViewModel extends _$CancelContractViewModel {
         .readActiveCancellation(publicCode);
 
     state = switch (result) {
-      Success(:final data) => state.copyWith(recentCancel: data),
+      Success(:final data) => _applyRecentCancel(data),
       Failure(:final failure) => state.copyWith(error: failure.message),
     };
 
     return result is Success;
   }
+
+  CancelContractState _applyRecentCancel(ContractCancellationEntity? recent) =>
+      state.copyWith(
+        recentCancelReason: recent?.reason,
+        recentCancelDetail: recent?.detail,
+        recentCancelIsMine: recent?.isMine ?? false,
+      );
 
   /// 취소 요청 접수 (성공 여부 반환)
   Future<bool> requestCancel(String publicCode) async {
@@ -81,7 +90,7 @@ class CancelContractViewModel extends _$CancelContractViewModel {
         .confirmCancellation(publicCode);
 
     state = switch (result) {
-      Success() => state.copyWith(recentCancel: null),
+      Success() => _applyRecentCancel(null),
       Failure(:final failure) => state.copyWith(error: failure.message),
     };
 
@@ -99,7 +108,7 @@ class CancelContractViewModel extends _$CancelContractViewModel {
         .revokeCancellation(publicCode);
 
     state = switch (result) {
-      Success() => state.copyWith(recentCancel: null),
+      Success() => _applyRecentCancel(null),
       Failure(:final failure) => state.copyWith(error: failure.message),
     };
 

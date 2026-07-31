@@ -15,13 +15,12 @@ class InquiryDetailBottomSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final inquiryState = ref.watch(inquiryViewModelProvider);
+    final InquiryState(:selectedTitle, :selectedContent) = ref.read(
+      inquiryViewModelProvider,
+    );
 
-    final initialTitle = inquiryState.selectedInquiryDetail?.title;
-    final initialContent = inquiryState.selectedInquiryDetail?.content;
-
-    final titleCtr = useTextEditingController(text: initialTitle);
-    final contentCtr = useTextEditingController(text: initialContent);
+    final titleCtr = useTextEditingController(text: selectedTitle);
+    final contentCtr = useTextEditingController(text: selectedContent);
 
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),

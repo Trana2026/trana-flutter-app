@@ -18,9 +18,14 @@ class ContractFinalPreviewPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final disclosureVM = ref.read(minorDisclosureViewModelProvider.notifier);
-
+    final (isLoadingData, pdfBytes) = ref.watch(
+      detailContractViewModelProvider.select(
+        (s) => (s.isLoadingData, s.pdfBytes),
+      ),
+    );
+    final counterpartyIsMinor = ref
+        .read(detailContractViewModelProvider)
+        .counterpartyIsMinor;
     final isPending = useState(false);
 
     return PendingOverlay(
@@ -37,8 +42,8 @@ class ContractFinalPreviewPage extends HookConsumerWidget {
             children: [
               Expanded(
                 child: ContractPdfPreviewCard(
-                  isLoading: detailState.isLoadingData,
-                  pdfBytes: detailState.pdfBytes,
+                  isLoading: isLoadingData,
+                  pdfBytes: pdfBytes,
                 ),
               ),
             ],
@@ -53,8 +58,11 @@ class ContractFinalPreviewPage extends HookConsumerWidget {
                 if (isPending.value) return;
                 isPending.value = true;
                 try {
-                  if (detailState.counterpartyIsMinor) {
+                  if (counterpartyIsMinor) {
                     // 미성년자 위험 고지 문구 조회 (상대가 미성년자일 때)
+                    final disclosureVM = ref.read(
+                      minorDisclosureViewModelProvider.notifier,
+                    );
                     final success = await disclosureVM.readText();
                     if (!context.mounted) return;
                     if (!success) {

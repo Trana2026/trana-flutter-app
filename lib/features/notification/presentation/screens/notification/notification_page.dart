@@ -17,12 +17,22 @@ class NotificationPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notiState = ref.watch(notificationViewModelProvider);
-    final notiVM = ref.read(notificationViewModelProvider.notifier);
+    final (:isLoadingNotis, :isLoadingMoreNotis, :notifications, :hasNext) = ref
+        .watch(
+          notificationViewModelProvider.select(
+            (s) => (
+              isLoadingNotis: s.isLoadingNotis,
+              isLoadingMoreNotis: s.isLoadingMoreNotis,
+              notifications: s.notifications,
+              hasNext: s.hasNext,
+            ),
+          ),
+        );
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         // 알림 목록 최초 조회
+        final notiVM = ref.read(notificationViewModelProvider.notifier);
         final success = await notiVM.loadNotifications();
         if (!context.mounted) return;
         if (!success) {
@@ -40,9 +50,9 @@ class NotificationPage extends HookConsumerWidget {
         title: "알림",
         onTapLeading: () => context.pop(),
       ),
-      body: notiState.isLoadingNotis && notiState.notifications.isEmpty
+      body: isLoadingNotis && notifications.isEmpty
           ? const Center(child: CustomLoadingBar())
-          : notiState.notifications.isEmpty
+          : notifications.isEmpty
           ? Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -65,18 +75,20 @@ class NotificationPage extends HookConsumerWidget {
             )
           : ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 10),
-              itemCount:
-                  notiState.notifications.length + (notiState.hasNext ? 1 : 0),
+              itemCount: notifications.length + (hasNext ? 1 : 0),
               itemBuilder: (context, i) {
-                if (i == notiState.notifications.length) {
+                if (i == notifications.length) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     child: Center(
-                      child: notiState.isLoadingMoreNotis
+                      child: isLoadingMoreNotis
                           ? const CustomLoadingBar()
                           : GestureDetector(
                               onTap: () async {
                                 // 알림 목록 추가 조회
+                                final notiVM = ref.read(
+                                  notificationViewModelProvider.notifier,
+                                );
                                 final success = await notiVM.loadMore();
                                 if (!context.mounted) return;
                                 if (!success) {
@@ -93,7 +105,7 @@ class NotificationPage extends HookConsumerWidget {
                   );
                 }
 
-                final noti = notiState.notifications[i];
+                final noti = notifications[i];
                 return Dismissible(
                   key: ValueKey(noti.id),
                   direction: DismissDirection.endToStart,
@@ -108,6 +120,9 @@ class NotificationPage extends HookConsumerWidget {
                   ),
                   onDismissed: (_) async {
                     // 알림 삭제
+                    final notiVM = ref.read(
+                      notificationViewModelProvider.notifier,
+                    );
                     final success = await notiVM.deleteNotification(noti.id);
                     if (!context.mounted) return;
                     if (!success) {

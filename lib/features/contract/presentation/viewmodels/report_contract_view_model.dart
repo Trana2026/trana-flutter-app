@@ -15,10 +15,13 @@ part 'report_contract_view_model.g.dart';
 @freezed
 abstract class ReportContractState with _$ReportContractState {
   const factory ReportContractState({
-    @Default('') String reason, // 신고 사유
-    @Default('') String detail, // 상세 내용
+    @Default('') String reason, // 신고 사유 입력값
+    @Default('') String detail, // 상세 내용 입력값
 
-    ContractDisputeEntity? recentReport, // 최근 신고 내역
+    int? recentReportId, // 최근 신고 ID
+    String? recentReportReason, // 최근 신고 사유
+    String? recentReportDetail, // 최근 신고 상세 내용
+    @Default(false) bool recentReportIsMine, // 최근 신고가 본인 신고인지 여부
 
     String? error,
   }) = _ReportContractState;
@@ -63,10 +66,8 @@ class ReportContractViewModel extends _$ReportContractViewModel {
         .readDisputes(publicCode);
 
     state = switch (result) {
-      Success(:final data) => state.copyWith(
-        recentReport: data
-            .where((d) => d.status == DisputeState.reported)
-            .firstOrNull,
+      Success(:final data) => _applyRecentReport(
+        data.where((d) => d.status == DisputeState.reported).firstOrNull,
       ),
       Failure(:final failure) => state.copyWith(error: failure.message),
     };
@@ -74,9 +75,17 @@ class ReportContractViewModel extends _$ReportContractViewModel {
     return result is Success;
   }
 
+  ReportContractState _applyRecentReport(ContractDisputeEntity? recent) =>
+      state.copyWith(
+        recentReportId: recent?.disputeId,
+        recentReportReason: recent?.reason,
+        recentReportDetail: recent?.detail,
+        recentReportIsMine: recent?.isMine ?? false,
+      );
+
   /// 신고 취소 (성공 여부 반환)
   Future<bool> cancelReport(String publicCode) async {
-    if (state.recentReport == null) {
+    if (state.recentReportId == null) {
       state = state.copyWith(error: "신고 정보를 찾을 수 없습니다");
       return false;
     }
@@ -85,7 +94,7 @@ class ReportContractViewModel extends _$ReportContractViewModel {
         .read(contractDisputeRepositoryProvider)
         .cancelDispute(
           publicCode: publicCode,
-          disputeId: state.recentReport!.disputeId,
+          disputeId: state.recentReportId!,
         );
 
     if (result case Failure(:final failure)) {

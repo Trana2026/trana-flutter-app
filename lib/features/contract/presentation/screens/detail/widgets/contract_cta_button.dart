@@ -8,7 +8,7 @@ import 'package:trana/core/widgets/custom_dialog.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
-import 'package:trana/features/contract/domain/enums/role.dart';
+import 'package:trana/features/contract/domain/enums/create_page_mode.dart';
 import 'package:trana/features/contract/presentation/extensions/contract_status_ui.dart';
 import 'package:trana/features/contract/presentation/viewmodels/cancel_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/complete_contract_view_model.dart';
@@ -28,15 +28,20 @@ class ContractCtaButtons extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final reportState = ref.watch(reportContractViewModelProvider);
-    final cancelState = ref.watch(cancelContractViewModelProvider);
-    final revisionState = ref.watch(revisionRequestViewModelProvider);
-    final detailState = ref.watch(detailContractViewModelProvider);
-
-    final status = detailState.status;
-    final isCreator = detailState.isCreator;
-    final isSeller =
-        (detailState.myRole != null) && (detailState.myRole! == Role.seller);
+    final reportIsMine = ref.watch(
+      reportContractViewModelProvider.select((s) => s.recentReportIsMine),
+    );
+    final cancelIsMine = ref.watch(
+      cancelContractViewModelProvider.select((s) => s.recentCancelIsMine),
+    );
+    final revisionDone = ref.watch(
+      revisionRequestViewModelProvider.select((s) => s.revisionDone),
+    );
+    final (status, isCreator, isSeller, canCancel) = ref.watch(
+      detailContractViewModelProvider.select(
+        (s) => (s.status, s.isCreator, s.isSeller, s.canCancel),
+      ),
+    );
 
     return switch (status) {
       // 초안 작성중
@@ -57,11 +62,7 @@ class ContractCtaButtons extends HookConsumerWidget {
               )
             : _CtaButtonRow(
                 primary: signButton(context, ref),
-                secondary: cancelButton(
-                  context,
-                  ref,
-                  disabled: !detailState.canCancel,
-                ),
+                secondary: cancelButton(context, ref, disabled: !canCancel),
               ),
       // 수정 요청
       ContractStatus.revisionRequested =>
@@ -70,7 +71,7 @@ class ContractCtaButtons extends HookConsumerWidget {
                 primary: requestSignButton(
                   context,
                   ref,
-                  disabled: !revisionState.revisionDone,
+                  disabled: !revisionDone,
                 ),
               )
             : _CtaButtonRow(
@@ -80,11 +81,7 @@ class ContractCtaButtons extends HookConsumerWidget {
       ContractStatus.receiverSigned =>
         isCreator
             ? _CtaButtonRow(
-                secondary: cancelButton(
-                  context,
-                  ref,
-                  disabled: !detailState.canCancel,
-                ),
+                secondary: cancelButton(context, ref, disabled: !canCancel),
                 primary: signButton(context, ref),
               )
             : _CtaButtonRow(
@@ -98,15 +95,11 @@ class ContractCtaButtons extends HookConsumerWidget {
       ),
       // 신고 접수
       ContractStatus.reported => _CtaButtonRow(
-        primary: cancelReportButton(
-          context,
-          ref,
-          disabled: reportState.recentReport?.isMine != true,
-        ),
+        primary: cancelReportButton(context, ref, disabled: !reportIsMine),
       ),
       // 취소
       ContractStatus.cancelRequested || ContractStatus.cancelled =>
-        (cancelState.recentCancel != null && cancelState.recentCancel!.isMine)
+        cancelIsMine
             ? _CtaButtonRow(primary: cancelRequestButton(context, ref))
             : _CtaButtonRow(primary: confirmCancelButton(context, ref)),
       // 거래 완료
@@ -125,9 +118,9 @@ class ContractCtaButtons extends HookConsumerWidget {
     WidgetRef ref, {
     bool disabled = false,
   }) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final detailVM = ref.read(detailContractViewModelProvider.notifier);
-    final deleteVM = ref.read(deleteContractViewModelProvider.notifier);
+    final DetailContractState(:status, :publicCode) = ref.read(
+      detailContractViewModelProvider,
+    );
 
     return _ctaButton(
       context,
@@ -138,11 +131,16 @@ class ContractCtaButtons extends HookConsumerWidget {
       onTap: () async {
         await showCustomDialog(
           context: context,
-          title: '삭제하시겠습니까?',
-          confirmText: '삭제하기',
+          title: '삭제 안내',
+          content: '초안을 삭제하시겠어요?\n삭제하면 작성한 내용이 모두 사라져요',
+          confirmText: '삭제',
+          confirmColor: fxc(context).statusDraft,
           onConfirm: () async {
-            if (detailState.status == ContractStatus.ready) {
+            if (status == ContractStatus.ready) {
               // READY > DRAFT 계약 상태 되돌림
+              final detailVM = ref.read(
+                detailContractViewModelProvider.notifier,
+              );
               final success = await detailVM.revert();
               if (!context.mounted) return;
               if (!success) {
@@ -154,7 +152,8 @@ class ContractCtaButtons extends HookConsumerWidget {
             }
 
             // Draft 삭제
-            final success = await deleteVM.deleteDraft(detailState.publicCode);
+            final deleteVM = ref.read(deleteContractViewModelProvider.notifier);
+            final success = await deleteVM.deleteDraft(publicCode);
             if (!context.mounted) return;
             if (!success) {
               final state = ref.read(deleteContractViewModelProvider);
@@ -195,8 +194,7 @@ class ContractCtaButtons extends HookConsumerWidget {
     WidgetRef ref, {
     bool disabled = false,
   }) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final reportVM = ref.read(reportContractViewModelProvider.notifier);
+    final publicCode = ref.read(detailContractViewModelProvider).publicCode;
 
     return _ctaButton(
       context,
@@ -210,7 +208,8 @@ class ContractCtaButtons extends HookConsumerWidget {
           title: '신고를 취소하시겠습니까?',
           onConfirm: () async {
             // 신고 취소
-            final success = await reportVM.cancelReport(detailState.publicCode);
+            final reportVM = ref.read(reportContractViewModelProvider.notifier);
+            final success = await reportVM.cancelReport(publicCode);
             if (!context.mounted) return;
             if (!success) {
               final state = ref.read(reportContractViewModelProvider);
@@ -229,8 +228,7 @@ class ContractCtaButtons extends HookConsumerWidget {
     WidgetRef ref, {
     bool disabled = false,
   }) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
+    final publicCode = ref.read(detailContractViewModelProvider).publicCode;
 
     return _ctaButton(
       context,
@@ -244,7 +242,8 @@ class ContractCtaButtons extends HookConsumerWidget {
           title: '취소 요청을 취소하시겠습니까?',
           onConfirm: () async {
             // 취소 요청 취소
-            final success = await cancelVM.revokeCancel(detailState.publicCode);
+            final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
+            final success = await cancelVM.revokeCancel(publicCode);
             if (!context.mounted) return;
             if (!success) {
               final state = ref.read(cancelContractViewModelProvider);
@@ -263,8 +262,7 @@ class ContractCtaButtons extends HookConsumerWidget {
     WidgetRef ref, {
     bool disabled = false,
   }) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
+    final publicCode = ref.read(detailContractViewModelProvider).publicCode;
 
     return _ctaButton(
       context,
@@ -274,7 +272,8 @@ class ContractCtaButtons extends HookConsumerWidget {
       disabled: disabled,
       onTap: () async {
         // 취소 요청 내용 조회
-        final success = await cancelVM.readCancel(detailState.publicCode);
+        final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
+        final success = await cancelVM.readCancel(publicCode);
         if (!context.mounted) return;
         if (!success) {
           final state = ref.read(cancelContractViewModelProvider);
@@ -294,8 +293,9 @@ class ContractCtaButtons extends HookConsumerWidget {
     WidgetRef ref, {
     bool disabled = false,
   }) {
-    final detailState = ref.read(detailContractViewModelProvider);
-    final shareVM = ref.read(shareContractViewModelProvider.notifier);
+    final DetailContractState(:status, :publicCode) = ref.read(
+      detailContractViewModelProvider,
+    );
 
     return _ctaButton(
       context,
@@ -304,13 +304,14 @@ class ContractCtaButtons extends HookConsumerWidget {
       disabled: disabled,
       onTap: () async {
         // 1. 수정 요청 상태일 때
-        if (detailState.status == ContractStatus.revisionRequested) {
+        if (status == ContractStatus.revisionRequested) {
           await showCustomDialog(
             context: context,
             title: '거래 상대방에게\n다시 서명을 요청하시겠습니까?',
             onConfirm: () async {
               // 재서명 요청
-              final success = await shareVM.reshare(detailState.publicCode);
+              final shareVM = ref.read(shareContractViewModelProvider.notifier);
+              final success = await shareVM.reshare(publicCode);
               if (!context.mounted) return;
               if (!success) {
                 final state = ref.read(shareContractViewModelProvider);
@@ -322,7 +323,7 @@ class ContractCtaButtons extends HookConsumerWidget {
 
           // 2. 계약서 초안 상태일 때
         } else {
-          context.push(AppRoutes.contractShare, extra: detailState.publicCode);
+          context.push(AppRoutes.contractShare, extra: publicCode);
         }
       },
     );
@@ -334,8 +335,7 @@ class ContractCtaButtons extends HookConsumerWidget {
     WidgetRef ref, {
     bool disabled = false,
   }) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-    final completeVM = ref.read(completeContractViewModelProvider.notifier);
+    final publicCode = ref.read(detailContractViewModelProvider).publicCode;
 
     return _ctaButton(
       context,
@@ -345,10 +345,14 @@ class ContractCtaButtons extends HookConsumerWidget {
       onTap: () async {
         await showCustomDialog(
           context: context,
-          title: '거래 완료를 확정하시겠습니까?',
+          title: '거래 완료 안내',
+          content: '확정하시면 이 거래는 완료 처리돼요\n(판매자 보증은 확정 후 3일간 진행)',
           onConfirm: () async {
             // 거래 완료
-            final success = await completeVM.complete(detailState.publicCode);
+            final completeVM = ref.read(
+              completeContractViewModelProvider.notifier,
+            );
+            final success = await completeVM.complete(publicCode);
             if (!context.mounted) return;
             if (!success) {
               final state = ref.read(completeContractViewModelProvider);
@@ -363,14 +367,13 @@ class ContractCtaButtons extends HookConsumerWidget {
 
   /// 계약서 다운로드 버튼
   Widget downloadButton(BuildContext context, WidgetRef ref) {
-    final detailVM = ref.read(detailContractViewModelProvider.notifier);
-
     return _ctaButton(
       context,
       ref,
       text: "거래 계약서 다운로드",
       onTap: () async {
         // PDF 공유/저장
+        final detailVM = ref.read(detailContractViewModelProvider.notifier);
         final success = await detailVM.downloadPdf();
         if (!context.mounted) return;
         if (!success) {
@@ -385,24 +388,26 @@ class ContractCtaButtons extends HookConsumerWidget {
   /// 이어서 작성 버튼
   Widget writeButton(BuildContext context, WidgetRef ref) {
     final detailState = ref.read(detailContractViewModelProvider);
-    final createVM = ref.read(createContractViewModelProvider.notifier);
 
     return _ctaButton(
       context,
       ref,
       text: "이어서 작성하기",
       onTap: () async {
+        final createVM = ref.read(createContractViewModelProvider.notifier);
+        createVM.setCreatePageMode(CreatePageMode.continueMode);
+
         createVM.loadFromDraft(
           publicCode: detailState.publicCode,
           deliveryType: detailState.deliveryType,
           role: detailState.myRole,
           attachmentIds: detailState.attachmentIds,
           existingAttachmentUrls: detailState.attachmentImageUrls,
-          tradingPlatform: detailState.tradingPlatform ?? '',
-          title: detailState.title ?? '',
-          price: detailState.price ?? 0,
-          conditionSummary: detailState.conditionSummary ?? '',
-          conditionDetails: detailState.conditionDetails ?? '',
+          tradingPlatform: detailState.tradingPlatform,
+          title: detailState.title,
+          price: detailState.price,
+          conditionSummary: detailState.conditionSummary,
+          conditionDetails: detailState.conditionDetails,
           warrantyPeriodDays: detailState.warrantyPeriodDays,
         );
 
@@ -431,7 +436,7 @@ class ContractCtaButtons extends HookConsumerWidget {
 
   /// 서명 버튼
   Widget signButton(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(detailContractViewModelProvider);
+    final status = ref.read(detailContractViewModelProvider).status;
 
     return _ctaButton(
       context,
@@ -439,10 +444,10 @@ class ContractCtaButtons extends HookConsumerWidget {
       text: "서명하기",
       onTap: () async {
         // 1. 수신자 서명할 때
-        if (detailState.status == ContractStatus.shared) {
+        if (status == ContractStatus.shared) {
           context.push(AppRoutes.requestDetail);
           // 2. 최종 서명할 때
-        } else if (detailState.status == ContractStatus.receiverSigned) {
+        } else if (status == ContractStatus.receiverSigned) {
           context.push(AppRoutes.finalPreview);
           // 3. 그 외 X
         } else {
@@ -460,7 +465,9 @@ class ContractCtaButtons extends HookConsumerWidget {
     bool disabled = false,
     bool monoStyle = false,
   }) {
-    final detailState = ref.watch(detailContractViewModelProvider);
+    final status = ref.watch(
+      detailContractViewModelProvider.select((s) => s.status),
+    );
 
     Future<void> guardedOnTap() async {
       if (isPending.value) return;
@@ -484,7 +491,7 @@ class ContractCtaButtons extends HookConsumerWidget {
       text: text,
       disabled: disabled,
       onTap: guardedOnTap,
-      backgroundColor: detailState.status.statusColor(context),
+      backgroundColor: status.statusColor(context),
       foregroundColor: fxc(context).textBrand,
     );
   }

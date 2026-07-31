@@ -14,9 +14,12 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ReportContractState {
 
- String get reason;// 신고 사유
- String get detail;// 상세 내용
- ContractDisputeEntity? get recentReport;// 최근 신고 내역
+ String get reason;// 신고 사유 입력값
+ String get detail;// 상세 내용 입력값
+ int? get recentReportId;// 최근 신고 ID
+ String? get recentReportReason;// 최근 신고 사유
+ String? get recentReportDetail;// 최근 신고 상세 내용
+ bool get recentReportIsMine;// 최근 신고가 본인 신고인지 여부
  String? get error;
 /// Create a copy of ReportContractState
 /// with the given fields replaced by the non-null parameter values.
@@ -28,16 +31,16 @@ $ReportContractStateCopyWith<ReportContractState> get copyWith => _$ReportContra
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportContractState&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.recentReport, recentReport) || other.recentReport == recentReport)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportContractState&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.recentReportId, recentReportId) || other.recentReportId == recentReportId)&&(identical(other.recentReportReason, recentReportReason) || other.recentReportReason == recentReportReason)&&(identical(other.recentReportDetail, recentReportDetail) || other.recentReportDetail == recentReportDetail)&&(identical(other.recentReportIsMine, recentReportIsMine) || other.recentReportIsMine == recentReportIsMine)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reason,detail,recentReport,error);
+int get hashCode => Object.hash(runtimeType,reason,detail,recentReportId,recentReportReason,recentReportDetail,recentReportIsMine,error);
 
 @override
 String toString() {
-  return 'ReportContractState(reason: $reason, detail: $detail, recentReport: $recentReport, error: $error)';
+  return 'ReportContractState(reason: $reason, detail: $detail, recentReportId: $recentReportId, recentReportReason: $recentReportReason, recentReportDetail: $recentReportDetail, recentReportIsMine: $recentReportIsMine, error: $error)';
 }
 
 
@@ -48,11 +51,11 @@ abstract mixin class $ReportContractStateCopyWith<$Res>  {
   factory $ReportContractStateCopyWith(ReportContractState value, $Res Function(ReportContractState) _then) = _$ReportContractStateCopyWithImpl;
 @useResult
 $Res call({
- String reason, String detail, ContractDisputeEntity? recentReport, String? error
+ String reason, String detail, int? recentReportId, String? recentReportReason, String? recentReportDetail, bool recentReportIsMine, String? error
 });
 
 
-$ContractDisputeEntityCopyWith<$Res>? get recentReport;
+
 
 }
 /// @nodoc
@@ -65,28 +68,19 @@ class _$ReportContractStateCopyWithImpl<$Res>
 
 /// Create a copy of ReportContractState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? reason = null,Object? detail = null,Object? recentReport = freezed,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? reason = null,Object? detail = null,Object? recentReportId = freezed,Object? recentReportReason = freezed,Object? recentReportDetail = freezed,Object? recentReportIsMine = null,Object? error = freezed,}) {
   return _then(_self.copyWith(
 reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
 as String,detail: null == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
-as String,recentReport: freezed == recentReport ? _self.recentReport : recentReport // ignore: cast_nullable_to_non_nullable
-as ContractDisputeEntity?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as String,recentReportId: freezed == recentReportId ? _self.recentReportId : recentReportId // ignore: cast_nullable_to_non_nullable
+as int?,recentReportReason: freezed == recentReportReason ? _self.recentReportReason : recentReportReason // ignore: cast_nullable_to_non_nullable
+as String?,recentReportDetail: freezed == recentReportDetail ? _self.recentReportDetail : recentReportDetail // ignore: cast_nullable_to_non_nullable
+as String?,recentReportIsMine: null == recentReportIsMine ? _self.recentReportIsMine : recentReportIsMine // ignore: cast_nullable_to_non_nullable
+as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
-/// Create a copy of ReportContractState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ContractDisputeEntityCopyWith<$Res>? get recentReport {
-    if (_self.recentReport == null) {
-    return null;
-  }
 
-  return $ContractDisputeEntityCopyWith<$Res>(_self.recentReport!, (value) {
-    return _then(_self.copyWith(recentReport: value));
-  });
-}
 }
 
 
@@ -168,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String reason,  String detail,  ContractDisputeEntity? recentReport,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String reason,  String detail,  int? recentReportId,  String? recentReportReason,  String? recentReportDetail,  bool recentReportIsMine,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ReportContractState() when $default != null:
-return $default(_that.reason,_that.detail,_that.recentReport,_that.error);case _:
+return $default(_that.reason,_that.detail,_that.recentReportId,_that.recentReportReason,_that.recentReportDetail,_that.recentReportIsMine,_that.error);case _:
   return orElse();
 
 }
@@ -189,10 +183,10 @@ return $default(_that.reason,_that.detail,_that.recentReport,_that.error);case _
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String reason,  String detail,  ContractDisputeEntity? recentReport,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String reason,  String detail,  int? recentReportId,  String? recentReportReason,  String? recentReportDetail,  bool recentReportIsMine,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _ReportContractState():
-return $default(_that.reason,_that.detail,_that.recentReport,_that.error);case _:
+return $default(_that.reason,_that.detail,_that.recentReportId,_that.recentReportReason,_that.recentReportDetail,_that.recentReportIsMine,_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -209,10 +203,10 @@ return $default(_that.reason,_that.detail,_that.recentReport,_that.error);case _
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String reason,  String detail,  ContractDisputeEntity? recentReport,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String reason,  String detail,  int? recentReportId,  String? recentReportReason,  String? recentReportDetail,  bool recentReportIsMine,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _ReportContractState() when $default != null:
-return $default(_that.reason,_that.detail,_that.recentReport,_that.error);case _:
+return $default(_that.reason,_that.detail,_that.recentReportId,_that.recentReportReason,_that.recentReportDetail,_that.recentReportIsMine,_that.error);case _:
   return null;
 
 }
@@ -224,15 +218,21 @@ return $default(_that.reason,_that.detail,_that.recentReport,_that.error);case _
 
 
 class _ReportContractState implements ReportContractState {
-  const _ReportContractState({this.reason = '', this.detail = '', this.recentReport, this.error});
+  const _ReportContractState({this.reason = '', this.detail = '', this.recentReportId, this.recentReportReason, this.recentReportDetail, this.recentReportIsMine = false, this.error});
   
 
 @override@JsonKey() final  String reason;
-// 신고 사유
+// 신고 사유 입력값
 @override@JsonKey() final  String detail;
-// 상세 내용
-@override final  ContractDisputeEntity? recentReport;
-// 최근 신고 내역
+// 상세 내용 입력값
+@override final  int? recentReportId;
+// 최근 신고 ID
+@override final  String? recentReportReason;
+// 최근 신고 사유
+@override final  String? recentReportDetail;
+// 최근 신고 상세 내용
+@override@JsonKey() final  bool recentReportIsMine;
+// 최근 신고가 본인 신고인지 여부
 @override final  String? error;
 
 /// Create a copy of ReportContractState
@@ -245,16 +245,16 @@ _$ReportContractStateCopyWith<_ReportContractState> get copyWith => __$ReportCon
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportContractState&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.recentReport, recentReport) || other.recentReport == recentReport)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportContractState&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.recentReportId, recentReportId) || other.recentReportId == recentReportId)&&(identical(other.recentReportReason, recentReportReason) || other.recentReportReason == recentReportReason)&&(identical(other.recentReportDetail, recentReportDetail) || other.recentReportDetail == recentReportDetail)&&(identical(other.recentReportIsMine, recentReportIsMine) || other.recentReportIsMine == recentReportIsMine)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reason,detail,recentReport,error);
+int get hashCode => Object.hash(runtimeType,reason,detail,recentReportId,recentReportReason,recentReportDetail,recentReportIsMine,error);
 
 @override
 String toString() {
-  return 'ReportContractState(reason: $reason, detail: $detail, recentReport: $recentReport, error: $error)';
+  return 'ReportContractState(reason: $reason, detail: $detail, recentReportId: $recentReportId, recentReportReason: $recentReportReason, recentReportDetail: $recentReportDetail, recentReportIsMine: $recentReportIsMine, error: $error)';
 }
 
 
@@ -265,11 +265,11 @@ abstract mixin class _$ReportContractStateCopyWith<$Res> implements $ReportContr
   factory _$ReportContractStateCopyWith(_ReportContractState value, $Res Function(_ReportContractState) _then) = __$ReportContractStateCopyWithImpl;
 @override @useResult
 $Res call({
- String reason, String detail, ContractDisputeEntity? recentReport, String? error
+ String reason, String detail, int? recentReportId, String? recentReportReason, String? recentReportDetail, bool recentReportIsMine, String? error
 });
 
 
-@override $ContractDisputeEntityCopyWith<$Res>? get recentReport;
+
 
 }
 /// @nodoc
@@ -282,29 +282,20 @@ class __$ReportContractStateCopyWithImpl<$Res>
 
 /// Create a copy of ReportContractState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? reason = null,Object? detail = null,Object? recentReport = freezed,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? reason = null,Object? detail = null,Object? recentReportId = freezed,Object? recentReportReason = freezed,Object? recentReportDetail = freezed,Object? recentReportIsMine = null,Object? error = freezed,}) {
   return _then(_ReportContractState(
 reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
 as String,detail: null == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
-as String,recentReport: freezed == recentReport ? _self.recentReport : recentReport // ignore: cast_nullable_to_non_nullable
-as ContractDisputeEntity?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as String,recentReportId: freezed == recentReportId ? _self.recentReportId : recentReportId // ignore: cast_nullable_to_non_nullable
+as int?,recentReportReason: freezed == recentReportReason ? _self.recentReportReason : recentReportReason // ignore: cast_nullable_to_non_nullable
+as String?,recentReportDetail: freezed == recentReportDetail ? _self.recentReportDetail : recentReportDetail // ignore: cast_nullable_to_non_nullable
+as String?,recentReportIsMine: null == recentReportIsMine ? _self.recentReportIsMine : recentReportIsMine // ignore: cast_nullable_to_non_nullable
+as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
 
-/// Create a copy of ReportContractState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ContractDisputeEntityCopyWith<$Res>? get recentReport {
-    if (_self.recentReport == null) {
-    return null;
-  }
 
-  return $ContractDisputeEntityCopyWith<$Res>(_self.recentReport!, (value) {
-    return _then(_self.copyWith(recentReport: value));
-  });
-}
 }
 
 // dart format on

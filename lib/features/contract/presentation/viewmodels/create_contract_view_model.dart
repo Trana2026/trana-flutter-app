@@ -4,6 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
+import 'package:trana/features/contract/domain/enums/create_page_mode.dart';
 import 'package:trana/features/contract/domain/enums/delivery_type.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
@@ -17,6 +18,8 @@ part 'create_contract_view_model.g.dart';
 
 @freezed
 abstract class CreateContractState with _$CreateContractState {
+  const CreateContractState._();
+
   const factory CreateContractState({
     Role? role, // 선택된 역할
     @Default(DeliveryType.shipping) DeliveryType deliveryType, // 선택된 거래 방식
@@ -32,12 +35,27 @@ abstract class CreateContractState with _$CreateContractState {
     @Default('') String conditionDetails, // 입력된 상품 상세 설명
     @Default(0) int warrantyPeriodDays, // 선택된 보증 제공 여부 (0: 미제공, 3: 제공)
     Uint8List? pdfBytes, // 생성된 Pdf 바이트
-    @Default(false) bool revisionRequested, // 수정 요청 상태일 때
+
+    @Default(CreatePageMode.createMode) mode, // 계약 작성 페이지 구분
 
     @Default(false) bool isLoadingUpload, // 사진 업로드 로딩중 여부
     @Default(false) bool isLoadingPdf, // PDF 생성 로딩중 여부
     String? error,
   }) = _CreateContractState;
+
+  // 계약서 수정 모드 여부
+  bool get isEditMode => mode == CreatePageMode.editMode;
+
+  // 계약서 이어서 작성 모드 여부
+  bool get isContinueMode => mode == CreatePageMode.continueMode;
+
+  // 계약서 생성 비용
+  int get cost => switch (price) {
+    <= 30000 => 2900,
+    <= 100000 => 4900,
+    <= 1000000 => 7900,
+    _ => 9900,
+  };
 }
 
 // ==================== ViewModel ====================
@@ -50,16 +68,16 @@ class CreateContractViewModel extends _$CreateContractViewModel {
   /// 기존 데이터를 상태에 로드 (기존값 불러오기)
   void loadFromDraft({
     required String publicCode,
-    required DeliveryType? deliveryType,
-    required Role? role,
-    required List<int> attachmentIds,
-    required List<String> existingAttachmentUrls,
-    required String tradingPlatform,
-    required String title,
-    required int price,
-    required String conditionSummary,
-    required String conditionDetails,
-    required int warrantyPeriodDays,
+    DeliveryType? deliveryType,
+    Role? role,
+    List<int> attachmentIds = const [],
+    List<String> existingAttachmentUrls = const [],
+    String? tradingPlatform,
+    String? title,
+    int? price,
+    String? conditionSummary,
+    String? conditionDetails,
+    int warrantyPeriodDays = 0,
   }) {
     state = state.copyWith(
       publicCode: publicCode,
@@ -68,19 +86,17 @@ class CreateContractViewModel extends _$CreateContractViewModel {
       attachmentIds: attachmentIds,
       existingAttachmentUrls: existingAttachmentUrls,
       selectedImages: [],
-      tradingPlatform: tradingPlatform,
-      title: title,
-      price: price,
-      conditionSummary: conditionSummary,
-      conditionDetails: conditionDetails,
+      tradingPlatform: tradingPlatform ?? '',
+      title: title ?? '',
+      price: price ?? 0,
+      conditionSummary: conditionSummary ?? '',
+      conditionDetails: conditionDetails ?? '',
       warrantyPeriodDays: warrantyPeriodDays,
     );
   }
 
-  /// 수정 요청 상태 변경
-  void setRevisionRequestedMode(bool v) {
-    state = state.copyWith(revisionRequested: v);
-  }
+  // 계약 작성 페이지 구분 변경
+  void setCreatePageMode(CreatePageMode v) => state = state.copyWith(mode: v);
 
   /// 새 계약 작성 상태 초기화
   void initState() => state = CreateContractState();
@@ -135,14 +151,7 @@ class CreateContractViewModel extends _$CreateContractViewModel {
   }
 
   /// 거래 방식 선택
-  void updateMethod(int index) {
-    switch (index) {
-      case 0:
-        state = state.copyWith(deliveryType: DeliveryType.direct);
-      case 1:
-        state = state.copyWith(deliveryType: DeliveryType.shipping);
-    }
-  }
+  void updateType(DeliveryType v) => state = state.copyWith(deliveryType: v);
 
   /// 계약 상세 내용 입력
   void updateEntries({

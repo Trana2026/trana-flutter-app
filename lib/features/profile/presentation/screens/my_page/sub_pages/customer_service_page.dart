@@ -18,8 +18,6 @@ class CustomerServicePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final inquiryVM = ref.read(inquiryViewModelProvider.notifier);
-
     final emailCtr = useTextEditingController();
     final titleCtr = useTextEditingController();
     final contentCtr = useTextEditingController();
@@ -121,6 +119,7 @@ class CustomerServicePage extends HookConsumerWidget {
               emailError.value = Validation.email(emailCtr.text);
               if (emailError.value != null) return;
 
+              final inquiryVM = ref.read(inquiryViewModelProvider.notifier);
               inquiryVM.updateEntries(
                 email: emailCtr.text,
                 title: titleCtr.text,

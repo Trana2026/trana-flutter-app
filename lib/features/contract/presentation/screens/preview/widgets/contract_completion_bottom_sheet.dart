@@ -13,7 +13,7 @@ class ContractCompletionBottomSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final createState = ref.watch(createContractViewModelProvider);
+    final publicCode = ref.read(createContractViewModelProvider).publicCode;
 
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 36, 20, 10),
@@ -57,11 +57,7 @@ class ContractCompletionBottomSheet extends HookConsumerWidget {
                   child: PrimaryButton.mono(
                     text: "홈으로 돌아가기",
                     onTap: () {
-                      Navigator.of(context).popUntil(
-                        (route) =>
-                            route is! MaterialPageRoute &&
-                            route is! ModalBottomSheetRoute,
-                      );
+                      Navigator.pop(context);
                       context.go(AppRoutes.home);
                     },
                   ),
@@ -70,16 +66,9 @@ class ContractCompletionBottomSheet extends HookConsumerWidget {
                 Expanded(
                   child: PrimaryButton.brand(
                     text: "요청하기",
-                    onTap: () async {
-                      Navigator.of(context).popUntil(
-                        (route) =>
-                            route is! MaterialPageRoute &&
-                            route is! ModalBottomSheetRoute,
-                      );
-                      context.go(
-                        AppRoutes.contractShare,
-                        extra: createState.publicCode,
-                      );
+                    onTap: () {
+                      Navigator.pop(context);
+                      context.go(AppRoutes.contractShare, extra: publicCode);
                     },
                   ),
                 ),

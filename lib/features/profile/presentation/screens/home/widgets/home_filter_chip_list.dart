@@ -8,6 +8,54 @@ import 'package:trana/features/profile/presentation/viewmodels/home_contract_vie
 class HomeFilterChipList extends ConsumerWidget {
   const HomeFilterChipList({super.key});
 
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedStatus = ref.watch(
+      homeContractViewModelProvider.select((s) => s.selectedStatus),
+    );
+
+    return SizedBox(
+      height: 28,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: _representatives.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final status = _representatives[index];
+          final label = _labelFor(status);
+          final isSelected = status == null
+              ? selectedStatus == null
+              : selectedStatus == status;
+          return GestureDetector(
+            onTap: () {
+              final homeVM = ref.read(homeContractViewModelProvider.notifier);
+              homeVM.applyStatus(status);
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? vrc(context).textPrimary
+                    : vrc(context).secondaryColor,
+                borderRadius: BorderRadius.circular(isSelected ? 10 : 8),
+              ),
+              child: Text(
+                label,
+                style: context.txt(
+                  color: isSelected
+                      ? vrc(context).secondaryColor
+                      : vrc(context).textDisable,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   /// 필터에 보일 상태 목록
   static const _representatives = <ContractStatus?>[
     null, // 전체
@@ -36,48 +84,4 @@ class HomeFilterChipList extends ConsumerWidget {
     ContractStatus.completed => '거래 완료',
     ContractStatus.cancelled || ContractStatus.expired => '',
   };
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final homeState = ref.watch(homeContractViewModelProvider);
-    final homeVM = ref.read(homeContractViewModelProvider.notifier);
-
-    return SizedBox(
-      height: 28,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.zero,
-        itemCount: _representatives.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 8),
-        itemBuilder: (context, index) {
-          final status = _representatives[index];
-          final label = _labelFor(status);
-          final isSelected = status == null
-              ? homeState.selectedStatus == null
-              : homeState.selectedStatus == status;
-          return GestureDetector(
-            onTap: () => homeVM.applyStatus(status),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? vrc(context).textPrimary
-                    : vrc(context).secondaryColor,
-                borderRadius: BorderRadius.circular(isSelected ? 10 : 8),
-              ),
-              child: Text(
-                label,
-                style: context.txt(
-                  color: isSelected
-                      ? vrc(context).secondaryColor
-                      : vrc(context).textDisable,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
 }

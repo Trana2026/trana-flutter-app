@@ -42,7 +42,7 @@ final class ReportContractViewModelProvider
 }
 
 String _$reportContractViewModelHash() =>
-    r'27e34b7deae326aeddbc981d706c3fbc2b9a7546';
+    r'51efd1a07a4a670a9d8b123b4bc8031318ec1d18';
 
 abstract class _$ReportContractViewModel
     extends $Notifier<ReportContractState> {

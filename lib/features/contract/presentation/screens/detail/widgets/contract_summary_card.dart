@@ -15,18 +15,37 @@ class ContractSummaryCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(detailContractViewModelProvider);
-
-    final roleLabel = detailState.myRole?.label ?? '-';
-    final deliveryType = detailState.deliveryType;
-    final title = detailState.title ?? '-';
-    final price = detailState.price != null
-        ? '${detailState.price.toString().toPriceFormat}원'
+    final (
+      myRole,
+      deliveryType,
+      title,
+      price,
+      firstUrl,
+      count,
+      publicCode,
+    ) = ref.watch(
+      detailContractViewModelProvider.select(
+        (s) => (
+          s.myRole,
+          s.deliveryType,
+          s.title,
+          s.price,
+          s.firstAttachmentUrl,
+          s.attachmentCount,
+          s.publicCode,
+        ),
+      ),
+    );
+    final roleLabel = myRole != null ? '${myRole.label}자' : '-';
+    final titleLabel = title ?? '-';
+    final priceLabel = price != null
+        ? '${price.toString().toPriceFormat}원'
         : '-';
+    final deliveryLabel = deliveryType?.label ?? '-';
 
     return Row(
       children: [
-        detailState.firstAttachmentUrl == null
+        firstUrl == null
             ? const ThumbnailPlaceholder()
             : Stack(
                 children: [
@@ -35,8 +54,8 @@ class ContractSummaryCard extends HookConsumerWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadiusGeometry.circular(16),
                       child: CachedNetworkImage(
-                        imageUrl: detailState.firstAttachmentUrl!,
-                        cacheKey: '${detailState.publicCode}-first',
+                        imageUrl: firstUrl,
+                        cacheKey: '$publicCode-first',
                         height: 100,
                         width: 100,
                         fit: BoxFit.cover,
@@ -56,7 +75,7 @@ class ContractSummaryCard extends HookConsumerWidget {
                       ),
                       child: Center(
                         child: Text(
-                          detailState.attachmentCount.toString(),
+                          count.toString(),
                           style: context.txt(
                             color: fxc(context).textBrand,
                             fontSize: 10,
@@ -76,7 +95,7 @@ class ContractSummaryCard extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  titleLabel,
                   style: context.txt(
                     color: vrc(context).textPrimary,
                     fontWeight: FontWeight.w700,
@@ -85,7 +104,7 @@ class ContractSummaryCard extends HookConsumerWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 2),
-                Text(price, style: context.txt()),
+                Text(priceLabel, style: context.txt()),
                 const Spacer(),
                 Row(
                   children: [
@@ -106,10 +125,7 @@ class ContractSummaryCard extends HookConsumerWidget {
                             color: vrc(context).iconSecondary,
                           ),
                           const SizedBox(width: 6),
-                          Text(
-                            deliveryType?.label ?? '-',
-                            style: context.txt(fontSize: 12),
-                          ),
+                          Text(deliveryLabel, style: context.txt(fontSize: 12)),
                         ],
                       ),
                     ),
@@ -131,7 +147,7 @@ class ContractSummaryCard extends HookConsumerWidget {
                             color: vrc(context).iconSecondary,
                           ),
                           const SizedBox(width: 6),
-                          Text('$roleLabel자', style: context.txt(fontSize: 12)),
+                          Text(roleLabel, style: context.txt(fontSize: 12)),
                         ],
                       ),
                     ),

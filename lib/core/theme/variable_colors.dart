@@ -17,6 +17,7 @@ class VariableColors extends ThemeExtension<VariableColors> {
     required this.iconDisable,
     required this.borderPrimary,
     required this.borderSecondary,
+    required this.borderTertiary,
   });
   final Color? background;
   final Color? secondaryColor;
@@ -31,6 +32,7 @@ class VariableColors extends ThemeExtension<VariableColors> {
   final Color? iconDisable;
   final Color? borderPrimary;
   final Color? borderSecondary;
+  final Color? borderTertiary;
 
   static const VariableColors light = VariableColors(
     background: Color(0xFFFFFFFF),
@@ -46,6 +48,7 @@ class VariableColors extends ThemeExtension<VariableColors> {
     iconDisable: Color(0xFFB5B7B6),
     borderPrimary: Color(0xFFE9EBEC),
     borderSecondary: Color(0xFFCDD0CE),
+    borderTertiary: Color(0xFFB5B7B6),
   );
   static const VariableColors dark = VariableColors(
     background: Color(0xFF18191A),
@@ -59,8 +62,9 @@ class VariableColors extends ThemeExtension<VariableColors> {
     iconPrimary: Color(0xFFFFFFFF),
     iconSecondary: Color(0xFFB5B7B6),
     iconDisable: Color(0xFF6F7270),
-    borderPrimary: Color(0xFF1F2021),
-    borderSecondary: Color(0xFF272829),
+    borderPrimary: Color(0xFF272829),
+    borderSecondary: Color(0xFF454847),
+    borderTertiary: Color(0xFF565957),
   );
 
   /// 일부 필드를 교체한 새 VariableColors 인스턴스 생성
@@ -79,6 +83,7 @@ class VariableColors extends ThemeExtension<VariableColors> {
     Color? iconDisable,
     Color? borderPrimary,
     Color? borderSecondary,
+    Color? borderTertiary,
   }) => VariableColors(
     background: background ?? this.background,
     secondaryColor: secondaryColor ?? this.secondaryColor,
@@ -93,6 +98,7 @@ class VariableColors extends ThemeExtension<VariableColors> {
     iconDisable: iconDisable ?? this.iconDisable,
     borderPrimary: borderPrimary ?? this.borderPrimary,
     borderSecondary: borderSecondary ?? this.borderSecondary,
+    borderTertiary: borderTertiary ?? this.borderTertiary,
   );
 
   /// 두 VariableColors 사이를 선형 보간
@@ -113,6 +119,7 @@ class VariableColors extends ThemeExtension<VariableColors> {
       iconDisable: Color.lerp(iconDisable, other.iconDisable, t),
       borderPrimary: Color.lerp(borderPrimary, other.borderPrimary, t),
       borderSecondary: Color.lerp(borderSecondary, other.borderSecondary, t),
+      borderTertiary: Color.lerp(borderTertiary, other.borderTertiary, t),
     );
   }
 }

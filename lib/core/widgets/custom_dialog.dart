@@ -77,7 +77,13 @@ class CustomDialog extends StatelessWidget {
             if (content != null)
               Text(
                 content!,
-                style: TextStyle(fontSize: 13, height: 1.5),
+                style: TextStyle(
+                  color: vrc(context).textTertiary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  height: 1.5,
+                  letterSpacing: -0.12,
+                ),
                 textAlign: TextAlign.center,
               ),
             const SizedBox(height: 6),
@@ -93,7 +99,7 @@ class CustomDialog extends StatelessWidget {
                     },
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 Expanded(
                   child: PrimaryButton(
                     text: confirmText ?? '확인',
@@ -102,7 +108,7 @@ class CustomDialog extends StatelessWidget {
                       if (context.mounted) Navigator.pop(context, true);
                     },
                     backgroundColor: confirmColor ?? fxc(context).brandColor!,
-                    foregroundColor: fxc(context).textBrand!,
+                    foregroundColor: fxc(context).unchangeableWhite!,
                   ),
                 ),
               ],

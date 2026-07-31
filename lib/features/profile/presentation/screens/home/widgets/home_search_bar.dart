@@ -15,9 +15,7 @@ class HomeSearchBar extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeVM = ref.read(homeContractViewModelProvider.notifier);
     final initialQuery = ref.read(homeContractViewModelProvider).searchQuery;
-
     final searchController = useTextEditingController(text: initialQuery);
     final debounceTimer = useRef<Timer?>(null);
 
@@ -32,11 +30,15 @@ class HomeSearchBar extends HookConsumerWidget {
         onChanged: (value) {
           debounceTimer.value?.cancel();
           debounceTimer.value = Timer(_debounceDuration, () {
+            final homeVM = ref.read(homeContractViewModelProvider.notifier);
             homeVM.applyQuery(value);
           });
         },
         style: context.txt(color: vrc(context).textPrimary),
-        cursorColor: vrc(context).textPrimary,
+        onTapOutside: (_) => FocusScope.of(context).unfocus(),
+        cursorColor: fxc(context).textInfo,
+        cursorHeight: 14,
+        cursorWidth: 1,
         decoration: InputDecoration(
           prefixIconConstraints: const BoxConstraints.tightFor(width: 38),
           prefixIcon: Padding(

@@ -14,13 +14,11 @@ class ReportDetailBottomSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final reportState = ref.watch(reportContractViewModelProvider);
+    final ReportContractState(:recentReportReason, :recentReportDetail) = ref
+        .read(reportContractViewModelProvider);
 
-    final initialReason = reportState.recentReport?.reason;
-    final initialDetail = reportState.recentReport?.detail;
-
-    final reasonCtr = useTextEditingController(text: initialReason);
-    final detailCtr = useTextEditingController(text: initialDetail);
+    final reasonCtr = useTextEditingController(text: recentReportReason);
+    final detailCtr = useTextEditingController(text: recentReportDetail);
 
     return Container(
       height: 320,
