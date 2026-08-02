@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'sign_in_response_dto.freezed.dart';
 part 'sign_in_response_dto.g.dart';
 
-/// 소셜 로그인, 리프레시 응답 DTO (POST /v1/auth/social/sign-in)
+/// POST /v1/auth/social/sign-in 응답 DTO
 @freezed
 abstract class SignInResponseDto with _$SignInResponseDto {
   const factory SignInResponseDto({

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/constants/app_durations.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 
@@ -30,7 +31,7 @@ class GuardianSelectionCard extends HookConsumerWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: AppDurations.toggle,
         width: double.infinity,
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/constants/app_durations.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -178,7 +179,7 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
 
                           Navigator.pop(context);
                           await Future.delayed(
-                            const Duration(milliseconds: 200),
+                            AppDurations.toggle,
                           );
                           if (!parentContext.mounted) return;
                           await showDialog<void>(
@@ -432,7 +433,7 @@ class _ConsentCheckRow extends HookConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            duration: AppDurations.toggle,
             width: 20,
             height: 20,
             decoration: BoxDecoration(

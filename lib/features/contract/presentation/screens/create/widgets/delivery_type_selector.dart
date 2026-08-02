@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/constants/app_durations.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/features/contract/domain/enums/delivery_type.dart';
@@ -33,7 +34,7 @@ class DeliveryTypeSelector extends HookConsumerWidget {
             return Stack(
               children: [
                 AnimatedPositioned(
-                  duration: const Duration(milliseconds: 250),
+                  duration: AppDurations.transition,
                   curve: Curves.easeOut,
                   left: selectedIndex * (itemWidth + gap),
                   child: Container(

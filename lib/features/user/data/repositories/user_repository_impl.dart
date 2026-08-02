@@ -5,7 +5,6 @@ import 'package:trana/features/user/data/models/user_me_dto.dart';
 import 'package:trana/features/user/domain/entities/user_me_entity.dart';
 import 'package:trana/features/user/domain/repositories/user_repository.dart';
 
-/// UserRepository 구현체
 class UserRepositoryImpl implements UserRepository {
   final UserRemoteDatasource _remote;
 

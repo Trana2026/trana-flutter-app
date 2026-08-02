@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
+import 'package:trana/core/constants/app_durations.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/features/contract/presentation/screens/create/widgets/create_tutorial_page_item.dart';
 
-/// 튜토리얼 페이지별 안내 문구 (순서 1~6)
+/// 튜토리얼 페이지별 안내 문구
 const _tutorialDescriptions = [
   '1. 직거래/택배 거래를 선택해주세요',
   '2. 카메라 버튼을 눌러 사진을 추가해주세요',
@@ -16,7 +17,7 @@ const _tutorialDescriptions = [
   '6. 판매자는 개인 보증을 제공해줄 수 있어요.\n보증하고 신뢰 점수를 받아보세요',
 ];
 
-/// 애니메이션이 적용되는 페이지 (3번, 1-based)
+/// 애니메이션이 적용되는 페이지
 const _lottiePage = 3;
 
 /// 새 계약 작성 안내 튜토리얼 바텀시트
@@ -39,7 +40,7 @@ class CreateTutorialBottomSheet extends HookConsumerWidget {
         return;
       }
       controller.nextPage(
-        duration: const Duration(milliseconds: 250),
+        duration: AppDurations.transition,
         curve: Curves.easeOut,
       );
     }
@@ -89,7 +90,7 @@ class CreateTutorialBottomSheet extends HookConsumerWidget {
               ),
               const SizedBox(height: 20),
 
-              // 페이지 (문구 + 일러스트)
+              // 페이지
               SizedBox(
                 height: 360,
                 child: PageView.builder(
@@ -169,7 +170,7 @@ class CreateTutorialBottomSheet extends HookConsumerWidget {
     );
   }
 
-  /// 페이지 번호(1-based)에 맞는 일러스트 위젯 (3번은 Lottie, 그 외 webp)
+  /// 페이지 번호에 맞는 일러스트 위젯
   Widget _illustration(BuildContext context, int page) {
     if (page == _lottiePage) {
       return Lottie.asset(
@@ -188,7 +189,7 @@ class CreateTutorialBottomSheet extends HookConsumerWidget {
   }
 }
 
-/// 페이지 인디케이터 점 (활성 시 알약형)
+/// 페이지 인디케이터
 class _Dot extends StatelessWidget {
   const _Dot({required this.active});
 
@@ -197,7 +198,7 @@ class _Dot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
+      duration: AppDurations.transition,
       width: active ? 18 : 6,
       height: 6,
       decoration: BoxDecoration(

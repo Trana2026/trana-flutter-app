@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:trana/core/config/app_config.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/utils/enum_extensions.dart';
 import 'package:trana/features/contract/data/services/pending_invitation_token_service.dart';
@@ -55,7 +55,7 @@ class TestUser extends _$TestUser {
   }
 
   Future<void> login(String userPublicCode) async {
-    final dio = Dio(BaseOptions(baseUrl: dotenv.env['BASE_URL'] ?? ''));
+    final dio = Dio(BaseOptions(baseUrl: AppConfig.apiBaseUrl));
     try {
       /// JWT 발급
       final tokenResponse = await dio.get<Map<String, dynamic>>(

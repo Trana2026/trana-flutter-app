@@ -76,7 +76,8 @@ class HomePage extends HookConsumerWidget {
     // ===== 계약 관련 =====
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        /* 초대(invitation) 수락 흐름 : 계약 요청이 고유코드방식으로 변경됨에 따라 미사용
+        /*
+        초대 흐름 (/invitation) : 계약 요청이 고유코드방식으로 변경됨에 따라 미사용
         
         // 플레이스토어 설치 유입 시 Install Referrer에서 초대 토큰 복구
         await DeferredLinkService.restoreInvitationToken();

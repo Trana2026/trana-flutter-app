@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/constants/app_dimens.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/features/auth/presentation/screens/splash/widgets/splash_glow_background.dart';
@@ -16,7 +17,7 @@ class SplashPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     useEffect(() {
       () async {
-        // 재진입. 저장된 토큰 있으면 홈으로, 없으면 intro로 이동
+        // 저장된 토큰 있으면 홈으로, 없으면 intro로 이동
         final token = ref.read(authTokenStoreProvider).accessToken;
         final loggedIn = token != null && token.isNotEmpty;
 
@@ -43,7 +44,7 @@ class SplashPage extends HookConsumerWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // 코너 글로우 배경
+          // 글로우 배경
           const SplashGlowBackground(),
           // 심볼 + 워드마크 (중앙보다 살짝 위)
           const Align(alignment: Alignment(0, -0.058), child: _SplashLogo()),
@@ -59,8 +60,7 @@ class _SplashLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 피그마 프레임 width(375) 대비 비례 스케일
-    final s = MediaQuery.sizeOf(context).width / 375;
+    final s = context.designScale;
 
     return Column(
       mainAxisSize: MainAxisSize.min,

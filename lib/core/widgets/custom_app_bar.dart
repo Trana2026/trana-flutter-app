@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trana/core/constants/app_durations.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
@@ -69,7 +70,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
+                  duration: AppDurations.expand,
                   height: 4,
                   width: barWidth,
                   color: fxc(context).brandColor,

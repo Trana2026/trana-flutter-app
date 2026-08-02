@@ -3,8 +3,6 @@ import 'package:trana/core/network/api_error_mapper.dart';
 import 'package:trana/features/guardian/data/datasources/guardian_remote_datasource.dart';
 import 'package:trana/features/guardian/data/models/guardian_link_dto.dart';
 
-/// GuardianRemoteDatasource Dio 구현체.
-/// AuthInterceptor가 인증 헤더 자동 부착
 class DioGuardianRemoteDatasource implements GuardianRemoteDatasource {
   final Dio _dio;
 

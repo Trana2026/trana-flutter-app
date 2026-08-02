@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/constants/app_durations.dart';
 import 'package:trana/core/theme/app_theme.dart';
 
 /// 약관 동의용 체크박스 (필수/선택 레이블 포함)
@@ -40,7 +41,7 @@ class ConsentCheckbox extends HookConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+                duration: AppDurations.toggle,
                 width: 25,
                 height: 25,
                 decoration: BoxDecoration(
