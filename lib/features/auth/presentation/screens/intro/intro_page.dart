@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
+import 'package:trana/core/constants/app_dimens.dart';
 import 'package:trana/core/dev/test_user_provider.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -18,7 +19,7 @@ class IntroPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bg = vrc(context).background!;
-    final scale = MediaQuery.sizeOf(context).width / 375;
+    final scale = context.designScale;
 
     // 버튼 하단(top 702 + height 52) + 여백. 이 높이가 화면보다 클 때만 스크롤됨
     final contentHeight = 754.0 + 32.0;
@@ -37,6 +38,7 @@ class IntroPage extends HookConsumerWidget {
           child: Stack(
             children: [
               // 배경 블러 글로우
+              // 인트로 애니메이션에 포함되어서 주석처리
               // const IntroGlowBackground(),
               Positioned(
                 left: 0,

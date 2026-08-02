@@ -10,7 +10,7 @@ import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/presentation/viewmodels/ai_auto_fill_view_model.dart';
-import 'package:trana/features/profile/domain/enums/terms_type.dart';
+import 'package:trana/features/terms/domain/enums/terms_type.dart';
 
 class AiAutofillNoticeDialog extends HookConsumerWidget {
   const AiAutofillNoticeDialog({super.key});

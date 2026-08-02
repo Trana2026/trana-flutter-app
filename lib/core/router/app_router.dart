@@ -1,17 +1,11 @@
 import 'package:go_router/go_router.dart';
 import 'package:trana/core/network/auth_token_store.dart';
-import 'package:trana/features/auth/presentation/screens/auth_complete/auth_complete_page.dart';
-import 'package:trana/features/auth/presentation/screens/face_verify/face_verify_page.dart';
 import 'package:trana/features/auth/presentation/screens/guardian_link/guardian_link_send_page.dart';
 import 'package:trana/features/auth/presentation/screens/guardian_waiting/guardian_verify_waiting_page.dart';
-import 'package:trana/features/auth/presentation/screens/id_card_camera/id_card_camera_page.dart';
-import 'package:trana/features/auth/presentation/screens/id_card_confirm/id_card_confirm_page.dart';
 import 'package:trana/features/auth/presentation/screens/intro/intro_page.dart';
 import 'package:trana/features/auth/presentation/screens/pass_verify/pass_verify_page.dart';
-import 'package:trana/features/auth/presentation/screens/select_age/select_user_age_page.dart';
 import 'package:trana/features/auth/presentation/screens/social_login/social_login_page.dart';
 import 'package:trana/features/auth/presentation/screens/splash/splash_page.dart';
-import 'package:trana/features/auth/presentation/screens/terms/terms_agreement_page.dart';
 import 'package:trana/features/contract/data/services/pending_contract_code_service.dart';
 import 'package:trana/features/contract/data/services/pending_invitation_token_service.dart';
 import 'package:trana/features/contract/presentation/screens/biometric_lock/biometric_lock_page.dart';
@@ -27,7 +21,7 @@ import 'package:trana/features/contract/presentation/screens/share/contract_shar
 import 'package:trana/features/contract/presentation/screens/detail/sub_pages/contract_entire_preview_page.dart';
 import 'package:trana/features/contract/presentation/screens/template/contract_template_page.dart';
 import 'package:trana/features/notification/presentation/screens/notification/notification_page.dart';
-import 'package:trana/features/profile/domain/enums/terms_type.dart';
+import 'package:trana/features/terms/domain/enums/terms_type.dart';
 import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/customer_service_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/device_management_page.dart';
@@ -46,7 +40,7 @@ abstract class AppRoutes {
   static const intro = '/intro';
   static const selectAge = '/select-age';
 
-  // PASS onboarding (성인/미성년 통합)
+  // PASS onboarding
   static const passVerify = '/pass-verify';
 
   // Adult onboarding
@@ -91,16 +85,17 @@ abstract class AppRoutes {
   static const editProfile = '/my/edit-profile';
 }
 
-/// 앱 전체 라우팅 설정 (GoRouter)
+/// 앱 전체 라우팅 설정
 /// 로그아웃 시 intro로 redirect할 보호 라우트 prefix
 const _protectedPrefixes = ['/home', '/contract', '/my', '/guardian-waiting'];
 
 /// 경로 단위 하나를 기준으로 보호 라우트 판정
-/// (/contract는 /contract/*만 매칭, 딥링크 /contracts/*는 제외)
+/// 예를들어, /contract는 /contract/*만 매칭, 딥링크 /contracts/*는 제외하도록
 bool _isProtected(String loc) =>
     _protectedPrefixes.any((p) => loc == p || loc.startsWith('$p/'));
 
-/// 앱 전체 라우팅 (GoRouter). [store] 변화에 반응. 세션 만료 시 보호화면에서 intro로 redirect
+/// 앱 전체 라우팅
+/// [store] 변화에 반응. 세션 만료 시 보호화면에서 intro로 redirect
 GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
   initialLocation: AppRoutes.splash,
   refreshListenable: store,
@@ -142,12 +137,6 @@ GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
       builder: (context, state) => const IntroPage(),
     ),
     GoRoute(
-      path: AppRoutes.selectAge,
-      builder: (context, state) => const SelectUserAgePage(),
-    ),
-
-    // PASS onboarding
-    GoRoute(
       path: AppRoutes.passVerify,
       builder: (context, state) {
         final signupSessionId = state.extra as String;
@@ -155,29 +144,32 @@ GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
       },
     ),
 
-    // Adult onboarding
-    GoRoute(
-      path: AppRoutes.terms,
-      builder: (context, state) => const TermsAgreementPage(),
-    ),
-    GoRoute(
-      path: AppRoutes.idCardCamera,
-      builder: (context, state) => const IdCardCameraPage(),
-    ),
-    GoRoute(
-      path: AppRoutes.idCardConfirm,
-      builder: (context, state) => const IdCardConfirmPage(),
-    ),
-    GoRoute(
-      path: AppRoutes.faceVerify,
-      builder: (context, state) => const FaceVerifyPage(),
-    ),
-    GoRoute(
-      path: AppRoutes.authComplete,
-      builder: (context, state) => const AuthCompletePage(),
-    ),
-
-    // Minor onboarding
+    // LEGACY: 구 eKYC (연령선택 > 신분증 OCR > 얼굴대조)
+    //
+    // GoRoute(
+    //   path: AppRoutes.selectAge,
+    //   builder: (context, state) => const SelectUserAgePage(),
+    // ),
+    // GoRoute(
+    //   path: AppRoutes.terms,
+    //   builder: (context, state) => const TermsAgreementPage(),
+    // ),
+    // GoRoute(
+    //   path: AppRoutes.idCardCamera,
+    //   builder: (context, state) => const IdCardCameraPage(),
+    // ),
+    // GoRoute(
+    //   path: AppRoutes.idCardConfirm,
+    //   builder: (context, state) => const IdCardConfirmPage(),
+    // ),
+    // GoRoute(
+    //   path: AppRoutes.faceVerify,
+    //   builder: (context, state) => const FaceVerifyPage(),
+    // ),
+    // GoRoute(
+    //   path: AppRoutes.authComplete,
+    //   builder: (context, state) => const AuthCompletePage(),
+    // ),
     GoRoute(
       path: AppRoutes.socialLogin,
       builder: (context, state) => const SocialLoginPage(),
@@ -250,7 +242,7 @@ GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
       builder: (context, state) => const ContractFinalPreviewPage(),
     ),
 
-    // ── MyPage ──────────────────────────────────────
+    // ── MyPage ────────────────────────────────────────────
     GoRoute(
       path: AppRoutes.totalContract,
       builder: (context, state) => const TotalContractPage(),

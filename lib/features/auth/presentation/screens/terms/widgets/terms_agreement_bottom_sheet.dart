@@ -5,8 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
-import 'package:trana/features/ekyc/domain/entities/terms_entity.dart';
-import 'package:trana/features/ekyc/presentation/viewmodels/terms_view_model.dart';
+import 'package:trana/features/terms/domain/entities/terms_entity.dart';
+import 'package:trana/features/terms/presentation/viewmodels/terms_view_model.dart';
 
 /// 약관 동의 항목
 enum _ConsentItem {

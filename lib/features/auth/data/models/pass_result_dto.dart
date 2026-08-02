@@ -30,7 +30,6 @@ extension PassResultDtoMapper on PassResultDto {
       (accessToken?.isNotEmpty ?? false) &&
       (refreshToken?.isNotEmpty ?? false);
 
-  /// DTO > Domain 변환 매퍼
   PassResultEntity toEntity() => PassResultEntity(
     accessToken: accessToken ?? '',
     refreshToken: refreshToken ?? '',

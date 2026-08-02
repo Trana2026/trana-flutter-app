@@ -5,7 +5,6 @@ import 'package:trana/features/guardian/data/models/guardian_link_dto.dart';
 import 'package:trana/features/guardian/domain/entities/guardian_link_entity.dart';
 import 'package:trana/features/guardian/domain/repositories/guardian_repository.dart';
 
-/// GuardianRepository 구현체
 class GuardianRepositoryImpl implements GuardianRepository {
   final GuardianRemoteDatasource _remote;
   const GuardianRepositoryImpl(this._remote);

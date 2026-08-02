@@ -18,7 +18,6 @@ abstract class GuardianLinkDto with _$GuardianLinkDto {
 }
 
 extension GuardianLinkDtoMapper on GuardianLinkDto {
-  /// DTO → Domain Entity 변환 매퍼
   GuardianLinkEntity toEntity() => GuardianLinkEntity(
     token: token,
     expiresAt: DateTime.parse(expiresAt),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:trana/core/constants/app_dimens.dart';
 
-/// 인트로 배경의 블러 글로우 2개를 그리는 위젯
+/// 인트로 화면의 글로우 배경을 그리는 위젯
 class IntroGlowBackground extends StatelessWidget {
   const IntroGlowBackground({super.key});
 
@@ -10,20 +11,18 @@ class IntroGlowBackground extends StatelessWidget {
   }
 }
 
-/// 블러 원 2개를 가우시안 블러로 렌더
+/// 원 2개를 가우시안 블러로 렌더
 class _GlowPainter extends CustomPainter {
   const _GlowPainter();
 
-  // 피그마 와이어프레임 width(375)로 좌표/반경/블러를 비례 스케일
-  static const double _designWidth = 375;
   static const double _radius = 266; // 지름 532
   static const double _blur = 200; // 블러 반경
 
   @override
   void paint(Canvas canvas, Size size) {
-    final s = size.width / _designWidth;
+    final s = size.width / kDesignFrameWidth;
 
-    // 좌측 중앙 글로우. #3AFF90. opacity 0.30
+    // 좌측 중앙 글로우
     _drawGlow(
       canvas,
       center: Offset(20 * s, 404 * s),
@@ -32,7 +31,7 @@ class _GlowPainter extends CustomPainter {
       scale: s,
     );
 
-    // 우상단 글로우. #40C572. opacity 0.20
+    // 우측 상단 글로우
     _drawGlow(
       canvas,
       center: Offset(size.width, 166 * s),

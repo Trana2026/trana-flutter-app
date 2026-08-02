@@ -23,7 +23,6 @@ abstract class UserMeDto with _$UserMeDto {
 }
 
 extension UserMeDtoMapper on UserMeDto {
-  /// DTO → Domain Entity 변환 매퍼
   UserMeEntity toEntity() => UserMeEntity(
     publicCode: publicCode,
     email: email,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/constants/app_durations.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/primary_button.dart';
@@ -69,7 +70,7 @@ class GuardianVerifyWaitingPage extends HookConsumerWidget {
           child: Align(
             alignment: Alignment.centerLeft,
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
+              duration: AppDurations.expand,
               height: 4,
               width: barWidth,
               color: fxc(context).brandColor,

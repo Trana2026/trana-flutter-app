@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/constants/app_durations.dart';
 import 'package:trana/core/providers/toast_visibility_provider.dart';
 import 'package:trana/features/guardian/domain/entities/guardian_verification_state.dart';
 import 'package:trana/features/guardian/presentation/viewmodels/guardian_verification_state_provider.dart';
@@ -60,13 +61,13 @@ class HomeBanner extends HookConsumerWidget {
     }, [occupiedHeight]);
 
     return AnimatedPositioned(
-      duration: const Duration(milliseconds: 200),
+      duration: AppDurations.toggle,
       curve: Curves.easeOut,
       left: 20,
       right: 20,
       bottom: bottomOffset,
       child: AnimatedSize(
-        duration: const Duration(milliseconds: 250),
+        duration: AppDurations.transition,
         curve: Curves.easeOut,
         alignment: Alignment.bottomCenter,
         child: Column(

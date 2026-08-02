@@ -4,15 +4,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/config/app_config.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/auth/presentation/viewmodels/pass_verify_view_model.dart';
 import 'package:trana/features/user/presentation/providers/me_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-/// PASS 웹페이지 주소
-const _kycWebBaseUrl = 'https://dev-kyc.trana.kr';
 
 /// 인앱웹뷰 설정
 InAppWebViewSettings _webViewSettings() => InAppWebViewSettings(
@@ -63,7 +61,7 @@ class PassVerifyPage extends HookConsumerWidget {
     final resultReceived = useRef(false);
 
     final passUrl =
-        '$_kycWebBaseUrl/auth/pass'
+        '${AppConfig.kycWebBaseUrl}/auth/pass'
         '?signupSessionId=${Uri.encodeQueryComponent(signupSessionId)}';
 
     // 완료 시 JWT 수신 처리 후 홈으로 이동
@@ -71,8 +69,7 @@ class PassVerifyPage extends HookConsumerWidget {
       if (kDebugMode) debugPrint('[PASS] onPassResult called: $args');
       // 이미 처리한 결과 콜백이면 무시
       // 메인 웹뷰와 팝업 웹뷰 양쪽에 JS 브릿지 핸들러를 등록했기 때문에
-      // 동일한 PASS 결과가 중복으로 전달될 수 있음
-      // 따라서 최초 1회만 처리하고 이후 콜백은 무시
+      // 최초 1회만 처리하고 이후 콜백은 무시하는 방어 로직
       if (resultReceived.value) return;
 
       if (args.isEmpty || args.first is! Map) return;
@@ -157,7 +154,7 @@ class PassVerifyPage extends HookConsumerWidget {
             },
             onLoadStop: (controller, url) => isPageLoading.value = false,
             onCreateWindow: onCreateWindow,
-            // SSL 인증서 처리 (계속 진행)
+            // SSL 인증서 처리
             onReceivedServerTrustAuthRequest: (controller, challenge) async =>
                 ServerTrustAuthResponse(
                   action: ServerTrustAuthResponseAction.PROCEED,
@@ -191,8 +188,8 @@ class _PassPopupDialog extends StatelessWidget {
           windowId: windowId,
           initialSettings: _webViewSettings(),
           // window.open()으로 생성된 팝업 웹뷰에도 JS 브릿지 핸들러 등록
-          // 메인 웹뷰와 팝업 웹뷰는 별도 WebView 인스턴스이므로,
-          // PASS 결과 콜백이 팝업 컨텍스트에서 호출될 경우를 대비
+          // 메인 웹뷰와 팝업 웹뷰는 별도 WebView 인스턴스이므로
+          // PASS 결과 콜백이 팝업 컨텍스트에서 호출되는 경우를 대비하는 방어 로직
           onWebViewCreated: (controller) {
             controller.addJavaScriptHandler(
               handlerName: 'onPassResult',

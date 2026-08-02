@@ -42,10 +42,12 @@ import 'package:trana/features/contract/domain/repositories/contract_lifecycle_r
 import 'package:trana/features/contract/domain/repositories/contract_minor_disclosure_repository.dart';
 import 'package:trana/features/contract/domain/repositories/contract_pdf_repository.dart';
 import 'package:trana/features/contract/domain/repositories/contract_repository.dart';
-import 'package:trana/features/ekyc/data/datasources/dio_ekyc_remote_datasource.dart';
-import 'package:trana/features/ekyc/data/datasources/ekyc_detection_service.dart';
-import 'package:trana/features/ekyc/data/repositories/ekyc_repository_impl.dart';
-import 'package:trana/features/ekyc/domain/repositories/ekyc_repository.dart';
+import 'package:trana/features/terms/data/datasources/dio_terms_remote_datasource.dart';
+import 'package:trana/legacy/idcard_face_ekyc/ekyc/data/datasources/ekyc_detection_service.dart';
+import 'package:trana/legacy/idcard_face_ekyc/ekyc/data/datasources/legacy_ekyc_datasource.dart';
+import 'package:trana/legacy/idcard_face_ekyc/ekyc/data/repositories/legacy_ekyc_repository.dart';
+import 'package:trana/features/terms/data/repositories/terms_repository_impl.dart';
+import 'package:trana/features/terms/domain/repositories/terms_repository.dart';
 import 'package:trana/features/guardian/data/datasources/dio_guardian_remote_datasource.dart';
 import 'package:trana/features/guardian/data/guardian_link_store.dart';
 import 'package:trana/features/guardian/data/repositories/guardian_repository_impl.dart';
@@ -54,7 +56,6 @@ import 'package:trana/features/notification/data/datasources/notification_data_s
 import 'package:trana/features/notification/data/repository_impls/notification_repository_impl.dart';
 import 'package:trana/features/notification/domain/repositories/notification_repository.dart';
 import 'package:trana/features/profile/data/datasources/device_token_data_source.dart';
-import 'package:trana/features/profile/data/datasources/term_data_source.dart';
 import 'package:trana/features/profile/data/datasources/trust_score_data_source.dart';
 import 'package:trana/features/profile/data/datasources/user_consent_data_source.dart';
 import 'package:trana/features/profile/data/datasources/user_info_data_source.dart';
@@ -62,14 +63,12 @@ import 'package:trana/features/profile/data/datasources/user_inquiry_data_source
 import 'package:trana/features/profile/data/datasources/user_preference_data_source.dart';
 import 'package:trana/features/profile/data/services/device_info_service.dart';
 import 'package:trana/features/profile/data/repository_impls/device_token_repository_impl.dart';
-import 'package:trana/features/profile/data/repository_impls/term_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/trust_score_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/user_consent_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/user_info_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/user_inquiry_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/user_preference_repository_impl.dart';
 import 'package:trana/features/profile/domain/repositories/device_token_repository.dart';
-import 'package:trana/features/profile/domain/repositories/term_repository.dart';
 import 'package:trana/features/profile/domain/repositories/trust_score_repository.dart';
 import 'package:trana/features/profile/domain/repositories/user_consent_repository.dart';
 import 'package:trana/features/profile/domain/repositories/user_info_repository.dart';
@@ -81,27 +80,27 @@ import 'package:trana/features/user/domain/repositories/user_repository.dart';
 
 part 'provider.g.dart';
 
-/// 보안 저장소
+// secureStorage
 @Riverpod(keepAlive: true)
 FlutterSecureStorage secureStorage(Ref ref) {
   return const FlutterSecureStorage();
 }
 
-/// 인증 토큰 저장소
+// 인증 토큰 secureStorage
 @Riverpod(keepAlive: true)
 AuthTokenStore authTokenStore(Ref ref) {
   final secureStorage = ref.read(secureStorageProvider);
   return AuthTokenStore(secureStorage);
 }
 
-/// 대리인 인증 링크 저장소
+/// 대리인 인증 링크 secureStorage
 @Riverpod(keepAlive: true)
 GuardianLinkStore guardianLinkStore(Ref ref) {
   final secureStorage = ref.read(secureStorageProvider);
   return GuardianLinkStore(secureStorage);
 }
 
-/// 인증 및 토큰 갱신 인터셉터가 적용된 Dio
+/// 인증 및 토큰 갱신, 기기 정보 인터셉터 적용된 Dio
 @riverpod
 Dio dio(Ref ref) {
   final authTokenStore = ref.read(authTokenStoreProvider);
@@ -117,7 +116,7 @@ Dio s3Dio(Ref ref) {
   return Dio();
 }
 
-/// eKYC Native SDK 감지 서비스
+/// 구 eKYC Native SDK 감지 서비스
 @riverpod
 EkycDetectionService ekycDetectionService(Ref ref) {
   return EkycDetectionService();
@@ -211,12 +210,6 @@ UserConsentDataSource userConsentDataSource(Ref ref) {
 }
 
 @riverpod
-TermDataSource termsDataSource(Ref ref) {
-  final dio = ref.watch(dioProvider);
-  return TermDataSource(dio);
-}
-
-@riverpod
 UserInfoDataSource userInfoDataSource(Ref ref) {
   final dio = ref.watch(dioProvider);
   return UserInfoDataSource(dio);
@@ -256,10 +249,16 @@ PassAuthRepository passAuthRepository(Ref ref) {
 }
 
 @riverpod
-EkycRepository ekycRepository(Ref ref) {
+TermsRepository termsRepository(Ref ref) {
+  final dio = ref.read(dioProvider);
+  return TermsRepositoryImpl(DioTermsRemoteDatasource(dio));
+}
+
+@riverpod
+LegacyEkycRepository legacyEkycRepository(Ref ref) {
   final dio = ref.read(dioProvider);
   final authTokenStore = ref.read(authTokenStoreProvider);
-  return EkycRepositoryImpl(DioEkycRemoteDatasource(dio), authTokenStore);
+  return LegacyEkycRepository(LegacyEkycDatasource(dio), authTokenStore);
 }
 
 @riverpod
@@ -357,12 +356,6 @@ TrustScoreRepository trustScoreRepository(Ref ref) {
 UserConsentRepository userConsentRepository(Ref ref) {
   final dataSource = ref.watch(userConsentDataSourceProvider);
   return UserConsentRepositoryImpl(dataSource);
-}
-
-@riverpod
-TermRepository termsRepository(Ref ref) {
-  final dataSource = ref.watch(termsDataSourceProvider);
-  return TermRepositoryImpl(dataSource);
 }
 
 @riverpod

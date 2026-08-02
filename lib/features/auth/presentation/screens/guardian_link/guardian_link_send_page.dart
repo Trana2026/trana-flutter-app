@@ -4,12 +4,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/constants/app_durations.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/guardian/presentation/viewmodels/guardian_view_model.dart';
 
-/// 대리인 인증 딥링크를 전달하는 화면
+/// 대리인 인증 링크를 전달하는 화면
 class GuardianLinkSendPage extends HookConsumerWidget {
   const GuardianLinkSendPage({super.key});
 
@@ -53,7 +54,7 @@ class GuardianLinkSendPage extends HookConsumerWidget {
           child: Align(
             alignment: Alignment.centerLeft,
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
+              duration: AppDurations.expand,
               height: 4,
               width: barWidth,
               color: fxc(context).brandColor,

@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:trana/features/profile/domain/enums/terms_type.dart';
+import 'package:trana/features/terms/domain/enums/terms_type.dart';
 
 part 'user_consent_entity.freezed.dart';
 

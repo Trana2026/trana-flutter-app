@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:trana/core/constants/app_dimens.dart';
 
-/// 스플래시 배경의 2개의 코너 글로우(블러처리된 원형 에셋)를 그리는 위젯
+/// 스플래시 화면의 글로우 배경을 그리는 위젯
 class SplashGlowBackground extends StatelessWidget {
   const SplashGlowBackground({super.key});
 
@@ -10,23 +11,18 @@ class SplashGlowBackground extends StatelessWidget {
   }
 }
 
-/// 블러 원 2개를 가우시안 블러로 렌더
+/// 원형 2개를 가우시안 블러로 렌더
 class _GlowPainter extends CustomPainter {
   const _GlowPainter();
 
-  // 피그마 프레임 width(375)로 좌표/반경/블러를 비례 스케일
-  static const double _designWidth = 375;
-
-  // 글로우 원 값
   static const double _radius = 266;
   static const double _opacity = 0.15;
   static const double _blur = 200;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final s = size.width / _designWidth;
+    final s = size.width / kDesignFrameWidth;
 
-    // 좌하단, #3AFF90
     _drawGlow(
       canvas,
       center: Offset(20 * s, size.height - 37 * s),
@@ -34,7 +30,6 @@ class _GlowPainter extends CustomPainter {
       scale: s,
     );
 
-    // 우상단, #A0F15E
     _drawGlow(
       canvas,
       center: Offset(size.width, 0),

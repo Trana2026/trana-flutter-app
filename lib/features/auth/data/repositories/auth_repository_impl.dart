@@ -7,7 +7,6 @@ import 'package:trana/features/auth/data/datasources/auth_remote_datasource.dart
 import 'package:trana/features/auth/domain/entities/social_provider.dart';
 import 'package:trana/features/auth/domain/repositories/auth_repository.dart';
 
-/// AuthRepository 실 구현체 (Dio + 토큰 저장소)
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDatasource _remote;
   final AuthTokenStore _tokenStore;

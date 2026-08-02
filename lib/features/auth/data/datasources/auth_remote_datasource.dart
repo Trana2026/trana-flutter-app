@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:trana/features/auth/data/models/sign_in_response_dto.dart';
 
-/// 인증 인터페이스
+/// 인증 datasource 인터페이스
 abstract interface class AuthRemoteDatasource {
-  /// 소셜 로그인.
+  /// 소셜 로그인
   /// 클라이언트가 받은 idToken을 서버가 검증 후 JWT 발급
   Future<SignInResponseDto> socialSignIn({
     required String provider,
@@ -15,7 +15,6 @@ abstract interface class AuthRemoteDatasource {
   Future<void> deleteMe();
 }
 
-/// 인증 구현체
 class DioAuthRemoteDatasource implements AuthRemoteDatasource {
   final Dio _dio;
   const DioAuthRemoteDatasource(this._dio);

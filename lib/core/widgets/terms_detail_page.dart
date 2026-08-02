@@ -8,8 +8,8 @@ import 'package:trana/core/widgets/custom_app_bar.dart';
 import 'package:trana/core/widgets/custom_loading_bar.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
-import 'package:trana/features/profile/domain/enums/terms_type.dart';
-import 'package:trana/features/profile/presentation/viewmodels/term_detail_view_model.dart';
+import 'package:trana/features/terms/domain/enums/terms_type.dart';
+import 'package:trana/features/terms/presentation/viewmodels/term_detail_view_model.dart';
 
 /// 약관 전문 마크다운 렌더 화면
 class TermsDetailPage extends HookConsumerWidget {
@@ -120,7 +120,7 @@ class TermsDetailPage extends HookConsumerWidget {
             fontWeight: FontWeight.w600,
           ),
           border: TableBorder.all(color: border),
-          // 가용 너비를 꽉 채우도록 열 폭 균등 분배 (가로 스크롤 없음)
+          // 가용 너비를 꽉 채우도록 열 폭 균등 분배
           defaultColumnWidth: const FlexColumnWidth(),
           wrapper: (table) => SizedBox(width: double.infinity, child: table),
         ),
@@ -140,13 +140,13 @@ class _BrInlineSyntax extends md.InlineSyntax {
   }
 }
 
-/// 제목-밑줄(divider) 간 간격
+/// 제목-구분선(divider) 간 간격
 const _dividerSpace = 6.0;
 
-/// 밑줄(divider)-본문 간 간격 (기본값 top: 8, bottom: 4)
+/// 구분선(divider)-본문 간 간격
 const _headingPadding = EdgeInsets.only(top: 14, bottom: 0);
 
-/// 제목 밑줄(divider) 색상/간격을 지정할 수 있도록 오버라이드한 H1/H2/H3Config
+/// 제목과 구분선(divider) 색상/간격을 지정할 수 있도록 오버라이드한 H1/H2/H3Config
 class _H1DividerConfig extends H1Config {
   const _H1DividerConfig({required this.dividerColor, required super.style});
 

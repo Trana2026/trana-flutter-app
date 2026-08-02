@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:trana/core/theme/app_text_style.dart';
@@ -55,6 +56,7 @@ class _DeviceListItem extends HookConsumerWidget {
     final currentDeviceId = ref.watch(
       deviceTokenViewModelProvider.select((s) => s.currentDeviceId),
     );
+    final isPending = useState(false);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
@@ -115,16 +117,22 @@ class _DeviceListItem extends HookConsumerWidget {
           else
             GestureDetector(
               onTap: () async {
-                // 기기 강제 해제
-                final deviceVM = ref.read(
-                  deviceTokenViewModelProvider.notifier,
-                );
-                final success = await deviceVM.disconnect(device.id);
-                if (!context.mounted) return;
-                if (!success) {
-                  final state = ref.read(deviceTokenViewModelProvider);
-                  showErrorToast(context, state.error!);
-                  deviceVM.clearError();
+                if (isPending.value) return;
+                isPending.value = true;
+                try {
+                  // 기기 강제 해제
+                  final deviceVM = ref.read(
+                    deviceTokenViewModelProvider.notifier,
+                  );
+                  final success = await deviceVM.disconnect(device.id);
+                  if (!context.mounted) return;
+                  if (!success) {
+                    final state = ref.read(deviceTokenViewModelProvider);
+                    showErrorToast(context, state.error!);
+                    deviceVM.clearError();
+                  }
+                } finally {
+                  isPending.value = false;
                 }
               },
               child: Container(

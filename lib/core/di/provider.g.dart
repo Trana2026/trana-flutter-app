@@ -8,12 +8,9 @@ part of 'provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// 보안 저장소
 
 @ProviderFor(secureStorage)
 final secureStorageProvider = SecureStorageProvider._();
-
-/// 보안 저장소
 
 final class SecureStorageProvider
     extends
@@ -23,7 +20,6 @@ final class SecureStorageProvider
           FlutterSecureStorage
         >
     with $Provider<FlutterSecureStorage> {
-  /// 보안 저장소
   SecureStorageProvider._()
     : super(
         from: null,
@@ -60,17 +56,12 @@ final class SecureStorageProvider
 
 String _$secureStorageHash() => r'a4f75721472cf77465bf47f759c90de5ca30856e';
 
-/// 인증 토큰 저장소
-
 @ProviderFor(authTokenStore)
 final authTokenStoreProvider = AuthTokenStoreProvider._();
-
-/// 인증 토큰 저장소
 
 final class AuthTokenStoreProvider
     extends $FunctionalProvider<AuthTokenStore, AuthTokenStore, AuthTokenStore>
     with $Provider<AuthTokenStore> {
-  /// 인증 토큰 저장소
   AuthTokenStoreProvider._()
     : super(
         from: null,
@@ -106,12 +97,12 @@ final class AuthTokenStoreProvider
 
 String _$authTokenStoreHash() => r'9c832bc3bddaa58855b087c358fe88f9570249b4';
 
-/// 대리인 인증 링크 저장소
+/// 대리인 인증 링크 secureStorage
 
 @ProviderFor(guardianLinkStore)
 final guardianLinkStoreProvider = GuardianLinkStoreProvider._();
 
-/// 대리인 인증 링크 저장소
+/// 대리인 인증 링크 secureStorage
 
 final class GuardianLinkStoreProvider
     extends
@@ -121,7 +112,7 @@ final class GuardianLinkStoreProvider
           GuardianLinkStore
         >
     with $Provider<GuardianLinkStore> {
-  /// 대리인 인증 링크 저장소
+  /// 대리인 인증 링크 secureStorage
   GuardianLinkStoreProvider._()
     : super(
         from: null,
@@ -158,16 +149,16 @@ final class GuardianLinkStoreProvider
 
 String _$guardianLinkStoreHash() => r'b28b3829d4b6043e2e2c30eb4144a06436752d84';
 
-/// 인증 및 토큰 갱신 인터셉터가 적용된 Dio
+/// 인증 및 토큰 갱신, 기기 정보 인터셉터 적용된 Dio
 
 @ProviderFor(dio)
 final dioProvider = DioProvider._();
 
-/// 인증 및 토큰 갱신 인터셉터가 적용된 Dio
+/// 인증 및 토큰 갱신, 기기 정보 인터셉터 적용된 Dio
 
 final class DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
     with $Provider<Dio> {
-  /// 인증 및 토큰 갱신 인터셉터가 적용된 Dio
+  /// 인증 및 토큰 갱신, 기기 정보 인터셉터 적용된 Dio
   DioProvider._()
     : super(
         from: null,
@@ -248,12 +239,12 @@ final class S3DioProvider extends $FunctionalProvider<Dio, Dio, Dio>
 
 String _$s3DioHash() => r'fa29615182f6a02e2a5e4e837dafd51b56b0080e';
 
-/// eKYC Native SDK 감지 서비스
+/// 구 eKYC Native SDK 감지 서비스
 
 @ProviderFor(ekycDetectionService)
 final ekycDetectionServiceProvider = EkycDetectionServiceProvider._();
 
-/// eKYC Native SDK 감지 서비스
+/// 구 eKYC Native SDK 감지 서비스
 
 final class EkycDetectionServiceProvider
     extends
@@ -263,7 +254,7 @@ final class EkycDetectionServiceProvider
           EkycDetectionService
         >
     with $Provider<EkycDetectionService> {
-  /// eKYC Native SDK 감지 서비스
+  /// 구 eKYC Native SDK 감지 서비스
   EkycDetectionServiceProvider._()
     : super(
         from: null,
@@ -986,47 +977,6 @@ final class UserConsentDataSourceProvider
 String _$userConsentDataSourceHash() =>
     r'90f523c3429b9652e12301eb8ee607050a72f64e';
 
-@ProviderFor(termsDataSource)
-final termsDataSourceProvider = TermsDataSourceProvider._();
-
-final class TermsDataSourceProvider
-    extends $FunctionalProvider<TermDataSource, TermDataSource, TermDataSource>
-    with $Provider<TermDataSource> {
-  TermsDataSourceProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'termsDataSourceProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$termsDataSourceHash();
-
-  @$internal
-  @override
-  $ProviderElement<TermDataSource> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  TermDataSource create(Ref ref) {
-    return termsDataSource(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(TermDataSource value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<TermDataSource>(value),
-    );
-  }
-}
-
-String _$termsDataSourceHash() => r'47e7af3b68dc8e20b2a9c5fee166c0b0366d78e7';
-
 @ProviderFor(userInfoDataSource)
 final userInfoDataSourceProvider = UserInfoDataSourceProvider._();
 
@@ -1312,46 +1262,95 @@ final class PassAuthRepositoryProvider
 String _$passAuthRepositoryHash() =>
     r'65354d03f619241c1b9395a4c81c92877c1d0de9';
 
-@ProviderFor(ekycRepository)
-final ekycRepositoryProvider = EkycRepositoryProvider._();
+@ProviderFor(termsRepository)
+final termsRepositoryProvider = TermsRepositoryProvider._();
 
-final class EkycRepositoryProvider
-    extends $FunctionalProvider<EkycRepository, EkycRepository, EkycRepository>
-    with $Provider<EkycRepository> {
-  EkycRepositoryProvider._()
+final class TermsRepositoryProvider
+    extends
+        $FunctionalProvider<TermsRepository, TermsRepository, TermsRepository>
+    with $Provider<TermsRepository> {
+  TermsRepositoryProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'ekycRepositoryProvider',
+        name: r'termsRepositoryProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$ekycRepositoryHash();
+  String debugGetCreateSourceHash() => _$termsRepositoryHash();
 
   @$internal
   @override
-  $ProviderElement<EkycRepository> $createElement($ProviderPointer pointer) =>
+  $ProviderElement<TermsRepository> $createElement($ProviderPointer pointer) =>
       $ProviderElement(pointer);
 
   @override
-  EkycRepository create(Ref ref) {
-    return ekycRepository(ref);
+  TermsRepository create(Ref ref) {
+    return termsRepository(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(EkycRepository value) {
+  Override overrideWithValue(TermsRepository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<EkycRepository>(value),
+      providerOverride: $SyncValueProvider<TermsRepository>(value),
     );
   }
 }
 
-String _$ekycRepositoryHash() => r'25833c1b2065bad30ba47ef02507cc5d6eac1891';
+String _$termsRepositoryHash() => r'90db6d3e6d5563d9e315182cfb9ad3757f716b27';
+
+@ProviderFor(legacyEkycRepository)
+final legacyEkycRepositoryProvider = LegacyEkycRepositoryProvider._();
+
+final class LegacyEkycRepositoryProvider
+    extends
+        $FunctionalProvider<
+          LegacyEkycRepository,
+          LegacyEkycRepository,
+          LegacyEkycRepository
+        >
+    with $Provider<LegacyEkycRepository> {
+  LegacyEkycRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'legacyEkycRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$legacyEkycRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<LegacyEkycRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  LegacyEkycRepository create(Ref ref) {
+    return legacyEkycRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(LegacyEkycRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<LegacyEkycRepository>(value),
+    );
+  }
+}
+
+String _$legacyEkycRepositoryHash() =>
+    r'40e4eaa16668b375941a7285de3a4e06b75300fd';
 
 @ProviderFor(guardianRepository)
 final guardianRepositoryProvider = GuardianRepositoryProvider._();
@@ -2126,47 +2125,6 @@ final class UserConsentRepositoryProvider
 
 String _$userConsentRepositoryHash() =>
     r'9c60f83259de00a947e34c9d15d42e98b0fbf54a';
-
-@ProviderFor(termsRepository)
-final termsRepositoryProvider = TermsRepositoryProvider._();
-
-final class TermsRepositoryProvider
-    extends $FunctionalProvider<TermRepository, TermRepository, TermRepository>
-    with $Provider<TermRepository> {
-  TermsRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'termsRepositoryProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$termsRepositoryHash();
-
-  @$internal
-  @override
-  $ProviderElement<TermRepository> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  TermRepository create(Ref ref) {
-    return termsRepository(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(TermRepository value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<TermRepository>(value),
-    );
-  }
-}
-
-String _$termsRepositoryHash() => r'390bec377f09f87b670d7605e06e465f594e4414';
 
 @ProviderFor(userInfoRepository)
 final userInfoRepositoryProvider = UserInfoRepositoryProvider._();

@@ -1,7 +1,7 @@
 import 'package:trana/core/error/result.dart';
 import 'package:trana/features/auth/domain/entities/social_provider.dart';
 
-/// 인증 관련 데이터 접근 인터페이스
+/// 인증 인터페이스
 abstract interface class AuthRepository {
   /// 소셜 로그인 idToken으로 JWT 발급 후 토큰 저장
   Future<Result<void>> socialSignIn({

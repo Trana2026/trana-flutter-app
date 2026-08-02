@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/constants/app_durations.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/widgets/custom_loading_bar.dart';
@@ -81,7 +82,7 @@ class ContractImageCarousel extends HookConsumerWidget {
                     child: _ArrowButton(
                       icon: CooliconsIcon.chevronLeft,
                       onTap: () => controller.previousPage(
-                        duration: const Duration(milliseconds: 250),
+                        duration: AppDurations.transition,
                         curve: Curves.easeInOut,
                       ),
                     ),
@@ -94,7 +95,7 @@ class ContractImageCarousel extends HookConsumerWidget {
                     child: _ArrowButton(
                       icon: CooliconsIcon.chevronRight,
                       onTap: () => controller.nextPage(
-                        duration: const Duration(milliseconds: 250),
+                        duration: AppDurations.transition,
                         curve: Curves.easeInOut,
                       ),
                     ),
