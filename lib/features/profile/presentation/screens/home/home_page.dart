@@ -6,12 +6,10 @@ import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
-import 'package:trana/features/contract/data/services/deferred_link_service.dart';
 import 'package:trana/features/contract/data/services/pending_contract_code_service.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/viewmodels/cancel_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
-import 'package:trana/features/contract/presentation/viewmodels/receive_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/report_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/widgets/modals/guardian_identity_verify_dialog.dart';
 import 'package:trana/features/guardian/domain/entities/guardian_verification_state.dart';
@@ -78,9 +76,11 @@ class HomePage extends HookConsumerWidget {
     // ===== 계약 관련 =====
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
+        /* 초대(invitation) 수락 흐름 : 계약 요청이 고유코드방식으로 변경됨에 따라 미사용
+        
         // 플레이스토어 설치 유입 시 Install Referrer에서 초대 토큰 복구
         await DeferredLinkService.restoreInvitationToken();
-
+        
         // 수신자 invitation 수락
         final receiveVM = ref.read(receiveContractViewModelProvider.notifier);
         final acceptSuccess = await receiveVM.accept();
@@ -90,6 +90,7 @@ class HomePage extends HookConsumerWidget {
           showErrorToast(context, state.error!);
           receiveVM.clearError();
         }
+        */
 
         // 내 계약 목록 조회
         final homeVM = ref.read(homeContractViewModelProvider.notifier);
