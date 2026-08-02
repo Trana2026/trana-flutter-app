@@ -6,7 +6,6 @@ import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_app_bar.dart';
 import 'package:trana/core/widgets/custom_bottom_sheet.dart';
-import 'package:trana/core/widgets/custom_dialog.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
@@ -112,32 +111,24 @@ class ContractPreviewPage extends HookConsumerWidget {
                           context.go(AppRoutes.contractDetail);
                           // 2. 생성 모드
                         } else {
-                          await showCustomDialog(
-                            context: context,
-                            title: "계약 확인 안내",
-                            content: "입력하신 내용이 실제 거래 상품과\n일치하는지 다시 한 번 확인해주세요",
-                            onConfirm: () async {
-                              // DRAFT > Ready 상태 전이
-                              final createVM = ref.read(
-                                createContractViewModelProvider.notifier,
-                              );
-                              final success = await createVM.ready();
-                              if (!context.mounted) return;
-                              if (!success) {
-                                final state = ref.read(
-                                  createContractViewModelProvider,
-                                );
-                                showErrorToast(context, state.error!);
-                                createVM.clearError();
-                                return;
-                              }
+                          // DRAFT > Ready 상태 전이
+                          final createVM = ref.read(
+                            createContractViewModelProvider.notifier,
+                          );
+                          final success = await createVM.ready();
+                          if (!context.mounted) return;
+                          if (!success) {
+                            final state = ref.read(
+                              createContractViewModelProvider,
+                            );
+                            showErrorToast(context, state.error!);
+                            createVM.clearError();
+                            return;
+                          }
 
-                              Navigator.pop(context);
-                              await showCustomBottomSheet(
-                                context,
-                                const ContractCompletionBottomSheet(),
-                              );
-                            },
+                          await showCustomBottomSheet(
+                            context,
+                            const ContractCompletionBottomSheet(),
                           );
                         }
                       } finally {

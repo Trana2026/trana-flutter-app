@@ -13,7 +13,6 @@ import 'package:trana/features/contract/domain/utils/string_extensions.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 
-// TODO: 시안 2
 class CostNoticeBottomSheet extends HookConsumerWidget {
   const CostNoticeBottomSheet({super.key});
 
@@ -174,19 +173,19 @@ class _NoticeItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
+        Text(label, style: context.txt(color: vrc(context).textDisable)),
+        const SizedBox(width: 20),
         Expanded(
           child: Text(
-            label,
-            style: context.txt(color: vrc(context).textDisable),
-          ),
-        ),
-        const SizedBox(width: 20),
-        Text(
-          desc,
-          style: context.txt(
-            color: vrc(context).textPrimary,
-            fontSize: descFontSize ?? 14,
-            fontWeight: FontWeight.w600,
+            desc,
+            style: context.txt(
+              color: vrc(context).textPrimary,
+              fontSize: descFontSize ?? 14,
+              fontWeight: FontWeight.w600,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.end,
           ),
         ),
       ],

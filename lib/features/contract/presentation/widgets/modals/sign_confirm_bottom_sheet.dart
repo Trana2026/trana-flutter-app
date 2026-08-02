@@ -74,10 +74,7 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
               ),
               const SizedBox(height: 10),
 
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.sizeOf(context).height * 0.6,
-                ),
+              Flexible(
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -115,7 +112,7 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
 
               Row(
                 children: [

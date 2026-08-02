@@ -106,15 +106,6 @@ class CreateContractPage extends HookConsumerWidget {
     const int totalStep = 3;
     final double progress = currentStep / totalStep;
 
-    // TODO: 시안 1
-    final priceValue = int.tryParse(priceCtr.text.replaceAll(',', '')) ?? 0;
-    final cost = switch (priceValue) {
-      <= 30000 => 2900,
-      <= 100000 => 4900,
-      <= 1000000 => 7900,
-      _ => 9900,
-    };
-
     return PendingOverlay(
       isPending: isPending.value,
       child: Scaffold(
@@ -233,91 +224,70 @@ class CreateContractPage extends HookConsumerWidget {
           top: false,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // TODO: 시안 1
-                Row(
-                  children: [
-                    Text(
-                      "계약서 생성 비용",
-                      style: context.txt(color: vrc(context).textDisable),
-                    ),
-                    const Spacer(),
-                    Text(
-                      "${cost.toString().toPriceFormat}₩",
-                      style: context.txt(
-                        color: vrc(context).textPrimary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
+            child: PrimaryButton.brand(
+              text: isEditMode ? "수정 완료" : "생성하기",
+              disabled: !isEnabled,
+              onTap: () async {
+                if (isPending.value) return;
+                isPending.value = true;
+                try {
+                  priceError.value = Validation.price(priceCtr.text);
+                  if (priceError.value != null) return;
 
-                PrimaryButton.brand(
-                  text: isEditMode ? "수정 완료" : "생성하기",
-                  disabled: !isEnabled,
-                  onTap: () async {
-                    if (isPending.value) return;
-                    isPending.value = true;
-                    try {
-                      priceError.value = Validation.price(priceCtr.text);
-                      if (priceError.value != null) return;
+                  final createVM = ref.read(
+                    createContractViewModelProvider.notifier,
+                  );
+                  createVM.updateEntries(
+                    platformText: platformCtr.text,
+                    nameText: nameCtr.text,
+                    priceText: priceCtr.text,
+                    conditionText: conditionCtr.text,
+                    detailText: detailCtr.text,
+                  );
 
-                      final createVM = ref.read(
-                        createContractViewModelProvider.notifier,
+                  // 1. 요청자가 구매자일 때 (계약 생성 비용 고지)
+                  if (role == Role.buyer) {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    showCustomBottomSheet(
+                      context,
+                      const CostNoticeBottomSheet(),
+                    );
+                    // 2. 요청자가 판매자일 때
+                  } else {
+                    if (status == ContractStatus.ready) {
+                      // READY > DRAFT 계약서 상태 되돌림 (Ready 상태에서 수정 시)
+                      final detailVM = ref.read(
+                        detailContractViewModelProvider.notifier,
                       );
-                      createVM.updateEntries(
-                        platformText: platformCtr.text,
-                        nameText: nameCtr.text,
-                        priceText: priceCtr.text,
-                        conditionText: conditionCtr.text,
-                        detailText: detailCtr.text,
-                      );
-
-                      // TODO: 시안 1
-                      // if (status == ContractStatus.ready) {
-                      //   // READY > DRAFT 계약서 상태 되돌림 (Ready 상태에서 수정 시)
-                      //   final detailVM = ref.read(
-                      //     detailContractViewModelProvider.notifier,
-                      //   );
-                      //   final success = await detailVM.revert();
-                      //   if (!success) {
-                      //     if (context.mounted) {
-                      //       final state = ref.read(detailContractViewModelProvider);
-                      //       showErrorToast(context, state.error!);
-                      //       detailVM.clearError();
-                      //     }
-                      //     return;
-                      //   }
-                      // }
-
-                      // // Draft 항목 업데이트
-                      // final success = await createVM.updateDraftEntries();
-                      // if (!context.mounted) return;
-                      // if (!success) {
-                      //   final state = ref.read(createContractViewModelProvider);
-                      //   showErrorToast(context, state.error!);
-                      //   createVM.clearError();
-                      //   return;
-                      // }
-
-                      // context.push(AppRoutes.contractPreview);
-
-                      // TODO: 시안 2
-                      FocusScope.of(context).requestFocus(FocusNode());
-                      showCustomBottomSheet(
-                        context,
-                        const CostNoticeBottomSheet(),
-                      );
-                    } finally {
-                      isPending.value = false;
+                      final success = await detailVM.revert();
+                      if (!success) {
+                        if (context.mounted) {
+                          final state = ref.read(
+                            detailContractViewModelProvider,
+                          );
+                          showErrorToast(context, state.error!);
+                          detailVM.clearError();
+                        }
+                        return;
+                      }
                     }
-                  },
-                ),
-              ],
+
+                    // Draft 항목 업데이트
+                    final success = await createVM.updateDraftEntries();
+                    if (!context.mounted) return;
+                    if (!success) {
+                      final state = ref.read(createContractViewModelProvider);
+                      showErrorToast(context, state.error!);
+                      createVM.clearError();
+                      return;
+                    }
+
+                    context.push(AppRoutes.contractPreview);
+                  }
+                } finally {
+                  isPending.value = false;
+                }
+              },
             ),
           ),
         ),
