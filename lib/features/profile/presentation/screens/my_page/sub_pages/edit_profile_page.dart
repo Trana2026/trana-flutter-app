@@ -31,6 +31,7 @@ class EditProfilePage extends HookConsumerWidget {
     final emailCtr = useTextEditingController(text: email);
     final emailError = useState<String?>(null);
     final isEditing = useState(false);
+    final isPending = useState(false);
 
     useListenable(nameCtr);
     useListenable(genderCtr);
@@ -116,36 +117,42 @@ class EditProfilePage extends HookConsumerWidget {
             text: isEditing.value ? "완료" : "수정하기",
             disabled: !isEnabled,
             onTap: () async {
-              // 수정중 아닐 때
-              if (!isEditing.value) {
-                isEditing.value = true;
-                // 수정중일 때
-              } else {
-                if (emailCtr.text.isNotEmpty &&
-                    (ref.read(myPageViewModelProvider).email !=
-                        emailCtr.text)) {
-                  emailError.value = Validation.email(emailCtr.text);
-                  if (emailError.value != null) return;
+              if (isPending.value) return;
+              isPending.value = true;
+              try {
+                // 수정중 아닐 때
+                if (!isEditing.value) {
+                  isEditing.value = true;
+                  // 수정중일 때
+                } else {
+                  if (emailCtr.text.isNotEmpty &&
+                      (ref.read(myPageViewModelProvider).email !=
+                          emailCtr.text)) {
+                    emailError.value = Validation.email(emailCtr.text);
+                    if (emailError.value != null) return;
+                  }
+
+                  final editProfileVM = ref.read(
+                    editProfileViewModelProvider.notifier,
+                  );
+                  editProfileVM.updateEmail(
+                    emailCtr.text.isEmpty ? null : emailCtr.text,
+                  );
+
+                  // 본인 정보 수정
+                  final success = await editProfileVM.updateProfile();
+                  if (!context.mounted) return;
+                  if (!success) {
+                    final state = ref.read(editProfileViewModelProvider);
+                    showErrorToast(context, state.error!);
+                    editProfileVM.clearError();
+                    return;
+                  }
+
+                  isEditing.value = false;
                 }
-
-                final editProfileVM = ref.read(
-                  editProfileViewModelProvider.notifier,
-                );
-                editProfileVM.updateEmail(
-                  emailCtr.text.isEmpty ? null : emailCtr.text,
-                );
-
-                // 본인 정보 수정
-                final success = await editProfileVM.updateProfile();
-                if (!context.mounted) return;
-                if (!success) {
-                  final state = ref.read(editProfileViewModelProvider);
-                  showErrorToast(context, state.error!);
-                  editProfileVM.clearError();
-                  return;
-                }
-
-                isEditing.value = false;
+              } finally {
+                isPending.value = false;
               }
             },
             backgroundColor: isEditing.value

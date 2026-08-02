@@ -22,6 +22,7 @@ class CustomerServicePage extends HookConsumerWidget {
     final titleCtr = useTextEditingController();
     final contentCtr = useTextEditingController();
     final emailError = useState<String?>(null);
+    final isPending = useState(false);
 
     useListenable(emailCtr);
     useListenable(titleCtr);
@@ -116,28 +117,34 @@ class CustomerServicePage extends HookConsumerWidget {
             text: "문의하기",
             disabled: !isEnabled,
             onTap: () async {
-              emailError.value = Validation.email(emailCtr.text);
-              if (emailError.value != null) return;
+              if (isPending.value) return;
+              isPending.value = true;
+              try {
+                emailError.value = Validation.email(emailCtr.text);
+                if (emailError.value != null) return;
 
-              final inquiryVM = ref.read(inquiryViewModelProvider.notifier);
-              inquiryVM.updateEntries(
-                email: emailCtr.text,
-                title: titleCtr.text,
-                content: contentCtr.text,
-              );
+                final inquiryVM = ref.read(inquiryViewModelProvider.notifier);
+                inquiryVM.updateEntries(
+                  email: emailCtr.text,
+                  title: titleCtr.text,
+                  content: contentCtr.text,
+                );
 
-              // 문의 작성
-              final success = await inquiryVM.createInquiry();
-              if (!context.mounted) return;
-              if (!success) {
-                final state = ref.read(inquiryViewModelProvider);
-                showErrorToast(context, state.error!);
-                inquiryVM.clearError();
-                return;
+                // 문의 작성
+                final success = await inquiryVM.createInquiry();
+                if (!context.mounted) return;
+                if (!success) {
+                  final state = ref.read(inquiryViewModelProvider);
+                  showErrorToast(context, state.error!);
+                  inquiryVM.clearError();
+                  return;
+                }
+
+                context.pop();
+                context.push(AppRoutes.inquiryHistory);
+              } finally {
+                isPending.value = false;
               }
-
-              context.pop();
-              context.push(AppRoutes.inquiryHistory);
             },
           ),
         ),
