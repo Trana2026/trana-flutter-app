@@ -68,6 +68,13 @@ dev_dependencies:
   json_serializable: ^6.13.0
   freezed: ^3.2.5
   riverpod_generator: ^4.0.3
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  image_path: assets/images/app_icon.png
+  android: true
+  ios: true
+  remove_alpha_ios: true
 
 flutter:
   uses-material-design: true
