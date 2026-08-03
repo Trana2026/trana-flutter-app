@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_bottom_sheet.dart';
@@ -205,7 +206,8 @@ class ContractCtaButtons extends HookConsumerWidget {
       onTap: () async {
         await showCustomDialog(
           context: context,
-          title: '신고를 취소하시겠습니까?',
+          title: "신고 취소 안내",
+          content: "취소하면 접수된 신고 내용이 삭제되고\n삭제된 신고는 복구할 수 없어요",
           onConfirm: () async {
             // 신고 취소
             final reportVM = ref.read(reportContractViewModelProvider.notifier);
@@ -239,7 +241,8 @@ class ContractCtaButtons extends HookConsumerWidget {
       onTap: () async {
         await showCustomDialog(
           context: context,
-          title: '취소 요청을 취소하시겠습니까?',
+          title: "취소 안내",
+          content: "취소하면 계약이 원래 상태로 돌아가고\n상대방에게도 알림이 전송돼요",
           onConfirm: () async {
             // 취소 요청 취소
             final cancelVM = ref.read(cancelContractViewModelProvider.notifier);
@@ -307,7 +310,8 @@ class ContractCtaButtons extends HookConsumerWidget {
         if (status == ContractStatus.revisionRequested) {
           await showCustomDialog(
             context: context,
-            title: '거래 상대방에게\n다시 서명을 요청하시겠습니까?',
+            title: "서명 요청 안내",
+            content: "수정한 계약 내용이 맞는지 확인해주세요\n요청 후에는 내용을 수정할 수 없어요",
             onConfirm: () async {
               // 재서명 요청
               final shareVM = ref.read(shareContractViewModelProvider.notifier);
@@ -416,6 +420,20 @@ class ContractCtaButtons extends HookConsumerWidget {
           conditionSummary: detailState.conditionSummary,
           conditionDetails: detailState.conditionDetails,
           warrantyPeriodDays: detailState.warrantyPeriodDays,
+        );
+
+        // EVT-031: contract_draft_resumed
+        final createdAt = detailState.createdAt;
+        AnalyticsService.track(
+          'contract_draft_resumed',
+          properties: {
+            'contract_id': detailState.publicCode,
+            'entry_point': 'contract_detail',
+            if (createdAt != null)
+              'draft_age_minutes': DateTime.now()
+                  .difference(createdAt)
+                  .inMinutes,
+          },
         );
 
         context.push(AppRoutes.contractCreate);
