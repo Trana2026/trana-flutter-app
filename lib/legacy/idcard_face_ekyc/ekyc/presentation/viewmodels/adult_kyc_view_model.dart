@@ -95,8 +95,9 @@ class AdultKycViewModel extends _$AdultKycViewModel {
   /// 신분증 진위확인
   Future<Result<void>> verifyIdCard() async {
     final requestId = state.requestId;
-    if (requestId == null)
+    if (requestId == null) {
       return Failure(const UnknownFailure('requestId가 없습니다'));
+    }
 
     return await _repository.verifyIdCard(requestId: requestId);
   }
@@ -104,8 +105,9 @@ class AdultKycViewModel extends _$AdultKycViewModel {
   /// 휴대폰 번호 기록
   Future<Result<void>> submitPhone({required String phone}) async {
     final requestId = state.requestId;
-    if (requestId == null)
+    if (requestId == null) {
       return Failure(const UnknownFailure('requestId가 없습니다'));
+    }
 
     final result = await _repository.submitPhone(
       requestId: requestId,

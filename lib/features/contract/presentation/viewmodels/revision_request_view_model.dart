@@ -53,7 +53,7 @@ class RevisionRequestViewModel extends _$RevisionRequestViewModel {
   }
 
   /// 수정 완료 상태 변경
-  void revisionDone() => state = state.copyWith(revisionDone: true);
+  void revisionDone(bool v) => state = state.copyWith(revisionDone: v);
 
   /// 수정 요청 (성공 여부 반환)
   Future<bool> requestRevision(String publicCode) async {

@@ -86,10 +86,11 @@ class ContractPreviewPage extends HookConsumerWidget {
                       try {
                         // 1. 수정 모드
                         if (isEditMode) {
+                          // 수정 요청 > 완료 상태 변경
                           final revisionVM = ref.read(
                             revisionRequestViewModelProvider.notifier,
                           );
-                          revisionVM.revisionDone();
+                          revisionVM.revisionDone(true);
 
                           if (status == ContractStatus.draft) {
                             // DRAFT > Ready 상태 전이 (Draft 상태에서 수정 했을 때)

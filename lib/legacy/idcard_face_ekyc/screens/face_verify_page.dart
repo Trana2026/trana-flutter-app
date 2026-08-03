@@ -97,6 +97,8 @@ class FaceVerifyPage extends HookConsumerWidget {
                 borderColor.value = brandColor;
                 errorMessage.value = null;
               case FaceReadyToCapture():
+                if (!context.mounted) return;
+
                 // 정면+양눈 OPEN 연속 통과 하면 촬영 수행
                 if (!isUploading.value) {
                   _captureAndCompare(

@@ -76,23 +76,6 @@ class HomePage extends HookConsumerWidget {
     // ===== 계약 관련 =====
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        /*
-        초대 흐름 (/invitation) : 계약 요청이 고유코드방식으로 변경됨에 따라 미사용
-        
-        // 플레이스토어 설치 유입 시 Install Referrer에서 초대 토큰 복구
-        await DeferredLinkService.restoreInvitationToken();
-        
-        // 수신자 invitation 수락
-        final receiveVM = ref.read(receiveContractViewModelProvider.notifier);
-        final acceptSuccess = await receiveVM.accept();
-        if (!context.mounted) return;
-        if (!acceptSuccess) {
-          final state = ref.read(receiveContractViewModelProvider);
-          showErrorToast(context, state.error!);
-          receiveVM.clearError();
-        }
-        */
-
         // 내 계약 목록 조회
         final homeVM = ref.read(homeContractViewModelProvider.notifier);
         final readSuccess = await homeVM.readMyContracts();

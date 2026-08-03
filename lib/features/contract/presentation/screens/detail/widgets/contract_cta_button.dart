@@ -317,7 +317,14 @@ class ContractCtaButtons extends HookConsumerWidget {
                 final state = ref.read(shareContractViewModelProvider);
                 showErrorToast(context, state.error!);
                 shareVM.clearError();
+                return;
               }
+
+              // 수정 완료 > 요청 상태 초기화
+              final revisionVM = ref.read(
+                revisionRequestViewModelProvider.notifier,
+              );
+              revisionVM.revisionDone(false);
             },
           );
 

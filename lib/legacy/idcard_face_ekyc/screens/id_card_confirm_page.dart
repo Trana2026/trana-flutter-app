@@ -194,8 +194,9 @@ class IdCardConfirmPage extends HookConsumerWidget {
                           inputFormatters: [_PhoneFormatter()],
                           errorText: phoneError.value,
                           onChanged: (_) {
-                            if (phoneError.value != null)
+                            if (phoneError.value != null) {
                               phoneError.value = null;
+                            }
                           },
                         ),
 

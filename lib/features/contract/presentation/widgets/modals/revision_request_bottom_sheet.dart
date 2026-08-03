@@ -8,6 +8,7 @@ import 'package:trana/core/widgets/contract_form_field.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
+import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/domain/enums/create_page_mode.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
@@ -18,13 +19,14 @@ class RevisionRequestBottomSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isCreator = ref.watch(
-      detailContractViewModelProvider.select((s) => s.isCreator),
+    final (isCreator, status) = ref.watch(
+      detailContractViewModelProvider.select((s) => (s.isCreator, s.status)),
     );
     final selectedFields = ref.watch(
       revisionRequestViewModelProvider.select((s) => s.selectedFields),
     );
     final detailState = ref.read(detailContractViewModelProvider);
+    final isRequested = status == ContractStatus.revisionRequested;
     final isPending = useRef(false);
 
     final visibleFields = _allFields
@@ -42,7 +44,7 @@ class RevisionRequestBottomSheet extends HookConsumerWidget {
     );
 
     useEffect(() {
-      if (isCreator) {
+      if (isRequested) {
         final revisionState = ref.read(revisionRequestViewModelProvider);
         for (final (label, reasonOf) in _fields) {
           final reason = reasonOf(revisionState);
@@ -120,15 +122,42 @@ class RevisionRequestBottomSheet extends HookConsumerWidget {
                             hintText: '수정을 원하시는 이유를 작성해주세요',
                             maxLines: 2,
                             controller: controllers[field],
+                            readOnly: isRequested,
                           ),
                         PrimaryButton.brand(
                           text: isCreator ? "확인" : "수정 요청하기",
+                          disabled: (isRequested && !isCreator),
                           onTap: () async {
                             if (isPending.value) return;
                             isPending.value = true;
                             try {
-                              // 1. 요청자일 때
-                              if (isCreator) {
+                              // 1. 수정 요청 전 (요청 내용 입력 후 수정 요청)
+                              if (!isRequested) {
+                                final revisionVM = ref.read(
+                                  revisionRequestViewModelProvider.notifier,
+                                );
+                                revisionVM.submitReasons({
+                                  for (final entry in controllers.entries)
+                                    entry.key: entry.value.text,
+                                });
+
+                                // 수정 요청
+                                final success = await revisionVM
+                                    .requestRevision(detailState.publicCode);
+                                if (!context.mounted) return;
+                                if (!success) {
+                                  final state = ref.read(
+                                    revisionRequestViewModelProvider,
+                                  );
+                                  showErrorToast(context, state.error!);
+                                  revisionVM.clearError();
+                                  return;
+                                }
+
+                                Navigator.of(context).pop();
+                                context.go(AppRoutes.contractDetail);
+                                // 2. 수정 요청 상태 + 요청자일 때 (요청 내용 확인 후 수정 페이지 이동)
+                              } else if (isCreator) {
                                 final createVM = ref.read(
                                   createContractViewModelProvider.notifier,
                                 );
@@ -155,31 +184,9 @@ class RevisionRequestBottomSheet extends HookConsumerWidget {
                                 );
 
                                 context.go(AppRoutes.contractCreate);
-                                // 2. 수신자일 때
+                                // 3. 수정 요청 상태 + 수신자일 때 (요청 내용 확인)
                               } else {
-                                final revisionVM = ref.read(
-                                  revisionRequestViewModelProvider.notifier,
-                                );
-                                revisionVM.submitReasons({
-                                  for (final entry in controllers.entries)
-                                    entry.key: entry.value.text,
-                                });
-
-                                // 수정 요청
-                                final success = await revisionVM
-                                    .requestRevision(detailState.publicCode);
-                                if (!context.mounted) return;
-                                if (!success) {
-                                  final state = ref.read(
-                                    revisionRequestViewModelProvider,
-                                  );
-                                  showErrorToast(context, state.error!);
-                                  revisionVM.clearError();
-                                  return;
-                                }
-
-                                Navigator.of(context).pop();
-                                context.go(AppRoutes.contractDetail);
+                                Navigator.pop(context);
                               }
                             } finally {
                               isPending.value = false;

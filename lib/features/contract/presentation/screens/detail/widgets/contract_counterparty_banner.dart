@@ -60,8 +60,7 @@ class ContractCounterpartyBanner extends HookConsumerWidget {
             if (!context.mounted) return;
             context.push(AppRoutes.contractCreate);
             // 2. 수정 요청 상태 (계약서 수정하기)
-          } else if (status == ContractStatus.revisionRequested &&
-              detailState.isCreator) {
+          } else if (status == ContractStatus.revisionRequested) {
             // 최신 수정 요청 내용 불러오기
             final revisionVM = ref.read(
               revisionRequestViewModelProvider.notifier,
