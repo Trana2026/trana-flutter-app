@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/contract_form_field.dart';
@@ -42,6 +43,15 @@ class RevisionRequestBottomSheet extends HookConsumerWidget {
     final fieldKeys = useMemoized(
       () => {for (final f in _allFields) f: GlobalKey()},
     );
+
+    useEffect(() {
+      // modal_viewed: 수정 요청 바텀시트
+      AnalyticsService.trackScreenView(
+        'revision_request_modal',
+        entryPoint: 'contract_detail',
+      );
+      return null;
+    }, const []);
 
     useEffect(() {
       if (isRequested) {
@@ -181,6 +191,18 @@ class RevisionRequestBottomSheet extends HookConsumerWidget {
                                       detailState.conditionDetails,
                                   warrantyPeriodDays:
                                       detailState.warrantyPeriodDays,
+                                );
+
+                                // EVT-049: contract_revision_started
+                                AnalyticsService.track(
+                                  'contract_revision_started',
+                                  properties: {
+                                    'contract_id': detailState.publicCode,
+                                    'edit_source': 'change_request',
+                                    'actor_role': detailState.isCreator
+                                        ? 'creator'
+                                        : 'receiver',
+                                  },
                                 );
 
                                 context.go(AppRoutes.contractCreate);

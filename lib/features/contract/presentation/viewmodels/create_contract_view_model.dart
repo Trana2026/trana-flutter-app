@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
 import 'package:trana/features/contract/domain/enums/create_page_mode.dart';
@@ -151,7 +152,19 @@ class CreateContractViewModel extends _$CreateContractViewModel {
   }
 
   /// 거래 방식 선택
-  void updateType(DeliveryType v) => state = state.copyWith(deliveryType: v);
+  void updateType(DeliveryType v) {
+    state = state.copyWith(deliveryType: v);
+
+    // EVT-015: transaction_type_selected
+    AnalyticsService.track(
+      'transaction_type_selected',
+      properties: {
+        'transaction_type': v.name,
+        if (state.role != null) 'contract_party_role': state.role!.name,
+      },
+      ga4: false,
+    );
+  }
 
   /// 계약 상세 내용 입력
   void updateEntries({
@@ -171,8 +184,19 @@ class CreateContractViewModel extends _$CreateContractViewModel {
   }
 
   /// 보증 제공 여부 선택
-  void updateWarrantyPeriod(int v) =>
-      state = state.copyWith(warrantyPeriodDays: v);
+  void updateWarrantyPeriod(int v) {
+    state = state.copyWith(warrantyPeriodDays: v);
+
+    // EVT-023: warranty_option_selected
+    AnalyticsService.track(
+      'warranty_option_selected',
+      properties: {
+        'warranty_days': v,
+        if (state.role != null) 'contract_party_role': state.role!.name,
+      },
+      ga4: false,
+    );
+  }
 
   /// Draft 항목 업데이트 (성공 여부 반환)
   Future<bool> updateDraftEntries() async {

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -21,6 +22,9 @@ Future<void> main() async {
 
   // .env 로드 (pubspec assets 번들). 이후 dotenv.env['KEY']로 접근
   await dotenv.load(fileName: '.env');
+
+  // Amplitude 초기화
+  await AnalyticsService.init();
 
   // 카카오 SDK 초기화
   KakaoSdk.init(nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY'] ?? '');

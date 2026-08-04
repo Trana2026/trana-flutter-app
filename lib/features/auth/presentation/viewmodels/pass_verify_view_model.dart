@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
 import 'package:trana/features/auth/data/models/pass_result_dto.dart';
@@ -37,6 +38,16 @@ class PassVerifyViewModel extends _$PassVerifyViewModel {
         isLoading: false,
         error: dto.resultMsg ?? '본인 인증에 실패했습니다. 다시 시도해주세요.',
       );
+      // EVT-005: verification_failed
+      AnalyticsService.track(
+        'verification_failed',
+        properties: {
+          'verification_method': 'pass',
+          'result': 'fail',
+          'error_code': dto.resultCode ?? dto.statusCode ?? 'unknown',
+        },
+        ga4: false,
+      );
       return false;
     }
 
@@ -54,6 +65,19 @@ class PassVerifyViewModel extends _$PassVerifyViewModel {
         error: failure.message,
       ),
     };
+
+    if (result is Failure) {
+      // EVT-005: verification_failed
+      AnalyticsService.track(
+        'verification_failed',
+        properties: {
+          'verification_method': 'pass',
+          'result': 'server_error',
+          'error_code': result.failure.runtimeType.toString(),
+        },
+        ga4: false,
+      );
+    }
 
     return result is Success;
   }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -49,6 +50,15 @@ class ContractCancelBottomSheet extends HookConsumerWidget {
     final isPending = useState(false);
 
     useListenable(detailCtr);
+
+    useEffect(() {
+      // modal_viewed: 계약 취소 바텀시트
+      AnalyticsService.trackScreenView(
+        'contract_cancel_modal',
+        entryPoint: 'contract_detail',
+      );
+      return null;
+    }, const []);
 
     final isEnabled = (detailCtr.text.trim().isNotEmpty);
 

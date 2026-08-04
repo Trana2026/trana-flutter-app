@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -10,6 +11,7 @@ import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/domain/utils/string_extensions.dart';
+import 'package:trana/features/contract/presentation/viewmodels/ai_auto_fill_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 
@@ -31,6 +33,15 @@ class CostNoticeBottomSheet extends HookConsumerWidget {
       createContractViewModelProvider,
     );
     final isPending = useState(false);
+
+    useEffect(() {
+      // modal_viewed: 계약 생성 비용 고지 바텀시트
+      AnalyticsService.trackScreenView(
+        'cost_notice_modal',
+        entryPoint: 'contract_create_form',
+      );
+      return null;
+    }, const []);
 
     return PendingOverlay(
       isPending: isPending.value,
@@ -123,6 +134,32 @@ class CostNoticeBottomSheet extends HookConsumerWidget {
                                 return;
                               }
                             }
+
+                            // EVT-024: contract_form_submitted
+                            final createState = ref.read(
+                              createContractViewModelProvider,
+                            );
+                            final aiUsed = ref.read(
+                              aiAutoFillViewModelProvider,
+                            ).isCompleted;
+                            AnalyticsService.track(
+                              'contract_form_submitted',
+                              properties: {
+                                'transaction_type':
+                                    createState.deliveryType.name,
+                                // 수정 모드는 기존 첨부(existingAttachmentUrls)를 쓰므로
+                                // selectedImages만으로는 실제 이미지 개수를 셀 수 없음
+                                'image_count':
+                                    createState.existingAttachmentUrls.isNotEmpty
+                                    ? createState.existingAttachmentUrls.length
+                                    : createState.selectedImages.length,
+                                'ai_used': aiUsed,
+                                'warranty_days':
+                                    createState.warrantyPeriodDays,
+                                'contract_party_role': createState.role?.name,
+                              },
+                              ga4: false,
+                            );
 
                             // Draft 항목 업데이트
                             final createVM = ref.read(

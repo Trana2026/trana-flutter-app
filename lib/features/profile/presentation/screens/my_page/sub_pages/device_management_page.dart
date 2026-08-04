@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
@@ -30,6 +31,16 @@ class DeviceManagementPage extends HookConsumerWidget {
       ...mypageDevices.where((d) => d.id == currentDeviceId),
       ...mypageDevices.where((d) => d.id != currentDeviceId),
     ];
+
+    useEffect(() {
+      // EVT-062: profile_section_opened
+      AnalyticsService.track(
+        'profile_section_opened',
+        properties: {'profile_section': 'device_management'},
+        ga4: false,
+      );
+      return null;
+    }, const []);
 
     return Scaffold(
       backgroundColor: vrc(context).background,

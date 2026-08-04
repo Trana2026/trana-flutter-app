@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -115,6 +116,17 @@ class SelectUserRolePage extends HookConsumerWidget {
                     createVM.clearError();
                     return;
                   }
+
+                  // EVT-014: contract_role_selected
+                  AnalyticsService.track(
+                    'contract_role_selected',
+                    properties: {
+                      'contract_party_role': selectedIndex.value == 0
+                          ? 'seller'
+                          : 'buyer',
+                      'entry_point': 'select_role',
+                    },
+                  );
 
                   context.push(AppRoutes.contractCreate);
                 } finally {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_app_bar.dart';
@@ -11,6 +12,7 @@ import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/screens/preview/widgets/contract_completion_bottom_sheet.dart';
+import 'package:trana/features/contract/presentation/viewmodels/ai_auto_fill_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/revision_request_view_model.dart';
@@ -39,7 +41,24 @@ class ContractPreviewPage extends HookConsumerWidget {
           final state = ref.read(createContractViewModelProvider);
           showErrorToast(context, state.error!);
           createVM.clearError();
+          return;
         }
+
+        // EVT-027: contract_draft_viewed
+        final createState = ref.read(createContractViewModelProvider);
+        AnalyticsService.track(
+          'contract_draft_viewed',
+          properties: {
+            'contract_id': createState.publicCode,
+            'entry_point': createState.isEditMode
+                ? 'edit'
+                : createState.isContinueMode
+                ? 'continue'
+                : 'contract_create_form',
+            'ai_used': ref.read(aiAutoFillViewModelProvider).isCompleted,
+            'contract_party_role': createState.role?.name,
+          },
+        );
       });
       return null;
     }, []);
@@ -73,7 +92,24 @@ class ContractPreviewPage extends HookConsumerWidget {
                 Expanded(
                   child: PrimaryButton.mono(
                     text: "수정하기",
-                    onTap: () => context.pop(),
+                    onTap: () {
+                      // EVT-028: contract_edit_started
+                      final createState = ref.read(
+                        createContractViewModelProvider,
+                      );
+                      AnalyticsService.track(
+                        'contract_edit_started',
+                        properties: {
+                          'contract_id': createState.publicCode,
+                          'edit_source': 'preview',
+                          'ai_used': ref
+                              .read(aiAutoFillViewModelProvider)
+                              .isCompleted,
+                        },
+                        ga4: false,
+                      );
+                      context.pop();
+                    },
                   ),
                 ),
                 const SizedBox(width: 9),

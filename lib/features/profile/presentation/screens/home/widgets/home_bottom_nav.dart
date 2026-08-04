@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -54,6 +55,12 @@ class HomeBottomNav extends HookConsumerWidget {
                   createContractViewModelProvider.notifier,
                 );
                 createVM.initState();
+
+                // EVT-013: contract_create_started
+                AnalyticsService.track(
+                  'contract_create_started',
+                  properties: {'entry_point': 'home_bottom_nav'},
+                );
 
                 context.push(AppRoutes.selectRole);
               },

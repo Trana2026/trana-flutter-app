@@ -42,6 +42,7 @@ class CustomerServicePage extends HookConsumerWidget {
       AnalyticsService.track(
         'profile_section_opened',
         properties: {'profile_section': 'customer_service'},
+        ga4: false,
       );
       return null;
     }, const []);

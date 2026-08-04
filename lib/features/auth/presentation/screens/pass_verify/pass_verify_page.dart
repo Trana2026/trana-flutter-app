@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/config/app_config.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -59,6 +60,8 @@ class PassVerifyPage extends HookConsumerWidget {
     final isPageLoading = useState(true);
     // 웹 결과 콜백 수신 여부
     final resultReceived = useRef(false);
+    // EVT-003 verification_started 중복 전송 방지 (리다이렉트마다 onLoadStop이 재호출됨)
+    final startTracked = useRef(false);
 
     final passUrl =
         '${AppConfig.kycWebBaseUrl}/auth/pass'
@@ -152,7 +155,20 @@ class PassVerifyPage extends HookConsumerWidget {
             onConsoleMessage: (controller, msg) {
               if (kDebugMode) debugPrint('[PASS/main] ${msg.message}');
             },
-            onLoadStop: (controller, url) => isPageLoading.value = false,
+            onLoadStop: (controller, url) {
+              isPageLoading.value = false;
+              if (!startTracked.value) {
+                startTracked.value = true;
+                // EVT-003: verification_started
+                AnalyticsService.track(
+                  'verification_started',
+                  properties: {
+                    'verification_method': 'pass',
+                    'entry_point': 'terms_agreement',
+                  },
+                );
+              }
+            },
             onCreateWindow: onCreateWindow,
             // SSL 인증서 처리
             onReceivedServerTrustAuthRequest: (controller, challenge) async =>

@@ -434,6 +434,7 @@ class ContractCtaButtons extends HookConsumerWidget {
                   .difference(createdAt)
                   .inMinutes,
           },
+          ga4: false,
         );
 
         context.push(AppRoutes.contractCreate);

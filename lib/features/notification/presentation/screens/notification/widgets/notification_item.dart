@@ -28,6 +28,7 @@ class NotificationItem extends HookConsumerWidget {
           final state = ref.read(notificationViewModelProvider);
           showErrorToast(context, state.error!);
           notiVM.clearError();
+          return;
         }
       },
       child: Container(

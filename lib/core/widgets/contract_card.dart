@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -18,10 +19,18 @@ import 'package:trana/features/contract/presentation/viewmodels/report_contract_
 import 'package:trana/features/contract/presentation/viewmodels/revision_request_view_model.dart';
 
 class ContractCard extends HookConsumerWidget {
-  const ContractCard({super.key, required this.c, required this.isPending});
+  const ContractCard({
+    super.key,
+    required this.c,
+    required this.isPending,
+    this.entryPoint = 'contract_list',
+  });
 
   final ContractEntity c;
   final ValueNotifier<bool> isPending;
+
+  /// EVT-011(contract_opened) entry_point 속성 — 이 카드가 렌더링된 화면을 식별
+  final String entryPoint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -62,6 +71,18 @@ class ContractCard extends HookConsumerWidget {
             cancelVM.clearError();
             return;
           }
+
+          // EVT-011: contract_opened (GA4 권장 이벤트명 select_content로 매핑)
+          AnalyticsService.track(
+            'contract_opened',
+            ga4EventName: 'select_content',
+            properties: {
+              'contract_id': c.publicCode,
+              'contract_status': c.status.name,
+              'entry_point': entryPoint,
+              if (c.myRole != null) 'actor_role': c.myRole!.name,
+            },
+          );
 
           if (c.status == ContractStatus.inProgress ||
               c.status == ContractStatus.draft) {

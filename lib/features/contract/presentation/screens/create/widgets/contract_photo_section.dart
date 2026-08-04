@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
@@ -29,6 +30,7 @@ class ContractPhotoSection extends HookConsumerWidget {
     final count = isEditMode
         ? existingAttachmentUrls.length
         : selectedImages.value.length;
+    final previousImageCount = useRef<int>(0);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -36,6 +38,24 @@ class ContractPhotoSection extends HookConsumerWidget {
 
         final createVM = ref.read(createContractViewModelProvider.notifier);
         createVM.updateImages(selectedImages.value);
+
+        final newCount = selectedImages.value.length;
+        if (newCount > previousImageCount.value) {
+          // EVT-016: contract_image_added
+          AnalyticsService.track(
+            'contract_image_added',
+            properties: {'image_count': newCount, 'source_type': 'gallery'},
+            ga4: false,
+          );
+        } else if (newCount < previousImageCount.value) {
+          // EVT-017: contract_image_removed
+          AnalyticsService.track(
+            'contract_image_removed',
+            properties: {'image_count': newCount, 'source_type': 'gallery'},
+            ga4: false,
+          );
+        }
+        previousImageCount.value = newCount;
 
         // 계약 첨부 사진 업로드
         final success = await createVM.updateAttachments();

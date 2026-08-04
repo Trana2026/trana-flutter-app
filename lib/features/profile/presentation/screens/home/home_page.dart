@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
@@ -173,6 +174,16 @@ class HomePage extends HookConsumerWidget {
     }
 
     final detailState = ref.read(detailContractViewModelProvider);
+
+    // EVT-038: contract_flow_resumed
+    AnalyticsService.track(
+      'contract_flow_resumed',
+      properties: {
+        'contract_id': detailState.publicCode,
+        'resume_source': 'notification',
+      },
+    );
+
     if (detailState.status == ContractStatus.inProgress ||
         detailState.status == ContractStatus.draft) {
       context.push(AppRoutes.contractDetail);
