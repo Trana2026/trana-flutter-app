@@ -96,26 +96,28 @@ class HomePage extends HookConsumerWidget {
     // ===== 기기/토큰 관련 =====
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        // FCM 토큰 + 현재 기기 정보 식별
-        final deviceVM = ref.read(deviceTokenViewModelProvider.notifier);
-        await deviceVM.getDeviceInfo();
+        if (lifecycle == AppLifecycleState.resumed) {
+          // FCM 토큰 + 현재 기기 정보 식별
+          final deviceVM = ref.read(deviceTokenViewModelProvider.notifier);
+          await deviceVM.getDeviceInfo();
 
-        // FCM 토큰 저장
-        final registerSuccess = await deviceVM.registerToken();
-        if (!context.mounted) return;
-        if (!registerSuccess) {
-          final state = ref.read(deviceTokenViewModelProvider);
-          showErrorToast(context, state.error!);
-          deviceVM.clearError();
-        }
+          // FCM 토큰 저장
+          final registerSuccess = await deviceVM.registerToken();
+          if (!context.mounted) return;
+          if (!registerSuccess) {
+            final state = ref.read(deviceTokenViewModelProvider);
+            showErrorToast(context, state.error!);
+            deviceVM.clearError();
+          }
 
-        // 기기 활성 ping
-        final success = await deviceVM.ping();
-        if (!context.mounted) return;
-        if (!success) {
-          final state = ref.read(deviceTokenViewModelProvider);
-          showErrorToast(context, state.error!);
-          deviceVM.clearError();
+          // 기기 활성 ping
+          final success = await deviceVM.ping();
+          if (!context.mounted) return;
+          if (!success) {
+            final state = ref.read(deviceTokenViewModelProvider);
+            showErrorToast(context, state.error!);
+            deviceVM.clearError();
+          }
         }
       });
       return null;
