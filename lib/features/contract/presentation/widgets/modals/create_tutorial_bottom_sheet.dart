@@ -32,6 +32,10 @@ class CreateTutorialBottomSheet extends HookConsumerWidget {
     final total = _tutorialDescriptions.length;
     final isLast = page.value == total - 1;
 
+    // 일러스트를 문구와 동일한 좌우 여백(풀폭 정사각형)으로 표시하기 위한 크기
+    // = 화면폭 - 좌우 패딩(20*2)
+    final illustrationSize = MediaQuery.sizeOf(context).width - 40;
+
     void close() => Navigator.of(context).pop();
 
     void next() {
@@ -56,50 +60,58 @@ class CreateTutorialBottomSheet extends HookConsumerWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+          // 좌우 패딩은 PageView 풀폭 슬라이드를 위해 섹션별로 적용
+          padding: const EdgeInsets.only(top: 20, bottom: 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               // 헤더
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      '계약 생성 과정을 안내해드릴게요',
-                      style: TextStyle(
-                        color: vrc(context).textPrimary,
-                        fontSize: 17,
-                        fontFamily: 'PretendardBold',
-                        letterSpacing: -0.17,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '계약 생성 과정을 안내해드릴게요',
+                        style: TextStyle(
+                          color: vrc(context).textPrimary,
+                          fontSize: 17,
+                          fontFamily: 'PretendardBold',
+                          letterSpacing: -0.17,
+                        ),
                       ),
                     ),
-                  ),
-                  InkWell(
-                    onTap: close,
-                    borderRadius: BorderRadius.circular(20),
-                    child: Padding(
-                      padding: const EdgeInsets.all(2),
-                      child: Icon(
-                        CooliconsIcon.closeMd,
-                        size: 24,
-                        color: vrc(context).iconSecondary,
+                    InkWell(
+                      onTap: close,
+                      borderRadius: BorderRadius.circular(20),
+                      child: Padding(
+                        padding: const EdgeInsets.all(2),
+                        child: Icon(
+                          CooliconsIcon.closeMd,
+                          size: 24,
+                          color: vrc(context).iconSecondary,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(height: 20),
 
-              // 페이지
+              // 페이지 (풀폭 슬라이드 — 좌우 여백은 각 페이지 내부로)
+              // 높이 = 일러스트(정사각) + 문구(46) + 간격(12)
               SizedBox(
-                height: 360,
+                height: illustrationSize + 58,
                 child: PageView.builder(
                   controller: controller,
                   onPageChanged: (i) => page.value = i,
                   itemCount: total,
-                  itemBuilder: (_, i) => CreateTutorialPageItem(
-                    description: _tutorialDescriptions[i],
-                    illustration: _illustration(context, i + 1),
+                  itemBuilder: (_, i) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: CreateTutorialPageItem(
+                      description: _tutorialDescriptions[i],
+                      illustration: _illustration(context, i + 1),
+                    ),
                   ),
                 ),
               ),
@@ -118,23 +130,26 @@ class CreateTutorialBottomSheet extends HookConsumerWidget {
               const SizedBox(height: 20),
 
               // 다음 / 계약 생성하기
-              SizedBox(
-                width: double.infinity,
-                height: 54,
-                child: Material(
-                  color: fxc(context).brandColor,
-                  borderRadius: BorderRadius.circular(16),
-                  child: InkWell(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 54,
+                  child: Material(
+                    color: fxc(context).brandColor,
                     borderRadius: BorderRadius.circular(16),
-                    onTap: next,
-                    child: Center(
-                      child: Text(
-                        isLast ? '계약 생성하기' : '다음',
-                        style: TextStyle(
-                          color: fxc(context).textBrand,
-                          fontSize: 16,
-                          fontFamily: 'PretendardSemiBold',
-                          letterSpacing: -0.16,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: next,
+                      child: Center(
+                        child: Text(
+                          isLast ? '계약 생성하기' : '다음',
+                          style: TextStyle(
+                            color: fxc(context).textBrand,
+                            fontSize: 16,
+                            fontFamily: 'PretendardSemiBold',
+                            letterSpacing: -0.16,
+                          ),
                         ),
                       ),
                     ),
