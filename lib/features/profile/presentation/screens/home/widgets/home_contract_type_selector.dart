@@ -29,7 +29,7 @@ class HomeContractTypeSelector extends StatelessWidget {
             onSelect: onSelect,
           ),
           _SelectItem(
-            label: '요청한 계약',
+            label: '요청받은 계약',
             index: 1,
             selectedIndex: selectedIndex,
             onSelect: onSelect,

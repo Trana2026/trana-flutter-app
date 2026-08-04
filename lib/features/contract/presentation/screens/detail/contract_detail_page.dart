@@ -51,7 +51,7 @@ class ContractDetailPage extends HookConsumerWidget {
         backgroundColor: vrc(context).background,
         appBar: AppBar(
           backgroundColor: vrc(context).background,
-          toolbarHeight: 35,
+          toolbarHeight: 56,
           leading: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => context.go(AppRoutes.home),

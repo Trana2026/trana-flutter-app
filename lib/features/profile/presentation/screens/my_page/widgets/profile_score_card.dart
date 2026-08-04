@@ -29,7 +29,8 @@ class ProfileScoreCard extends HookConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
             children: [
               Flexible(
                 child: Text(
@@ -43,30 +44,21 @@ class ProfileScoreCard extends HookConsumerWidget {
                 ),
               ),
 
-              // meProvider 로딩 전이면 null이므로 이 경우에만 배지 미표시
+              // meProvider 로딩 전이면 null이므로 이 경우에만 코드 미표시
               if (shareCode != null) ...[
-                const SizedBox(width: 8),
-                InkWell(
+                const SizedBox(width: 6),
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: () {
                     Clipboard.setData(ClipboardData(text: shareCode));
                     showNormalToast(context, "고유코드가 복사되었습니다");
                   },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      color: vrc(context).secondaryColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      shareCode,
-                      style: context.txt(
-                        color: vrc(context).textSecondary,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  child: Text(
+                    shareCode,
+                    style: context.txt(
+                      color: vrc(context).textPrimary,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),

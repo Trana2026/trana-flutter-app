@@ -82,19 +82,20 @@ class ContractSignDialog extends HookConsumerWidget {
                 ),
                 const SizedBox(height: 12),
 
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: DottedBorder(
-                    options: RectDottedBorderOptions(
-                      dashPattern: [6, 4],
-                      strokeWidth: 1.5,
-                      color: vrc(context).borderSecondary!,
-                    ),
+                DottedBorder(
+                  options: RoundedRectDottedBorderOptions(
+                    radius: const Radius.circular(20),
+                    dashPattern: [6, 4],
+                    strokeWidth: 1.5,
+                    color: vrc(context).borderSecondary!,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
                     child: Container(
                       width: double.infinity,
                       height: 160,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(20),
                         color: vrc(context).secondaryColor,
                       ),
                       child: Stack(
