@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
 import 'package:trana/features/contract/domain/entities/contract_cancellation_entity.dart';
@@ -203,13 +204,36 @@ class HomeContractViewModel extends _$HomeContractViewModel {
   }
 
   /// 상태별 필터 적용 (서버 재조회 없이 클라이언트에서 필터링)
-  void applyStatus(ContractStatus? status) =>
-      state = state.copyWith(selectedStatus: status);
+  void applyStatus(ContractStatus? status) {
+    state = state.copyWith(selectedStatus: status);
+
+    // EVT-009: contract_filter_selected
+    AnalyticsService.track(
+      'contract_filter_selected',
+      properties: {
+        'filter_type': status?.name ?? 'all',
+        'result_count': state.filteredContracts.length,
+      },
+      ga4: false,
+    );
+  }
 
   /// 물품명 검색어 적용
   Future<void> applyQuery(String query) async {
     state = state.copyWith(searchQuery: query);
     await readMyContracts();
+
+    // EVT-010: contract_search_submitted (GA4 권장 이벤트명 search로 매핑)
+    AnalyticsService.track(
+      'contract_search_submitted',
+      ga4EventName: 'search',
+      properties: {
+        'query_length': query.trim().length,
+        'results_count': state.myContracts.length,
+        // 검색어 원문 금지. GA4 search_term은 고정값 사용
+        'search_term': 'internal_contracts',
+      },
+    );
   }
 
   void clearError() => state = state.copyWith(error: null);

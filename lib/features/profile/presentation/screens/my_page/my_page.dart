@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
 import 'package:trana/core/router/app_router.dart';
@@ -236,6 +237,16 @@ class MyPage extends HookConsumerWidget {
       await ref.read(authRepositoryProvider).signOut();
       await ref.read(guardianLinkStoreProvider).clear();
       ref.invalidate(meProvider);
+
+      // EVT-063: account_logout
+      // 로그아웃 이벤트 전송 후 사용자 식별 상태 초기화 (Amplitude reset + GA4 user_id 해제)
+      AnalyticsService.track(
+        'account_logout',
+        properties: {'logout_source': 'my_page_menu'},
+        ga4: false,
+      );
+      await AnalyticsService.reset();
+
       if (context.mounted) context.go(AppRoutes.intro);
     } finally {
       isPending.value = false;

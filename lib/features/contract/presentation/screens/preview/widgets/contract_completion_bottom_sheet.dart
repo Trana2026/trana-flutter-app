@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -14,6 +16,15 @@ class ContractCompletionBottomSheet extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final publicCode = ref.read(createContractViewModelProvider).publicCode;
+
+    useEffect(() {
+      // modal_viewed: 계약 확인 안내 바텀시트
+      AnalyticsService.trackScreenView(
+        'contract_completion_modal',
+        entryPoint: 'contract_preview',
+      );
+      return null;
+    }, const []);
 
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 36, 20, 10),
@@ -67,6 +78,12 @@ class ContractCompletionBottomSheet extends HookConsumerWidget {
                   child: PrimaryButton.brand(
                     text: "요청하기",
                     onTap: () {
+                      // EVT-029: contract_draft_confirmed
+                      AnalyticsService.track(
+                        'contract_draft_confirmed',
+                        properties: {'contract_id': publicCode},
+                      );
+
                       Navigator.pop(context);
                       context.go(AppRoutes.contractShare, extra: publicCode);
                     },

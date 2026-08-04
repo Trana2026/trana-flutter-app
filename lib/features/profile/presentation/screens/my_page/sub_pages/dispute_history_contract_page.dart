@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/contract_card.dart';
 import 'package:trana/core/widgets/custom_app_bar.dart';
@@ -18,6 +19,16 @@ class DisputeHistoryContractPage extends HookConsumerWidget {
       homeContractViewModelProvider.select((s) => s.disputingContracts),
     );
     final isPending = useState(false);
+
+    useEffect(() {
+      // EVT-062: profile_section_opened
+      AnalyticsService.track(
+        'profile_section_opened',
+        properties: {'profile_section': 'dispute_history'},
+        ga4: false,
+      );
+      return null;
+    }, const []);
 
     return PendingOverlay(
       isPending: isPending.value,
@@ -37,6 +48,7 @@ class DisputeHistoryContractPage extends HookConsumerWidget {
                   itemBuilder: (_, i) => ContractCard(
                     c: disputingContracts[i],
                     isPending: isPending,
+                    entryPoint: 'mypage_dispute_history',
                   ),
                 ),
               ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
@@ -76,23 +77,6 @@ class HomePage extends HookConsumerWidget {
     // ===== 계약 관련 =====
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        /*
-        초대 흐름 (/invitation) : 계약 요청이 고유코드방식으로 변경됨에 따라 미사용
-        
-        // 플레이스토어 설치 유입 시 Install Referrer에서 초대 토큰 복구
-        await DeferredLinkService.restoreInvitationToken();
-        
-        // 수신자 invitation 수락
-        final receiveVM = ref.read(receiveContractViewModelProvider.notifier);
-        final acceptSuccess = await receiveVM.accept();
-        if (!context.mounted) return;
-        if (!acceptSuccess) {
-          final state = ref.read(receiveContractViewModelProvider);
-          showErrorToast(context, state.error!);
-          receiveVM.clearError();
-        }
-        */
-
         // 내 계약 목록 조회
         final homeVM = ref.read(homeContractViewModelProvider.notifier);
         final readSuccess = await homeVM.readMyContracts();
@@ -190,6 +174,16 @@ class HomePage extends HookConsumerWidget {
     }
 
     final detailState = ref.read(detailContractViewModelProvider);
+
+    // EVT-038: contract_flow_resumed
+    AnalyticsService.track(
+      'contract_flow_resumed',
+      properties: {
+        'contract_id': detailState.publicCode,
+        'resume_source': 'notification',
+      },
+    );
+
     if (detailState.status == ContractStatus.inProgress ||
         detailState.status == ContractStatus.draft) {
       context.push(AppRoutes.contractDetail);

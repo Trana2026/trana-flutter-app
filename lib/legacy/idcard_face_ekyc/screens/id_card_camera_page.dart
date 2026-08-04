@@ -98,6 +98,9 @@ class IdCardCameraPage extends HookConsumerWidget {
                 errorClearTimer.value = null;
                 errorMessage.value = null;
                 borderColor.value = brandColor;
+
+                if (!context.mounted) return;
+
                 if (!isUploading.value) {
                   if (croppedImageBytes != null) {
                     // SDK 크롭 이미지 사용

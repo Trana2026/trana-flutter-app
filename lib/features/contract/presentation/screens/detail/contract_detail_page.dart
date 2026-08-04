@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -120,8 +121,22 @@ class ContractDetailPage extends HookConsumerWidget {
                                 ),
                                 const Spacer(),
                                 GestureDetector(
-                                  onTap: () =>
-                                      context.push(AppRoutes.entirePreview),
+                                  onTap: () {
+                                    // EVT-039: contract_document_viewed
+                                    final detailState = ref.read(
+                                      detailContractViewModelProvider,
+                                    );
+                                    AnalyticsService.track(
+                                      'contract_document_viewed',
+                                      properties: {
+                                        'contract_id': detailState.publicCode,
+                                        'contract_status': status.name,
+                                        'entry_point': 'contract_detail',
+                                      },
+                                      ga4: false,
+                                    );
+                                    context.push(AppRoutes.entirePreview);
+                                  },
                                   behavior: HitTestBehavior.opaque,
                                   child: Text(
                                     "계약서 전문 보기",

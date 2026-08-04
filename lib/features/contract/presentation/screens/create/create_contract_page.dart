@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -232,7 +233,20 @@ class CreateContractPage extends HookConsumerWidget {
                 isPending.value = true;
                 try {
                   priceError.value = Validation.price(priceCtr.text);
-                  if (priceError.value != null) return;
+                  if (priceError.value != null) {
+                    // EVT-025: form_validation_failed
+                    AnalyticsService.track(
+                      'form_validation_failed',
+                      properties: {
+                        'form_name': 'contract_create_form',
+                        'invalid_field_codes': const ['price'],
+                        'invalid_field_count': 1,
+                        'first_invalid_field': 'price',
+                      },
+                      ga4: false,
+                    );
+                    return;
+                  }
 
                   final createVM = ref.read(
                     createContractViewModelProvider.notifier,
@@ -271,6 +285,33 @@ class CreateContractPage extends HookConsumerWidget {
                         return;
                       }
                     }
+
+                    // EVT-024: contract_form_submitted
+                    final aiUsed = ref.read(
+                      aiAutoFillViewModelProvider,
+                    ).isCompleted;
+                    final createStateForSubmit = ref.read(
+                      createContractViewModelProvider,
+                    );
+                    AnalyticsService.track(
+                      'contract_form_submitted',
+                      properties: {
+                        'transaction_type':
+                            createStateForSubmit.deliveryType.name,
+                        // 수정 모드는 기존 첨부(existingAttachmentUrls)를 쓰므로
+                        // selectedImages만으로는 실제 이미지 개수를 셀 수 없음
+                        'image_count':
+                            createStateForSubmit
+                                .existingAttachmentUrls
+                                .isNotEmpty
+                            ? createStateForSubmit.existingAttachmentUrls.length
+                            : createStateForSubmit.selectedImages.length,
+                        'ai_used': aiUsed,
+                        'warranty_days': createStateForSubmit.warrantyPeriodDays,
+                        'contract_party_role': role?.name,
+                      },
+                      ga4: false,
+                    );
 
                     // Draft 항목 업데이트
                     final success = await createVM.updateDraftEntries();

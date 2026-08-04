@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -10,6 +11,7 @@ import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/presentation/viewmodels/ai_auto_fill_view_model.dart';
+import 'package:trana/features/contract/presentation/viewmodels/create_contract_view_model.dart';
 import 'package:trana/features/terms/domain/enums/terms_type.dart';
 
 class AiAutofillNoticeDialog extends HookConsumerWidget {
@@ -24,6 +26,16 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
         .read(aiAutoFillViewModelProvider)
         .autoFillConsentedAt;
     final isSelected = useState(false);
+
+    useEffect(() {
+      // EVT-018: ai_notice_viewed
+      AnalyticsService.track(
+        'ai_notice_viewed',
+        properties: {'screen_name': 'ai_autofill_notice'},
+        ga4: false,
+      );
+      return null;
+    }, const []);
 
     return PopScope(
       // AI 분석 진행 중에는 바깥 탭/뒤로가기로 dialog를 닫을 수 없도록 차단
@@ -95,7 +107,18 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
                       child: Column(
                         children: [
                           _ConsentItem(
-                            onSelected: (v) => isSelected.value = v,
+                            onSelected: (v) {
+                              isSelected.value = v;
+                              // EVT-019: ai_consent_updated
+                              AnalyticsService.track(
+                                'ai_consent_updated',
+                                properties: {
+                                  'consent_type': TermsType.aiCrossBorder.name,
+                                  'consent_value': v,
+                                },
+                                ga4: false,
+                              );
+                            },
                             isRequired: true,
                             text: 'AI 자동 기입 기능 국외이전 동의',
                             onTapChevron: () => context.push(
@@ -129,6 +152,17 @@ class AiAutofillNoticeDialog extends HookConsumerWidget {
                   if (autoFillConsentedAt == null) {
                     aiVM.consentAutoFill();
                   }
+
+                  // EVT-020: ai_analysis_started
+                  final createState = ref.read(createContractViewModelProvider);
+                  AnalyticsService.track(
+                    'ai_analysis_started',
+                    properties: {
+                      'image_count': createState.selectedImages.length,
+                      'transaction_type': createState.deliveryType.name,
+                      'contract_party_role': createState.role?.name,
+                    },
+                  );
 
                   // AI 이미지 분석
                   final success = await aiVM.analyzeImages();

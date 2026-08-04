@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:trana/core/analytics/analytics_route_observer.dart';
 import 'package:trana/core/network/auth_token_store.dart';
 import 'package:trana/features/auth/presentation/screens/guardian_link/guardian_link_send_page.dart';
 import 'package:trana/features/auth/presentation/screens/guardian_waiting/guardian_verify_waiting_page.dart';
@@ -99,6 +100,7 @@ bool _isProtected(String loc) =>
 GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
   initialLocation: AppRoutes.splash,
   refreshListenable: store,
+  observers: [AnalyticsRouteObserver()],
   redirect: (context, state) {
     if (!store.isLoggedIn && _isProtected(state.matchedLocation)) {
       return AppRoutes.intro;

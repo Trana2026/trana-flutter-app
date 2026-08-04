@@ -1,9 +1,13 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/constants/app_durations.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -124,6 +128,20 @@ class GuardianLinkSendPage extends HookConsumerWidget {
                         ClipboardData(text: guardianLink.value ?? ''),
                       );
                       copied.value = true;
+
+                      // EVT-041: guardian_link_copied
+                      // 링크 원문 대신 안정적인 해시값으로 flow 식별 (보안 토큰 유출 방지)
+                      AnalyticsService.track(
+                        'guardian_link_copied',
+                        properties: {
+                          'guardian_flow_id': sha256
+                              .convert(utf8.encode(guardianLink.value!))
+                              .toString()
+                              .substring(0, 16),
+                          'entry_point': 'guardian_link_send',
+                        },
+                        ga4: false,
+                      );
                       Fluttertoast.showToast(
                         msg: "링크가 복사되었습니다",
                         toastLength: Toast.LENGTH_SHORT,

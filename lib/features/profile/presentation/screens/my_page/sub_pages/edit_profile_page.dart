@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/utils/validation.dart';
 import 'package:trana/core/widgets/contract_form_field.dart';
@@ -32,6 +33,16 @@ class EditProfilePage extends HookConsumerWidget {
     final emailError = useState<String?>(null);
     final isEditing = useState(false);
     final isPending = useState(false);
+
+    useEffect(() {
+      // EVT-062: profile_section_opened
+      AnalyticsService.track(
+        'profile_section_opened',
+        properties: {'profile_section': 'edit_profile'},
+        ga4: false,
+      );
+      return null;
+    }, const []);
 
     useListenable(nameCtr);
     useListenable(genderCtr);

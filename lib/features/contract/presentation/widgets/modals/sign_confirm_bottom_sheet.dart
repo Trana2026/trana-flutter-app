@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/constants/app_durations.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
@@ -11,6 +12,7 @@ import 'package:trana/core/widgets/app_icon.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/pending_overlay.dart';
 import 'package:trana/core/widgets/primary_button.dart';
+import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/minor_disclosure_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/sign_contract_view_model.dart';
@@ -33,6 +35,12 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
     );
     final isChecked = useState<bool>(false);
     final isPending = useState(false);
+
+    useEffect(() {
+      // modal_viewed: 서명 확인 바텀시트
+      AnalyticsService.trackScreenView('sign_confirm_modal');
+      return null;
+    }, const []);
 
     final isEnabled = counterpartyIsMinor ? isChecked.value : true;
 
@@ -173,6 +181,26 @@ class SignConfirmBottomSheet extends HookConsumerWidget {
                             signVM.clearError();
                             return;
                           }
+
+                          // EVT-046: contract_sign_started
+                          final detailState = ref.read(
+                            detailContractViewModelProvider,
+                          );
+                          AnalyticsService.track(
+                            'contract_sign_started',
+                            properties: {
+                              'contract_id': detailState.publicCode,
+                              'actor_role': detailState.isCreator
+                                  ? 'creator'
+                                  : 'receiver',
+                              'signature_stage':
+                                  detailState.status ==
+                                      ContractStatus.receiverSigned
+                                  ? 'final'
+                                  : 'receiver',
+                              'contract_status': detailState.status.name,
+                            },
+                          );
 
                           Navigator.pop(context);
                           await Future.delayed(

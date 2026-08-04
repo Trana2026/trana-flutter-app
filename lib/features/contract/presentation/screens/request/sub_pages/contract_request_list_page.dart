@@ -30,7 +30,11 @@ class ContractRequestListPage extends HookConsumerWidget {
           padding: const EdgeInsets.all(20),
           itemCount: requestedContracts.length,
           itemBuilder: (_, i) =>
-              ContractCard(c: requestedContracts[i], isPending: isPending),
+              ContractCard(
+                c: requestedContracts[i],
+                isPending: isPending,
+                entryPoint: 'contract_request_list',
+              ),
         ),
       ),
     );

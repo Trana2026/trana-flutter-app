@@ -209,6 +209,7 @@ class HomeMainView extends HookConsumerWidget {
                                   itemBuilder: (_, i) => ContractCard(
                                     c: contracts[i],
                                     isPending: isPending,
+                                    entryPoint: 'home_contract_list',
                                   ),
                                 ),
                         ],

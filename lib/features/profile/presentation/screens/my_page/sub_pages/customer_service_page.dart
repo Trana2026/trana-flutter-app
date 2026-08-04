@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -12,13 +13,16 @@ import 'package:trana/core/widgets/custom_app_bar.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/profile/presentation/viewmodels/inquiry_view_model.dart';
+import 'package:trana/features/profile/presentation/viewmodels/my_page_view_model.dart';
 
 class CustomerServicePage extends HookConsumerWidget {
   const CustomerServicePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final emailCtr = useTextEditingController();
+    final email = ref.read(myPageViewModelProvider).email;
+
+    final emailCtr = useTextEditingController(text: email);
     final titleCtr = useTextEditingController();
     final contentCtr = useTextEditingController();
     final emailError = useState<String?>(null);
@@ -32,6 +36,16 @@ class CustomerServicePage extends HookConsumerWidget {
         emailCtr.text.trim().isNotEmpty &&
         titleCtr.text.trim().isNotEmpty &&
         contentCtr.text.trim().isNotEmpty;
+
+    useEffect(() {
+      // EVT-062: profile_section_opened
+      AnalyticsService.track(
+        'profile_section_opened',
+        properties: {'profile_section': 'customer_service'},
+        ga4: false,
+      );
+      return null;
+    }, const []);
 
     return Scaffold(
       backgroundColor: vrc(context).background,

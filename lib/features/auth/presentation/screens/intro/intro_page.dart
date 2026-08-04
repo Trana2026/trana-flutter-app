@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/constants/app_dimens.dart';
 import 'package:trana/core/dev/test_user_provider.dart';
 import 'package:trana/core/router/app_router.dart';
@@ -169,8 +170,15 @@ class _StartButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(16 * scale),
       child: InkWell(
         borderRadius: BorderRadius.circular(16 * scale),
-        onTap: () =>
-            showCustomBottomSheet(context, const TermsAgreementBottomSheet()),
+        onTap: () {
+          // EVT-002: verification_cta_clicked
+          AnalyticsService.track(
+            'verification_cta_clicked',
+            properties: {'entry_point': 'intro'},
+            ga4: false,
+          );
+          showCustomBottomSheet(context, const TermsAgreementBottomSheet());
+        },
         child: Center(
           child: Text(
             '본인 인증하여 시작하기',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -9,6 +10,7 @@ import 'package:trana/core/theme/coolicons_icon.dart';
 import 'package:trana/core/widgets/custom_dialog.dart';
 import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/features/contract/data/services/biometric_service.dart';
+import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 
 class BiometricLockPage extends HookConsumerWidget {
   const BiometricLockPage({super.key});
@@ -23,9 +25,23 @@ class BiometricLockPage extends HookConsumerWidget {
       isPending.value = true;
       errorMessage.value = null;
       try {
+        final publicCode = ref.read(detailContractViewModelProvider).publicCode;
+
         final service = BiometricService();
         final canAuth = await service.canAuthenticate();
         if (!canAuth) {
+          // EVT-055: secure_document_unlock_failed (미지원)
+          AnalyticsService.track(
+            'secure_document_unlock_failed',
+            properties: {
+              'contract_id': publicCode,
+              'error_code': 'unsupported',
+              'result': 'unsupported',
+              'verification_method': 'biometric',
+            },
+            ga4: false,
+          );
+
           if (!context.mounted) return;
           await showCustomDialog(
             context: context,
@@ -40,13 +56,45 @@ class BiometricLockPage extends HookConsumerWidget {
           return;
         }
 
+        // EVT-053: secure_document_unlock_started
+        AnalyticsService.track(
+          'secure_document_unlock_started',
+          properties: {
+            'contract_id': publicCode,
+            'verification_method': 'biometric',
+          },
+          ga4: false,
+        );
+
         final success = await service.authenticate();
         if (!context.mounted) return;
 
         if (success) {
+          // EVT-054: secure_document_unlocked
+          AnalyticsService.track(
+            'secure_document_unlocked',
+            properties: {
+              'contract_id': publicCode,
+              'verification_method': 'biometric',
+              'result': 'success',
+            },
+            ga4: false,
+          );
           context.pushReplacement(AppRoutes.contractDetail);
         } else {
           errorMessage.value = '인증에 실패했습니다. 다시 시도해주세요.';
+
+          // EVT-055: secure_document_unlock_failed
+          AnalyticsService.track(
+            'secure_document_unlock_failed',
+            properties: {
+              'contract_id': publicCode,
+              'error_code': 'auth_failed',
+              'result': 'fail',
+              'verification_method': 'biometric',
+            },
+            ga4: false,
+          );
         }
       } finally {
         isPending.value = false;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
@@ -33,6 +34,15 @@ class TermsAgreementBottomSheet extends HookConsumerWidget {
 
     final checked = useState(<_ConsentItem>{});
     final isLoading = useState(false);
+
+    useEffect(() {
+      // modal_viewed: 약관 동의 바텀시트
+      AnalyticsService.trackScreenView(
+        'terms_agreement_modal',
+        entryPoint: 'intro',
+      );
+      return null;
+    }, const []);
 
     // 서버에서 약관 id가 조회되는 필수 항목만 버튼 활성화 조건에 포함
     final resolvableRequired = _ConsentItem.values
@@ -84,6 +94,19 @@ class TermsAgreementBottomSheet extends HookConsumerWidget {
         );
         return;
       }
+
+      // EVT-006: terms_consent_submitted
+      AnalyticsService.track(
+        'terms_consent_submitted',
+        properties: {
+          'required_terms_accepted': resolvableRequired.every(
+            checked.value.contains,
+          ),
+          'marketing_consent': checked.value.contains(
+            _ConsentItem.marketing,
+          ),
+        },
+      );
 
       Navigator.of(context).pop();
       router.push(AppRoutes.passVerify, extra: signupSessionId);

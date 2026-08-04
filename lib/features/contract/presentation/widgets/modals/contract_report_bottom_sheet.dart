@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/theme/app_text_style.dart';
 import 'package:trana/core/theme/app_theme.dart';
 import 'package:trana/core/theme/coolicons_icon.dart';
@@ -18,11 +19,26 @@ class ContractReportBottomSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final publicCode = ref.read(detailContractViewModelProvider).publicCode;
+    final detailState = ref.read(detailContractViewModelProvider);
+    final publicCode = detailState.publicCode;
     final isPending = useRef(false);
 
     final reasonCtr = useTextEditingController();
     final detailCtr = useTextEditingController();
+
+    useEffect(() {
+      // EVT-059: issue_report_started
+      AnalyticsService.track(
+        'issue_report_started',
+        properties: {
+          'contract_id': publicCode,
+          'contract_status': detailState.status.name,
+          'actor_role': detailState.isCreator ? 'creator' : 'receiver',
+        },
+        ga4: false,
+      );
+      return null;
+    }, const []);
 
     useListenable(reasonCtr);
     useListenable(detailCtr);
