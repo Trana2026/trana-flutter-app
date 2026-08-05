@@ -40,7 +40,7 @@ class ContractRequestDetailPage extends HookConsumerWidget {
           onTapLeading: () => context.go(AppRoutes.home),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
               Expanded(
@@ -49,12 +49,10 @@ class ContractRequestDetailPage extends HookConsumerWidget {
                   pdfBytes: pdfBytes,
                 ),
               ),
+              const SizedBox(height: 12),
 
               // 판매자일 때만 보증 기간 선택 영역 노출
-              if (isSeller) ...[
-                const SizedBox(height: 12),
-                const ContractWarrantySection(),
-              ],
+              if (isSeller) const ContractWarrantySection(),
             ],
           ),
         ),
