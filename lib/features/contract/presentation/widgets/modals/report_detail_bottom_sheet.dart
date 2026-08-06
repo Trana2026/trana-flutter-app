@@ -21,7 +21,6 @@ class ReportDetailBottomSheet extends HookConsumerWidget {
     final detailCtr = useTextEditingController(text: recentReportDetail);
 
     return Container(
-      height: 320,
       decoration: BoxDecoration(
         color: vrc(context).background,
         borderRadius: const BorderRadius.only(
@@ -31,6 +30,7 @@ class ReportDetailBottomSheet extends HookConsumerWidget {
       ),
       child: SafeArea(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Center(
               child: Container(
@@ -43,13 +43,13 @@ class ReportDetailBottomSheet extends HookConsumerWidget {
                 ),
               ),
             ),
-            Expanded(
+            Flexible(
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 47, 20, 10),
+                      padding: const EdgeInsets.fromLTRB(20, 47, 20, 20),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,7 +98,7 @@ class ReportDetailBottomSheet extends HookConsumerWidget {
                     ),
                     Container(height: 8, color: vrc(context).secondaryColor),
                     Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,17 +117,16 @@ class ReportDetailBottomSheet extends HookConsumerWidget {
                             maxLines: 4,
                             readOnly: true,
                           ),
-                          const SizedBox(height: 20),
-                          PrimaryButton.mono(
-                            text: "확인",
-                            onTap: () => context.pop(),
-                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: PrimaryButton.mono(text: "확인", onTap: () => context.pop()),
             ),
           ],
         ),
