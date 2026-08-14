@@ -55,6 +55,7 @@ import 'package:trana/features/guardian/domain/repositories/guardian_repository.
 import 'package:trana/features/notification/data/datasources/notification_data_source.dart';
 import 'package:trana/features/notification/data/repository_impls/notification_repository_impl.dart';
 import 'package:trana/features/notification/domain/repositories/notification_repository.dart';
+import 'package:trana/features/profile/data/datasources/block_data_source.dart';
 import 'package:trana/features/profile/data/datasources/device_token_data_source.dart';
 import 'package:trana/features/profile/data/datasources/trust_score_data_source.dart';
 import 'package:trana/features/profile/data/datasources/user_consent_data_source.dart';
@@ -62,12 +63,14 @@ import 'package:trana/features/profile/data/datasources/user_info_data_source.da
 import 'package:trana/features/profile/data/datasources/user_inquiry_data_source.dart';
 import 'package:trana/features/profile/data/datasources/user_preference_data_source.dart';
 import 'package:trana/features/profile/data/services/device_info_service.dart';
+import 'package:trana/features/profile/data/repository_impls/block_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/device_token_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/trust_score_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/user_consent_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/user_info_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/user_inquiry_repository_impl.dart';
 import 'package:trana/features/profile/data/repository_impls/user_preference_repository_impl.dart';
+import 'package:trana/features/profile/domain/repositories/block_repository.dart';
 import 'package:trana/features/profile/domain/repositories/device_token_repository.dart';
 import 'package:trana/features/profile/domain/repositories/trust_score_repository.dart';
 import 'package:trana/features/profile/domain/repositories/user_consent_repository.dart';
@@ -183,6 +186,12 @@ ContractPdfDataSource contractPdfDataSource(Ref ref) {
   final dio = ref.watch(dioProvider);
   final s3Dio = ref.watch(s3DioProvider);
   return ContractPdfDataSource(dio, s3Dio);
+}
+
+@riverpod
+BlockDataSource blockDataSource(Ref ref) {
+  final dio = ref.watch(dioProvider);
+  return BlockDataSource(dio);
 }
 
 @riverpod
@@ -332,6 +341,12 @@ ContractLifecycleRepository contractLifecycleRepository(Ref ref) {
 ContractPdfRepository contractPdfRepository(Ref ref) {
   final dataSource = ref.watch(contractPdfDataSourceProvider);
   return ContractPdfRepositoryImpl(dataSource);
+}
+
+@riverpod
+BlockRepository blockRepository(Ref ref) {
+  final dataSource = ref.watch(blockDataSourceProvider);
+  return BlockRepositoryImpl(dataSource);
 }
 
 @riverpod

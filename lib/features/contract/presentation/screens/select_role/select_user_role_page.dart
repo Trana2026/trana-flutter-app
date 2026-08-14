@@ -130,7 +130,7 @@ class SelectUserRolePage extends HookConsumerWidget {
 
                   context.push(AppRoutes.contractCreate);
                 } finally {
-                  isPending.value = false;
+                  if (context.mounted) isPending.value = false;
                 }
               },
             ),

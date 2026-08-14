@@ -8,18 +8,18 @@ part of 'adult_kyc_view_model.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// 성인 KYC 4단계 인증 흐름 ViewModel
-/// keepAlive: 끝날때까지 state 보존 필수
+/// 성인 KYC 4단계 인증 흐름 ViewModel.
+/// keepAlive 필수
 
 @ProviderFor(AdultKycViewModel)
 final adultKycViewModelProvider = AdultKycViewModelProvider._();
 
-/// 성인 KYC 4단계 인증 흐름 ViewModel
-/// keepAlive: 끝날때까지 state 보존 필수
+/// 성인 KYC 4단계 인증 흐름 ViewModel.
+/// keepAlive 필수
 final class AdultKycViewModelProvider
     extends $NotifierProvider<AdultKycViewModel, AdultKycState> {
-  /// 성인 KYC 4단계 인증 흐름 ViewModel
-  /// keepAlive: 끝날때까지 state 보존 필수
+  /// 성인 KYC 4단계 인증 흐름 ViewModel.
+  /// keepAlive 필수
   AdultKycViewModelProvider._()
     : super(
         from: null,
@@ -47,10 +47,10 @@ final class AdultKycViewModelProvider
   }
 }
 
-String _$adultKycViewModelHash() => r'38052954910c790a5b174705b0926a6cdf1379f3';
+String _$adultKycViewModelHash() => r'e950b12da14e69f15826de915b0d2fca676b18c5';
 
-/// 성인 KYC 4단계 인증 흐름 ViewModel
-/// keepAlive: 끝날때까지 state 보존 필수
+/// 성인 KYC 4단계 인증 흐름 ViewModel.
+/// keepAlive 필수
 
 abstract class _$AdultKycViewModel extends $Notifier<AdultKycState> {
   AdultKycState build();

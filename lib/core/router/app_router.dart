@@ -22,6 +22,7 @@ import 'package:trana/features/contract/presentation/screens/share/contract_shar
 import 'package:trana/features/contract/presentation/screens/detail/sub_pages/contract_entire_preview_page.dart';
 import 'package:trana/features/contract/presentation/screens/template/contract_template_page.dart';
 import 'package:trana/features/notification/presentation/screens/notification/notification_page.dart';
+import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/blocked_users_page.dart';
 import 'package:trana/features/terms/domain/enums/terms_type.dart';
 import 'package:trana/features/profile/presentation/screens/home/home_page.dart';
 import 'package:trana/features/profile/presentation/screens/my_page/sub_pages/customer_service_page.dart';
@@ -84,6 +85,7 @@ abstract class AppRoutes {
   static const policyList = '/my/policy-list';
   static const termsDetail = '/terms-detail';
   static const editProfile = '/my/edit-profile';
+  static const blockedUsers = '/my/blocked-users';
 }
 
 /// 앱 전체 라우팅 설정
@@ -290,6 +292,10 @@ GoRouter createAppRouter(AuthTokenStore store) => GoRouter(
     GoRoute(
       path: AppRoutes.editProfile,
       builder: (context, state) => const EditProfilePage(),
+    ),
+    GoRoute(
+      path: AppRoutes.blockedUsers,
+      builder: (context, state) => const BlockedUsersPage(),
     ),
   ],
 );

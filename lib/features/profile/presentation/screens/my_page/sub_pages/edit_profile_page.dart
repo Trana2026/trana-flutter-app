@@ -163,7 +163,7 @@ class EditProfilePage extends HookConsumerWidget {
                   isEditing.value = false;
                 }
               } finally {
-                isPending.value = false;
+                if (context.mounted) isPending.value = false;
               }
             },
             backgroundColor: isEditing.value

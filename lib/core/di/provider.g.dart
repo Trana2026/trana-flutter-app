@@ -785,6 +785,48 @@ final class ContractPdfDataSourceProvider
 String _$contractPdfDataSourceHash() =>
     r'5451aa6ad072b052ff7f4747381a75b7b331a4e2';
 
+@ProviderFor(blockDataSource)
+final blockDataSourceProvider = BlockDataSourceProvider._();
+
+final class BlockDataSourceProvider
+    extends
+        $FunctionalProvider<BlockDataSource, BlockDataSource, BlockDataSource>
+    with $Provider<BlockDataSource> {
+  BlockDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'blockDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$blockDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<BlockDataSource> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  BlockDataSource create(Ref ref) {
+    return blockDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(BlockDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<BlockDataSource>(value),
+    );
+  }
+}
+
+String _$blockDataSourceHash() => r'519baa8e5cc397b645fa9eefd057fa744cfa3a62';
+
 @ProviderFor(deviceTokenDataSource)
 final deviceTokenDataSourceProvider = DeviceTokenDataSourceProvider._();
 
@@ -1933,6 +1975,48 @@ final class ContractPdfRepositoryProvider
 
 String _$contractPdfRepositoryHash() =>
     r'689fc95eae58260289ff671b05485c932446946f';
+
+@ProviderFor(blockRepository)
+final blockRepositoryProvider = BlockRepositoryProvider._();
+
+final class BlockRepositoryProvider
+    extends
+        $FunctionalProvider<BlockRepository, BlockRepository, BlockRepository>
+    with $Provider<BlockRepository> {
+  BlockRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'blockRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$blockRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<BlockRepository> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  BlockRepository create(Ref ref) {
+    return blockRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(BlockRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<BlockRepository>(value),
+    );
+  }
+}
+
+String _$blockRepositoryHash() => r'b45b95f40ec425eb7893a8c5cb54bf16ce63beb5';
 
 @ProviderFor(deviceTokenRepository)
 final deviceTokenRepositoryProvider = DeviceTokenRepositoryProvider._();

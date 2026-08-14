@@ -4,6 +4,9 @@ extension DateTimeExtension on DateTime {
   /// DateTime > String 'yyyy.MM.dd' 변환
   String get toDotFormat => DateFormat('yyyy.MM.dd').format(this);
 
+  /// DateTime > String 'HH:mm' 변환
+  String get toTimeFormat => DateFormat('HH:mm').format(this);
+
   /// DateTime > String 'n분 전' 변환
   String get timeAgo {
     final diff = DateTime.now().difference(this);
