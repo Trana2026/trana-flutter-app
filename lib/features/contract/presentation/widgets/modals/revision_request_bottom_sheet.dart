@@ -211,7 +211,7 @@ class RevisionRequestBottomSheet extends HookConsumerWidget {
                                 Navigator.pop(context);
                               }
                             } finally {
-                              isPending.value = false;
+                              if (context.mounted) isPending.value = false;
                             }
                           },
                         ),

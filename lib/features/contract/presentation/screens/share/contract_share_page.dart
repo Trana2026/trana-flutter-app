@@ -199,7 +199,7 @@ class ContractSharePage extends HookConsumerWidget {
 
                         context.go(AppRoutes.contractDetail);
                       } finally {
-                        isPending.value = false;
+                        if (context.mounted) isPending.value = false;
                       }
                     },
                   ),

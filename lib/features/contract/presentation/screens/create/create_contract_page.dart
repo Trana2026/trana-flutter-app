@@ -326,7 +326,7 @@ class CreateContractPage extends HookConsumerWidget {
                     context.push(AppRoutes.contractPreview);
                   }
                 } finally {
-                  isPending.value = false;
+                  if (context.mounted) isPending.value = false;
                 }
               },
             ),

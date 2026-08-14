@@ -117,7 +117,7 @@ class ContractRequestDetailPage extends HookConsumerWidget {
                           SignConfirmBottomSheet(parentContext: context),
                         );
                       } finally {
-                        isPending.value = false;
+                        if (context.mounted) isPending.value = false;
                       }
                     },
                   ),

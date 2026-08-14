@@ -155,7 +155,7 @@ class ContractReportBottomSheet extends HookConsumerWidget {
 
                         context.pop();
                       } finally {
-                        isPending.value = false;
+                        if (context.mounted) isPending.value = false;
                       }
                     },
                   );

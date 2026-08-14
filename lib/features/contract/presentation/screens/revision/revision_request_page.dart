@@ -52,7 +52,7 @@ class RevisionRequestPage extends HookConsumerWidget {
                       const RevisionRequestBottomSheet(),
                     );
                   } finally {
-                    isPending.value = false;
+                    if (context.mounted) isPending.value = false;
                   }
                 },
                 child: Container(

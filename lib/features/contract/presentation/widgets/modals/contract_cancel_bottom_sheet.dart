@@ -206,7 +206,7 @@ class ContractCancelBottomSheet extends HookConsumerWidget {
                           context.go(AppRoutes.home);
                         }
                       } finally {
-                        isPending.value = false;
+                        if (context.mounted) isPending.value = false;
                       }
                     },
                   );

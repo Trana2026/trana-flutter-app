@@ -178,6 +178,11 @@ class MyPage extends HookConsumerWidget {
                   customTrailing: const TrailingPushToggle(),
                 ),
                 MyPageMenuItem(
+                  appIcon: AppIcon.data(icon: CooliconsIcon.octagonWarning),
+                  label: "차단 관리",
+                  onTap: () => context.push(AppRoutes.blockedUsers),
+                ),
+                MyPageMenuItem(
                   appIcon: AppIcon.data(icon: CooliconsIcon.user01),
                   label: "개인정보 관리",
                   onTap: () => context.push(AppRoutes.editProfile),
@@ -249,7 +254,7 @@ class MyPage extends HookConsumerWidget {
 
       if (context.mounted) context.go(AppRoutes.intro);
     } finally {
-      isPending.value = false;
+      if (context.mounted) isPending.value = false;
     }
   }
 
@@ -294,7 +299,7 @@ class MyPage extends HookConsumerWidget {
         );
       }
     } finally {
-      isPending.value = false;
+      if (context.mounted) isPending.value = false;
     }
   }
 }

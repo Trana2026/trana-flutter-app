@@ -97,7 +97,7 @@ class BiometricLockPage extends HookConsumerWidget {
           );
         }
       } finally {
-        isPending.value = false;
+        if (context.mounted) isPending.value = false;
       }
     }
 

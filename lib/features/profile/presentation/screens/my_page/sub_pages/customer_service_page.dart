@@ -157,7 +157,7 @@ class CustomerServicePage extends HookConsumerWidget {
                 context.pop();
                 context.push(AppRoutes.inquiryHistory);
               } finally {
-                isPending.value = false;
+                if (context.mounted) isPending.value = false;
               }
             },
           ),

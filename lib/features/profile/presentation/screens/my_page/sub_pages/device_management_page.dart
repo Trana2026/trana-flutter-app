@@ -48,11 +48,18 @@ class DeviceManagementPage extends HookConsumerWidget {
         title: "로그인 기기 관리",
         onTapLeading: () => context.pop(),
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.zero,
-        itemCount: devices.length,
-        itemBuilder: (_, i) => _DeviceListItem(device: devices[i]),
-      ),
+      body: devices.isEmpty
+          ? Center(
+              child: Text(
+                "연결된 기기가 없어요",
+                style: context.txt(color: vrc(context).textPrimary),
+              ),
+            )
+          : ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: devices.length,
+              itemBuilder: (_, i) => _DeviceListItem(device: devices[i]),
+            ),
     );
   }
 }
@@ -143,7 +150,7 @@ class _DeviceListItem extends HookConsumerWidget {
                     deviceVM.clearError();
                   }
                 } finally {
-                  isPending.value = false;
+                  if (context.mounted) isPending.value = false;
                 }
               },
               child: Container(

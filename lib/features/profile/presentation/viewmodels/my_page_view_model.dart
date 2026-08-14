@@ -9,6 +9,7 @@ import 'package:trana/features/profile/domain/entities/user_info_entity.dart';
 import 'package:trana/features/profile/domain/enums/gender.dart';
 import 'package:trana/features/profile/domain/enums/trust_grade.dart';
 import 'package:trana/features/profile/domain/enums/user_status.dart';
+import 'package:trana/features/profile/presentation/viewmodels/block_view_model.dart';
 
 part 'my_page_view_model.freezed.dart';
 part 'my_page_view_model.g.dart';
@@ -56,12 +57,13 @@ class MyPageViewModel extends _$MyPageViewModel {
   @override
   MyPageState build() => const MyPageState();
 
-  /// 사용자 정보 + 신뢰 점수 + 기기 목록 불러오기 (성공 여부 반환)
+  /// 사용자 정보 + 신뢰 점수 + 기기 목록 + 차단 목록 불러오기 (성공 여부 반환)
   Future<bool> loadData() async {
     final results = await Future.wait([
       ref.read(userInfoRepositoryProvider).readUser(),
       ref.read(trustScoreRepositoryProvider).readTrustScore(),
       ref.read(deviceTokenRepositoryProvider).readDevices(),
+      ref.read(blockViewModelProvider.notifier).readBlocks(),
     ]);
 
     final infoResult = results[0] as Result<UserInfoEntity>;

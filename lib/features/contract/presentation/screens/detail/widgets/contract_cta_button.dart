@@ -501,7 +501,7 @@ class ContractCtaButtons extends HookConsumerWidget {
       try {
         await onTap();
       } finally {
-        isPending.value = false;
+        if (context.mounted) isPending.value = false;
       }
     }
 
