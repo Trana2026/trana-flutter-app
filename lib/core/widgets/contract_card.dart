@@ -161,14 +161,17 @@ class ContractCard extends HookConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          c.title ?? '-',
-                          style: context.txt(
-                            color: vrc(context).textPrimary,
-                            fontWeight: FontWeight.bold,
+                        Padding(
+                          padding: EdgeInsets.only(right: 30), // 차단 버튼 영역
+                          child: Text(
+                            c.title ?? '-',
+                            style: context.txt(
+                              color: vrc(context).textPrimary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
                         Text(
                           c.price != null
