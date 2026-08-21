@@ -41,7 +41,7 @@ final class MyPageViewModelProvider
   }
 }
 
-String _$myPageViewModelHash() => r'30c4304f9db4d9124894841b947e78a89f22c085';
+String _$myPageViewModelHash() => r'ed22c4500af0b571f2a1e07a62c4a8b0e260be3b';
 
 abstract class _$MyPageViewModel extends $Notifier<MyPageState> {
   MyPageState build();
