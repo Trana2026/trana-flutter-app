@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/constants/app_dimens.dart';
+import 'package:trana/core/dev/demo_mode_provider.dart';
 import 'package:trana/core/dev/test_user_provider.dart';
 import 'package:trana/core/router/app_router.dart';
 import 'package:trana/core/theme/app_theme.dart';
@@ -30,6 +32,14 @@ class IntroPage extends HookConsumerWidget {
     // 테스트 유저 로그인용
     Timer? timer;
     final testVM = ref.read(testUserProvider.notifier);
+    final demoVM = ref.read(demoModeProvider.notifier);
+    final demoMode = ref.watch(demoModeProvider) ?? false;
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await demoVM.fetch();
+      });
+      return null;
+    }, const []);
 
     return Scaffold(
       backgroundColor: bg,
@@ -126,9 +136,12 @@ class IntroPage extends HookConsumerWidget {
                 width: 335 * scale,
                 height: 52 * scale,
                 child: GestureDetector(
-                  // 7초 이상 Longpress 시 테스트 유저 로그인
+                  // 2초 이상 Longpress 시 테스트 유저 로그인
                   onLongPressStart: (_) {
-                    timer = Timer(const Duration(seconds: 7), () {
+                    timer = Timer(const Duration(seconds: 2), () {
+                      // 데모 모드일 때만 실행
+                      if (!demoMode) return;
+
                       showCustomDialog(
                         context: context,
                         title: '테스트 계정으로 로그인',

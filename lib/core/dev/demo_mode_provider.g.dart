@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'block_view_model.dart';
+part of 'demo_mode_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,51 +9,50 @@ part of 'block_view_model.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(BlockViewModel)
-final blockViewModelProvider = BlockViewModelProvider._();
+@ProviderFor(DemoMode)
+final demoModeProvider = DemoModeProvider._();
 
-final class BlockViewModelProvider
-    extends $NotifierProvider<BlockViewModel, BlockState> {
-  BlockViewModelProvider._()
+final class DemoModeProvider extends $NotifierProvider<DemoMode, bool?> {
+  DemoModeProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'blockViewModelProvider',
+        name: r'demoModeProvider',
         isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$blockViewModelHash();
+  String debugGetCreateSourceHash() => _$demoModeHash();
 
   @$internal
   @override
-  BlockViewModel create() => BlockViewModel();
+  DemoMode create() => DemoMode();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(BlockState value) {
+  Override overrideWithValue(bool? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<BlockState>(value),
+      providerOverride: $SyncValueProvider<bool?>(value),
     );
   }
 }
 
-String _$blockViewModelHash() => r'02319069fc4072c49da58ab006357e8dd6850e43';
+String _$demoModeHash() => r'104bab0501ddd32c5f2bc24e70fad4499c0db3f3';
 
-abstract class _$BlockViewModel extends $Notifier<BlockState> {
-  BlockState build();
+abstract class _$DemoMode extends $Notifier<bool?> {
+  bool? build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<BlockState, BlockState>;
+    final ref = this.ref as $Ref<bool?, bool?>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<BlockState, BlockState>,
-              BlockState,
+              AnyNotifier<bool?, bool?>,
+              bool?,
               Object?,
               Object?
             >;

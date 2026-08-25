@@ -277,11 +277,18 @@ class MyPage extends HookConsumerWidget {
     if (isPending.value) return;
     isPending.value = true;
     try {
+      final publicCode = ref.read(meProvider).value?.publicCode;
+      if (!context.mounted) return;
+      // 테스트 계정 사용 시 탈퇴 방지
+      if (publicCode?.startsWith('TST-') ?? false) {
+        showErrorToast(context, "테스트 계정은 탈퇴할 수 없어요.");
+        return;
+      }
+
       final result = await ref.read(authRepositoryProvider).deleteAccount();
       if (!context.mounted) return;
       if (result.isSuccess) {
         // 탈퇴 시 플래그 삭제
-        final publicCode = ref.read(meProvider).value?.publicCode;
         if (publicCode != null) {
           await OneTimeFlagService.clearForUser(publicCode);
         }
