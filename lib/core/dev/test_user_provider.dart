@@ -55,7 +55,7 @@ class TestUser extends _$TestUser {
   }
 
   Future<void> login(String userPublicCode) async {
-    final dio = Dio(BaseOptions(baseUrl: AppConfig.apiBaseUrl));
+    final dio = Dio(BaseOptions(baseUrl: AppConfig.devApiBaseUrl));
     try {
       /// JWT 발급
       final tokenResponse = await dio.get<Map<String, dynamic>>(
