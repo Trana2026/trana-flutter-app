@@ -11,10 +11,6 @@ class AppConfig {
   static String get apiBaseUrl =>
       dotenv.env['BASE_URL'] ?? 'https://api.trana.kr';
 
-  /// 개발용 API 서버 base URL (테스트 유저 로그인용)
-  static String get devApiBaseUrl =>
-      dotenv.env['DEV_BASE_URL'] ?? 'https://dev-api.trana.kr';
-
   /// PASS 본인인증 웹 base URL
   static String get kycWebBaseUrl =>
       dotenv.env['KYC_WEB_URL'] ?? 'https://dev-kyc.trana.kr';
