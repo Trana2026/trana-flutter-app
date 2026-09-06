@@ -13,5 +13,5 @@ class AppConfig {
 
   /// PASS 본인인증 웹 base URL
   static String get kycWebBaseUrl =>
-      dotenv.env['KYC_WEB_URL'] ?? 'https://dev-kyc.trana.kr';
+      dotenv.env['KYC_WEB_URL'] ?? 'https://kyc.trana.kr';
 }
