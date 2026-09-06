@@ -17,7 +17,7 @@ mixin _$CreateContractState {
  Role? get role;// 선택된 역할
  DeliveryType get deliveryType;// 선택된 거래 방식
  String? get publicCode;// 생성된 Draft 의 publicCode
- List<AssetEntity> get selectedImages;// 등록한 거래 사진 목록
+ List<XFile> get selectedImages;// 등록한 거래 사진 목록
  List<String> get existingAttachmentUrls;// 기존에 등록된 거래 사진 url (기존값 불러오기)
  List<int> get attachmentIds;// 업로드된 첨부파일 id 목록
  String get tradingPlatform;// 입력된 거래 플랫폼
@@ -61,7 +61,7 @@ abstract mixin class $CreateContractStateCopyWith<$Res>  {
   factory $CreateContractStateCopyWith(CreateContractState value, $Res Function(CreateContractState) _then) = _$CreateContractStateCopyWithImpl;
 @useResult
 $Res call({
- Role? role, DeliveryType deliveryType, String? publicCode, List<AssetEntity> selectedImages, List<String> existingAttachmentUrls, List<int> attachmentIds, String tradingPlatform, String title, int price, String conditionSummary, String conditionDetails, int warrantyPeriodDays, Uint8List? pdfBytes, dynamic mode, bool isLoadingUpload, bool isLoadingPdf, String? error
+ Role? role, DeliveryType deliveryType, String? publicCode, List<XFile> selectedImages, List<String> existingAttachmentUrls, List<int> attachmentIds, String tradingPlatform, String title, int price, String conditionSummary, String conditionDetails, int warrantyPeriodDays, Uint8List? pdfBytes, dynamic mode, bool isLoadingUpload, bool isLoadingPdf, String? error
 });
 
 
@@ -84,7 +84,7 @@ role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullab
 as Role?,deliveryType: null == deliveryType ? _self.deliveryType : deliveryType // ignore: cast_nullable_to_non_nullable
 as DeliveryType,publicCode: freezed == publicCode ? _self.publicCode : publicCode // ignore: cast_nullable_to_non_nullable
 as String?,selectedImages: null == selectedImages ? _self.selectedImages : selectedImages // ignore: cast_nullable_to_non_nullable
-as List<AssetEntity>,existingAttachmentUrls: null == existingAttachmentUrls ? _self.existingAttachmentUrls : existingAttachmentUrls // ignore: cast_nullable_to_non_nullable
+as List<XFile>,existingAttachmentUrls: null == existingAttachmentUrls ? _self.existingAttachmentUrls : existingAttachmentUrls // ignore: cast_nullable_to_non_nullable
 as List<String>,attachmentIds: null == attachmentIds ? _self.attachmentIds : attachmentIds // ignore: cast_nullable_to_non_nullable
 as List<int>,tradingPlatform: null == tradingPlatform ? _self.tradingPlatform : tradingPlatform // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -182,7 +182,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Role? role,  DeliveryType deliveryType,  String? publicCode,  List<AssetEntity> selectedImages,  List<String> existingAttachmentUrls,  List<int> attachmentIds,  String tradingPlatform,  String title,  int price,  String conditionSummary,  String conditionDetails,  int warrantyPeriodDays,  Uint8List? pdfBytes,  dynamic mode,  bool isLoadingUpload,  bool isLoadingPdf,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Role? role,  DeliveryType deliveryType,  String? publicCode,  List<XFile> selectedImages,  List<String> existingAttachmentUrls,  List<int> attachmentIds,  String tradingPlatform,  String title,  int price,  String conditionSummary,  String conditionDetails,  int warrantyPeriodDays,  Uint8List? pdfBytes,  dynamic mode,  bool isLoadingUpload,  bool isLoadingPdf,  String? error)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreateContractState() when $default != null:
 return $default(_that.role,_that.deliveryType,_that.publicCode,_that.selectedImages,_that.existingAttachmentUrls,_that.attachmentIds,_that.tradingPlatform,_that.title,_that.price,_that.conditionSummary,_that.conditionDetails,_that.warrantyPeriodDays,_that.pdfBytes,_that.mode,_that.isLoadingUpload,_that.isLoadingPdf,_that.error);case _:
@@ -203,7 +203,7 @@ return $default(_that.role,_that.deliveryType,_that.publicCode,_that.selectedIma
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Role? role,  DeliveryType deliveryType,  String? publicCode,  List<AssetEntity> selectedImages,  List<String> existingAttachmentUrls,  List<int> attachmentIds,  String tradingPlatform,  String title,  int price,  String conditionSummary,  String conditionDetails,  int warrantyPeriodDays,  Uint8List? pdfBytes,  dynamic mode,  bool isLoadingUpload,  bool isLoadingPdf,  String? error)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Role? role,  DeliveryType deliveryType,  String? publicCode,  List<XFile> selectedImages,  List<String> existingAttachmentUrls,  List<int> attachmentIds,  String tradingPlatform,  String title,  int price,  String conditionSummary,  String conditionDetails,  int warrantyPeriodDays,  Uint8List? pdfBytes,  dynamic mode,  bool isLoadingUpload,  bool isLoadingPdf,  String? error)  $default,) {final _that = this;
 switch (_that) {
 case _CreateContractState():
 return $default(_that.role,_that.deliveryType,_that.publicCode,_that.selectedImages,_that.existingAttachmentUrls,_that.attachmentIds,_that.tradingPlatform,_that.title,_that.price,_that.conditionSummary,_that.conditionDetails,_that.warrantyPeriodDays,_that.pdfBytes,_that.mode,_that.isLoadingUpload,_that.isLoadingPdf,_that.error);case _:
@@ -223,7 +223,7 @@ return $default(_that.role,_that.deliveryType,_that.publicCode,_that.selectedIma
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Role? role,  DeliveryType deliveryType,  String? publicCode,  List<AssetEntity> selectedImages,  List<String> existingAttachmentUrls,  List<int> attachmentIds,  String tradingPlatform,  String title,  int price,  String conditionSummary,  String conditionDetails,  int warrantyPeriodDays,  Uint8List? pdfBytes,  dynamic mode,  bool isLoadingUpload,  bool isLoadingPdf,  String? error)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Role? role,  DeliveryType deliveryType,  String? publicCode,  List<XFile> selectedImages,  List<String> existingAttachmentUrls,  List<int> attachmentIds,  String tradingPlatform,  String title,  int price,  String conditionSummary,  String conditionDetails,  int warrantyPeriodDays,  Uint8List? pdfBytes,  dynamic mode,  bool isLoadingUpload,  bool isLoadingPdf,  String? error)?  $default,) {final _that = this;
 switch (_that) {
 case _CreateContractState() when $default != null:
 return $default(_that.role,_that.deliveryType,_that.publicCode,_that.selectedImages,_that.existingAttachmentUrls,_that.attachmentIds,_that.tradingPlatform,_that.title,_that.price,_that.conditionSummary,_that.conditionDetails,_that.warrantyPeriodDays,_that.pdfBytes,_that.mode,_that.isLoadingUpload,_that.isLoadingPdf,_that.error);case _:
@@ -238,7 +238,7 @@ return $default(_that.role,_that.deliveryType,_that.publicCode,_that.selectedIma
 
 
 class _CreateContractState extends CreateContractState {
-  const _CreateContractState({this.role, this.deliveryType = DeliveryType.shipping, this.publicCode, final  List<AssetEntity> selectedImages = const [], final  List<String> existingAttachmentUrls = const [], final  List<int> attachmentIds = const [], this.tradingPlatform = '', this.title = '', this.price = 0, this.conditionSummary = '', this.conditionDetails = '', this.warrantyPeriodDays = 0, this.pdfBytes, this.mode = CreatePageMode.createMode, this.isLoadingUpload = false, this.isLoadingPdf = false, this.error}): _selectedImages = selectedImages,_existingAttachmentUrls = existingAttachmentUrls,_attachmentIds = attachmentIds,super._();
+  const _CreateContractState({this.role, this.deliveryType = DeliveryType.shipping, this.publicCode, final  List<XFile> selectedImages = const [], final  List<String> existingAttachmentUrls = const [], final  List<int> attachmentIds = const [], this.tradingPlatform = '', this.title = '', this.price = 0, this.conditionSummary = '', this.conditionDetails = '', this.warrantyPeriodDays = 0, this.pdfBytes, this.mode = CreatePageMode.createMode, this.isLoadingUpload = false, this.isLoadingPdf = false, this.error}): _selectedImages = selectedImages,_existingAttachmentUrls = existingAttachmentUrls,_attachmentIds = attachmentIds,super._();
   
 
 @override final  Role? role;
@@ -247,9 +247,9 @@ class _CreateContractState extends CreateContractState {
 // 선택된 거래 방식
 @override final  String? publicCode;
 // 생성된 Draft 의 publicCode
- final  List<AssetEntity> _selectedImages;
+ final  List<XFile> _selectedImages;
 // 생성된 Draft 의 publicCode
-@override@JsonKey() List<AssetEntity> get selectedImages {
+@override@JsonKey() List<XFile> get selectedImages {
   if (_selectedImages is EqualUnmodifiableListView) return _selectedImages;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_selectedImages);
@@ -326,7 +326,7 @@ abstract mixin class _$CreateContractStateCopyWith<$Res> implements $CreateContr
   factory _$CreateContractStateCopyWith(_CreateContractState value, $Res Function(_CreateContractState) _then) = __$CreateContractStateCopyWithImpl;
 @override @useResult
 $Res call({
- Role? role, DeliveryType deliveryType, String? publicCode, List<AssetEntity> selectedImages, List<String> existingAttachmentUrls, List<int> attachmentIds, String tradingPlatform, String title, int price, String conditionSummary, String conditionDetails, int warrantyPeriodDays, Uint8List? pdfBytes, dynamic mode, bool isLoadingUpload, bool isLoadingPdf, String? error
+ Role? role, DeliveryType deliveryType, String? publicCode, List<XFile> selectedImages, List<String> existingAttachmentUrls, List<int> attachmentIds, String tradingPlatform, String title, int price, String conditionSummary, String conditionDetails, int warrantyPeriodDays, Uint8List? pdfBytes, dynamic mode, bool isLoadingUpload, bool isLoadingPdf, String? error
 });
 
 
@@ -349,7 +349,7 @@ role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullab
 as Role?,deliveryType: null == deliveryType ? _self.deliveryType : deliveryType // ignore: cast_nullable_to_non_nullable
 as DeliveryType,publicCode: freezed == publicCode ? _self.publicCode : publicCode // ignore: cast_nullable_to_non_nullable
 as String?,selectedImages: null == selectedImages ? _self._selectedImages : selectedImages // ignore: cast_nullable_to_non_nullable
-as List<AssetEntity>,existingAttachmentUrls: null == existingAttachmentUrls ? _self._existingAttachmentUrls : existingAttachmentUrls // ignore: cast_nullable_to_non_nullable
+as List<XFile>,existingAttachmentUrls: null == existingAttachmentUrls ? _self._existingAttachmentUrls : existingAttachmentUrls // ignore: cast_nullable_to_non_nullable
 as List<String>,attachmentIds: null == attachmentIds ? _self._attachmentIds : attachmentIds // ignore: cast_nullable_to_non_nullable
 as List<int>,tradingPlatform: null == tradingPlatform ? _self.tradingPlatform : tradingPlatform // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
