@@ -2,7 +2,7 @@ name: trana
 description: "A new Flutter project."
 publish_to: "none"
 
-version: 1.0.0+10
+version: 1.0.0+13
 
 environment:
   sdk: ^3.11.0
@@ -26,7 +26,7 @@ dependencies:
   # 이미지
   image_picker: ^1.2.2
   image: ^4.8.0
-  wechat_assets_picker: ^10.1.2
+  wechat_assets_picker: ^10.1.2 # iOS 전용
   flutter_image_compress: ^2.4.0
   cached_network_image: ^3.4.1
 

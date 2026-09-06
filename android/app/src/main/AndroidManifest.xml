@@ -5,7 +5,13 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- camera 플러그인이 추가하는 RECORD_AUDIO 제거 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" tools:node="remove" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <!-- Google Play 사진/동영상 권한 정책: 시스템 사진 선택 도구만 사용하므로
+         라이브러리가 병합하는 미디어 저장소 권한을 모두 제거 -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:node="remove" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="remove" />
     <!-- Android 생체인증 -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />

@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:trana/core/analytics/analytics_service.dart';
 import 'package:trana/core/di/provider.dart';
@@ -10,7 +11,6 @@ import 'package:trana/features/contract/domain/enums/delivery_type.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/presentation/viewmodels/detail_contract_view_model.dart';
 import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 part 'create_contract_view_model.freezed.dart';
 part 'create_contract_view_model.g.dart';
@@ -25,7 +25,7 @@ abstract class CreateContractState with _$CreateContractState {
     Role? role, // 선택된 역할
     @Default(DeliveryType.shipping) DeliveryType deliveryType, // 선택된 거래 방식
     String? publicCode, // 생성된 Draft 의 publicCode
-    @Default([]) List<AssetEntity> selectedImages, // 등록한 거래 사진 목록
+    @Default([]) List<XFile> selectedImages, // 등록한 거래 사진 목록
     @Default([])
     List<String> existingAttachmentUrls, // 기존에 등록된 거래 사진 url (기존값 불러오기)
     @Default([]) List<int> attachmentIds, // 업로드된 첨부파일 id 목록
@@ -235,7 +235,7 @@ class CreateContractViewModel extends _$CreateContractViewModel {
   }
 
   /// 계약 첨부 사진 등록
-  void updateImages(List<AssetEntity> images) =>
+  void updateImages(List<XFile> images) =>
       state = state.copyWith(selectedImages: images);
 
   /// 계약 첨부 사진 업로드 (성공 여부 반환)
@@ -262,12 +262,9 @@ class CreateContractViewModel extends _$CreateContractViewModel {
 
     // 2. 새 이미지 업로드 후 id 저장 (병렬 처리)
     final results = await Future.wait(
-      state.selectedImages.map((asset) async {
-        final file = await asset.file;
-        if (file == null) return null;
-
+      state.selectedImages.map((file) async {
         final bytes = await file.readAsBytes();
-        final filename = file.path.split('/').last;
+        final filename = file.name;
         final contentType = _mimeType(filename);
 
         return repo.uploadAttachment(
@@ -281,8 +278,6 @@ class CreateContractViewModel extends _$CreateContractViewModel {
 
     final uploadedIds = <int>[];
     for (final result in results) {
-      if (result == null) continue;
-
       switch (result) {
         case Success(:final data):
           uploadedIds.add(data.id);

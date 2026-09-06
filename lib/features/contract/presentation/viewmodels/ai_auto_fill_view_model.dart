@@ -66,11 +66,7 @@ class AiAutoFillViewModel extends _$AiAutoFillViewModel {
     List<int> analysisIds = createState.attachmentIds;
     try {
       // 1. ImageFilterService 로 AI 분석에 사용할 이미지 필터링
-      final xFiles = <XFile>[];
-      for (final asset in createState.selectedImages) {
-        final file = await asset.file;
-        if (file != null) xFiles.add(XFile(file.path));
-      }
+      final xFiles = List<XFile>.of(createState.selectedImages);
 
       if (xFiles.isNotEmpty) {
         final filterService = ImageFilterService();
