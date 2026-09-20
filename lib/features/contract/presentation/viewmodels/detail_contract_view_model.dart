@@ -1,9 +1,14 @@
-import 'dart:typed_data';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:trana/core/di/provider.dart';
 import 'package:trana/core/error/result.dart';
+import 'package:trana/core/utils/file_name_utils.dart';
+import 'package:trana/features/contract/data/services/file_save_service.dart';
 import 'package:trana/features/contract/data/services/share_service.dart';
 import 'package:trana/features/contract/domain/entities/contract_attachment_entity.dart';
 import 'package:trana/features/contract/domain/entities/contract_draft_entity.dart';
@@ -12,6 +17,7 @@ import 'package:trana/features/contract/domain/enums/consent_type.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/domain/enums/delivery_type.dart';
 import 'package:trana/features/contract/domain/enums/dispute_state.dart';
+import 'package:trana/features/contract/domain/enums/pdf_export_result.dart';
 import 'package:trana/features/contract/domain/enums/role.dart';
 import 'package:trana/features/contract/domain/utils/contract_text_builder.dart';
 import 'package:trana/features/profile/presentation/viewmodels/home_contract_view_model.dart';
@@ -206,21 +212,75 @@ class DetailContractViewModel extends _$DetailContractViewModel {
     return result is Success;
   }
 
-  /// PDF 공유/저장 (성공 여부 반환)
-  Future<bool> downloadPdf() async {
-    final url = state.pdfUrl;
-    if (url == null) {
-      state = state.copyWith(error: 'PDF를 불러올 수 없습니다.');
-      return false;
+  /// 계약서 PDF 저장(Android) 또는 공유(iOS)
+  Future<PdfExportResult> exportPdf({Rect? sharePositionOrigin}) async {
+    final bytes = state.pdfBytes ?? await _loadPdfBytes();
+    if (bytes == null) {
+      if (state.error == null) {
+        state = state.copyWith(error: 'PDF를 불러올 수 없습니다.');
+      }
+      return PdfExportResult.failure;
     }
 
+    final filename =
+        '${sanitizeFileName('Trana 물품 거래 계약서 (${state.title})', fallback: 'Trana 물품 거래 계약서')}.pdf';
+
     try {
-      final filename = 'Trana 물품 거래 계약서 (${state.title}).pdf';
-      await ShareService().sharePdf(url, filename: filename);
-      return true;
-    } catch (_) {
-      state = state.copyWith(error: '공유에 실패했습니다.');
-      return false;
+      if (Platform.isAndroid) {
+        final saved = await FileSaveService().saveDocument(
+          bytes: bytes,
+          filename: filename,
+        );
+        return saved ? PdfExportResult.success : PdfExportResult.cancelled;
+      }
+
+      final status = await ShareService().sharePdf(
+        bytes: bytes,
+        filename: filename,
+        sharePositionOrigin: sharePositionOrigin,
+      );
+      return status == ShareResultStatus.dismissed
+          ? PdfExportResult.cancelled
+          : PdfExportResult.success;
+    } on PlatformException catch (e) {
+      debugPrint('[exportPdf] PlatformException(${e.code}): ${e.message}');
+      state = state.copyWith(
+        error: Platform.isAndroid
+            ? '계약서를 저장하지 못했습니다.'
+            : '공유 화면을 열지 못했습니다.',
+      );
+      return PdfExportResult.failure;
+    } on FileSystemException catch (e) {
+      debugPrint('[exportPdf] FileSystemException: $e');
+      state = state.copyWith(error: '계약서 파일을 만들지 못했습니다.');
+      return PdfExportResult.failure;
+    } catch (e) {
+      debugPrint('[exportPdf] $e');
+      state = state.copyWith(error: '계약서를 내보내지 못했습니다.');
+      return PdfExportResult.failure;
+    }
+  }
+
+  /// PDF 다운로드 URL 재발급 후 바이트 조회 (presigned URL 만료 대비)
+  Future<Uint8List?> _loadPdfBytes() async {
+    final repo = ref.read(contractPdfRepositoryProvider);
+
+    final pdfResult = await repo.pdf(publicCode: state.publicCode);
+    if (pdfResult case Failure(:final failure)) {
+      state = state.copyWith(error: failure.message);
+      return null;
+    }
+
+    final pdf = (pdfResult as Success<ContractPdfEntity>).data;
+    final bytesResult = await repo.downloadBytes(pdf.downloadUrl);
+
+    switch (bytesResult) {
+      case Success(:final data):
+        state = state.copyWith(pdfUrl: pdf.downloadUrl, pdfBytes: data);
+        return data;
+      case Failure(:final failure):
+        state = state.copyWith(error: failure.message);
+        return null;
     }
   }
 

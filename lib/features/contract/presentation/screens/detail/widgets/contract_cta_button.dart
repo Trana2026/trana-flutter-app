@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -10,6 +12,7 @@ import 'package:trana/core/widgets/custom_toast.dart';
 import 'package:trana/core/widgets/primary_button.dart';
 import 'package:trana/features/contract/domain/enums/contract_status.dart';
 import 'package:trana/features/contract/domain/enums/create_page_mode.dart';
+import 'package:trana/features/contract/domain/enums/pdf_export_result.dart';
 import 'package:trana/features/contract/presentation/extensions/contract_status_ui.dart';
 import 'package:trana/features/contract/presentation/viewmodels/cancel_contract_view_model.dart';
 import 'package:trana/features/contract/presentation/viewmodels/complete_contract_view_model.dart';
@@ -381,16 +384,30 @@ class ContractCtaButtons extends HookConsumerWidget {
     return _ctaButton(
       context,
       ref,
-      text: "거래 계약서 다운로드",
+      text: "계약서 다운로드",
       onTap: () async {
-        // PDF 공유/저장
         final detailVM = ref.read(detailContractViewModelProvider.notifier);
-        final success = await detailVM.downloadPdf();
+
+        // iPad 공유 시트 팝오버 앵커 (미지정 시 iPad 에서 시트가 뜨지 않음)
+        final box = context.findRenderObject() as RenderBox?;
+        final origin = (box != null && box.hasSize)
+            ? box.localToGlobal(Offset.zero) & box.size
+            : null;
+
+        final result = await detailVM.exportPdf(sharePositionOrigin: origin);
         if (!context.mounted) return;
-        if (!success) {
-          final state = ref.read(detailContractViewModelProvider);
-          showErrorToast(context, state.error!);
-          detailVM.clearError();
+
+        switch (result) {
+          case PdfExportResult.success:
+            if (Platform.isAndroid) {
+              showNormalToast(context, "계약서를 저장했어요");
+            }
+          case PdfExportResult.cancelled:
+            break;
+          case PdfExportResult.failure:
+            final state = ref.read(detailContractViewModelProvider);
+            showErrorToast(context, state.error ?? "계약서를 내보내지 못했습니다.");
+            detailVM.clearError();
         }
       },
     );
