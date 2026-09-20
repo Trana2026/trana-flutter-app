@@ -379,12 +379,12 @@ class ContractCtaButtons extends HookConsumerWidget {
     );
   }
 
-  /// 계약서 저장(Android) / 공유(iOS) 버튼
+  /// 계약서 다운로드 버튼
   Widget downloadButton(BuildContext context, WidgetRef ref) {
     return _ctaButton(
       context,
       ref,
-      text: Platform.isAndroid ? "거래 계약서 다운로드" : "거래 계약서 공유",
+      text: "계약서 다운로드",
       onTap: () async {
         final detailVM = ref.read(detailContractViewModelProvider.notifier);
 
